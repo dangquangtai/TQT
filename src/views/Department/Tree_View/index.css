@@ -1,0 +1,14 @@
+.MuiTreeItem-label{
+    font-size: 18px;
+   
+} 
+.MuiTreeItem-iconContainer{
+    font-size: 20px !important;
+    font-weight: 500;
+} 
+.MuiTreeItem-group{
+    margin-left: 18px;
+    padding-left: 20px;
+    border-left: 1px dashed rgba(0,0,0,0.4);
+
+}
