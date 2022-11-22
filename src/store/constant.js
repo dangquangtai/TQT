@@ -1,7 +1,7 @@
 export const gridSpacing = 3;
 export const drawerWidth = 320;
 export const drawerWidthIcon = 120;
-export const comanyCode = 'MYM';
+export const comanyCode = 'TQT';
 export const apiEndpoints = {
   authenticate: '/Primary/?FlowAlias=bs_api_user_authenticate&action=api',
   get_project_list: '/Primary/?FlowAlias=bs_menu_api_get_project_list&action=api',

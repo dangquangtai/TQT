@@ -72,10 +72,10 @@ const App = () => {
     <Grid container justifyContent="center" alignItems="center">
       <Grid item xs={12} sm={12} md={12} lg={12}>
         <Typography variant="h2" className={classes.margin}>
-          Meet Your Mentor App Center
+          TQT App Center
         </Typography>
         <Grid container spacing={gridSpacing} justifyContent="center" alignItems="center">
-          {apps.map((app) => (
+          {apps?.map((app) => (
             <Grid key={app.app_code} item lg={3} sm={6} xs={12}>
               <RouterLink className={classes.link} to="/dashboard/default" onClick={() => handleAppClick(app)}>
                 <HoverCard title={app.app_name} image={app.icon} color={app.color} />
