@@ -34,7 +34,8 @@ const useStyles = makeStyles((theme) => ({
   },
   logoSize: {
     width: '100%',
-    height: '45px',
+    height: '30px',
+    objectFit: 'contain',
   },
 }));
 

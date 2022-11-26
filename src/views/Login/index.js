@@ -39,9 +39,8 @@ const useStyles = makeStyles((theme) => ({
   },
   logoSize: {
     width: '100%',
-    height: '50px',
+    height: '30px',
   },
- 
 }));
 
 const Login = () => {

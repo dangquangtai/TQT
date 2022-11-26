@@ -74,9 +74,9 @@ const App = () => {
         <Typography variant="h2" className={classes.margin}>
           TQT App Center
         </Typography>
-        <Grid container spacing={gridSpacing} justifyContent="center" alignItems="center">
+        <Grid container spacing={gridSpacing} alignItems="center">
           {apps?.map((app) => (
-            <Grid key={app.app_code} item lg={3} sm={6} xs={12}>
+            <Grid key={app.app_code} item lg={4} sm={6} xs={12}>
               <RouterLink className={classes.link} to="/dashboard/default" onClick={() => handleAppClick(app)}>
                 <HoverCard title={app.app_name} image={app.icon} color={app.color} />
               </RouterLink>
