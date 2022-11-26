@@ -5,6 +5,7 @@ import {
   roleActions,
   processroleActions,
   departmentDeactiveActions,
+  materialCategoryActions,
 } from '../store/constant.js';
 
 export function getUrlByAction(selectedFolder) {
@@ -29,6 +30,9 @@ export function getUrlByAction(selectedFolder) {
     }
     case departmentDeactiveActions.list_inactive_department: {
       return apiEndpoints.get_department_deactive_list;
+    }
+    case materialCategoryActions.list_material_category: {
+      return apiEndpoints.get_material_category_list;
     }
     default: {
       return '';

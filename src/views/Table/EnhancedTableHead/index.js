@@ -9,7 +9,6 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import { headCells } from '../data';
 import { isFunction } from 'lodash';
 
-
 EnhancedTableHead.propTypes = {
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
@@ -28,41 +27,39 @@ function EnhancedTableHead(props) {
     rowCount,
     onRequestSort,
     displayOptions,
-    documentType
+    documentType,
   } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
 
-  if(documentType === 'mentor') {
-    const index = headCells.findIndex(item => item.id === 'fullname');
-    if(index !== -1) headCells[index].label = 'Họ tên'
+  if (documentType === 'mentor') {
+    const index = headCells.findIndex((item) => item.id === 'fullname');
+    if (index !== -1) headCells[index].label = 'Họ tên';
   }
 
   return (
     <TableHead>
       <TableRow>
-       
-          {(documentType !=='department' && documentType !== 'processrole')&&(
-             <TableCell padding="checkbox">
-             <Checkbox
-             indeterminate={numSelected > 0 && numSelected < rowCount}
-             checked={rowCount > 0 && numSelected === rowCount}
-             onChange={onSelectAllClick}
-             inputProps={{ 'aria-label': 'select all desserts' }}
-             style={{ position: 'relative !important' }}
-           />
-           </TableCell>
-          )}
-         
-        
+        {documentType !== 'department' && documentType !== 'processrole' && (
+          <TableCell padding="checkbox">
+            <Checkbox
+              indeterminate={numSelected > 0 && numSelected < rowCount}
+              checked={rowCount > 0 && numSelected === rowCount}
+              onChange={onSelectAllClick}
+              inputProps={{ 'aria-label': 'select all desserts' }}
+              style={{ position: 'relative !important' }}
+            />
+          </TableCell>
+        )}
+
         {headCells.map(
           (headCell) =>
             displayOptions[headCell.id] && (
               <TableCell
                 key={headCell.id}
                 align={headCell.numeric ? 'right' : 'left'}
-                padding={headCell.disablePadding ? 'none' : 'default'}
+                padding={headCell.disablePadding ? 'none' : 'normal'}
                 sortDirection={orderBy === headCell.id ? order : false}
                 style={{ maxWidth: headCell.maxWidth, position: 'relative' }}
               >
@@ -91,4 +88,3 @@ function EnhancedTableHead(props) {
 }
 
 export default EnhancedTableHead;
-

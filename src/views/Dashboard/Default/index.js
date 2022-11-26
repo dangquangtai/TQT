@@ -12,11 +12,13 @@ import {
   roleActions,
   processroleActions,
   departmentDeactiveActions,
+  materialCategoryActions,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
 import { Redirect } from 'react-router-dom';
 import ProcessRoleWrapper from '../../ProcessRole';
 import DepartmentListWrapper from './../../DepartmentList/index';
+import MaterialCategoryWrapper from './../../Setting/MaterialCategory/index';
 
 const Default = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
@@ -27,6 +29,8 @@ const Default = () => {
   const availableRoleEndpoint = Object.values(roleActions);
   const avaiableProcessRoleEndpoint = Object.values(processroleActions);
   const availableDepartmentDeactiveEndpoint = Object.values(departmentDeactiveActions);
+
+  const availableMaterialCategoryEndpoint = Object.values(materialCategoryActions);
 
   if (!selectedApp?.id) {
     return <Redirect to="/dashboard/app" />;
@@ -42,6 +46,8 @@ const Default = () => {
           {availableRoleEndpoint.includes(selectedFolder?.action) && <RoleWrapper />}
           {avaiableProcessRoleEndpoint.includes(selectedFolder?.action) && <ProcessRoleWrapper />}
           {availableDepartmentDeactiveEndpoint.includes(selectedFolder?.action) && <DepartmentListWrapper />}
+
+          {availableMaterialCategoryEndpoint.includes(selectedFolder?.action) && <MaterialCategoryWrapper />}
         </Grid>
       )}
     </Grid>

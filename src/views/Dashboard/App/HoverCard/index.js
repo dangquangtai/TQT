@@ -39,7 +39,7 @@ const HoverCard = (props) => {
         </Typography>
         <Grid container spacing={0}>
           <Grid item xs={12}>
-            <Typography variant="h3" color="#000">
+            <Typography variant="h3" color="textPrimary">
               {title}
             </Typography>
           </Grid>

@@ -20,47 +20,14 @@ import EClolorfullBarChart from '../../Chart/EClolorfullBarChart';
 import { useSelector } from 'react-redux';
 
 const Summnary = () => {
-  const theme = useTheme();
-  const { getBookingDataByCareer } = useChart();
-  const [statistic, setStatistic] = useState({});
-  const [categories, setCategories] = useState([]);
-  const [series, setSeries] = useState([]);
-  const [dataStatus, setDataStatus] = useState([]);
-  const [dataMentor, setDataMentor] = useState([]);
-  const [dataCareer, setDataCareer] = useState([]);
-  const [dataRatting, setDataRatting] = useState([]);
   const [formData, setFormData] = useState({
     from_date: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     to_date: new Date(Date.now() + 3600 * 1000 * 24),
   });
   const { selectedApp } = useSelector((state) => state.app);
 
-  useEffect(() => {
-    getChartByCareer();
-  }, []);
-
-  const getChartByCareer = async () => {
-    try {
-      const data = await getBookingDataByCareer(formData);
-      setDataCareer(data?.data);
-      setDataStatus(data?.data_booking_status_display);
-      setCategories(data?.data_booking_set_time?.xAxis);
-      setSeries(data?.data_booking_set_time?.series);
-      setDataMentor(data?.data_count_of_booking_by_mentor_name);
-      setDataRatting(data?.data_mentor_ratting);
-      // console.log(dataCareer?.data_count_of_booking_by_mentor_name);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const handleSubmit = async () => {
     try {
-      // getBarChartData();
-      // getChartByStatus();
-      // getChartByMentor();
-      // getChartByCareer();
-      // getChartByRatting();
     } catch (e) {
       console.log(e);
     }
@@ -170,49 +137,6 @@ const Summnary = () => {
           </Grid>
         </Grid>
       </Grid> */}
-      {selectedApp.app_code === 'BOOKING' && (
-        <>
-          <Grid item xs={12}>
-            <Grid container spacing={gridSpacing}>
-              <Grid item lg={6} xs={12}>
-                <EHoritionalBarChart
-                  xAxis={dataStatus.xAxis}
-                  series={dataStatus.series}
-                  title={'Tình trạng đăng ký'}
-                ></EHoritionalBarChart>
-              </Grid>
-              <Grid item lg={6} xs={12}>
-                <EHoritionalBarChart
-                  xAxis={dataMentor.xAxis}
-                  series={dataMentor.series}
-                  title={'Mentor'}
-                ></EHoritionalBarChart>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item xs={12}>
-            <Grid container spacing={gridSpacing}>
-              <Grid item lg={12} xs={12}>
-                <EStackableBarChart xAxis={categories} series={series} title={'Booking'}></EStackableBarChart>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item xs={12}>
-            <Grid container spacing={gridSpacing}>
-              <Grid item lg={6} xs={12}>
-                <EPieChart name={dataCareer.chart_name} series={dataCareer.chart_data} title={'Ngành nghề'}></EPieChart>
-              </Grid>
-              <Grid item lg={6} xs={12}>
-                <EClolorfullBarChart
-                  xAxis={dataRatting.xAxis}
-                  series={dataRatting.colorful_series}
-                  title={'Ratting'}
-                ></EClolorfullBarChart>
-              </Grid>
-            </Grid>
-          </Grid>
-        </>
-      )}
     </React.Fragment>
   );
 };

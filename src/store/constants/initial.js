@@ -1,4 +1,5 @@
 export const userAvatar = 'https://obs.multicampus.vn/wp-content/uploads/2019/01/avatar.png';
+export const imageDefault = 'https://obs.multicampus.vn/wp-content/uploads/2019/01/avatar.png';
 
 export const initAccount = {
   current_school: '',
@@ -16,4 +17,10 @@ export const initAccount = {
   province_id: '',
   password: '',
   id: '',
+};
+
+export const initCategory = {
+  category_name: '',
+  category_code: '',
+  is_active: true,
 };

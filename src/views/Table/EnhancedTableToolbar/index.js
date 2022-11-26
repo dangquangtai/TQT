@@ -62,6 +62,8 @@ const EnhancedTableToolbar = (props) => {
     handleSyncProcessRole,
     handleDeactiveDepartment,
     buttondeactiveDepartment,
+    handleCreate,
+    buttonCreateMaterialCategory,
   } = props;
 
   const filterRef = useRef(null);
@@ -257,6 +259,14 @@ const EnhancedTableToolbar = (props) => {
                   <Grid item>
                     <Button variant="contained" color={'primary'} onClick={handleSyncProcessRole}>
                       {buttonSyncRole.text}
+                    </Button>
+                  </Grid>
+                )}
+
+                {buttonCreateMaterialCategory && (
+                  <Grid item>
+                    <Button variant="contained" color={'primary'} onClick={handleCreate}>
+                      {buttonCreateMaterialCategory.text}
                     </Button>
                   </Grid>
                 )}

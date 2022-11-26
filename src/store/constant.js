@@ -64,6 +64,13 @@ export const apiEndpoints = {
   //EChart
   get_line_chart_data: '/Primary/?FlowAlias=bs_api_get_line_chart_data&action=api',
   get_booking_data_by_career: '/Primary/?FlowAlias=bs_api_get_booking_data_by_career_for_chart&action=api',
+
+  // Material Category
+  get_material_category_list: '/Primary/?FlowAlias=bs_api_factory_get_list_material_category&action=api',
+  get_material_category_detail: '/Primary/?FlowAlias=bs_api_factory_get_detail_material_category&action=api',
+  create_material_category: '/Primary/?FlowAlias=bs_api_factory_create_material_category&action=api',
+  update_material_category: '/Primary/?FlowAlias=bs_api_factory_update_material_category&action=api',
+  active_material_category: '/Primary/?FlowAlias=bs_api_factory_active_material_category&action=api',
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
@@ -84,6 +91,9 @@ export const departmentActions = {
 };
 export const departmentDeactiveActions = {
   list_inactive_department: 'MYM_ORGANISATION_HOME_OPEN_DEPARTMENT_DEACTIVE_LIST',
+};
+export const materialCategoryActions = {
+  list_material_category: 'TQT_SETTING_DEFAULT_OPEN_MATERIAL_CATEGORY_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -133,6 +143,14 @@ export const view = {
       removeaccount: 'MYM_ORGANISATION_HOME_REMOVE_ACCOUNT_ROLE_MENU_BUTTON',
       removedept: 'MYM_ORGANISATION_HOME_REMOVE_DEPT_ROLE_MENU_BUTTON',
       syncRole: 'MYM_ORGANISATION_HOME_SYNC_DEPARTMENT_ROLE_MENU_BUTTON',
+    },
+  },
+  materialcategory: {
+    list: {
+      create: 'TQT_SETTING_DEFAULT_MATERIAL_CATEGORY_LIST_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_SETTING_DEFAULT_MATERIAL_CATEGORY_DETAIL_SAVE_FORM_BUTTON',
     },
   },
 };

@@ -19,6 +19,7 @@ import ProcessRoleUserModal from '../../views/ProcessRole/User';
 import ProcessRoleDeptModal from '../../views/ProcessRole/Department';
 
 import DepartmentListModal from '../../views/DepartmentList/Detail';
+import CategoryModal from './../../views/CategoryDetail/index';
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -73,22 +74,13 @@ const MainLayout = ({ children }) => {
   const { documentType } = useSelector((state) => state.document);
 
   const renderDetailDialog = () => {
-    // eslint-disable-next-line default-case
     switch (documentType) {
       case 'account':
         return <AccountModal />;
       case 'department':
-        return (
-          <>
-            <DepartmentModal />
-          </>
-        );
+        return <DepartmentModal />;
       case 'role':
-        return (
-          <>
-            <RoleModal />
-          </>
-        );
+        return <RoleModal />;
       case 'processrole':
         return (
           <>
@@ -99,6 +91,10 @@ const MainLayout = ({ children }) => {
         );
       case 'departmentList':
         return <DepartmentListModal />;
+      case 'materialCategory':
+        return <CategoryModal />;
+      default:
+        return null;
     }
   };
 

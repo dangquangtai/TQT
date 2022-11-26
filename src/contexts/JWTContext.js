@@ -33,6 +33,7 @@ const setSession = (serviceToken, user, { turnOnLoading, turnOffLoading }) => {
     axiosInstance.interceptors.request.use((request) => {
       if (request.method === 'post') {
         request.data.company_code = comanyCode;
+        request.data.outputtype = 'RawJson';
       }
       return request;
     });

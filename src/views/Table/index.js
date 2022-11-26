@@ -34,6 +34,7 @@ import useDepartment from '../../hooks/useDepartment';
 import useConfirmPopup from './../../hooks/useConfirmPopup';
 import useProcessRole from './../../hooks/useProcessRole';
 import useRole from '../../hooks/useRole';
+import { getDetailMaterialCategory } from '../../services/api/Setting';
 
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance
@@ -57,7 +58,7 @@ export default function GeneralTable(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { setConfirmPopup } = useConfirmPopup();
-  const { menu_buttons: menuButtons, columns: tableColumns } = useView();
+  const { setView, menu_buttons: menuButtons, columns: tableColumns } = useView();
   const [displayOptions, setDisplayOptions] = React.useState({});
   const { selectedFolder } = useSelector((state) => state.folder);
   const { selectedDocument } = useSelector((state) => state.document);
@@ -67,6 +68,7 @@ export default function GeneralTable(props) {
       id: tableColumns.includes('id'),
       image_url: tableColumns.includes('image_url'),
       title: tableColumns.includes('title'),
+      category_name: tableColumns.includes('category_name'),
       fullname: tableColumns.includes('fullname'),
       email_address: tableColumns.includes('email_address'),
       number_phone: tableColumns.includes('number_phone'),
@@ -108,6 +110,8 @@ export default function GeneralTable(props) {
   const buttonAddDeptRole = menuButtons.find((button) => button.name === view.processrole.list.adddept);
   const buttonAddAccountRole = menuButtons.find((button) => button.name === view.processrole.list.adduser);
   const buttonSyncRole = menuButtons.find((button) => button.name === view.processrole.list.syncRole);
+
+  const buttonCreateMaterialCategory = menuButtons.find((button) => button.name === view.materialcategory.list.create);
 
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -163,6 +167,7 @@ export default function GeneralTable(props) {
   useEffect(() => {
     if (selectedProject && selectedFolder && url) {
       fetchDocument(url, documentType, selectedProject.id, selectedFolder.id);
+      console.log('xau');
     } else {
       dispatch({
         type: TASK_CHANGE,
@@ -276,10 +281,6 @@ export default function GeneralTable(props) {
     setSelected([]);
   };
 
-  const handlePressEnterToSearch = (text) => {
-    fetchDocument({ search_text: text });
-  };
-
   const handleClick = (event, id) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
@@ -297,8 +298,8 @@ export default function GeneralTable(props) {
   };
 
   const handleChangePage = (event, newPage) => {
-    fetchDocument({ page: newPage + 1 });
     let page = newPage + 1;
+    fetchDocument({ page: page });
     setPage(page);
   };
 
@@ -312,31 +313,49 @@ export default function GeneralTable(props) {
   const openDetailDocument = async (event, selectedDocument) => {
     event.stopPropagation();
     let detailDocument = null;
-    if (documentType === 'account') {
-      detailDocument = await getAccountDetail(selectedDocument.id);
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
-      dispatch({ type: FLOATING_MENU_CHANGE, accountDocument: true });
-    } else if (documentType === 'role') {
-      detailDocument = await getRoleDetail(selectedDocument.role_template_id);
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
-      dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
-    } else if (documentType === 'departmentList') {
-      detailDocument = await getDepartmentDetail(selectedDocument.department_code);
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
-      dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
+    switch (documentType) {
+      case 'account':
+        detailDocument = await getAccountDetail(selectedDocument.id);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, accountDocument: true });
+        break;
+      case 'role':
+        detailDocument = await getRoleDetail(selectedDocument.role_template_id);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
+        break;
+      case 'departmentList':
+        detailDocument = await getDepartmentDetail(selectedDocument.department_code);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
+        break;
+      case 'materialCategory':
+        detailDocument = await getDetailMaterialCategory(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, categoryDocument: true });
+        break;
+      default:
+        break;
     }
   };
 
   const openDialogCreate = () => {
-    if (documentType === 'account') {
-      dispatch({ type: DOCUMENT_CHANGE, documentType });
-      dispatch({ type: FLOATING_MENU_CHANGE, accountDocument: true });
-    } else if (documentType === 'department') {
-      dispatch({ type: DOCUMENT_CHANGE, documentType });
-      dispatch({ type: FLOATING_MENU_CHANGE, departmentDocument: true });
-    } else if (documentType === 'role') {
-      dispatch({ type: DOCUMENT_CHANGE, documentType });
-      dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
+    dispatch({ type: DOCUMENT_CHANGE, documentType });
+    switch (documentType) {
+      case 'account':
+        dispatch({ type: FLOATING_MENU_CHANGE, accountDocument: true });
+        break;
+      case 'department':
+        dispatch({ type: FLOATING_MENU_CHANGE, departmentDocument: true });
+        break;
+      case 'role':
+        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
+        break;
+      case 'materialCategory':
+        dispatch({ type: FLOATING_MENU_CHANGE, categoryDocument: true });
+        break;
+      default:
+        break;
     }
   };
 
@@ -592,6 +611,8 @@ export default function GeneralTable(props) {
                 buttonAddAccountRole={buttonAddAccountRole}
                 buttonSyncRole={buttonSyncRole}
                 handleSyncProcessRole={handleSyncProcessRole}
+                handleCreate={openDialogCreate}
+                buttonCreateMaterialCategory={buttonCreateMaterialCategory}
               />
               <Grid container spacing={gridSpacing}>
                 {(documentType === 'department' || documentType === 'processrole') && (
@@ -676,6 +697,16 @@ export default function GeneralTable(props) {
                                   className={classes.tableItemName}
                                 >
                                   {row.title}
+                                </TableCell>
+                              )}
+                              {displayOptions.category_name && (
+                                <TableCell
+                                  style={{ maxWidth: 450, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.category_name}
                                 </TableCell>
                               )}
                               {displayOptions.account_id && (
@@ -869,7 +900,7 @@ export default function GeneralTable(props) {
                     count={count}
                     page={page - 1}
                     onChangePage={handleChangePage}
-                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </Grid>
               </Grid>
