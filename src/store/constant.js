@@ -139,23 +139,23 @@ export const view = {
   },
   user: {
     list: {
-      create: comanyCode+'_ORGANISATION_HOME_CREATE_USER_MENU_BUTTON',
+      create: comanyCode+'_ORGANISATION_'+defaultProcess+'_CREATE_USER_MENU_BUTTON',
     },
     detail: {
-      save: comanyCode+'_ORGANISATION_HOME_UPDATE_USER_FORM_BUTTON',
+      save: comanyCode+'_ORGANISATION_'+defaultProcess+'_UPDATE_USER_FORM_BUTTON',
     },
   },
   department: {
     list: {
-      create: comanyCode+'_ORGANISATION_'+defaultProcess+'HOME_CREATE_DEPARTMENT_MENU_BUTTON',
+      create: comanyCode+'_ORGANISATION_'+defaultProcess+'_CREATE_DEPARTMENT_MENU_BUTTON',
       update: comanyCode+'_ORGANISATION_'+defaultProcess+'_UPDATE_DEPARTMENT_MENU_BUTTON',
       adduser: comanyCode+'_ORGANISATION_'+defaultProcess+'_ADD_USER_DEPARTMENT_MENU_BUTTON',
-      removeaccount: comanyCode+'_ORGANISATION_'+defaultProcess+'HOME_REMOVE_ACCOUNT_MENU_BUTTON',
+      removeaccount: comanyCode+'_ORGANISATION_'+defaultProcess+'_REMOVE_ACCOUNT_MENU_BUTTON',
       syncDept: comanyCode+'_ORGANISATION_'+defaultProcess+'_SYNC_DEPARTMENT_MENU_BUTTON',
       deactive: comanyCode+'_ORGANISATION_'+defaultProcess+'_DEACTIVE_DEPARTMENT_MENU_BUTTON',
     },
     detail: {
-      save: 'DEPARTMENT_LIST_CREATE_FORM_BUTTON',
+      save: comanyCode+'_ORGANISATION_'+defaultProcess+'_CREATE_DEPARTMENT_FORM_BUTTON',
     },
   },
   role: {
@@ -168,7 +168,7 @@ export const view = {
     list: {
       create: comanyCode+'_ORGANISATION_'+defaultProcess+'_CREATE_NEW_PROCESS_ROLE_MENU_BUTTON',
       update: comanyCode+'_ORGANISATION_'+defaultProcess+'_UPDATE_PROCESS_ROLE_MENU_BUTTON',
-      update_dept_role: comanyCode+'_ORGANISATION_'+defaultProcess+'HOME_UPDATE_DEPARTMENT_ROLE_MENU_BUTTON',
+      update_dept_role: comanyCode+'_ORGANISATION_'+defaultProcess+'_UPDATE_DEPARTMENT_ROLE_MENU_BUTTON',
       adduser: comanyCode+'_ORGANISATION_'+defaultProcess+'_ADD_ACCOUNT_ROLE_MENU_BUTTON',
       adddept: comanyCode+'_ORGANISATION_'+defaultProcess+'_ADD_DEPT_ROLE_MENU_BUTTON',
       removeaccount: comanyCode+'_ORGANISATION_'+defaultProcess+'_REMOVE_ACCOUNT_ROLE_MENU_BUTTON',

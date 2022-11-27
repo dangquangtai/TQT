@@ -12,79 +12,81 @@ const TreeViewModal = (props) => {
   const { getDataTreeView } = useDepartment();
   const { getRoleTree } = useProcessRole();
 
-  const splitData = (dataList) => {
-    let arr2 = [];
-    dataList.forEach((data) => {
-      if (data.Value.split('/').length !== 0) {
-        arr2.push(data.Value.split('/'));
-      }
-    });
-    return arr2;
-  };
-  const dataTreeView = [];
-  const formatDataTreeView = (arr2, dataSimpleValue) => {
-    arr2.forEach((data, index) => {
-      for (const [i, data2] of data.entries()) {
-        if (i === 1 && data.length === 2) {
-          dataTreeView.push({ key: dataSimpleValue[index].Key, label: data[i], children: [] });
-        } else if (i !== 1 && i !== 0) {
-          loopTreeView(data[i - 1], data[i], dataTreeView, dataSimpleValue[index].Key);
-        }
-      }
-    });
-    setData(dataTreeView);
-  };
-  const loopTreeView = (datapre, dataNew, dataListFormat, Key) => {
-    dataListFormat.forEach((dataCheck) => {
-      dataListFormat.forEach((dataCheckExist) => {
-        if (dataCheckExist.key === Key) {
-          return true;
-        }
-      });
-      if (dataCheck.label === datapre) {
-        let check = false;
-        if (dataCheck.children.length >= 1) {
-          dataCheck.children.forEach((dataCheckExist) => {
-            if (dataCheckExist.label === dataNew) {
-              check = true;
-            }
-          });
-          if (check === false) {
-            if (!!dataNew) {
-              let dataTree = {
-                key: Key,
-                label: dataNew,
-                children: [],
-              };
-              dataCheck.children.push(dataTree);
-            }
-            return true;
-          }
-        } else {
-          if (!!dataNew) {
-            let dataTree = {
-              key: Key,
-              label: dataNew,
-              children: [],
-            };
-            dataCheck.children.push(dataTree);
-          }
-          return true;
-        }
-      } else {
-        return loopTreeView(datapre, dataNew, dataCheck.children, Key);
-      }
-    });
-  };
+  // const splitData = (dataList) => {
+  //   let arr2 = [];
+  //   dataList.forEach((data) => {
+  //     if (data.Value.split('/').length !== 0) {
+  //       arr2.push(data.Value.split('/'));
+  //     }
+  //   });
+  //   return arr2;
+  // };
+  // const dataTreeView = [];
+  // const formatDataTreeView = (arr2, dataSimpleValue) => {
+  //   arr2.forEach((data, index) => {
+  //     for (const [i, data2] of data.entries()) {
+  //       if (i === 1 && data.length === 2) {
+  //         dataTreeView.push({ key: dataSimpleValue[index].Key, label: data[i], children: [] });
+  //       } else if (i !== 1 && i !== 0) {
+  //         loopTreeView(data[i - 1], data[i], dataTreeView, dataSimpleValue[index].Key);
+  //       }
+  //     }
+  //   });
+  //   setData(dataTreeView);
+  // };
+  // const loopTreeView = (datapre, dataNew, dataListFormat, Key) => {
+  //   dataListFormat.forEach((dataCheck) => {
+  //     dataListFormat.forEach((dataCheckExist) => {
+  //       if (dataCheckExist.key === Key) {
+  //         return true;
+  //       }
+  //     });
+  //     if (dataCheck.label === datapre) {
+  //       let check = false;
+  //       if (dataCheck.children.length >= 1) {
+  //         dataCheck.children.forEach((dataCheckExist) => {
+  //           if (dataCheckExist.label === dataNew) {
+  //             check = true;
+  //           }
+  //         });
+  //         if (check === false) {
+  //           if (!!dataNew) {
+  //             let dataTree = {
+  //               key: Key,
+  //               label: dataNew,
+  //               children: [],
+  //             };
+  //             dataCheck.children.push(dataTree);
+  //           }
+  //           return true;
+  //         }
+  //       } else {
+  //         if (!!dataNew) {
+  //           let dataTree = {
+  //             key: Key,
+  //             label: dataNew,
+  //             children: [],
+  //           };
+  //           dataCheck.children.push(dataTree);
+  //         }
+  //         return true;
+  //       }
+  //     } else {
+  //       return loopTreeView(datapre, dataNew, dataCheck.children, Key);
+  //     }
+  //   });
+  // };
   const [dataShow, setData] = React.useState();
   useEffect(() => {
     const fetch = async () => {
       if (documentType === 'department') {
         let data = await getDataTreeView();
-        formatDataTreeView(splitData(data), data);
+        // formatDataTreeView(splitData(data), data);
+        setData(data);
       } else {
         let data = await getRoleTree();
-        formatDataTreeView(splitData(data), data);
+        setData(data);
+        // formatDataTreeView(splitData(data), data);
       }
     };
     fetch();
@@ -102,10 +104,10 @@ const TreeViewModal = (props) => {
       return (
         <>
           <TreeItem
-            nodeId={data.key}
-            label={data.label}
-            key={data.label}
-            onClick={(event) => handleClickOpen(data.key)}
+            nodeId={data.id}
+            label={data.name}
+            key={data.id}
+            onClick={(event) => handleClickOpen(data.id)}
             className={TreeItemClassKey.MuiTreeItemlabel}
           />
         </>
@@ -114,10 +116,10 @@ const TreeViewModal = (props) => {
       if (documentType === 'department') {
         return (
           <TreeItem
-            nodeId={data.key}
-            label={data.label}
-            key={data.label}
-            onClick={(event) => handleClickOpen(data.key)}
+            nodeId={data.id}
+            label={data.name}
+            key={data.id}
+            onClick={(event) => handleClickOpen(data.id)}
           >
             {data.children.map((data2) => renderItem(data2))}
           </TreeItem>
@@ -125,9 +127,9 @@ const TreeViewModal = (props) => {
       } else {
         return (
           <TreeItem
-            nodeId={data.key}
-            label={data.label}
-            key={data.label}
+            nodeId={data.id}
+            label={data.name}
+            key={data.id}
             onClick={(event) => setSelectedProcessRole('')}
           >
             {data.children.map((data2) => renderItem(data2))}
