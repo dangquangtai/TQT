@@ -6,6 +6,9 @@ import {
   processroleActions,
   departmentDeactiveActions,
   materialCategoryActions,
+  supplierCategoryActions,
+  productCategoryActions,
+  customerCategoryActions,
 } from '../store/constant.js';
 
 export function getUrlByAction(selectedFolder) {
@@ -33,6 +36,15 @@ export function getUrlByAction(selectedFolder) {
     }
     case materialCategoryActions.list_material_category: {
       return apiEndpoints.get_material_category_list;
+    }
+    case supplierCategoryActions.list_supplier_category: {
+      return apiEndpoints.get_supplier_category_list;
+    }
+    case productCategoryActions.list_product_category: {
+      return apiEndpoints.get_product_category_list;
+    }
+    case customerCategoryActions.list_customer_category: {
+      return apiEndpoints.get_customer_category_list;
     }
     default: {
       return '';

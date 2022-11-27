@@ -34,7 +34,10 @@ import useDepartment from '../../hooks/useDepartment';
 import useConfirmPopup from './../../hooks/useConfirmPopup';
 import useProcessRole from './../../hooks/useProcessRole';
 import useRole from '../../hooks/useRole';
-import { getDetailMaterialCategory } from '../../services/api/Setting';
+import { getDetailMaterialCategory } from '../../services/api/Setting/MaterialCategory';
+import { getDetailSupplierCategory } from './../../services/api/Setting/SupplierCategory';
+import { getDetailProductCategory } from './../../services/api/Setting/ProductCategory';
+import { getDetailCustomerCategory } from './../../services/api/Setting/CustomerCategory';
 
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance
@@ -111,7 +114,10 @@ export default function GeneralTable(props) {
   const buttonAddAccountRole = menuButtons.find((button) => button.name === view.processrole.list.adduser);
   const buttonSyncRole = menuButtons.find((button) => button.name === view.processrole.list.syncRole);
 
-  const buttonCreateMaterialCategory = menuButtons.find((button) => button.name === view.materialcategory.list.create);
+  const buttonCreateMaterialCategory = menuButtons.find((button) => button.name === view.materialCategory.list.create);
+  const buttonCreateSupplierCategory = menuButtons.find((button) => button.name === view.supplierCategory.list.create);
+  const buttonCreateProductCategory = menuButtons.find((button) => button.name === view.productCategory.list.create);
+  const buttonCreateCustomerCategory = menuButtons.find((button) => button.name === view.customerCategory.list.create);
 
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -334,6 +340,21 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, categoryDocument: true });
         break;
+      case 'supplierCategory':
+        detailDocument = await getDetailSupplierCategory(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, categoryDocument: true });
+        break;
+      case 'productCategory':
+        detailDocument = await getDetailProductCategory(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, categoryDocument: true });
+        break;
+      case 'customerCategory':
+        detailDocument = await getDetailCustomerCategory(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, categoryDocument: true });
+        break;
       default:
         break;
     }
@@ -352,6 +373,15 @@ export default function GeneralTable(props) {
         dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
         break;
       case 'materialCategory':
+        dispatch({ type: FLOATING_MENU_CHANGE, categoryDocument: true });
+        break;
+      case 'supplierCategory':
+        dispatch({ type: FLOATING_MENU_CHANGE, categoryDocument: true });
+        break;
+      case 'productCategory':
+        dispatch({ type: FLOATING_MENU_CHANGE, categoryDocument: true });
+        break;
+      case 'customerCategory':
         dispatch({ type: FLOATING_MENU_CHANGE, categoryDocument: true });
         break;
       default:
@@ -613,6 +643,9 @@ export default function GeneralTable(props) {
                 handleSyncProcessRole={handleSyncProcessRole}
                 handleCreate={openDialogCreate}
                 buttonCreateMaterialCategory={buttonCreateMaterialCategory}
+                buttonCreateSupplierCategory={buttonCreateSupplierCategory}
+                buttonCreateProductCategory={buttonCreateProductCategory}
+                buttonCreateCustomerCategory={buttonCreateCustomerCategory}
               />
               <Grid container spacing={gridSpacing}>
                 {(documentType === 'department' || documentType === 'processrole') && (

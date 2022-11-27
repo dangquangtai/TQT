@@ -25,6 +25,9 @@ import { DescriptionOutlined as DescriptionOutlinedIcon, InfoOutlined as InfoOut
 import Alert from './../../component/Alert/index';
 import { initCategory } from '../../store/constants/initial.js';
 import { createMaterialCategory, updateMaterialCategory } from './../../services/api/Setting/MaterialCategory';
+import { createSupplierCategory, updateSupplierCategory } from './../../services/api/Setting/SupplierCategory';
+import { createCustomerCategory, updateCustomerCategory } from './../../services/api/Setting/CustomerCategory';
+import { createProductCategory, updateProductCategory } from './../../services/api/Setting/ProductCategory';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -67,8 +70,10 @@ const CategoryModal = () => {
   const { categoryDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument, documentType } = useSelector((state) => state.document);
 
-  const buttonCreateMaterialCategory = formButtons.find((button) => button.name === view.materialcategory.detail.save);
-
+  const buttonUpdateMaterialCategory = formButtons.find((button) => button.name === view.materialCategory.detail.save);
+  const buttonUpdateSupplierCategory = formButtons.find((button) => button.name === view.supplierCategory.detail.save);
+  const buttonUpdateCustomerCategory = formButtons.find((button) => button.name === view.customerCategory.detail.save);
+  const buttonUpdateProductCategory = formButtons.find((button) => button.name === view.productCategory.detail.save);
   const [tabIndex, setTabIndex] = React.useState(0);
   const [categoryData, setCategoryData] = React.useState(initCategory);
   const [snackbarStatus, setSnackbarStatus] = useState({
@@ -111,6 +116,15 @@ const CategoryModal = () => {
           case 'materialCategory':
             await updateMaterialCategory(categoryData);
             break;
+          case 'supplierCategory':
+            await updateSupplierCategory(categoryData);
+            break;
+          case 'productCategory':
+            await updateProductCategory(categoryData);
+            break;
+          case 'customerCategory':
+            await updateCustomerCategory(categoryData);
+            break;
           default:
             break;
         }
@@ -119,6 +133,15 @@ const CategoryModal = () => {
         switch (documentType) {
           case 'materialCategory':
             await createMaterialCategory(categoryData);
+            break;
+          case 'supplierCategory':
+            await createSupplierCategory(categoryData);
+            break;
+          case 'productCategory':
+            await createProductCategory(categoryData);
+            break;
+          case 'customerCategory':
+            await createCustomerCategory(categoryData);
             break;
           default:
             break;
@@ -163,7 +186,7 @@ const CategoryModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              Chi tiết
+              {selectedDocument?.id ? 'Chi tiết' : 'Tạo mới'} danh mục
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -266,9 +289,24 @@ const CategoryModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
-                {buttonCreateMaterialCategory && selectedDocument?.id && (
+                {buttonUpdateMaterialCategory && selectedDocument?.id && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
-                    {buttonCreateMaterialCategory.text}
+                    {buttonUpdateMaterialCategory.text}
+                  </Button>
+                )}
+                {buttonUpdateSupplierCategory && selectedDocument?.id && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
+                    {buttonUpdateSupplierCategory.text}
+                  </Button>
+                )}
+                {buttonUpdateProductCategory && selectedDocument?.id && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
+                    {buttonUpdateProductCategory.text}
+                  </Button>
+                )}
+                {buttonUpdateCustomerCategory && selectedDocument?.id && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
+                    {buttonUpdateCustomerCategory.text}
                   </Button>
                 )}
                 {!selectedDocument?.id && (
