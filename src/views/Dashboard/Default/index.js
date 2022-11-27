@@ -13,12 +13,18 @@ import {
   processroleActions,
   departmentDeactiveActions,
   materialCategoryActions,
+  supplierCategoryActions,
+  productCategoryActions,
+  customerCategoryActions,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
 import { Redirect } from 'react-router-dom';
 import ProcessRoleWrapper from '../../ProcessRole';
 import DepartmentListWrapper from './../../DepartmentList/index';
 import MaterialCategoryWrapper from './../../Setting/MaterialCategory/index';
+import SupplierCategoryWrapper from './../../Setting/SupplierCategory';
+import ProductCategoryWrapper from '../../Setting/ProductCategory';
+import CustomerCategoryWrapper from './../../Setting/CustomerCategory';
 
 const Default = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
@@ -31,6 +37,9 @@ const Default = () => {
   const availableDepartmentDeactiveEndpoint = Object.values(departmentDeactiveActions);
 
   const availableMaterialCategoryEndpoint = Object.values(materialCategoryActions);
+  const availableSupplierCategoryEndpoint = Object.values(supplierCategoryActions);
+  const availableProductCategoryEndpoint = Object.values(productCategoryActions);
+  const availableCustomerCategoryEndpoint = Object.values(customerCategoryActions);
 
   if (!selectedApp?.id) {
     return <Redirect to="/dashboard/app" />;
@@ -48,6 +57,9 @@ const Default = () => {
           {availableDepartmentDeactiveEndpoint.includes(selectedFolder?.action) && <DepartmentListWrapper />}
 
           {availableMaterialCategoryEndpoint.includes(selectedFolder?.action) && <MaterialCategoryWrapper />}
+          {availableSupplierCategoryEndpoint.includes(selectedFolder?.action) && <SupplierCategoryWrapper />}
+          {availableProductCategoryEndpoint.includes(selectedFolder?.action) && <ProductCategoryWrapper />}
+          {availableCustomerCategoryEndpoint.includes(selectedFolder?.action) && <CustomerCategoryWrapper />}
         </Grid>
       )}
     </Grid>

@@ -71,6 +71,27 @@ export const apiEndpoints = {
   create_material_category: '/Primary/?FlowAlias=bs_api_factory_create_material_category&action=api',
   update_material_category: '/Primary/?FlowAlias=bs_api_factory_update_material_category&action=api',
   active_material_category: '/Primary/?FlowAlias=bs_api_factory_active_material_category&action=api',
+
+  // Supplier Category
+  get_supplier_category_list: '/Primary/?FlowAlias=bs_api_factory_get_list_supplier_category&action=api',
+  get_supplier_category_detail: '/Primary/?FlowAlias=bs_api_factory_get_detail_supplier_category&action=api',
+  create_supplier_category: '/Primary/?FlowAlias=bs_api_factory_create_supplier_category&action=api',
+  update_supplier_category: '/Primary/?FlowAlias=bs_api_factory_update_supplier_category&action=api',
+  active_supplier_category: '/Primary/?FlowAlias=bs_api_factory_active_supplier_category&action=api',
+
+  // Product Category
+  get_product_category_list: '/Primary/?FlowAlias=bs_api_factory_get_list_product_category&action=api',
+  get_product_category_detail: '/Primary/?FlowAlias=bs_api_factory_get_detail_product_category&action=api',
+  create_product_category: '/Primary/?FlowAlias=bs_api_factory_create_product_category&action=api',
+  update_product_category: '/Primary/?FlowAlias=bs_api_factory_update_product_category&action=api',
+  active_product_category: '/Primary/?FlowAlias=bs_api_factory_active_product_category&action=api',
+
+  // Customer Category
+  get_customer_category_list: '/Primary/?FlowAlias=bs_api_factory_get_list_customer_category&action=api',
+  get_customer_category_detail: '/Primary/?FlowAlias=bs_api_factory_get_detail_customer_category&action=api',
+  create_customer_category: '/Primary/?FlowAlias=bs_api_factory_create_customer_category&action=api',
+  update_customer_category: '/Primary/?FlowAlias=bs_api_factory_update_customer_category&action=api',
+  active_customer_category: '/Primary/?FlowAlias=bs_api_factory_active_customer_category&action=api',
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
@@ -94,6 +115,15 @@ export const departmentDeactiveActions = {
 };
 export const materialCategoryActions = {
   list_material_category: 'TQT_SETTING_DEFAULT_OPEN_MATERIAL_CATEGORY_LIST',
+};
+export const supplierCategoryActions = {
+  list_supplier_category: 'TQT_SETTING_DEFAULT_OPEN_SUPPLIER_CATEGORY_LIST',
+};
+export const productCategoryActions = {
+  list_product_category: 'TQT_SETTING_DEFAULT_OPEN_PRODUCT_CATEGORY_LIST',
+};
+export const customerCategoryActions = {
+  list_customer_category: 'TQT_SETTING_DEFAULT_OPEN_CUSTOMER_CATEGORY_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -145,12 +175,36 @@ export const view = {
       syncRole: 'MYM_ORGANISATION_HOME_SYNC_DEPARTMENT_ROLE_MENU_BUTTON',
     },
   },
-  materialcategory: {
+  materialCategory: {
     list: {
       create: 'TQT_SETTING_DEFAULT_MATERIAL_CATEGORY_LIST_CREATE_MENU_BUTTON',
     },
     detail: {
       save: 'TQT_SETTING_DEFAULT_MATERIAL_CATEGORY_DETAIL_SAVE_FORM_BUTTON',
+    },
+  },
+  supplierCategory: {
+    list: {
+      create: 'TQT_SETTING_DEFAULT_SUPPLIER_CATEGORY_LIST_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_SETTING_DEFAULT_SUPPLIER_CATEGORY_DETAIL_SAVE_FORM_BUTTON',
+    },
+  },
+  productCategory: {
+    list: {
+      create: 'TQT_SETTING_DEFAULT_PRODUCT_CATEGORY_LIST_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_SETTING_DEFAULT_PRODUCT_CATEGORY_DETAIL_SAVE_FORM_BUTTON',
+    },
+  },
+  customerCategory: {
+    list: {
+      create: 'TQT_SETTING_DEFAULT_CUSTOMER_CATEGORY_LIST_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_SETTING_DEFAULT_CUSTOMER_CATEGORY_DETAIL_SAVE_FORM_BUTTON',
     },
   },
 };

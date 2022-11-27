@@ -92,6 +92,9 @@ const MainLayout = ({ children }) => {
       case 'departmentList':
         return <DepartmentListModal />;
       case 'materialCategory':
+      case 'supplierCategory':
+      case 'productCategory':
+      case 'customerCategory':
         return <CategoryModal />;
       default:
         return null;
