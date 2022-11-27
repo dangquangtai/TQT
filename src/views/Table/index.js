@@ -200,15 +200,15 @@ export default function GeneralTable(props) {
     reloadCurrentDocuments();
   }, [department_code_selected]);
 
-  useEffect(() => {
-    const fetchUserList = async () => {
-      let data = await getAllUser();
-      setUserList(data);
-      data = await getAllDepartment();
-      setDeptList(data);
-    };
-    fetchUserList();
-  }, []);
+  // useEffect(() => {
+  //   const fetchUserList = async () => {
+  //     let data = await getAllUser();
+  //     setUserList(data);
+  //     data = await getAllDepartment();
+  //     setDeptList(data);
+  //   };
+  //   fetchUserList();
+  // }, []);
 
   useEffect(() => {
     reloadCurrentDocuments(page);
