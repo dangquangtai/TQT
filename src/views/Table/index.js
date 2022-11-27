@@ -587,7 +587,7 @@ export default function GeneralTable(props) {
     });
   };
 
-  const clickSuccess = () => {};
+  const clickSuccess = () => { };
 
   return (
     <React.Fragment>
@@ -676,12 +676,12 @@ export default function GeneralTable(props) {
                         documentType === 'department'
                           ? classes.table2
                           : documentType === 'processrole'
-                          ? classes.table3
-                          : classes.table
+                            ? classes.table3
+                            : classes.table
                       }
                       aria-labelledby="tableTitle"
                       size={'medium'}
-                      // aria-label="enhanced table"
+                    // aria-label="enhanced table"
                     >
                       <EnhancedTableHead
                         classes={classes}
@@ -721,7 +721,14 @@ export default function GeneralTable(props) {
                                   <img alt="" src={row.image_url} style={style.tableUserAvatar} />
                                 </TableCell>
                               )}
-                              {displayOptions.fullname && <TableCell align="left">{row.fullname}</TableCell>}
+
+                              {displayOptions.fullname && (
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}>
+                                  {row.fullname}
+                                </TableCell>
+                              )}
                               {displayOptions.title && (
                                 <TableCell
                                   style={{ maxWidth: 450, overflow: 'hidden', textOverflow: 'ellipsis' }}
@@ -759,7 +766,7 @@ export default function GeneralTable(props) {
                               )}
                               {displayOptions.number_member && <TableCell align="left">{row.number_member}</TableCell>}
                               {displayOptions.full_name && (
-                                <TableCell align="left" className={classes.tableItemName}>
+                                <TableCell align="left" className={classes.tableItemName}  onClick={(event) => openDetailDocument(event, row)}>
                                   {row.full_name}
                                 </TableCell>
                               )}
