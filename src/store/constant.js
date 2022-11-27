@@ -2,6 +2,7 @@ export const gridSpacing = 3;
 export const drawerWidth = 320;
 export const drawerWidthIcon = 120;
 export const comanyCode = 'TQT';
+export const defaultProcess ='DEFAULT';
 export const apiEndpoints = {
   authenticate: '/Primary/?FlowAlias=bs_api_user_authenticate&action=api',
   get_project_list: '/Primary/?FlowAlias=bs_menu_api_get_project_list&action=api',
@@ -69,21 +70,21 @@ export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
 
 export const roleActions = {
-  list_active_role: 'MYM_ORGANISATION_HOME_OPEN_ROLE_TEMPLATE_DEACTIVE_LIST',
-  list_inactive_role: 'MYM_ORGANISATION_HOME_OPEN_ROLE_TEMPLATE_ACTIVE_LIST',
+  list_active_role: comanyCode+'_ORGANISATION_'+defaultProcess+'_OPEN_ROLE_TEMPLATE_DEACTIVE_LIST',
+  list_inactive_role: comanyCode+'_ORGANISATION_'+defaultProcess+'_OPEN_ROLE_TEMPLATE_ACTIVE_LIST',
 };
 export const processroleActions = {
-  list_tree: 'MYM_ORGANISATION_HOME_PROCESS_ROLE_MANAGE',
+  list_tree: comanyCode+'_ORGANISATION_'+defaultProcess+'_OPEN_ROLE_LIST',
 };
 export const accountActions = {
-  list_active_user: 'MYM_ORGANISATION_HOME_OPEN_ACTIVE_USER_LIST',
-  list_inactive_user: 'MYM_ORGANISATION_HOME_OPEN_USER_DEACTIVE_LIST',
+  list_active_user: comanyCode+'_ORGANISATION_'+defaultProcess+'_OPEN_ACTIVE_USER_LIST',
+  list_inactive_user: comanyCode+'_ORGANISATION_'+defaultProcess+'_OPEN_USER_DEACTIVE_LIST',
 };
 export const departmentActions = {
-  list_active_department: 'MYM_ORGANISATION_HOME_OPEN_DEPARTMENT_ACTIVE_LIST',
+  list_active_department: comanyCode+'_ORGANISATION_'+defaultProcess+'_OPEN_DEPARTMENT_ACTIVE_LIST',
 };
 export const departmentDeactiveActions = {
-  list_inactive_department: 'MYM_ORGANISATION_HOME_OPEN_DEPARTMENT_DEACTIVE_LIST',
+  list_inactive_department: comanyCode+'_ORGANISATION_'+defaultProcess+'_OPEN_DEPARTMENT_DEACTIVE_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -94,24 +95,24 @@ export const showRootFolder = false;
 
 export const view = {
   floating: {
-    createAccount: 'USER_LIST_CREATE_FLOAT_BUTTON',
+   
   },
   user: {
     list: {
-      create: 'MYM_ORGANISATION_HOME_CREATE_USER_MENU_BUTTON',
+      create: comanyCode+'_ORGANISATION_HOME_CREATE_USER_MENU_BUTTON',
     },
     detail: {
-      save: 'MYM_ORGANISATION_HOME_UPDATE_USER_FORM_BUTTON',
+      save: comanyCode+'_ORGANISATION_HOME_UPDATE_USER_FORM_BUTTON',
     },
   },
   department: {
     list: {
-      create: 'MYM_ORGANISATION_HOME_CREATE_DEPARTMENT_MENU_BUTTON',
-      update: 'MYM_ORGANISATION_HOME_UPDATE_DEPARTMENT_MENU_BUTTON',
-      adduser: 'MYM_ORGANISATION_HOME_ADD_USER_DEPARTMENT_MENU_BUTTON',
-      removeaccount: 'MYM_ORGANISATION_HOME_REMOVE_ACCOUNT_MENU_BUTTON',
-      syncDept: 'MYM_ORGANISATION_HOME_SYNC_DEPARTMENT_MENU_BUTTON',
-      deactive: 'MYM_ORGANISATION_HOME_DEACTIVE_DEPARTMENT_MENU_BUTTON',
+      create: comanyCode+'_ORGANISATION_'+defaultProcess+'HOME_CREATE_DEPARTMENT_MENU_BUTTON',
+      update: comanyCode+'_ORGANISATION_'+defaultProcess+'_UPDATE_DEPARTMENT_MENU_BUTTON',
+      adduser: comanyCode+'_ORGANISATION_'+defaultProcess+'_ADD_USER_DEPARTMENT_MENU_BUTTON',
+      removeaccount: comanyCode+'_ORGANISATION_'+defaultProcess+'HOME_REMOVE_ACCOUNT_MENU_BUTTON',
+      syncDept: comanyCode+'_ORGANISATION_'+defaultProcess+'_SYNC_DEPARTMENT_MENU_BUTTON',
+      deactive: comanyCode+'_ORGANISATION_'+defaultProcess+'_DEACTIVE_DEPARTMENT_MENU_BUTTON',
     },
     detail: {
       save: 'DEPARTMENT_LIST_CREATE_FORM_BUTTON',
@@ -119,20 +120,20 @@ export const view = {
   },
   role: {
     list: {
-      create: 'MYM_ORGANISATION_HOME_ROLE_TEMPLATE_CREATE_MENU_BUTTON',
+      create: comanyCode+'_ORGANISATION_'+defaultProcess+'_ROLE_TEMPLATE_CREATE_MENU_BUTTON',
     },
     detail: {},
   },
   processrole: {
     list: {
-      create: 'MYM_ORGANISATION_HOME_CREATE_NEW_PROCESS_ROLE_MENU_BUTTON',
-      update: 'MYM_ORGANISATION_HOME_UPDATE_PROCESS_ROLE_MENU_BUTTON',
-      update_dept_role: 'MYM_ORGANISATION_HOME_UPDATE_DEPARTMENT_ROLE_MENU_BUTTON',
-      adduser: 'MYM_ORGANISATION_HOME_ADD_ACCOUNT_ROLE_MENU_BUTTON',
-      adddept: 'MYM_ORGANISATION_HOME_ADD_DEPT_ROLE_MENU_BUTTON',
-      removeaccount: 'MYM_ORGANISATION_HOME_REMOVE_ACCOUNT_ROLE_MENU_BUTTON',
-      removedept: 'MYM_ORGANISATION_HOME_REMOVE_DEPT_ROLE_MENU_BUTTON',
-      syncRole: 'MYM_ORGANISATION_HOME_SYNC_DEPARTMENT_ROLE_MENU_BUTTON',
+      create: comanyCode+'_ORGANISATION_'+defaultProcess+'_CREATE_NEW_PROCESS_ROLE_MENU_BUTTON',
+      update: comanyCode+'_ORGANISATION_'+defaultProcess+'_UPDATE_PROCESS_ROLE_MENU_BUTTON',
+      update_dept_role: comanyCode+'_ORGANISATION_'+defaultProcess+'HOME_UPDATE_DEPARTMENT_ROLE_MENU_BUTTON',
+      adduser: comanyCode+'_ORGANISATION_'+defaultProcess+'_ADD_ACCOUNT_ROLE_MENU_BUTTON',
+      adddept: comanyCode+'_ORGANISATION_'+defaultProcess+'_ADD_DEPT_ROLE_MENU_BUTTON',
+      removeaccount: comanyCode+'_ORGANISATION_'+defaultProcess+'_REMOVE_ACCOUNT_ROLE_MENU_BUTTON',
+      removedept: comanyCode+'_ORGANISATION_'+defaultProcess+'_REMOVE_DEPT_ROLE_MENU_BUTTON',
+      syncRole: comanyCode+'_ORGANISATION_'+defaultProcess+'_SYNC_DEPARTMENT_ROLE_MENU_BUTTON',
     },
   },
 };
