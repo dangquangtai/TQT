@@ -206,15 +206,17 @@ export default function GeneralTable(props) {
     reloadCurrentDocuments();
   }, [department_code_selected]);
 
-  // useEffect(() => {
-  //   const fetchUserList = async () => {
-  //     let data = await getAllUser();
-  //     setUserList(data);
-  //     data = await getAllDepartment();
-  //     setDeptList(data);
-  //   };
-  //   fetchUserList();
-  // }, []);
+  useEffect(() => {
+    if (documentType === 'department') {
+    const fetchUserList = async () => {
+      let data = await getAllUser();
+      setUserList(data);
+      data = await getAllDepartment();
+      setDeptList(data);
+    };
+    fetchUserList();
+  }
+  }, []);
 
   useEffect(() => {
     reloadCurrentDocuments(page);
