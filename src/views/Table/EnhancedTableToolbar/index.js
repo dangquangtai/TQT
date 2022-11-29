@@ -29,6 +29,7 @@ import { Autocomplete } from '@material-ui/lab';
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const {
+    categories,
     numSelected,
     handleShowColumn,
     handleFilterChange,
@@ -79,7 +80,7 @@ const EnhancedTableToolbar = (props) => {
   const [isOpenShowColumn, setIsOpenShowColumn] = React.useState(false);
   const [isOpenFilter, setIsOpenFilter] = React.useState(false);
   const [filter, setFilter] = React.useState({
-    status: '',
+    category_id: '',
     search_text: '',
     department_code: '',
     role_template_code: 'Member',
@@ -108,12 +109,12 @@ const EnhancedTableToolbar = (props) => {
   const handleResetFilter = () => {
     setFilter((pre) => ({
       ...pre,
-      university_id: '',
+      category_id: '',
       status: '',
     }));
     handleFilterChange({
       ...filter,
-      university_id: '',
+      category_id: '',
       status: '',
     });
   };
@@ -443,21 +444,29 @@ const EnhancedTableToolbar = (props) => {
                         </div>
                         <div className={`${classes.toolColumnBody} ${classes.toolFilterBody}`}>
                           <div className={classes.toolFilterItem}>
-                            <FormControl fullWidth>
-                              <InputLabel shrink id="status-label">
-                                Trạng thái
-                              </InputLabel>
-                              <Select
-                                labelId="status-label"
-                                id="status_id"
-                                onChange={handleChangeFilter}
-                                displayEmpty
-                                name="status"
-                                value={filter.status}
-                              >
-                                <MenuItem value="">Tất cả</MenuItem>
-                              </Select>
-                            </FormControl>
+                            {categories && (
+                              <FormControl fullWidth>
+                                <InputLabel shrink id="category-label">
+                                  Danh mục
+                                </InputLabel>
+                                <Select
+                                  labelId="category-label"
+                                  id="category_id"
+                                  onChange={handleChangeFilter}
+                                  displayEmpty
+                                  name="category_id"
+                                  value={filter.category_id}
+                                  defaultValue={''}
+                                >
+                                  <MenuItem value="">Tất cả</MenuItem>
+                                  {categories.map((item) => (
+                                    <MenuItem key={item.id} value={item.id}>
+                                      {item.category_name}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                              </FormControl>
+                            )}
                           </div>
                         </div>
                       </div>

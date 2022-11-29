@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { DOCUMENT_CHANGE } from '../../../store/actions.js';
-import ProductCategoryTable from '../../Table';
-import { getUrlByAction } from '../../../utils/utils';
-import { apiEndpoints } from '../../../store/constant';
-const ProductCategoryWrapper = () => {
+import ProductTable from '../../Table';
+import { getUrlByAction } from './../../../utils/utils';
+import { apiEndpoints } from './../../../store/constant';
+const ProductWrapper = () => {
   const dispatch = useDispatch();
 
   const { projects } = useSelector((state) => state.project);
@@ -13,7 +13,7 @@ const ProductCategoryWrapper = () => {
 
   useEffect(() => {
     async function fetchData() {
-      dispatch({ type: DOCUMENT_CHANGE, documentType: 'productCategory' });
+      dispatch({ type: DOCUMENT_CHANGE, documentType: 'product' });
     }
     if (selectedProject) {
       fetchData();
@@ -22,14 +22,14 @@ const ProductCategoryWrapper = () => {
 
   return (
     <React.Fragment>
-      <ProductCategoryTable
-        tableTitle="Quản lý Danh mục Thành phẩm"
+      <ProductTable
+        tableTitle="Quản lý Thành phẩm"
         url={getUrlByAction(selectedFolder)}
-        documentType="productCategory"
-        setActiveUrl={apiEndpoints.active_product_category}
+        documentType="product"
+        // setActiveUrl={apiEndpoints.active_material_Part}
       />
     </React.Fragment>
   );
 };
 
-export default ProductCategoryWrapper;
+export default ProductWrapper;

@@ -71,7 +71,11 @@ export default function GeneralTable(props) {
       id: tableColumns.includes('id'),
       image_url: tableColumns.includes('image_url'),
       title: tableColumns.includes('title'),
+      part_code: tableColumns.includes('part_code'),
+      product_code: tableColumns.includes('product_code'),
       category_name: tableColumns.includes('category_name'),
+      piece: tableColumns.includes('piece'),
+      productivity: tableColumns.includes('productivity'),
       fullname: tableColumns.includes('fullname'),
       email_address: tableColumns.includes('email_address'),
       number_phone: tableColumns.includes('number_phone'),
@@ -122,7 +126,7 @@ export default function GeneralTable(props) {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
-  const { url, documentType, tableTitle, setFeaturedUrl, setActiveUrl } = props;
+  const { url, documentType, categories, tableTitle, setFeaturedUrl, setActiveUrl } = props;
   const [pageCurrent, setPage] = React.useState(1);
   const { projects } = useSelector((state) => state.project);
   const selectedProject = projects.find((project) => project.selected);
@@ -208,14 +212,14 @@ export default function GeneralTable(props) {
 
   useEffect(() => {
     if (documentType === 'department') {
-    const fetchUserList = async () => {
-      let data = await getAllUser();
-      setUserList(data);
-      data = await getAllDepartment();
-      setDeptList(data);
-    };
-    fetchUserList();
-  }
+      const fetchUserList = async () => {
+        let data = await getAllUser();
+        setUserList(data);
+        data = await getAllDepartment();
+        setDeptList(data);
+      };
+      fetchUserList();
+    }
   }, []);
 
   useEffect(() => {
@@ -589,7 +593,7 @@ export default function GeneralTable(props) {
     });
   };
 
-  const clickSuccess = () => { };
+  const clickSuccess = () => {};
 
   return (
     <React.Fragment>
@@ -604,6 +608,7 @@ export default function GeneralTable(props) {
           <Card className={classes.root}>
             <Paper className={classes.paper}>
               <EnhancedTableToolbar
+                categories={categories}
                 numSelected={selected.length}
                 handleFilterChange={handleFilterChange}
                 handleShowColumn={handleShowColumn}
@@ -678,12 +683,12 @@ export default function GeneralTable(props) {
                         documentType === 'department'
                           ? classes.table2
                           : documentType === 'processrole'
-                            ? classes.table3
-                            : classes.table
+                          ? classes.table3
+                          : classes.table
                       }
                       aria-labelledby="tableTitle"
                       size={'medium'}
-                    // aria-label="enhanced table"
+                      // aria-label="enhanced table"
                     >
                       <EnhancedTableHead
                         classes={classes}
@@ -725,9 +730,7 @@ export default function GeneralTable(props) {
                               )}
 
                               {displayOptions.fullname && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}>
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
                                   {row.fullname}
                                 </TableCell>
                               )}
@@ -741,6 +744,26 @@ export default function GeneralTable(props) {
                                   {row.title}
                                 </TableCell>
                               )}
+                              {displayOptions.part_code && (
+                                <TableCell
+                                  style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.part_code}
+                                </TableCell>
+                              )}
+                              {displayOptions.product_code && (
+                                <TableCell
+                                  style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.product_code}
+                                </TableCell>
+                              )}
                               {displayOptions.category_name && (
                                 <TableCell
                                   style={{ maxWidth: 450, overflow: 'hidden', textOverflow: 'ellipsis' }}
@@ -751,6 +774,8 @@ export default function GeneralTable(props) {
                                   {row.category_name}
                                 </TableCell>
                               )}
+                              {displayOptions.piece && <TableCell align="left">{row.piece}</TableCell>}
+                              {displayOptions.productivity && <TableCell align="left">{row.productivity}</TableCell>}
                               {displayOptions.account_id && (
                                 <TableCell
                                   align="left"
@@ -768,7 +793,11 @@ export default function GeneralTable(props) {
                               )}
                               {displayOptions.number_member && <TableCell align="left">{row.number_member}</TableCell>}
                               {displayOptions.full_name && (
-                                <TableCell align="left" className={classes.tableItemName}  onClick={(event) => openDetailDocument(event, row)}>
+                                <TableCell
+                                  align="left"
+                                  className={classes.tableItemName}
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                >
                                   {row.full_name}
                                 </TableCell>
                               )}

@@ -1,9 +1,12 @@
 export const headCells = [
-  { id: 'id', numeric: false, disablePadding: false, label: 'Mã đăng ký', maxWidth: 150 },
   { id: 'image_url', numeric: false, disablePadding: false, label: 'Ảnh', maxWidth: 50 },
   { id: 'fullname', numeric: false, disablePadding: false, label: 'Khách hàng', maxWidth: 150 },
   { id: 'title', numeric: false, disablePadding: false, label: 'Tiêu đề', maxWidth: 150 },
+  { id: 'part_code', numeric: false, disablePadding: false, label: 'Mã phụ tùng', maxWidth: 150 },
+  { id: 'product_code', numeric: false, disablePadding: false, label: 'Mã thành phẩm', maxWidth: 150 },
   { id: 'category_name', numeric: false, disablePadding: false, label: 'Danh mục', maxWidth: 150 },
+  { id: 'piece', numeric: false, disablePadding: false, label: 'Số lượng', maxWidth: 150 },
+  { id: 'productivity', numeric: false, disablePadding: false, label: 'Năng suất', maxWidth: 150 },
   { id: 'department_name', numeric: false, disablePadding: false, label: 'Tên phòng ban', maxWidth: 150 },
   { id: 'department_parent', numeric: false, disablePadding: false, label: 'Trực thuộc phòng ban', maxWidth: 150 },
   { id: 'number_member', numeric: false, disablePadding: false, label: 'Số thành viên', maxWidth: 150 },

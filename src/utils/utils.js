@@ -9,6 +9,8 @@ import {
   supplierCategoryActions,
   productCategoryActions,
   customerCategoryActions,
+  materialPartActions,
+  productActions,
 } from '../store/constant.js';
 
 export function getUrlByAction(selectedFolder) {
@@ -45,6 +47,12 @@ export function getUrlByAction(selectedFolder) {
     }
     case customerCategoryActions.list_customer_category: {
       return apiEndpoints.get_customer_category_list;
+    }
+    case materialPartActions.list_material_part: {
+      return apiEndpoints.get_material_part_list;
+    }
+    case productActions.list_product: {
+      return apiEndpoints.get_product_list;
     }
     default: {
       return '';
