@@ -10,6 +10,8 @@ export const initialState = {
   processUserDocument: false,
   processrolecode: '',
   categoryDocument: false,
+  productDocument: false,
+  orderDocument: false,
 };
 
 const floatingMenuReducer = (state = initialState, action) => {
@@ -26,6 +28,8 @@ const floatingMenuReducer = (state = initialState, action) => {
         processUserDocument: action.processUserDocument,
         processrolecode: action.processrolecode,
         categoryDocument: action.categoryDocument,
+        productDocument: action.productDocument,
+        orderDocument: action.orderDocument,
       };
     default:
       return state;

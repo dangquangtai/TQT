@@ -38,6 +38,8 @@ import { getDetailMaterialCategory } from '../../services/api/Setting/MaterialCa
 import { getDetailSupplierCategory } from './../../services/api/Setting/SupplierCategory';
 import { getDetailProductCategory } from './../../services/api/Setting/ProductCategory';
 import { getDetailCustomerCategory } from './../../services/api/Setting/CustomerCategory';
+import { getDetailProduct } from './../../services/api/Product/Product';
+import { getDetailOrder } from './../../services/api/Order/index';
 
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance
@@ -74,8 +76,9 @@ export default function GeneralTable(props) {
       part_code: tableColumns.includes('part_code'),
       product_code: tableColumns.includes('product_code'),
       category_name: tableColumns.includes('category_name'),
-      piece: tableColumns.includes('piece'),
-      productivity: tableColumns.includes('productivity'),
+      product_customer_code: tableColumns.includes('product_customer_code'),
+      no_piece_per_box: tableColumns.includes('piece'),
+      productivity_per_worker: tableColumns.includes('productivity'),
       fullname: tableColumns.includes('fullname'),
       email_address: tableColumns.includes('email_address'),
       number_phone: tableColumns.includes('number_phone'),
@@ -94,6 +97,9 @@ export default function GeneralTable(props) {
       menuButtons: !!menuButtons.length || false,
       is_featured: tableColumns.includes('is_featured'),
       is_active: tableColumns.includes('is_active'),
+      customer_name: tableColumns.includes('customer_name'),
+      order_date: tableColumns.includes('order_date'),
+      expected_deliver_date: tableColumns.includes('expected_deliver_date'),
     };
     setDisplayOptions(initOptions);
   }, [tableColumns, selectedFolder]);
@@ -122,6 +128,8 @@ export default function GeneralTable(props) {
   const buttonCreateSupplierCategory = menuButtons.find((button) => button.name === view.supplierCategory.list.create);
   const buttonCreateProductCategory = menuButtons.find((button) => button.name === view.productCategory.list.create);
   const buttonCreateCustomerCategory = menuButtons.find((button) => button.name === view.customerCategory.list.create);
+
+  const buttonCreateOrder = menuButtons.find((button) => button.name === view.order.list.create);
 
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -177,7 +185,6 @@ export default function GeneralTable(props) {
   useEffect(() => {
     if (selectedProject && selectedFolder && url) {
       fetchDocument(url, documentType, selectedProject.id, selectedFolder.id);
-      console.log('xau');
     } else {
       dispatch({
         type: TASK_CHANGE,
@@ -223,7 +230,9 @@ export default function GeneralTable(props) {
   }, []);
 
   useEffect(() => {
-    reloadCurrentDocuments(page);
+    if (selectedDocument === null) {
+      reloadCurrentDocuments(page);
+    }
     if (changeDeptReload === 0) {
       ReloadDept(1);
     } else {
@@ -311,12 +320,12 @@ export default function GeneralTable(props) {
 
   const handleChangePage = (event, newPage) => {
     let page = newPage + 1;
-    fetchDocument({ page: page });
+    fetchDocument({ page: page, search_text, category_id });
     setPage(page);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    fetchDocument({ page: 1, no_item_per_page: event.target.value });
+    fetchDocument({ page: 1, no_item_per_page: event.target.value, search_text, category_id });
     setPage(1);
   };
 
@@ -361,6 +370,16 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, categoryDocument: true });
         break;
+      case 'product':
+        detailDocument = await getDetailProduct(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, productDocument: true });
+        break;
+      case 'order':
+        detailDocument = await getDetailOrder(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, orderDocument: true });
+        break;
       default:
         break;
     }
@@ -389,6 +408,9 @@ export default function GeneralTable(props) {
         break;
       case 'customerCategory':
         dispatch({ type: FLOATING_MENU_CHANGE, categoryDocument: true });
+        break;
+      case 'order':
+        dispatch({ type: FLOATING_MENU_CHANGE, orderDocument: true });
         break;
       default:
         break;
@@ -653,6 +675,7 @@ export default function GeneralTable(props) {
                 buttonCreateSupplierCategory={buttonCreateSupplierCategory}
                 buttonCreateProductCategory={buttonCreateProductCategory}
                 buttonCreateCustomerCategory={buttonCreateCustomerCategory}
+                buttonCreateOrder={buttonCreateOrder}
               />
               <Grid container spacing={gridSpacing}>
                 {(documentType === 'department' || documentType === 'processrole') && (
@@ -774,8 +797,28 @@ export default function GeneralTable(props) {
                                   {row.category_name}
                                 </TableCell>
                               )}
-                              {displayOptions.piece && <TableCell align="left">{row.piece}</TableCell>}
-                              {displayOptions.productivity && <TableCell align="left">{row.productivity}</TableCell>}
+                              {displayOptions.customer_name && <TableCell align="left">{row.customer_name}</TableCell>}
+                              {displayOptions.product_customer_code && (
+                                <TableCell align="left">{row.product_customer_code}</TableCell>
+                              )}
+                              {displayOptions.no_piece_per_box && (
+                                <TableCell align="left">{row.no_piece_per_box}</TableCell>
+                              )}
+                              {displayOptions.productivity_per_worker && (
+                                <TableCell align="left">{row.productivity_per_worker}</TableCell>
+                              )}
+                              {displayOptions.order_date && (
+                                <TableCell align="left">
+                                  {row.order_date ? formatDate(new Date(row.order_date), 'dd/MM/yyyy') : ''}
+                                </TableCell>
+                              )}
+                              {displayOptions.expected_deliver_date && (
+                                <TableCell align="left">
+                                  {row.expected_deliver_date
+                                    ? formatDate(new Date(row.expected_deliver_date), 'dd/MM/yyyy')
+                                    : ''}
+                                </TableCell>
+                              )}
                               {displayOptions.account_id && (
                                 <TableCell
                                   align="left"
@@ -970,7 +1013,7 @@ export default function GeneralTable(props) {
                     labelRowsPerPage="Số tài liệu mỗi trang"
                     count={count}
                     page={page - 1}
-                    onChangePage={handleChangePage}
+                    onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </Grid>
