@@ -148,13 +148,12 @@ const OrderModal = () => {
     try {
       if (selectedDocument?.id) {
         await updateOrder({ ...orderData, order_detail: productList });
-        handleOpenSnackbar(true, 'success', 'Cập nhật Order thành công!');
+        handleOpenSnackbar(true, 'success', 'Cập nhật Đơn hàng thành công!');
       } else {
-        console.log({ ...orderData, order_detail: productList });
         await createOrder({ ...orderData, order_detail: productList });
-        handleOpenSnackbar(true, 'success', 'Tạo Order thành công!');
+        handleOpenSnackbar(true, 'success', 'Tạo Đơn hàng thành công!');
       }
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'Order' });
+      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'order' });
       handleCloseDialog();
     } catch (error) {
       handleOpenSnackbar(true, 'error', 'Có lỗi xảy ra, vui lòng thử lại sau!');
@@ -188,7 +187,7 @@ const OrderModal = () => {
         order_status: '',
         unit_id: '',
         unit_name: '',
-        quantity: 0,
+        quantity_in_box: 0,
         quantity_produced: 0,
       },
     ]);
@@ -262,22 +261,20 @@ const OrderModal = () => {
 
   return (
     <React.Fragment>
-      {snackbarStatus.isOpen && (
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          open={snackbarStatus.isOpen}
-          autoHideDuration={4000}
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        open={snackbarStatus.isOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
+      >
+        <Alert
           onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
+          severity={snackbarStatus.type}
+          sx={{ width: '100%' }}
         >
-          <Alert
-            onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-            severity={snackbarStatus.type}
-            sx={{ width: '100%' }}
-          >
-            {snackbarStatus.text}
-          </Alert>
-        </Snackbar>
-      )}
+          {snackbarStatus.text}
+        </Alert>
+      </Snackbar>
       <FirebaseUpload
         open={dialogUpload.open || false}
         onSuccess={setURL}
@@ -517,12 +514,15 @@ const OrderModal = () => {
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '100px' }}>
                                       <TextField
+                                        InputProps={{
+                                          inputProps: { min: 0 },
+                                        }}
                                         fullWidth
                                         variant="standard"
-                                        name="quantity"
+                                        name="quantity_in_box"
                                         type="number"
                                         size="small"
-                                        value={row?.quantity || ''}
+                                        value={row?.quantity_in_box || ''}
                                         onChange={(e) => handleChangeProduct(index, e)}
                                       />
                                     </TableCell>
