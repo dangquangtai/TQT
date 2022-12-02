@@ -101,6 +101,7 @@ export const apiEndpoints = {
   // Product
   get_product_list: '/Primary/?FlowAlias=bs_api_factory_get_list_product&action=api',
   get_product_detail: '/Primary/?FlowAlias=bs_api_factory_get_detail_product&action=api',
+  get_all_product_list: '/Primary/?FlowAlias=bs_api_factory_get_all_product_list&action=api',
 
   // Order
   get_order_list: '/Primary/?FlowAlias=bs_api_order_get_order_list_by_page&action=api',
@@ -108,6 +109,7 @@ export const apiEndpoints = {
   create_order: '/Primary/?FlowAlias=bs_api_order_create_new_order_request&action=api',
   update_order: '/Primary/?FlowAlias=bs_api_order_update_order_request&action=api',
   get_status_list: '/Primary/?FlowAlias=bs_api_order_get_order_status_list&action=api',
+  delete_order_detail: '/Primary/?FlowAlias=bs_api_order_delete_order_detail&action=api',
 
   // Customer
   get_all_customer: '/Primary/?FlowAlias=bs_api_customer_get_list_by_company&action=api',

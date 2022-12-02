@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import useProject from './../../../hooks/useProject';
 import { SELECTED_APP_CHANGE } from './../../../store/actions';
 import { gridSpacing } from './../../../store/constant';
-import useShare from './../../../hooks/useShare';
 import HoverCard from './HoverCard/index';
 
 const useStyles = makeStyles((theme) => ({
@@ -55,12 +54,10 @@ const App = () => {
   const { apps } = useSelector((state) => state.app);
 
   const { getApps } = useProject();
-  const { getMetadata } = useShare();
 
   React.useEffect(() => {
     setTimeout(() => {
       getApps();
-      getMetadata();
     }, 0);
   }, []);
 

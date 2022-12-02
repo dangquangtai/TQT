@@ -1,5 +1,4 @@
 import {
-  Switch,
   Snackbar,
   Box,
   Button,
@@ -14,8 +13,6 @@ import {
   Typography,
   TextField,
   MenuItem,
-  Select,
-  Chip,
   Table,
   TableBody,
   TableCell,
@@ -23,8 +20,8 @@ import {
   TableHead,
   TableRow,
   Paper,
-  InputAdornment,
   IconButton,
+  Tooltip,
 } from '@material-ui/core';
 import Alert from '../../../component/Alert';
 import PropTypes from 'prop-types';
@@ -37,11 +34,14 @@ import useStyles from './../../../utils/classes';
 import FirebaseUpload from './../../FloatingMenu/FirebaseUpload/index';
 import useConfirmPopup from './../../../hooks/useConfirmPopup';
 import { format as formatDate } from 'date-fns';
-import { AccountCircleOutlined as AccountCircleOutlinedIcon, Today as TodayIcon } from '@material-ui/icons';
+import { AccountCircleOutlined as AccountCircleOutlinedIcon, Delete, Today as TodayIcon } from '@material-ui/icons';
 import { getCustomerList } from './../../../services/api/Partner/Customer';
-import { getStatusList } from '../../../services/api/Order/index.js';
+import { getStatusList, updateOrder } from '../../../services/api/Order/index.js';
 import { Autocomplete } from '@material-ui/lab';
 import DatePicker from '../../../component/DatePicker/index.js';
+import { AddCircleOutline } from '@material-ui/icons';
+import { getAllProduct } from '../../../services/api/Product/Product.js';
+import { createOrder, deleteOrderDetail } from './../../../services/api/Order/index';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -84,7 +84,7 @@ const OrderModal = () => {
   const { orderDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
 
-  const [orderData, setOrderData] = useState({});
+  const [orderData, setOrderData] = useState({ order_date: new Date() });
   const [customer, setCustomer] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState({});
   const [statusList, setStatusList] = useState([]);
@@ -98,6 +98,8 @@ const OrderModal = () => {
     type: '',
     text: '',
   });
+  const [products, setProducts] = useState([]);
+  const [productList, setProductList] = useState([]);
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
@@ -116,7 +118,8 @@ const OrderModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setOrderData({});
+    setOrderData({ order_date: new Date() });
+    setProductList([]);
     setSelectedCustomer({});
     setTabIndex(0);
   };
@@ -144,8 +147,11 @@ const OrderModal = () => {
   const handleSubmitForm = async () => {
     try {
       if (selectedDocument?.id) {
+        await updateOrder({ ...orderData, order_detail: productList });
         handleOpenSnackbar(true, 'success', 'Cập nhật Order thành công!');
       } else {
+        console.log({ ...orderData, order_detail: productList });
+        await createOrder({ ...orderData, order_detail: productList });
         handleOpenSnackbar(true, 'success', 'Tạo Order thành công!');
       }
       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'Order' });
@@ -164,12 +170,78 @@ const OrderModal = () => {
     setOrderData({ ...orderData, [name]: value });
   };
 
+  const getProductList = async () => {
+    const response = await getAllProduct();
+    setProducts(response);
+  };
+
+  const handleAddProduct = () => {
+    setProductList([
+      ...productList,
+      {
+        order_id: selectedDocument?.id || '',
+        id: '',
+        product_id: '',
+        product_code: '',
+        product_name: '',
+        product_customer_code: '',
+        order_status: '',
+        unit_id: '',
+        unit_name: '',
+        quantity: 0,
+        quantity_produced: 0,
+      },
+    ]);
+  };
+
+  const handleChangeProductCode = (index, product) => {
+    const newProductList = [...productList];
+    const newProduct = {
+      product_id: product?.id || '',
+      product_code: product?.product_code || '',
+      product_name: product?.title || '',
+      product_customer_code: product?.product_customer_code || '',
+      unit_id: product?.unit_id || '',
+      unit_name: product?.unit_name || '',
+    };
+    newProductList[index] = { ...newProductList[index], ...newProduct };
+    setProductList(newProductList);
+  };
+
+  const handleChangeProduct = (index, e) => {
+    const { name, value } = e.target;
+    const newProductList = [...productList];
+    newProductList[index] = { ...newProductList[index], [name]: value };
+    setProductList(newProductList);
+  };
+
+  const handleDeleteProduct = (index, id) => {
+    if (id) {
+      showConfirmPopup({
+        title: 'Xóa sản phẩm',
+        message: 'Bạn có chắc chắn muốn xóa sản phẩm này?',
+        action: deleteOrderDetail,
+        payload: id,
+        onSuccess: () => {
+          const newProductList = [...productList];
+          newProductList.splice(index, 1);
+          setProductList(newProductList);
+        },
+      });
+    } else {
+      const newProductList = [...productList];
+      newProductList.splice(index, 1);
+      setProductList(newProductList);
+    }
+  };
+
   useEffect(() => {
     if (!selectedDocument) return;
     setOrderData({
       ...orderData,
       ...selectedDocument,
     });
+    setProductList(selectedDocument?.order_detail);
     setSelectedCustomer(customer.find((item) => item.id === selectedDocument.customer_id));
   }, [selectedDocument]);
 
@@ -181,6 +253,7 @@ const OrderModal = () => {
       setStatusList(res);
     };
     fetchData();
+    getProductList();
     return () => {
       setCustomer([]);
       setStatusList([]);
@@ -290,14 +363,31 @@ const OrderModal = () => {
                                   <Autocomplete
                                     id="combo-box-demo"
                                     options={customer}
-                                    getOptionLabel={(option) => option.value}
+                                    getOptionLabel={(option) => option.value || ''}
                                     fullWidth
                                     size="small"
                                     value={selectedCustomer || null}
                                     onChange={(event, newValue) => {
+                                      setSelectedCustomer(newValue);
                                       setOrderData({ ...orderData, customer_id: newValue?.id });
                                     }}
                                     renderInput={(params) => <TextField {...params} variant="outlined" />}
+                                  />
+                                </Grid>
+                              </Grid>
+                              <Grid container className={classes.gridItemInfo} alignItems="center">
+                                <Grid item lg={4} md={4} xs={4}>
+                                  <span className={classes.tabItemLabelField}>Tên đơn hàng:</span>
+                                </Grid>
+                                <Grid item lg={8} md={8} xs={8}>
+                                  <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    name="title"
+                                    type="text"
+                                    size="small"
+                                    value={orderData.title || ''}
+                                    onChange={handleChanges}
                                   />
                                 </Grid>
                               </Grid>
@@ -313,6 +403,7 @@ const OrderModal = () => {
                                     type="text"
                                     size="small"
                                     value={orderData.order_code || ''}
+                                    onChange={handleChanges}
                                   />
                                 </Grid>
                               </Grid>
@@ -327,6 +418,8 @@ const OrderModal = () => {
                                   />
                                 </Grid>
                               </Grid>
+                            </Grid>
+                            <Grid item lg={6} md={6} xs={12}>
                               <Grid container className={classes.gridItemInfo} alignItems="center">
                                 <Grid item lg={4} md={4} xs={4}>
                                   <span className={classes.tabItemLabelField}>Cảng đến:</span>
@@ -335,15 +428,14 @@ const OrderModal = () => {
                                   <TextField
                                     fullWidth
                                     variant="outlined"
-                                    name="title"
+                                    name="deliver_address"
                                     type="text"
                                     size="small"
-                                    value={orderData.title || ''}
+                                    value={orderData.deliver_address || ''}
+                                    onChange={handleChanges}
                                   />
                                 </Grid>
                               </Grid>
-                            </Grid>
-                            <Grid item lg={6} md={6} xs={12}>
                               <Grid container className={classes.gridItemInfo} alignItems="center">
                                 <Grid item lg={4} md={4} xs={4}>
                                   <span className={classes.tabItemLabelField}>Ngày giao hàng:</span>
@@ -362,11 +454,12 @@ const OrderModal = () => {
                                 <Grid item lg={8} md={8} xs={8}>
                                   <TextField
                                     fullWidth
-                                    name="status_id"
+                                    name="order_status"
                                     variant="outlined"
                                     select
                                     size="small"
-                                    value={orderData.status_id || ''}
+                                    value={orderData.order_status || ''}
+                                    onChange={handleChanges}
                                   >
                                     {statusList?.map((option) => (
                                       <MenuItem key={option.id} value={option.id}>
@@ -383,22 +476,71 @@ const OrderModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>Sản phẩm</div>
+                          <Tooltip title="Thêm sản phẩm">
+                            <IconButton onClick={handleAddProduct}>
+                              <AddCircleOutline />
+                            </IconButton>
+                          </Tooltip>
                         </div>
-                        <div className={classes.tabItemBody}>
+                        <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
                             <Table aria-label="simple table">
                               <TableHead>
                                 <TableRow>
                                   <TableCell align="left">Mã sản phẩm</TableCell>
                                   <TableCell align="left">Mã SP KH</TableCell>
-                                  <TableCell align="left">Tên SP</TableCell>
+                                  <TableCell align="left">Tên sản phẩm</TableCell>
                                   <TableCell align="left">SL cần</TableCell>
-                                  <TableCell align="left">SL đã sản xuất</TableCell>
+                                  {selectedDocument?.id && <TableCell align="left">Đã SX</TableCell>}
                                   <TableCell align="left">Đơn vị</TableCell>
-                                  <TableCell align="left">Trạng thái</TableCell>
+                                  {selectedDocument?.id && <TableCell align="left">Trạng thái</TableCell>}
+                                  <TableCell align="center">Xoá</TableCell>
                                 </TableRow>
                               </TableHead>
-                              <TableBody></TableBody>
+                              <TableBody>
+                                {productList?.map((row, index) => (
+                                  <TableRow key={index}>
+                                    <TableCell align="left" style={{ minWidth: '165px' }}>
+                                      <Autocomplete
+                                        options={products}
+                                        getOptionLabel={(option) => option.product_code || ''}
+                                        fullWidth
+                                        size="small"
+                                        value={products.find((item) => item.product_code === row.product_code) || null}
+                                        onChange={(event, newValue) => handleChangeProductCode(index, newValue)}
+                                        renderInput={(params) => <TextField {...params} variant="standard" />}
+                                      />
+                                    </TableCell>
+                                    <TableCell align="left">{row?.product_customer_code}</TableCell>
+                                    <TableCell align="left" className={classes.maxWidthCell}>
+                                      {row?.product_name}
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '100px' }}>
+                                      <TextField
+                                        fullWidth
+                                        variant="standard"
+                                        name="quantity"
+                                        type="number"
+                                        size="small"
+                                        value={row?.quantity || ''}
+                                        onChange={(e) => handleChangeProduct(index, e)}
+                                      />
+                                    </TableCell>
+                                    {selectedDocument?.id && (
+                                      <TableCell align="left" style={{ width: '100px' }}>
+                                        {row?.quantity_produced}
+                                      </TableCell>
+                                    )}
+                                    <TableCell align="left">{row.unit_name}</TableCell>
+                                    {selectedDocument?.id && <TableCell align="left">{row.status}</TableCell>}
+                                    <TableCell align="center">
+                                      <IconButton onClick={() => handleDeleteProduct(index, row.id)}>
+                                        <Delete />
+                                      </IconButton>
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
                             </Table>
                           </TableContainer>
                         </div>

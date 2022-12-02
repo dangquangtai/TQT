@@ -16,3 +16,17 @@ export const getDetailProduct = (id, setView) => {
       console.log(error);
     });
 };
+
+export const getAllProduct = () => {
+  return axiosServices
+    .post(apiEndpoints.get_all_product_list, {})
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return response.data.list;
+      }
+      return [];
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};

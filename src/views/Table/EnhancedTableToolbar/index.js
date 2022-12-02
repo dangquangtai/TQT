@@ -308,24 +308,26 @@ const EnhancedTableToolbar = (props) => {
                 )}
               </Grid>
             </Grid>
-            <Grid item xs={8}>
-              <Grid container justifyContent="flex-start" spacing={gridSpacing}>
-                {buttonAddDeptRole && (
-                  <Grid item xs={6}>
-                    <Button variant="contained" color={'primary'} onClick={() => handleClickUpdateDeptProcessRole()}>
-                      {buttonAddDeptRole.text}
-                    </Button>
-                  </Grid>
-                )}
-                {buttonAddAccountRole && (
-                  <Grid item xs={6}>
-                    <Button variant="contained" color={'primary'} onClick={() => handleClickUpdateUserProcessRole()}>
-                      {buttonAddAccountRole.text}
-                    </Button>
-                  </Grid>
-                )}
+            {documentType === 'processrole' && (
+              <Grid item xs={8}>
+                <Grid container justifyContent="flex-start" spacing={gridSpacing}>
+                  {buttonAddDeptRole && (
+                    <Grid item xs={6}>
+                      <Button variant="contained" color={'primary'} onClick={() => handleClickUpdateDeptProcessRole()}>
+                        {buttonAddDeptRole.text}
+                      </Button>
+                    </Grid>
+                  )}
+                  {buttonAddAccountRole && (
+                    <Grid item xs={6}>
+                      <Button variant="contained" color={'primary'} onClick={() => handleClickUpdateUserProcessRole()}>
+                        {buttonAddAccountRole.text}
+                      </Button>
+                    </Grid>
+                  )}
+                </Grid>
               </Grid>
-            </Grid>
+            )}
           </Grid>
         </Grid>
         {documentType !== 'department' && documentType !== 'processrole' && (

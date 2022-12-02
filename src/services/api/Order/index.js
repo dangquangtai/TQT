@@ -30,3 +30,45 @@ export const getStatusList = () => {
       console.log(error);
     });
 };
+
+export const createOrder = (data) => {
+  return axiosServices
+    .post(apiEndpoints.create_order, data)
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return true;
+      }
+      return false;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+export const updateOrder = (data) => {
+  return axiosServices
+    .post(apiEndpoints.update_order, data)
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return true;
+      }
+      return false;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+export const deleteOrderDetail = (id) => {
+  return axiosServices
+    .post(apiEndpoints.delete_order_detail, { id })
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return true;
+      }
+      return false;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
