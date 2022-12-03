@@ -183,6 +183,7 @@ export default function GeneralTable(props) {
   const { getAccountDetail, activeAccount, assignAccount, removeAccount, getAllUser } = useAccount();
 
   useEffect(() => {
+    console.log(selectedFolder);
     if (selectedProject && selectedFolder && url) {
       fetchDocument(url, documentType, selectedProject.id, selectedFolder.id);
     } else {
@@ -213,8 +214,8 @@ export default function GeneralTable(props) {
       };
 
       fetchRoleList();
+      reloadCurrentDocuments();
     }
-    reloadCurrentDocuments();
   }, [department_code_selected]);
 
   useEffect(() => {
@@ -230,7 +231,7 @@ export default function GeneralTable(props) {
   }, []);
 
   useEffect(() => {
-    if (selectedDocument === null) {
+    if (selectedDocument === null && documents.length > 0) {
       reloadCurrentDocuments(page);
     }
     if (changeDeptReload === 0) {

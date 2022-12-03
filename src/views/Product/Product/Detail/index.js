@@ -322,9 +322,10 @@ const ProductModal = () => {
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <Switch
-                                checked={productData.is_active}
+                                checked={productData.is_active || false}
                                 onChange={(e) => setProductData({ ...productData, is_active: e.target.checked })}
                                 color="primary"
+                                inputProps={{ 'aria-label': 'secondary checkbox' }}
                               />
                             </Grid>
                           </Grid>
