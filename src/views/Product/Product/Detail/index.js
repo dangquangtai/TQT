@@ -358,11 +358,11 @@ const ProductModal = () => {
                                 {productData?.part_list?.map((row) => (
                                   <TableRow key={row.id}>
                                     <TableCell align="left" component="th" scope="row">
-                                      {row.Part_Code}
+                                      {row.part_code}
                                     </TableCell>
-                                    <TableCell align="left">{row.Part_Name}</TableCell>
-                                    <TableCell align="left">{row.Amount}</TableCell>
-                                    <TableCell align="left">{row.Unit_Name}</TableCell>
+                                    <TableCell align="left">{row.part_name}</TableCell>
+                                    <TableCell align="left">{row.quantity_in_piece}</TableCell>
+                                    <TableCell align="left">{row.unit_name}</TableCell>
                                   </TableRow>
                                 ))}
                               </TableBody>
