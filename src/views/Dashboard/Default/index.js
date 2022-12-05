@@ -18,6 +18,7 @@ import {
   customerCategoryActions,
   materialPartActions,
   productActions,
+  productrequestActions,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
 import { Redirect } from 'react-router-dom';
@@ -29,7 +30,7 @@ import ProductCategoryWrapper from '../../Setting/ProductCategory';
 import CustomerCategoryWrapper from './../../Setting/CustomerCategory';
 import MaterialPartWrapper from './../../Material/MaterialPart/index';
 import ProductWrapper from './../../Product/Product/index';
-
+import WorkorderWrapper from './../../WORKORDER/index';
 const Default = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
   const { selectedApp } = useSelector((state) => state.app);
@@ -47,7 +48,7 @@ const Default = () => {
 
   const availableMaterialPartEndpoint = Object.values(materialPartActions);
   const availableProductEndpoint = Object.values(productActions);
-
+  const availableProductRequestEndpoint = Object.values(productrequestActions);
   if (!selectedApp?.id) {
     return <Redirect to="/dashboard/app" />;
   }
@@ -70,6 +71,7 @@ const Default = () => {
 
           {availableMaterialPartEndpoint.includes(selectedFolder?.action) && <MaterialPartWrapper />}
           {availableProductEndpoint.includes(selectedFolder?.action) && <ProductWrapper />}
+          {availableProductRequestEndpoint.includes(selectedFolder?.action) && <WorkorderWrapper />}
         </Grid>
       )}
     </Grid>
