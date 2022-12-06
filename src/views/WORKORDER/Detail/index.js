@@ -22,7 +22,7 @@ import {
   TableContainer,
   Table,
   Paper,
-  IconButton
+  IconButton,
 } from '@material-ui/core';
 
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
@@ -37,6 +37,7 @@ import { ArrowLeftRounded, ArrowRightRounded } from '@material-ui/icons';
 import { AddCircle } from '@material-ui/icons';
 import { Delete, Today as TodayIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
+import { Link } from 'react-router-dom';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -84,32 +85,31 @@ const WorkorderModal = () => {
     status_code: '',
     title: '',
     date: new Date(),
-    order_id: ''
+    order_id: '',
   });
-  const [productionStatus, setProductionStatus] = React.useState([{ key: 1, value: 'Nháp' }, { key: 2, value: 'Hoàn thành' }]);
+  const [productionStatus, setProductionStatus] = React.useState([
+    { key: 1, value: 'Nháp' },
+    { key: 2, value: 'Hoàn thành' },
+  ]);
   function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
   }
 
-  const rows = [
-    createData('1', 159, 'Khăn', 24, 4.0),
-    createData('2', 237, 'Khăn', 37, 4.3),
-
-  ];
+  const rows = [createData('1', 159, 'Khăn', 24, 4.0), createData('2', 237, 'Khăn', 37, 4.3)];
   const handleChangeRow = (row, index) => {
     rows2[index].name = row.name;
     rows2[index].calories = row.calories;
     rows2[index].fat = row.fat;
     rows2[index].carbs = row.carbs;
     setRows([...rows2]);
-  }
+  };
   const handleAddRow = () => {
     setRows([...rows2, { name: '', calories: '', fat: '', carbs: '' }]);
-  }
+  };
   const handleDeleteRow = (index) => {
     rows2.splice(index, 1);
     setRows([...rows2]);
-  }
+  };
   useEffect(() => {
     if (!selectedDocument) return;
   }, [selectedDocument]);
@@ -168,7 +168,6 @@ const WorkorderModal = () => {
     setTabIndex(0);
   };
 
-
   return (
     <React.Fragment>
       {snackbarStatus.isOpen && (
@@ -223,7 +222,7 @@ const WorkorderModal = () => {
                     value={0}
                     {...a11yProps(0)}
                   />
-                   <Tab
+                  <Tab
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
@@ -244,14 +243,11 @@ const WorkorderModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={1}>
                             <Grid item lg={6} md={6} xs={12}>
-
                               <Grid container className={classes.gridItemInfo} alignItems="center">
                                 <Grid item lg={5} md={5} xs={5}>
                                   <span className={classes.tabItemLabelField}>Tên kế hoạch sản xuất: </span>
                                 </Grid>
-                                <Grid item lg={2} md={2} xs={2}>
-
-                                </Grid>
+                                <Grid item lg={2} md={2} xs={2}></Grid>
                                 <Grid item lg={5} md={5} xs={5}>
                                   <span className={classes.tabItemLabelField}>Trạng thái: </span>
                                 </Grid>
@@ -269,33 +265,31 @@ const WorkorderModal = () => {
                                     onChange={handleChange}
                                   />
                                 </Grid>
-                                <Grid item lg={3} md={3} xs={3}>
-
-                                </Grid>
+                                <Grid item lg={3} md={3} xs={3}></Grid>
                                 <Grid item lg={3} md={3} xs={3}>
                                   <Select
                                     className={classes.multpleSelectField}
                                     // value={workorderRequest.status_code}
-                                    onChange={(event) => setWorkorderRequest({ ...workorderRequest, status_code: event.key })}>
-                                    {productionStatus && productionStatus.map((item) => (
-                                      <MenuItem key={item.key} value={item.key}>
-                                        {item.value}
-                                      </MenuItem>
-                                    ))}
+                                    onChange={(event) =>
+                                      setWorkorderRequest({ ...workorderRequest, status_code: event.key })
+                                    }
+                                  >
+                                    {productionStatus &&
+                                      productionStatus.map((item) => (
+                                        <MenuItem key={item.key} value={item.key}>
+                                          {item.value}
+                                        </MenuItem>
+                                      ))}
                                   </Select>
                                 </Grid>
                                 <Grid item lg={3} md={3} xs={3}></Grid>
                               </Grid>
 
-                              <Grid container className={classes.gridItemInfo} >
-                             
+                              <Grid container className={classes.gridItemInfo}>
                                 <Grid item lg={6} md={6} xs={6}>
-
                                   <span>Thời gian lập KH:</span>
-
                                 </Grid>
-                             
-                             
+
                                 <Grid item lg={6} md={6} xs={6}>
                                   <span className={classes.tabItemLabelField}></span>
                                 </Grid>
@@ -303,7 +297,7 @@ const WorkorderModal = () => {
 
                               <Grid container className={classes.gridItemInfo} alignItems="center">
                                 <Grid item lg={3} md={3} xs={3}>
-                                <TextField
+                                  <TextField
                                     fullWidth
                                     type="date"
                                     variant="outlined"
@@ -328,22 +322,18 @@ const WorkorderModal = () => {
                                 <Grid item lg={3} md={3} xs={3}></Grid>
                               </Grid>
                               <Grid container className={classes.gridItemInfo} alignItems="center">
-                              
-                               
-                             
-                                <Grid item lg={3} md={3} xs={3}><span>Chi tiết sản xuất:</span></Grid>
+                                <Grid item lg={3} md={3} xs={3}>
+                                  <span>Chi tiết sản xuất:</span>
+                                </Grid>
                               </Grid>
                             </Grid>
                             <Grid item lg={6} md={6} xs={12}>
-
                               <Grid container className={classes.gridItemInfo} alignItems="center">
-
                                 <Grid item lg={12} md={12} xs={12}>
                                   <TableContainer component={Paper} style={{ minWidth: 700, maxWidth: 700 }}>
                                     <Table aria-label="simple table">
                                       <TableHead>
                                         <TableRow>
-
                                           <TableCell align="right">Thứ</TableCell>
                                           <TableCell align="right">Thứ</TableCell>
                                           <TableCell align="right">Thứ</TableCell>
@@ -351,56 +341,31 @@ const WorkorderModal = () => {
                                           <TableCell align="right">Thứ</TableCell>
                                           <TableCell align="right">Thứ</TableCell>
                                           <TableCell align="right">Thứ</TableCell>
-
                                         </TableRow>
                                       </TableHead>
                                       <TableBody>
-                                        <TableRow
-
-                                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                        >
-                                          <TableCell component="th" scope="row">
-                                          
-                                          </TableCell>
-                                          <TableCell component="th" scope="row">
-                                           
-                                          </TableCell>
-                                          <TableCell component="th" scope="row">
-                                          
-                                          </TableCell>
-                                          <TableCell component="th" scope="row">
-                                          
-                                          </TableCell>
-                                          <TableCell component="th" scope="row">
-                                        
-                                          </TableCell>
-                                          <TableCell component="th" scope="row">
-                                          
-                                          </TableCell>
-                                          <TableCell component="th" scope="row">
-                                           
-                                          </TableCell>
-
+                                        <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                          <TableCell component="th" scope="row"></TableCell>
+                                          <TableCell component="th" scope="row"></TableCell>
+                                          <TableCell component="th" scope="row"></TableCell>
+                                          <TableCell component="th" scope="row"></TableCell>
+                                          <TableCell component="th" scope="row"></TableCell>
+                                          <TableCell component="th" scope="row"></TableCell>
+                                          <TableCell component="th" scope="row"></TableCell>
                                         </TableRow>
                                       </TableBody>
                                     </Table>
                                   </TableContainer>
                                 </Grid>
-
                               </Grid>
                               <Grid container className={classes.gridItemInfo} alignItems="center">
-                                <Grid item lg={3} md={3} xs={3}>
-
-                                </Grid>
-
+                                <Grid item lg={3} md={3} xs={3}></Grid>
                               </Grid>
                               <Grid container className={classes.gridItemInfo} alignItems="center">
-                                <Grid item lg={3} md={3} xs={3}>
-                                </Grid>
-                               
+                                <Grid item lg={3} md={3} xs={3}></Grid>
                               </Grid>
                               <Grid container className={classes.gridItemInfo} alignItems="center">
-                              <Grid item lg={2} md={2} xs={2}>
+                                <Grid item lg={2} md={2} xs={2}>
                                   <span className={classes.tabItemLabelField}>Số người làm:</span>
                                 </Grid>
                                 <Grid item lg={1} md={1} xs={1}>
@@ -414,7 +379,7 @@ const WorkorderModal = () => {
                                     onChange={handleChange}
                                   />
                                 </Grid>
-                               
+
                                 <Grid item lg={2} md={2} xs={2}>
                                   <span className={classes.tabItemLabelField}>Số giờ làm:</span>
                                 </Grid>
@@ -429,7 +394,7 @@ const WorkorderModal = () => {
                                     onChange={handleChange}
                                   />
                                 </Grid>
-                               
+
                                 <Grid item lg={3} md={3} xs={3}>
                                   <span className={classes.tabItemLabelField}>Công xuất hiện tại 50%</span>
                                 </Grid>
@@ -440,7 +405,6 @@ const WorkorderModal = () => {
                             </Grid>
                             <Grid container className={classes.gridItem} alignItems="center">
                               <Grid item lg={11} md={11} xs={12}>
-
                                 <TableContainer component={Paper}>
                                   <Table sx={{ minWidth: 650 }} aria-label="simple table">
                                     <TableHead>
@@ -467,8 +431,7 @@ const WorkorderModal = () => {
                                           <TableCell component="th" scope="row">
                                             {row.name}
                                           </TableCell>
-                                          <TableCell align="right">
-                                          </TableCell>
+                                          <TableCell align="right"></TableCell>
                                           <TableCell align="right">{row.fat}</TableCell>
                                           <TableCell align="right">{row.carbs}</TableCell>
                                           <TableCell align="right">
@@ -479,8 +442,11 @@ const WorkorderModal = () => {
                                               options={rows}
                                               onChange={(e, u) => handleChangeRow(u, index)}
                                               getOptionLabel={(option) => option.fat}
-                                              renderInput={(params) => <TextField label="Tên TP" {...params} variant="outlined" />}
-                                            /></TableCell>
+                                              renderInput={(params) => (
+                                                <TextField label="Tên TP" {...params} variant="outlined" />
+                                              )}
+                                            />
+                                          </TableCell>
                                           <TableCell align="right">
                                             <TextField
                                               fullWidth
@@ -494,8 +460,8 @@ const WorkorderModal = () => {
                                             />
                                           </TableCell>
                                           <TableCell align="right">{'Thùng'}</TableCell>
-                                          <TableCell align="right">{ }</TableCell>
-                                          <TableCell align="right">{ }</TableCell>
+                                          <TableCell align="right">{}</TableCell>
+                                          <TableCell align="right">{}</TableCell>
                                           <TableCell align="right">
                                             <IconButton onClick={() => handleDeleteRow(index)}>
                                               <Delete />
@@ -506,14 +472,11 @@ const WorkorderModal = () => {
                                     </TableBody>
                                   </Table>
                                 </TableContainer>
-
                               </Grid>
                               <Grid item lg={1} md={1} xs={12}>
                                 <IconButton onClick={handleAddRow}>
                                   <AddCircle></AddCircle>
                                 </IconButton>
-
-
                               </Grid>
                             </Grid>
                           </Grid>
@@ -536,28 +499,46 @@ const WorkorderModal = () => {
                   Đóng
                 </Button>
               </Grid>
-              {!workorderRequest.id && (
-                <Grid item>
-                  <Button
-                    variant="contained"
-                    style={{ background: 'rgb(97, 42, 255)' }}
-                    onClick={() => handleUpdateAccount()}
-                  >
-                    {'Tạo mới'}
-                  </Button>
+              <Grid item>
+                <Grid container spacing={2} justifyContent="flex-end">
+                  <Grid item>
+                    {/* <Link to={`/dashboard/workorder/${workorderRequest.id}`} target="_blank" rel="noopener noreferrer"> */}
+                    <Button
+                      variant="contained"
+                      style={{ background: 'rgb(97, 42, 255)' }}
+                      component={Link}
+                      to={`/dashboard/workorder/${workorderRequest.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Mục tiêu sản xuất
+                    </Button>
+                    {/* </Link> */}
+                  </Grid>
+                  {!workorderRequest.id && (
+                    <Grid item>
+                      <Button
+                        variant="contained"
+                        style={{ background: 'rgb(97, 42, 255)' }}
+                        onClick={() => handleUpdateAccount()}
+                      >
+                        {'Tạo mới'}
+                      </Button>
+                    </Grid>
+                  )}
+                  {!!workorderRequest.id && (
+                    <Grid item>
+                      <Button
+                        variant="contained"
+                        style={{ background: 'rgb(97, 42, 255)' }}
+                        onClick={() => handleUpdateAccount()}
+                      >
+                        Lưu
+                      </Button>
+                    </Grid>
+                  )}
                 </Grid>
-              )}
-              {!!workorderRequest.id && (
-                <Grid item>
-                  <Button
-                    variant="contained"
-                    style={{ background: 'rgb(97, 42, 255)' }}
-                    onClick={() => handleUpdateAccount()}
-                  >
-                    Lưu
-                  </Button>
-                </Grid>
-              )}
+              </Grid>
             </Grid>
           </DialogActions>
         </Dialog>
