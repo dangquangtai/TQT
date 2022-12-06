@@ -155,7 +155,7 @@ export const productActions = {
 };
 export const orderActions = {
   list_pending_order: 'TQT_ORDER_DEFAULT_OPEN_ORDER_PENDING_LIST',
- }
+};
 export const productrequestActions = {
   list_product: 'TQT_WORKORDER_DEFAULT_OPEN_WORKORDER_LIST',
 };
@@ -245,12 +245,12 @@ export const view = {
     },
     detail: {
       save: 'TQT_ORDER_DEFAULT_ORDER_DETAIL_SAVE_FORM_BUTTON',
+    },
   },
   workorder: {
     list: {
       create: 'TQT_WORKORDER_DEFAULT_CREATE_WORKORDER_MENU_BUTTON',
     },
-    detail: {
-    },
+    detail: {},
   },
 };
