@@ -17,7 +17,7 @@ import DepartmentModal from '../../views/Department/Detail';
 import ProcessRoleModal from '../../views/ProcessRole/Detail';
 import ProcessRoleUserModal from '../../views/ProcessRole/User';
 import ProcessRoleDeptModal from '../../views/ProcessRole/Department';
-
+import WorkorderModal from '../../views/WORKORDER/Detail';
 import DepartmentListModal from '../../views/DepartmentList/Detail';
 import CategoryModal from './../../views/CategoryDetail/index';
 import ProductModal from './../../views/Product/Product/Detail/index';
@@ -80,6 +80,7 @@ const MainLayout = ({ children }) => {
     switch (documentType) {
       case 'account':
         return <AccountModal />;
+   
       case 'department':
         return <DepartmentModal />;
       case 'role':
@@ -103,6 +104,8 @@ const MainLayout = ({ children }) => {
         return <ProductModal />;
       case 'order':
         return <OrderModal />;
+        case 'workorder':
+         return <WorkorderModal />;
       default:
         return null;
     }

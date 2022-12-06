@@ -113,6 +113,7 @@ export const apiEndpoints = {
 
   // Customer
   get_all_customer: '/Primary/?FlowAlias=bs_api_customer_get_list_by_company&action=api',
+  get_product_requesr_list: '/Primary/?FlowAlias=bs_api_factory_workorder_get_list_by_page&action=api',
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
@@ -154,6 +155,9 @@ export const productActions = {
 };
 export const orderActions = {
   list_pending_order: 'TQT_ORDER_DEFAULT_OPEN_ORDER_PENDING_LIST',
+ }
+export const productrequestActions = {
+  list_product: 'TQT_WORKORDER_DEFAULT_OPEN_WORKORDER_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -241,6 +245,12 @@ export const view = {
     },
     detail: {
       save: 'TQT_ORDER_DEFAULT_ORDER_DETAIL_SAVE_FORM_BUTTON',
+  },
+  workorder: {
+    list: {
+      create: 'TQT_WORKORDER_DEFAULT_CREATE_WORKORDER_MENU_BUTTON',
+    },
+    detail: {
     },
   },
 };

@@ -9,6 +9,7 @@ import GuestGuard from './component/Auth/GuestGuard';
 import AuthGuard from './component/Auth/AuthGuard';
 import MinimalLayout from './layout/MinimalLayout';
 import AppLayout from './layout/AppLayout/index';
+import OrderModal from './views/WORKORDER/Order/index.js';
 
 const AuthLogin = lazy(() => import('./views/Login'));
 const App = lazy(() => import('./views/Dashboard/App/index.js'));
@@ -45,13 +46,14 @@ const Routes = () => {
               </Switch>
             </MinimalLayout>
           </Route>
-          <Route path={['/dashboard/app']}>
+          <Route path={['/dashboard/app', '/dashboard/workorder/:id']}>
             <AppLayout>
               <Switch location={location} key={location.pathname}>
                 <NavMotion>
                   <AuthGuard>
                     <Route path="/dashboard/app" component={App} />
                     <Route path="/dashboard/default" component={DashboardDefault} />
+                    <Route path="/dashboard/workorder/:id" component={OrderModal} />
                   </AuthGuard>
                 </NavMotion>
               </Switch>

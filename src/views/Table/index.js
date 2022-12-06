@@ -128,9 +128,9 @@ export default function GeneralTable(props) {
   const buttonCreateSupplierCategory = menuButtons.find((button) => button.name === view.supplierCategory.list.create);
   const buttonCreateProductCategory = menuButtons.find((button) => button.name === view.productCategory.list.create);
   const buttonCreateCustomerCategory = menuButtons.find((button) => button.name === view.customerCategory.list.create);
-
   const buttonCreateOrder = menuButtons.find((button) => button.name === view.order.list.create);
-
+  const buttonCreateWorkorder = menuButtons.find((button) => button.name === view.workorder.list.create);
+  
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
@@ -392,6 +392,9 @@ export default function GeneralTable(props) {
       case 'account':
         dispatch({ type: FLOATING_MENU_CHANGE, accountDocument: true });
         break;
+        case 'workorder':
+        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
+        break;
       case 'department':
         dispatch({ type: FLOATING_MENU_CHANGE, departmentDocument: true });
         break;
@@ -649,6 +652,8 @@ export default function GeneralTable(props) {
                 userList={userList}
                 deptList={deptList}
                 createNewDept={openDialogCreate}
+                buttonCreateWorkorder={buttonCreateWorkorder}
+                createWorkorder={openDialogCreate}
                 buttonCreateRole={buttonCreateRole}
                 createNewRole={openDialogCreate}
                 getDepartmentList={getDepartmentListGroup}
