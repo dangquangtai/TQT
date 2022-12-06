@@ -18,7 +18,7 @@ import {
   IconButton,
   Typography,
 } from '@material-ui/core';
-
+import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../store/actions.js';
 import { useSelector, useDispatch } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import useStyles from './../../../utils/classes';
@@ -123,9 +123,12 @@ const OrderModal = () => {
   const [orderDetail, setOrderDetail] = useState([]);
 
   const handleOrderChange = (e, value) => {
+    
     if (value) {
+      dispatch({ type: FLOATING_MENU_CHANGE, order_id: value.id });
       setOrder(value);
     } else {
+      dispatch({ type: FLOATING_MENU_CHANGE, order_id: '' });
       setOrder({
         id: '',
         title: '',

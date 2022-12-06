@@ -10459,6 +10459,11 @@
   optionalDependencies:
     "fsevents" "2.1.2"
 
+"react-table-scrollbar@^0.1.11":
+  "integrity" "sha512-jfcMyQba5+8n7RQVGx76gw4zWFjyKvfzmMQdq46115Yjl2mBZJkS3KrRdipKZrOR4NC9IbtJ67tmjbfSJInw+w=="
+  "resolved" "https://registry.npmjs.org/react-table-scrollbar/-/react-table-scrollbar-0.1.11.tgz"
+  "version" "0.1.11"
+
 "react-transition-group@^4.0.0", "react-transition-group@^4.4.0", "react-transition-group@^4.4.5":
   "integrity" "sha512-pZcd1MCJoiKiBR2NRxeCRg13uCXbydPnmB4EOeRrY7480qNWO8IIgQG6zlDkm6uRMsURXPuKq0GWtiM59a5Q6g=="
   "resolved" "https://registry.npmjs.org/react-transition-group/-/react-transition-group-4.4.5.tgz"
