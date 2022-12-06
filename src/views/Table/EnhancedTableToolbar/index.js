@@ -68,6 +68,7 @@ const EnhancedTableToolbar = (props) => {
     buttonCreateSupplierCategory,
     buttonCreateProductCategory,
     buttonCreateCustomerCategory,
+    buttonCreateOrder,
     buttonCreateWorkorder,
     createWorkorder
   } = props;
@@ -300,6 +301,13 @@ const EnhancedTableToolbar = (props) => {
                     </Button>
                   </Grid>
                 )}
+                {buttonCreateOrder && (
+                  <Grid item>
+                    <Button variant="contained" color={'primary'} onClick={handleCreate}>
+                      {buttonCreateOrder.text}
+                   </Button>
+                  </Grid>
+                )}
                 {buttonCreateWorkorder && (
                   <Grid item>
                     <Button variant="contained" color={'primary'} onClick={createWorkorder}>
@@ -327,6 +335,26 @@ const EnhancedTableToolbar = (props) => {
                 )}
               </Grid>
             </Grid>
+            {documentType === 'processrole' && (
+              <Grid item xs={8}>
+                <Grid container justifyContent="flex-start" spacing={gridSpacing}>
+                  {buttonAddDeptRole && (
+                    <Grid item xs={6}>
+                      <Button variant="contained" color={'primary'} onClick={() => handleClickUpdateDeptProcessRole()}>
+                        {buttonAddDeptRole.text}
+                      </Button>
+                    </Grid>
+                  )}
+                  {buttonAddAccountRole && (
+                    <Grid item xs={6}>
+                      <Button variant="contained" color={'primary'} onClick={() => handleClickUpdateUserProcessRole()}>
+                        {buttonAddAccountRole.text}
+                      </Button>
+                    </Grid>
+                  )}
+                </Grid>
+              </Grid>
+            )}
           </Grid>
         </Grid>
         {documentType !== 'department' && documentType !== 'processrole' && (

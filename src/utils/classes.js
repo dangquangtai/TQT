@@ -545,6 +545,11 @@ const useStyles = makeStyles((theme) => ({
     height: '30px',
     objectFit: 'contain',
   },
+  maxWidthCell: {
+    maxWidth: '200px',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
 }));
 
 export default useStyles;

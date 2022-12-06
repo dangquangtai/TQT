@@ -20,6 +20,9 @@ import ProcessRoleDeptModal from '../../views/ProcessRole/Department';
 import WorkorderModal from '../../views/WORKORDER/Detail';
 import DepartmentListModal from '../../views/DepartmentList/Detail';
 import CategoryModal from './../../views/CategoryDetail/index';
+import ProductModal from './../../views/Product/Product/Detail/index';
+import OrderModal from './../../views/Order/Detail/index';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -97,8 +100,11 @@ const MainLayout = ({ children }) => {
       case 'productCategory':
       case 'customerCategory':
         return <CategoryModal />;
+      case 'product':
+        return <ProductModal />;
+      case 'order':
+        return <OrderModal />;
         case 'workorder':
-         
          return <WorkorderModal />;
       default:
         return null;
