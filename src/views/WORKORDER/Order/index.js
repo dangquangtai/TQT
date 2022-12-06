@@ -25,7 +25,7 @@ import useStyles from './../../../utils/classes';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="left" ref={ref} {...props} />;
+  return <Slide direction="bottom" ref={ref} {...props} />;
 });
 
 const orderCode = [
@@ -34,12 +34,14 @@ const orderCode = [
     title: 'Đơn hàng 1',
     customer_name: 'Khách hàng 1',
     order_date: '01/01/2021',
+    expected_deliver_date: '01/01/2021',
   },
   {
     id: '2',
     title: 'Đơn hàng 2',
     customer_name: 'Khách hàng 2',
     order_date: '01/01/2021',
+    expected_deliver_date: '01/01/2021',
   },
 ];
 
@@ -123,7 +125,6 @@ const OrderModal = () => {
   const [orderDetail, setOrderDetail] = useState([]);
 
   const handleOrderChange = (e, value) => {
-    
     if (value) {
       dispatch({ type: FLOATING_MENU_CHANGE, order_id: value.id });
       setOrder(value);
@@ -152,7 +153,7 @@ const OrderModal = () => {
   return (
     <React.Fragment>
       <Grid container>
-        <Dialog open={true} TransitionComponent={Transition} keepMounted fullScreen>
+        <Dialog open={true} fullScreen>
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
               Mục tiêu sản xuất
@@ -168,57 +169,63 @@ const OrderModal = () => {
                         <div className={classes.tabItemLabel}>Đơn hàng</div>
                       </div>
                       <div className={classes.tabItemBody}>
-                        <Grid container spacing={1}>
+                        <Grid container spacing={1} alignItems="center" className={classes.gridItemInfo}>
                           <Grid item lg={9} md={9} xs={12}>
-                            <Grid container spacing={1} justifyContent="space-between">
+                            <Grid container spacing={4}>
                               <Grid item lg={3} md={6} xs={12}>
-                                <Autocomplete
-                                  id="combo-box-demo"
-                                  options={orderCode}
-                                  getOptionLabel={(option) => option.title}
-                                  onChange={handleOrderChange}
-                                  renderInput={(params) => (
+                                <Grid container spacing={1}>
+                                  <Grid item lg={12} md={12} xs={12}>
+                                    <Typography variant="h6">Mã đơn hàng</Typography>
+                                  </Grid>
+                                  <Grid item lg={12} md={12} xs={12}>
+                                    <Autocomplete
+                                      id="combo-box-demo"
+                                      options={orderCode}
+                                      getOptionLabel={(option) => option.title}
+                                      onChange={handleOrderChange}
+                                      renderInput={(params) => (
+                                        <TextField {...params} variant="outlined" size="small" fullWidth />
+                                      )}
+                                    />
+                                  </Grid>
+                                </Grid>
+                              </Grid>
+                              <Grid item lg={4} md={6} xs={12}>
+                                <Grid container spacing={1}>
+                                  <Grid item lg={12} md={12} xs={12}>
+                                    <Typography variant="h6">Tên khách hàng</Typography>
+                                  </Grid>
+                                  <Grid item lg={12} md={12} xs={12}>
                                     <TextField
-                                      {...params}
-                                      label="Mã đơn hàng"
+                                      disabled
                                       variant="outlined"
                                       size="small"
                                       fullWidth
+                                      value={order?.customer_name}
                                     />
-                                  )}
-                                />
-                              </Grid>
-                              <Grid item lg={4} md={6} xs={12}>
-                                <TextField
-                                  label="Khách hàng"
-                                  disabled
-                                  variant="outlined"
-                                  size="small"
-                                  fullWidth
-                                  value={order?.customer_name}
-                                  InputLabelProps={{ shrink: true }}
-                                />
+                                  </Grid>
+                                </Grid>
                               </Grid>
                               <Grid item lg={3} md={6} xs={12}>
-                                <TextField
-                                  label="Ngày đặt hàng"
-                                  disabled
-                                  variant="outlined"
-                                  size="small"
-                                  fullWidth
-                                  value={order?.order_date}
-                                  InputLabelProps={{ shrink: true }}
-                                />
+                                <Grid container spacing={1}>
+                                  <Grid item lg={12} md={12} xs={12}>
+                                    <Typography variant="h6">Ngày đặt hàng</Typography>
+                                  </Grid>
+                                  <Grid item lg={12} md={12} xs={12}>
+                                    <TextField
+                                      disabled
+                                      variant="outlined"
+                                      size="small"
+                                      fullWidth
+                                      value={order?.expected_deliver_date}
+                                    />
+                                  </Grid>
+                                </Grid>
                               </Grid>
                             </Grid>
                           </Grid>
                           <Grid item lg={3} md={3} xs={12}>
                             <Grid container spacing={1} justifyContent="flex-end" alignItems="center">
-                              <Grid item>
-                                <IconButton>
-                                  <RefreshIcon />
-                                </IconButton>
-                              </Grid>
                               <Grid item>
                                 <Typography>Last update: 5 phút trước</Typography>
                               </Grid>
@@ -286,6 +293,11 @@ const OrderModal = () => {
               </Grid>
               <Grid item>
                 <Grid container spacing={2} justifyContent="flex-end">
+                  <Grid item>
+                    <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }}>
+                      <RefreshIcon />
+                    </Button>
+                  </Grid>
                   <Grid item>
                     <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }}>
                       Lưu
