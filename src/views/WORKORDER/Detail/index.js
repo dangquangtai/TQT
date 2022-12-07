@@ -38,6 +38,7 @@ import { AddCircle, SkipNext, SkipPrevious } from '@material-ui/icons';
 import { Delete, Today as TodayIcon, DeleteForever } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { Link } from 'react-router-dom';
+import { set } from 'lodash';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -164,6 +165,10 @@ const WorkorderModal = () => {
   const { detailDocument: openDialog, order_id } = useSelector((state) => state.floatingMenu);
   const [rows2, setRows] = useState([]);
   const [dateList, setDateList] = useState([]);
+  const [end, setEnd] = useState(0);
+  const [start, setStart] = useState(0);
+  const [indexDate, setIndexDate] = useState(0);
+  const [currentDate, setCurrentDate] = useState('');
   const [workorderRequest, setWorkorderRequest] = React.useState({
     status_code: '',
     title: '',
@@ -249,7 +254,7 @@ const WorkorderModal = () => {
     },
   ];
   const calculateQuantity = (vattu) => {
-    const color = vattu == 'Thiếu' ? 'yellow' : 'green';
+    const color = vattu == 'Thiếu' ? 'yellow' : 'rgb(48, 188, 65)';
 
     return <Typography style={{ backgroundColor: color }}>{vattu}</Typography>;
   };
@@ -294,15 +299,23 @@ const WorkorderModal = () => {
     if (!selectedDocument) return;
   }, [selectedDocument]);
   useEffect(() => {}, [order_id]);
-  const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const weekday = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
   const month = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   useEffect(() => {
     setDateList([]);
     let date = [];
     if (workorderRequest.date != '' && workorderRequest.date2 != '') {
       for (var d = new Date(workorderRequest.date); d <= new Date(workorderRequest.date2); d.setDate(d.getDate() + 1)) {
-        date = [...date, weekday[d.getDay()] + ' \n ' + d.getDate() + '/' + month[d.getMonth()]];
+        let dateString = d.getDate() + '/' + month[d.getMonth()]
+        date = [...date, {dateString: dateString, day: weekday[d.getDay()], rows: []}];
       }
+      setStart(0);
+      if (date.length>7){
+        setEnd(7);
+      } else {
+        setEnd(date.length);
+      }
+      setCurrentDate(date[0].dateString);
       setDateList(date);
     }
   }, [workorderRequest.date, workorderRequest.date2]);
@@ -356,7 +369,45 @@ const WorkorderModal = () => {
       [e.target.name]: value,
     });
   };
-
+  const handleNextDate = () =>{
+    if (end < indexDate + 2){
+      if (dateList.length - end >= 7){
+        setStart(start + 7)
+        setEnd(end + 7);
+      }
+      else {
+        setStart(dateList.length - 7)
+        setEnd(dateList.length)
+      }
+    }
+    let index = dateList.findIndex(obj => obj.dateString === currentDate);
+    dateList[index].rows=rows2;
+    setDateList(dateList);
+    setCurrentDate(dateList[indexDate + 1].dateString);
+    setIndexDate(indexDate + 1);
+    index = dateList.findIndex(obj => obj.dateString === dateList[indexDate + 1].dateString);
+    setRows([...dateList[index].rows]);
+  }
+  const handlePreDate = () =>{
+    if (start > indexDate -1 ){
+      if ((end - 7 < 7)){
+        setEnd(7);
+        setStart(0);
+      }
+      else{
+        setStart(start - 7);
+        setEnd(end -7);
+      }
+    }
+    let index = dateList.findIndex(obj => obj.dateString === currentDate);
+    dateList[index].rows=rows2;
+    setDateList(dateList);
+    setCurrentDate(dateList[indexDate - 1].dateString);
+    setIndexDate(indexDate - 1);
+    index = dateList.findIndex(obj => obj.dateString === dateList[indexDate - 1].dateString);
+    setRows([]);
+    setRows(dateList[index].rows);
+  }
   const setDocumentToDefault = async () => {
     setTabIndex(0);
   };
@@ -435,17 +486,7 @@ const WorkorderModal = () => {
                     value={0}
                     {...a11yProps(0)}
                   />
-                  <Tab
-                    className={classes.unUpperCase}
-                    label={
-                      <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <AccountCircleOutlinedIcon className={`${tabIndex === 0 ? classes.tabActiveIcon : ''}`} />
-                        Mục tiêu sản xuất
-                      </Typography>
-                    }
-                    value={1}
-                    {...a11yProps(1)}
-                  />
+                 
                 </Tabs>
               </Grid>
               <Grid item xs={12}>
@@ -532,37 +573,39 @@ const WorkorderModal = () => {
                                   />
                                 </Grid>
                               </Grid>
-                              <Grid container className={classes.gridItemInfo} alignItems="center">
-                                <Grid item lg={3} md={3} xs={3}>
-                                  <span>Chi tiết sản xuất:</span>
-                                </Grid>
-                              </Grid>
+                            
                             </Grid>
                             <Grid item lg={6} md={6} xs={12}>
                               <Grid container className={classes.gridItemInfo} alignItems="center">
                                 <Grid item lg={3} md={3} xs={3} alignItems="center">
-                                  <IconButton>
-                                    <SkipPrevious />
-                                  </IconButton>
-                                  <span>{' 14/12 '}</span>
-                                  <IconButton>
+                                  {indexDate > 0 && (
+                                     <IconButton onClick={handlePreDate}>
+                                     <SkipPrevious />
+                                   </IconButton>
+                                  )}
+                                 
+                                  <span>{currentDate}</span>
+                                  {indexDate < (dateList.length - 1) &&(
+                                    <IconButton onClick={handleNextDate}>
                                     <SkipNext />
                                   </IconButton>
+                                  )}
+                                  
                                 </Grid>
                                 <Grid item lg={9} md={9} xs={9}>
                                   <TableContainer component={Paper}>
-                                    <Table aria-label="simple table">
+                                    <Table size="small" stickyHeader aria-label="sticky table">
                                       <TableHead>
                                         <TableRow>
-                                          {dateList?.slice(0, 6).map((item) => (
-                                            <TableCell align="right">{item}</TableCell>
+                                          {dateList?.slice(start, end).map((item) => (
+                                            <TableCell align="center"><span>{item.day}<br/>{item.dateString}</span></TableCell>
                                           ))}
                                         </TableRow>
                                       </TableHead>
                                       <TableBody>
                                         <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                          {dateList?.slice(0, 6).map((item) => (
-                                            <TableCell component="th" scope="row"></TableCell>
+                                          {dateList?.slice(start, end).map((item) => (
+                                            <TableCell component="th" scope="row" align="center"> <Typography style={{ backgroundColor: 'yellow' }}>{0}</Typography></TableCell>
                                           ))}
                                         </TableRow>
                                       </TableBody>
@@ -570,13 +613,21 @@ const WorkorderModal = () => {
                                   </TableContainer>
                                 </Grid>
                               </Grid>
+                            </Grid>
+                      
+                            <Grid container className={classes.gridItemInfo} alignItems="center">
+                            <Grid item lg={6} md={6} xs={6}>
                               <Grid container className={classes.gridItemInfo} alignItems="center">
-                                <Grid item lg={2} md={2} xs={2}>
+                                <Grid item lg={3} md={3} xs={3}>
+                                  <span className={classes.tabItemLabelField}>Chi tiết sản xuất:</span>
+                                </Grid>    
+                                <Grid item lg={6} md={6} xs={6}></Grid>
+                                <Grid item lg={1.5} md={1.5} xs={1.5}>
                                   <span className={classes.tabItemLabelField}>Số người làm:</span>
                                 </Grid>
                                 <Grid item lg={1} md={1} xs={1}>
                                   <TextField
-                                    fullWidth
+                                    style={{maxWith: 50 }}
                                     type="text"
                                     variant="outlined"
                                     // name="date"
@@ -586,31 +637,58 @@ const WorkorderModal = () => {
                                   />
                                 </Grid>
                               </Grid>
-
+                              </Grid>
+                              <Grid item lg={6} md={6} xs={6}>
                               <Grid container className={classes.gridItemInfo} alignItems="center">
-                                <Grid item lg={2} md={2} xs={2}>
+                                <Grid item lg={1.5} md={1.5} xs={1.5} alignContent='right'>
                                   <span className={classes.tabItemLabelField}>Số giờ làm:</span>
                                 </Grid>
                                 <Grid item lg={1} md={1} xs={1}>
-                                  <TextField
+                                <TextField
+                                  type="text"
+                                  variant="outlined"
+                                  // name="date"
+                                  // value={workorderRequest.date}
+                                  className={classes.inputField}
+                                  fullWidth
+                                  onChange={handleChange}
+                                />
+                                </Grid>
+                                <Grid item lg={1} md={1} xs={1} alignContent='right'></Grid>
+                                <Grid item lg={1.5} md={1.5} xs={1.5}>
+                                  <span className={classes.tabItemLabelField}>Công xuất hiện tại</span>
+                                </Grid>
+                                <Grid item lg={1} md={1} xs={1}>
+                                   <TextField
                                     fullWidth
                                     type="text"
                                     variant="outlined"
-                                    // name="date"
-                                    // value={workorderRequest.date}
+                                    disabled
+                                    value={50}
                                     className={classes.inputField}
                                     onChange={handleChange}
                                   />
+                                  </Grid>
+                                <Grid item lg={1} md={1} xs={1} alignContent='right'></Grid>
+                                 
+                                 
+                                <Grid item lg={1.5} md={1.5} xs={1.5}>
+                                  <span className={classes.tabItemLabelField}>Công xuất tổng</span>
                                 </Grid>
-                                <Grid item lg={1} md={1} xs={1}></Grid>
-                                <Grid item lg={3} md={3} xs={3}>
-                                  <span className={classes.tabItemLabelField}>Công xuất hiện tại 50%</span>
-                                </Grid>
-                                <Grid item lg={3} md={3} xs={3}>
-                                  <span className={classes.tabItemLabelField}>Công xuất hiện tại 100%</span>
-                                </Grid>
-                                <Grid item lg={1} md={1} xs={1}></Grid>
                                 <Grid item lg={1} md={1} xs={1}>
+                                  <TextField
+                                  
+                                    type="text"
+                                    variant="outlined"
+                                    disabled
+                                    value={50}
+                                    className={classes.inputField}
+                                    onChange={handleChange}
+                                  />
+                                  </Grid>
+                                  <Grid item lg={1} md={1} xs={1} alignContent='right'></Grid>
+                              
+                                <Grid item lg={1} md={1} xs={1} alignItems='right'>
                                   <IconButton
                                     onClick={handleAddRow}
                                     style={{ background: '#30bc41', color: '#FFFFFF' }}
@@ -618,13 +696,15 @@ const WorkorderModal = () => {
                                     <AddCircle></AddCircle>
                                   </IconButton>
                                 </Grid>
+                                </Grid>
                               </Grid>
-                            </Grid>
+                              </Grid>
+                      
                             <Grid container className={classes.gridItem} alignItems="center">
                               <Grid item lg={12} md={12} xs={12}>
                                 <TableContainer>
-                                  <TableScrollbar height="300px">
-                                    <Table>
+                                  <TableScrollbar height="350px">
+                                    <Table size="small" stickyHeader aria-label="sticky table">
                                       <TableHead>
                                         <TableRow>
                                           <TableCell>STT</TableCell>
@@ -633,7 +713,7 @@ const WorkorderModal = () => {
                                           <TableCell align="left">Mã TP của KH</TableCell>
                                           <TableCell align="left">Mã TP theo TQT(Mã hiển thị)</TableCell>
                                           <TableCell align="left">SL</TableCell>
-                                          <TableCell align="left">Đơn vị tính theo TP giao cho KH</TableCell>
+                                          <TableCell align="left">Đơn vị</TableCell>
                                           <TableCell align="left">% công suất</TableCell>
                                           <TableCell align="left">Vật tư</TableCell>
                                           <TableCell align="left"></TableCell>
@@ -644,12 +724,13 @@ const WorkorderModal = () => {
                                           <TableRow
                                             key={index}
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                            hover
                                           >
                                             <TableCell align="left">{index + 1}</TableCell>
                                             <TableCell align="left">{index + 1}</TableCell>
                                             <TableCell align="left">
                                               <Autocomplete
-                                                style={{ minWidth: 240, maxWidth: 240, marginRight: 10 }}
+                                                value={item}
                                                 size="small"
                                                 fullWidth
                                                 options={rows}
@@ -666,7 +747,7 @@ const WorkorderModal = () => {
                                                 fullWidth
                                                 type="number"
                                                 defaultValue={0}
-                                                style={{ minWidth: 100 }}
+                                                style={{ minWidth: 50 }}
                                                 variant="outlined"
                                                 InputProps={{ inputProps: { min: 0, max: item.quantity_in_box } }}
                                                 // name="date"
