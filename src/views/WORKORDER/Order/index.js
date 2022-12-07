@@ -18,11 +18,11 @@ import {
   IconButton,
   Typography,
 } from '@material-ui/core';
-import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../store/actions.js';
 import { useSelector, useDispatch } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import useStyles from './../../../utils/classes';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import { ORDER_CHANGE } from './../../../store/actions';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="bottom" ref={ref} {...props} />;
@@ -126,10 +126,10 @@ const OrderModal = () => {
 
   const handleOrderChange = (e, value) => {
     if (value) {
-      dispatch({ type: FLOATING_MENU_CHANGE, order_id: value.id });
+      dispatch({ type: ORDER_CHANGE, order: value });
       setOrder(value);
     } else {
-      dispatch({ type: FLOATING_MENU_CHANGE, order_id: '' });
+      dispatch({ type: ORDER_CHANGE, order: null });
       setOrder({
         id: '',
         title: '',

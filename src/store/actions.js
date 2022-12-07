@@ -21,3 +21,5 @@ export const TASK_CHANGE = '@task/CHANGE_TASK';
 export const APP_CHANGE = '@app/CHANGE_APP';
 export const SELECTED_APP_CHANGE = '@app/SELECTED_APP_CHANGE';
 export const METADATA = '@share/METADATA';
+export const ORDER_LIST = '@order/ORDER_LIST';
+export const ORDER_CHANGE = '@order/ORDER_CHANGE';
