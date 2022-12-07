@@ -39,6 +39,7 @@ import { Delete, Today as TodayIcon, DeleteForever } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { Link } from 'react-router-dom';
 import { set } from 'lodash';
+import { NestCamWiredStandTwoTone } from '@mui/icons-material';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -94,73 +95,7 @@ const WorkorderModal = () => {
     },
   ];
 
-  const orderDetailList = [
-    {
-      unit_name: 'Thùng',
-      unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
-      quantity_produced: 0,
-      quantity_in_box: 1200,
-      product_customer_code: 'F921',
-      product_name: 'Khăn lau kính.30g/c.20x30cm.3P (Nv,Br,Bk)',
-      product_code: 'BST0008',
-      id: '17a74935-7252-11ed-b85f-005056a3c175',
-      status: '',
-      order_id: '1',
-      product_id: 'a4a304d8-6d69-11ed-b85f-005056a3c175',
-    },
-    {
-      unit_name: 'Thùng',
-      unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
-      quantity_produced: 0,
-      quantity_in_box: 500,
-      product_customer_code: 'TVF-659',
-      product_name: 'Khăn bếp.21g/c.33x33cm 5P (B,G,Y,P,O)',
-      product_code: 'BST0002',
-      id: '1',
-      status: null,
-      order_id: '1',
-      product_id: 'a4a304d2-6d69-11ed-b85f-005056a3c175',
-    },
-    {
-      unit_name: 'Thùng',
-      unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
-      quantity_produced: 0,
-      quantity_in_box: 500,
-      product_customer_code: 'TVF-658',
-      product_name: 'Khăn hạt na.25g/c.26x37cm. 3P (P,Y,G)',
-      product_code: 'BST0001',
-      id: '5de651d4-7254-11ed-b85f-005056a3c175',
-      status: null,
-      order_id: '2',
-      product_id: 'a4a304d1-6d69-11ed-b85f-005056a3c175',
-    },
-    {
-      unit_name: 'Thùng',
-      unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
-      quantity_produced: 0,
-      quantity_in_box: 100,
-      product_customer_code: 'TVF-658',
-      product_name: 'Khăn hạt na.25g/c.26x37cm. 3P (P,Y,G)',
-      product_code: 'BST0001',
-      id: 'f3febeac-7220-11ed-b85f-005056a3c175',
-      status: null,
-      order_id: '2',
-      product_id: 'a4a304d1-6d69-11ed-b85f-005056a3c175',
-    },
-    {
-      unit_name: 'Thùng',
-      unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
-      quantity_produced: 500,
-      quantity_in_box: 500,
-      product_customer_code: 'TVF-659',
-      product_name: 'Khăn bếp.21g/c.33x33cm 5P (B,G,Y,P,O)',
-      product_code: 'BST0002',
-      id: '1',
-      status: null,
-      order_id: '2',
-      product_id: 'a4a304d2-6d69-11ed-b85f-005056a3c175',
-    },
-  ];
+ 
   const { selectedDocument } = useSelector((state) => state.document);
   const { detailDocument: openDialog, order_id } = useSelector((state) => state.floatingMenu);
   const { order } = useSelector((state) => state.order);
@@ -176,13 +111,15 @@ const WorkorderModal = () => {
     date: '',
     date2: '',
     order_id: '',
+    number_person: 0,
+    number_hours: 0,
   });
   const [productionStatus, setProductionStatus] = React.useState([
     { key: 1, value: 'Nháp' },
     { key: 2, value: 'Hoàn thành' },
   ]);
 
-  const rows = [
+  const rowsList = [
     {
       unit_name: 'Thùng',
       unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
@@ -193,9 +130,10 @@ const WorkorderModal = () => {
       product_code: 'BST0008',
       id: '17a74935-7252-11ed-b85f-005056a3c175',
       status: '',
-      order_id: '1',
+      order_id: 'KHT10-001',
       product_id: 'a4a304d8-6d69-11ed-b85f-005056a3c175',
       vattu: 'Thiếu',
+      percent: 30,
     },
     {
       unit_name: 'Thùng',
@@ -207,9 +145,10 @@ const WorkorderModal = () => {
       product_code: 'BST0002',
       id: '1',
       status: null,
-      order_id: '1',
+      order_id: 'KHT10-001',
       product_id: 'a4a304d2-6d69-11ed-b85f-005056a3c175',
       vattu: 'Đủ',
+      percent: 30,
     },
     {
       unit_name: 'Thùng',
@@ -221,9 +160,10 @@ const WorkorderModal = () => {
       product_code: 'BST0001',
       id: '5de651d4-7254-11ed-b85f-005056a3c175',
       status: null,
-      order_id: '2',
+      order_id: 'KHT10-002',
       product_id: 'a4a304d1-6d69-11ed-b85f-005056a3c175',
       vattu: 'Thiếu',
+      percent: 30,
     },
     {
       unit_name: 'Thùng',
@@ -232,12 +172,13 @@ const WorkorderModal = () => {
       quantity_in_box: 100,
       product_customer_code: 'TVF-658',
       product_name: 'Khăn hạt na.25g/c.26x37cm. 3P (P,Y,G)',
-      product_code: 'BST0001',
+      product_code: 'BST0003',
       id: 'f3febeac-7220-11ed-b85f-005056a3c175',
       status: null,
-      order_id: '2',
+      order_id: 'KHT10-002',
       product_id: 'a4a304d1-6d69-11ed-b85f-005056a3c175',
       vattu: 'Đủ',
+      percent: 10,
     },
     {
       unit_name: 'Thùng',
@@ -246,33 +187,88 @@ const WorkorderModal = () => {
       quantity_in_box: 500,
       product_customer_code: 'TVF-659',
       product_name: 'Khăn bếp.21g/c.33x33cm 5P (B,G,Y,P,O)',
-      product_code: 'BST0002',
+      product_code: 'BST0007',
       id: '1',
       status: null,
-      order_id: '2',
+      order_id: 'KHT10-002',
       product_id: 'a4a304d2-6d69-11ed-b85f-005056a3c175',
+      vattu: 'Thiếu',
+      percent: 30,
+    },
+    {
+      unit_name: 'Thùng',
+      unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
+      quantity_produced: 0,
+      quantity_in_box: 1200,
+      product_customer_code: 'F921',
+      product_name: 'Khăn lau kính.30g/c.20x30cm.3P (Nv,Br,Bk)',
+      product_code: 'BST0009',
+      id: '17a74935-7252-11ed-b85f-005056a3c175',
+      status: '',
+      order_id: 'KHT10-001',
+      product_id: 'a4a304d8-6d69-11ed-b85f-005056a3c175',
       vattu: 'Đủ',
+      percent: 20,
+    },
+    {
+      unit_name: 'Thùng',
+      unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
+      quantity_produced: 0,
+      quantity_in_box: 500,
+      product_customer_code: 'TVF-659',
+      product_name: 'Khăn bếp.21g/c.33x33cm 5P (B,G,Y,P,O)',
+      product_code: 'BST00012',
+      id: '1',
+      status: null,
+      order_id: 'KHT10-001',
+      product_id: 'a4a304d2-6d69-11ed-b85f-005056a3c175',
+      vattu: 'Thiếu',
+      percent: 30,
+    },
+    {
+      unit_name: 'Thùng',
+      unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
+      quantity_produced: 0,
+      quantity_in_box: 500,
+      product_customer_code: 'TVF-658',
+      product_name: 'Khăn hạt na.25g/c.26x37cm. 3P (P,Y,G)',
+      product_code: 'BST00011',
+      id: '5de651d4-7254-11ed-b85f-005056a3c175',
+      status: null,
+      order_id: 'KHT10-002',
+      product_id: 'a4a304d1-6d69-11ed-b85f-005056a3c175',
+      vattu: 'Đủ',
+      percent: 40,
+    },
+    {
+      unit_name: 'Thùng',
+      unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
+      quantity_produced: 0,
+      quantity_in_box: 100,
+      product_customer_code: 'TVF-658',
+      product_name: 'Khăn hạt na.25g/c.26x37cm. 3P (P,Y,G)',
+      product_code: 'BST00013',
+      id: 'f3febeac-7220-11ed-b85f-005056a3c175',
+      status: null,
+      order_id: 'KHT10-002',
+      product_id: 'a4a304d1-6d69-11ed-b85f-005056a3c175',
+      vattu: 'Đủ',
+      percent: 30,
     },
   ];
+  const [rows,setRowsList] = useState([]);
   const calculateQuantity = (vattu) => {
     const color = vattu == 'Thiếu' ? 'yellow' : 'rgb(48, 188, 65)';
-
     return <Typography style={{ backgroundColor: color }}>{vattu}</Typography>;
   };
+  const [percent, setPercent] =useState(0);
   const handleChangeRow = (row, index) => {
-    rows2[index].unit_id = row.unit_id;
-    rows2[index].quantity_produced = row.quantity_produced;
-    rows2[index].quantity_in_box = row.quantity_in_box;
-    rows2[index].product_customer_code = row.product_customer_code;
-    rows2[index].product_name = row.product_name;
-    rows2[index].product_code = row.product_code;
-    rows2[index].id = row.id;
-    rows2[index].unit_name = row.unit_name;
-    rows2[index].status = row.status;
-    rows2[index].order_id = row.order_id;
-    rows2[index].product_id = row.product_id;
-    rows2[index].vattu = row.vattu;
+    rows2[index]= row;
     setRows([...rows2]);
+    setPercent(0);
+    for (const value of rows2) {
+      setPercent(percent+ value.percent);
+    }
   };
   const handleAddRow = () => {
     setRows([
@@ -299,7 +295,30 @@ const WorkorderModal = () => {
   useEffect(() => {
     if (!selectedDocument) return;
   }, [selectedDocument]);
-  useEffect(() => {}, [order_id]);
+  useEffect(() => {
+    let dateCurrent='';
+    let dateCurrent2='';
+    const month = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+    let date = new Date()
+    if (date.getDate()<10){
+      dateCurrent= date.getFullYear()+'-'+ month[date.getMonth()] + '-0'+date.getDate()
+    }
+    else {
+   
+      dateCurrent= date.setDate(date.getDate() + 7).getFullYear()+'-'+ month[date.setDate(date.getDate() + 7).getMonth()] + '-'+date.setDate(date.getDate() + 7).getDate()
+    }
+    date.setDate(date.getDate() + 7)
+    if (date.getDate()<10){
+    dateCurrent2= date.getFullYear()+'-'+ month[date.getMonth()] + '-0'+date.getDate()
+    }
+    else{
+      dateCurrent2= date.getFullYear()+'-'+ month[date.getMonth()] + '-'+date.getDate()
+    }
+    setWorkorderRequest({...workorderRequest, date: dateCurrent, date2: dateCurrent2});
+  }, []);
+  useEffect(() => {
+    setRowsList(rowsList.filter((item) => item.order_id === order.id));
+  }, [order.id]);
   const weekday = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
   const month = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   useEffect(() => {
@@ -308,7 +327,7 @@ const WorkorderModal = () => {
     if (workorderRequest.date != '' && workorderRequest.date2 != '') {
       for (var d = new Date(workorderRequest.date); d <= new Date(workorderRequest.date2); d.setDate(d.getDate() + 1)) {
         let dateString = d.getDate() + '/' + month[d.getMonth()]
-        date = [...date, {dateString: dateString, day: weekday[d.getDay()], rows: []}];
+        date = [...date, {dateString: dateString, day: weekday[d.getDay()], rows: [], percent: 0, number_hours:0,number_person:0, number:0}];
       }
       setStart(0);
       if (date.length>7){
@@ -370,6 +389,11 @@ const WorkorderModal = () => {
       [e.target.name]: value,
     });
   };
+  const handleChangeNumber = (e,index) => {
+    const value = e.target.value;
+    rows2[index].number= value;
+    setRows([...rows2]);
+  };
   const handleNextDate = () =>{
     if (end < indexDate + 2){
       if (dateList.length - end >= 7){
@@ -383,11 +407,16 @@ const WorkorderModal = () => {
     }
     let index = dateList.findIndex(obj => obj.dateString === currentDate);
     dateList[index].rows=rows2;
+    dateList[index].percent=percent
+    dateList[index].number_person=workorderRequest.number_person
+    dateList[index].number_hours=workorderRequest.number_hours
     setDateList(dateList);
     setCurrentDate(dateList[indexDate + 1].dateString);
     setIndexDate(indexDate + 1);
     index = dateList.findIndex(obj => obj.dateString === dateList[indexDate + 1].dateString);
     setRows([...dateList[index].rows]);
+    setPercent(dateList[index].percent);
+    setWorkorderRequest({...workorderRequest, number_hours: dateList[index].number_hours,number_person:dateList[index].number_person})
   }
   const handlePreDate = () =>{
     if (start > indexDate -1 ){
@@ -402,12 +431,17 @@ const WorkorderModal = () => {
     }
     let index = dateList.findIndex(obj => obj.dateString === currentDate);
     dateList[index].rows=rows2;
+    dateList[index].percent=percent
+    dateList[index].number_person=workorderRequest.number_person
+    dateList[index].number_hours=workorderRequest.number_hours
     setDateList(dateList);
     setCurrentDate(dateList[indexDate - 1].dateString);
     setIndexDate(indexDate - 1);
     index = dateList.findIndex(obj => obj.dateString === dateList[indexDate - 1].dateString);
     setRows([]);
     setRows(dateList[index].rows);
+    setPercent(dateList[index].percent);
+    setWorkorderRequest({...workorderRequest, number_hours: dateList[index].number_hours,number_person:dateList[index].number_person})
   }
   const setDocumentToDefault = async () => {
     setTabIndex(0);
@@ -610,7 +644,7 @@ const WorkorderModal = () => {
                                       <TableBody>
                                         <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                           {dateList?.slice(start, end).map((item) => (
-                                            <TableCell component="th" scope="row" align="center"> <Typography style={{ backgroundColor: 'yellow' }}>{0}</Typography></TableCell>
+                                            <TableCell component="th" scope="row" align="center"><Typography style={ item?.percent === 100?{ backgroundColor: 'rgb(48, 188, 65)' }:{ backgroundColor: 'yellow' } }>{item.percent}</Typography></TableCell>
                                           ))}
                                         </TableRow>
                                       </TableBody>
@@ -635,8 +669,8 @@ const WorkorderModal = () => {
                                     style={{maxWith: 50 }}
                                     type="text"
                                     variant="outlined"
-                                    // name="date"
-                                    // value={workorderRequest.date}
+                                    name="number_person"
+                                    value={workorderRequest.number_person}
                                     className={classes.inputField}
                                     onChange={handleChange}
                                   />
@@ -652,8 +686,8 @@ const WorkorderModal = () => {
                                 <TextField
                                   type="text"
                                   variant="outlined"
-                                  // name="date"
-                                  // value={workorderRequest.date}
+                                  name="number_hours"
+                                  value={workorderRequest.number_hours}
                                   className={classes.inputField}
                                   fullWidth
                                   onChange={handleChange}
@@ -661,7 +695,7 @@ const WorkorderModal = () => {
                                 </Grid>
                                 <Grid item lg={1} md={1} xs={1} alignContent='right'></Grid>
                                 <Grid item lg={1.5} md={1.5} xs={1.5}>
-                                  <span className={classes.tabItemLabelField}>Công xuất hiện tại</span>
+                                  <span className={classes.tabItemLabelField}>Công suất hiện tại</span>
                                 </Grid>
                                 <Grid item lg={1} md={1} xs={1}>
                                    <TextField
@@ -669,7 +703,7 @@ const WorkorderModal = () => {
                                     type="text"
                                     variant="outlined"
                                     disabled
-                                    value={50}
+                                    value={percent}
                                     className={classes.inputField}
                                     onChange={handleChange}
                                   />
@@ -678,7 +712,7 @@ const WorkorderModal = () => {
                                  
                                  
                                 <Grid item lg={1.5} md={1.5} xs={1.5}>
-                                  <span className={classes.tabItemLabelField}>Công xuất tổng</span>
+                                  <span className={classes.tabItemLabelField}>Công suất tổng</span>
                                 </Grid>
                                 <Grid item lg={1} md={1} xs={1}>
                                   <TextField
@@ -686,7 +720,7 @@ const WorkorderModal = () => {
                                     type="text"
                                     variant="outlined"
                                     disabled
-                                    value={50}
+                                    value={100}
                                     className={classes.inputField}
                                     onChange={handleChange}
                                   />
@@ -707,8 +741,8 @@ const WorkorderModal = () => {
                       
                             <Grid container className={classes.gridItem} alignItems="center">
                               <Grid item lg={12} md={12} xs={12}>
-                                <TableContainer>
-                                  <TableScrollbar height="350px">
+                                <TableContainer style={{ maxHeight: 350 }} >
+                                  {/* <TableScrollbar height="350px"> */}
                                     <Table size="small" stickyHeader aria-label="sticky table">
                                       <TableHead>
                                         <TableRow>
@@ -732,7 +766,7 @@ const WorkorderModal = () => {
                                             hover
                                           >
                                             <TableCell align="left">{index + 1}</TableCell>
-                                            <TableCell align="left">{index + 1}</TableCell>
+                                            <TableCell align="left">{item.order_id}</TableCell>
                                             <TableCell align="left">
                                               <Autocomplete
                                                 value={item}
@@ -756,14 +790,14 @@ const WorkorderModal = () => {
                                                 variant="outlined"
                                                 InputProps={{ inputProps: { min: 0, max: item.quantity_in_box } }}
                                                 // name="date"
-                                                // value={workorderRequest.date}
+                                                value={item.number}
                                                 className={classes.inputField}
-                                                onChange={handleChange}
+                                                onChange={(e)=>handleChangeNumber(e,index)}
                                               />
                                             </TableCell>
                                             <TableCell align="left">{item.unit_name}</TableCell>
                                             <TableCell align="center">
-                                              <Typography style={{ backgroundColor: 'yellow' }}>{0}</Typography>
+                                              <span>{item.percent+'%'}</span>
                                             </TableCell>
                                             <TableCell align="center"> {calculateQuantity(item.vattu)}</TableCell>
                                             <TableCell align="right">
@@ -778,7 +812,7 @@ const WorkorderModal = () => {
                                         ))}
                                       </TableBody>
                                     </Table>
-                                  </TableScrollbar>
+                                  {/* </TableScrollbar> */}
                                 </TableContainer>
                               </Grid>
                             </Grid>
