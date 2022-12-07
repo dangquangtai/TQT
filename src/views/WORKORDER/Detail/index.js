@@ -420,7 +420,8 @@ const WorkorderModal = () => {
                                 </Grid>
                                 <Grid item lg={1} md={1} xs={1}></Grid>
                                 <Grid item lg={3} md={3} xs={3}>
-                                  <Select
+                                  <TextField
+                                    select
                                     fullWidth
                                     variant="outlined"
                                     size="small"
@@ -435,7 +436,7 @@ const WorkorderModal = () => {
                                           {item.value}
                                         </MenuItem>
                                       ))}
-                                  </Select>
+                                  </TextField>
                                 </Grid>
                               </Grid>
 

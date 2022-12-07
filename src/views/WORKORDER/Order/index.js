@@ -17,6 +17,7 @@ import {
   Paper,
   IconButton,
   Typography,
+  Tooltip,
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
@@ -143,6 +144,13 @@ const OrderModal = () => {
                           <Grid item lg={3} md={3} xs={12}>
                             <Grid container spacing={1} justifyContent="flex-end" alignItems="center">
                               <Grid item>
+                                <Tooltip title="Cập nhật">
+                                  <IconButton>
+                                    <RefreshIcon />
+                                  </IconButton>
+                                </Tooltip>
+                              </Grid>
+                              <Grid item>
                                 <Typography>Last update: 5 phút trước</Typography>
                               </Grid>
                             </Grid>
@@ -209,11 +217,6 @@ const OrderModal = () => {
               </Grid>
               <Grid item>
                 <Grid container spacing={2} justifyContent="flex-end">
-                  <Grid item>
-                    <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }}>
-                      <RefreshIcon />
-                    </Button>
-                  </Grid>
                   <Grid item>
                     <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }}>
                       Lưu
