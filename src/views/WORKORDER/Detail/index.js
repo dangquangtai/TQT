@@ -23,8 +23,8 @@ import {
   Table,
   Paper,
   IconButton,
+  
 } from '@material-ui/core';
-import TableScrollbar from 'react-table-scrollbar';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import Alert from '../../../component/Alert/index.js';
 import { useSelector, useDispatch } from 'react-redux';
@@ -36,11 +36,8 @@ import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../store/actions.js
 import { ArrowLeftRounded, ArrowRightRounded } from '@material-ui/icons';
 import { AddCircle, SkipNext, SkipPrevious } from '@material-ui/icons';
 import { Delete, Today as TodayIcon, DeleteForever } from '@material-ui/icons';
-import { Autocomplete } from '@material-ui/lab';
-import { Link } from 'react-router-dom';
-import { set } from 'lodash';
-import { NestCamWiredStandTwoTone } from '@mui/icons-material';
 
+import { Autocomplete } from '@material-ui/lab';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -80,6 +77,8 @@ const WorkorderModal = () => {
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
+
+
   const orderCode = [
     {
       id: '1',
@@ -272,7 +271,6 @@ const WorkorderModal = () => {
   };
   const handleAddRow = () => {
     setRows([
-      ...rows2,
       {
         unit_name: 'Thùng',
         unit_id: '',
@@ -286,7 +284,10 @@ const WorkorderModal = () => {
         order_id: '',
         product_id: '',
       },
+      ...rows2
+      
     ]);
+  
   };
   const handleDeleteRow = (index) => {
     rows2.splice(index, 1);
@@ -623,7 +624,15 @@ const WorkorderModal = () => {
                                    </IconButton>
                                   )}
                                  
-                                  <span>{currentDate}</span>
+                                 <TextField
+                                    style={{maxWidth:80}}
+                                    type="text"
+                                    variant="outlined"
+                                    disabled
+                                    value={currentDate}
+                                    className={classes.inputField}
+                                   
+                                  />
                                   {indexDate < (dateList.length - 1) &&(
                                     <IconButton onClick={handleNextDate}>
                                     <SkipNext />
@@ -741,9 +750,10 @@ const WorkorderModal = () => {
                       
                             <Grid container className={classes.gridItem} alignItems="center">
                               <Grid item lg={12} md={12} xs={12}>
+
                                 <TableContainer style={{ maxHeight: 350 }} >
                                   {/* <TableScrollbar height="350px"> */}
-                                    <Table size="small" stickyHeader aria-label="sticky table">
+                                    <Table size="small" stickyHeader aria-label="sticky table" scrollToIndex={1000} >
                                       <TableHead>
                                         <TableRow>
                                           <TableCell>STT</TableCell>
