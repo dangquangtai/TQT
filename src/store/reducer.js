@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { withReduxStateSync } from 'redux-state-sync';
 import customizationReducer from './customizationReducer';
 import snackbarReducer from './snackbarReducer';
 import folderReducer from './folderReducer';
@@ -13,6 +14,7 @@ import taskReducer from './taskReducer.js';
 import documentReducer from './documentReducer.js';
 import appReducer from './appReducer.js';
 import metadataReducer from './metadataReducer.js';
+import orderReducer from './orderReducer.js';
 
 const reducer = combineReducers({
   customization: customizationReducer,
@@ -29,6 +31,7 @@ const reducer = combineReducers({
   document: documentReducer,
   app: appReducer,
   metadata: metadataReducer,
+  order: orderReducer,
 });
 
-export default reducer;
+export default withReduxStateSync(reducer);

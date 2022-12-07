@@ -162,6 +162,7 @@ const WorkorderModal = () => {
   ];
   const { selectedDocument } = useSelector((state) => state.document);
   const { detailDocument: openDialog, order_id } = useSelector((state) => state.floatingMenu);
+  const { order } = useSelector((state) => state.order);
   const [rows2, setRows] = useState([]);
   const [dateList, setDateList] = useState([]);
   const [workorderRequest, setWorkorderRequest] = React.useState({
@@ -380,6 +381,10 @@ const WorkorderModal = () => {
       newWindow.focus();
     }
   };
+
+  useEffect(() => {
+    console.log(order);
+  }, [order]);
 
   return (
     <React.Fragment>

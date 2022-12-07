@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import { createStateSyncMiddleware, initStateWithPrevTab } from 'redux-state-sync';
 import { Provider } from 'react-redux';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
@@ -13,8 +14,14 @@ import reducer from './store/reducer';
 import config from './config';
 import './assets/scss/style.scss';
 import * as serviceWorker from './serviceWorker';
+import { ORDER_CHANGE, ORDER_LIST } from './store/actions.js';
 
-const store = createStore(reducer);
+const syncConfig = {
+  whitelist: [ORDER_LIST, ORDER_CHANGE],
+};
+const middlewares = [createStateSyncMiddleware(syncConfig)];
+const store = createStore(reducer, {}, applyMiddleware(...middlewares));
+initStateWithPrevTab(store);
 
 ReactDOM.render(
   <Provider store={store}>
