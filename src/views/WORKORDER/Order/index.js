@@ -33,6 +33,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const OrderModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const { order: orderRedux } = useSelector((state) => state.order);
   const [order, setOrder] = useState({
     id: '',
     title: '',
@@ -42,17 +43,20 @@ const OrderModal = () => {
   const [orderDetail, setOrderDetail] = useState([]);
 
   const handleOrderChange = (e, value) => {
+    const orderDetail = orderDetailList.filter((item) => item.order_id === value.id) || [];
     if (value) {
-      dispatch({ type: ORDER_CHANGE, order: value });
+      dispatch({ type: ORDER_CHANGE, order: value, orderDetail: orderDetail });
       setOrder(value);
+      setOrderDetail(orderDetail);
     } else {
-      dispatch({ type: ORDER_CHANGE, order: null });
+      dispatch({ type: ORDER_CHANGE, order: null, orderDetail: orderDetail });
       setOrder({
         id: '',
         title: '',
         customer_name: '',
         order_date: '',
       });
+      setOrderDetail(orderDetail);
     }
   };
 
@@ -63,9 +67,8 @@ const OrderModal = () => {
   };
 
   useEffect(() => {
-    const id = order.id;
-    setOrderDetail(orderDetailList.filter((item) => item.order_id === id));
-  }, [order.id]);
+    if (orderRedux.orderDetail?.length > 0) setOrderDetail(orderRedux.orderDetail);
+  }, [orderRedux.orderDetail]);
 
   return (
     <React.Fragment>
