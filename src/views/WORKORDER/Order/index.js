@@ -63,7 +63,7 @@ const OrderModal = () => {
   const calculateQuantity = (quantityInBox, quantityProduced) => {
     const quantity = quantityInBox - quantityProduced;
     const color = quantity > 0 ? 'yellow' : 'green';
-    return <Typography style={{ backgroundColor: color }}>{quantity}</Typography>;
+    return <Typography style={{ backgroundColor: color }}>{quantity.toLocaleString()}</Typography>;
   };
 
   useEffect(() => {
@@ -190,9 +190,9 @@ const OrderModal = () => {
                                         <TableCell align="left">{item.product_code}</TableCell>
                                         <TableCell align="left">{item.product_customer_code}</TableCell>
                                         <TableCell align="left">{item.product_name}</TableCell>
-                                        <TableCell align="left">{item.quantity_in_box}</TableCell>
+                                        <TableCell align="left">{item.quantity_in_box.toLocaleString()}</TableCell>
                                         <TableCell align="left">{item.unit_name}</TableCell>
-                                        <TableCell align="left">{item.quantity_produced}</TableCell>
+                                        <TableCell align="left">{item.quantity_produced.toLocaleString()}</TableCell>
                                         <TableCell align="center">
                                           {calculateQuantity(item.quantity_in_box, item.quantity_produced)}
                                         </TableCell>

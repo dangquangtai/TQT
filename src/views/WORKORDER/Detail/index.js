@@ -421,402 +421,410 @@ const WorkorderModal = () => {
   }, [workorderRequest.date, workorderRequest.date2]);
   return (
     <React.Fragment>
-      {snackbarStatus.isOpen && (
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          open={snackbarStatus.isOpen}
-          autoHideDuration={3000}
+    {snackbarStatus.isOpen && (
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        open={snackbarStatus.isOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
+      >
+        <Alert
           onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
+          severity={snackbarStatus.type}
+          sx={{ width: '100%' }}
         >
-          <Alert
-            onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-            severity={snackbarStatus.type}
-            sx={{ width: '100%' }}
-          >
-            {snackbarStatus.text}
-          </Alert>
-        </Snackbar>
-      )}
+          {snackbarStatus.text}
+        </Alert>
+      </Snackbar>
+    )}
 
-      <Grid container>
-        <Dialog
-          open={openDialog || false}
-          TransitionComponent={Transition}
-          keepMounted
-          onClose={handleCloseDialog}
-          className={classes.useradddialog}
-        >
-          <DialogTitle className={classes.dialogTitle}>
-            <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              Thông tin kế hoạch
+    <Grid container>
+      <Dialog
+        open={openDialog || false}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleCloseDialog}
+        className={classes.useradddialog}
+      >
+        <DialogTitle className={classes.dialogTitle}>
+          <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
+            Thông tin kế hoạch
+          </Grid>
+        </DialogTitle>
+        <DialogContent className={classes.dialogContent}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+
             </Grid>
-          </DialogTitle>
-          <DialogContent className={classes.dialogContent}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}></Grid>
-              <Grid item xs={12}>
-                <TabPanel value={tabIndex} index={0}>
-                  <Grid container spacing={1}>
-                    <Grid item lg={12} md={12} xs={12}>
-                      <div className={classes.tabItem}>
-                        <div className={classes.tabItemBody}>
-                          <Grid container spacing={1}>
-                            <Grid item lg={6} md={6} xs={12}>
-                              <Grid container className={classes.gridItemInfo} alignItems="center">
-                                <Grid item lg={8} md={8} xs={8}>
-                                  <span className={classes.tabItemLabelField}>Tên kế hoạch sản xuất: </span>
-                                  <TextField
-                                    fullWidth
-                                    variant="outlined"
-                                    size="small"
-                                    name="full_name"
-                                    onChange={handleChange}
-                                  />
-                                </Grid>
-                                <Grid item lg={1} md={1} xs={1}></Grid>
-                                <Grid item lg={3} md={3} xs={3}>
-                                  <span className={classes.tabItemLabelField}>Trạng thái: </span>
-                                  <TextField
-                                    select
-                                    fullWidth
-                                    variant="outlined"
-                                    size="small"
-                                    // value={workorderRequest.status_code}
-                                    onChange={(event) =>
-                                      setWorkorderRequest({ ...workorderRequest, status_code: event.key })
-                                    }
-                                  >
-                                    {productionStatus &&
-                                      productionStatus.map((item) => (
-                                        <MenuItem key={item.key} value={item.key}>
-                                          {item.value}
-                                        </MenuItem>
-                                      ))}
-                                  </TextField>
-                                </Grid>
-                              </Grid>
+            <Grid item xs={12}>
+              <TabPanel value={tabIndex} index={0}>
+                <Grid container spacing={1}>
+                  <Grid item lg={12} md={12} xs={12}>
+                    <div className={classes.tabItem}>
+                      <div className={classes.tabItemBody}>
+                        <Grid container spacing={1}>
+                          <Grid item lg={6} md={6} xs={12}>
 
-                              <Grid container className={classes.gridItemInfo}>
-                                <Grid item lg={1} md={1} xs={1}></Grid>
-                                <Grid item lg={4} md={4} xs={4}>
-                                  <span className={classes.tabItemLabelField}>Thời gian lập kế hoạch:</span>
-                                </Grid>
-
-                                <Grid item lg={4} md={4} xs={4}>
-                                  <span className={classes.tabItemLabelField}>Thời gian kết thúc kế hoạch:</span>
-                                </Grid>
-                              </Grid>
-                            </Grid>
-                            <Grid item lg={6} md={6} xs={12} style={{ background: 'rgba(224, 224, 224, 1)' }}>
-                              <Grid container className={classes.gridItemInfo} alignItems="center">
-                                <Grid item lg={3} md={3} xs={3} alignItems="center">
-                                  <IconButton onClick={handlePreWeek}>
-                                    <SkipPrevious />
-                                  </IconButton>
-
-                                  <span>{'Tuần ' + (currentWeek + 1)}</span>
-
-                                  <IconButton onClick={handleNextWeek}>
-                                    <SkipNext />
-                                  </IconButton>
-                                </Grid>
-                                <Grid item lg={9} md={9} xs={9}>
-                                  <TableContainer component={Paper}>
-                                    <Table size="small" classes={{ root: classes.customTable }}>
-                                      <TableHead>
-                                        <TableRow>
-                                          {dateList?.slice(start, end).map((item, index) => (
-                                            <TableCell
-                                              align="center"
-                                              style={
-                                                currentDate === item.dateString
-                                                  ? { background: 'rgb(97, 42, 255)', color: 'white' }
-                                                  : {}
-                                              }
-                                              onClick={() => handleChangeDate(item.dateString, index + currentWeek * 7)}
-                                            >
-                                              <span>
-                                                {item.day}
-                                                <br />
-                                                {item.dateString}
-                                              </span>
-                                            </TableCell>
-                                          ))}
-                                        </TableRow>
-                                      </TableHead>
-                                      <TableBody>
-                                        <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                          {dateList?.slice(start, end).map((item) => (
-                                            <TableCell component="th" scope="row" align="center">
-                                              <Typography
-                                                style={
-                                                  item?.percent >= 100
-                                                    ? { backgroundColor: 'rgb(48, 188, 65)' }
-                                                    : { backgroundColor: 'yellow' }
-                                                }
-                                              >
-                                                {item.percent}
-                                              </Typography>
-                                            </TableCell>
-                                          ))}
-                                        </TableRow>
-                                      </TableBody>
-                                    </Table>
-                                  </TableContainer>
-                                </Grid>
-                              </Grid>
-                            </Grid>
-
-                            <Grid
-                              container
-                              className={classes.gridItemInfo}
-                              alignItems="center"
-                              justifyContent="flex-end"
-                            >
-                              <Grid item lg={1} md={1} xs={1}>
+                            <Grid container className={classes.gridItemInfo} alignItems="center">
+                              <Grid item lg={8} md={8} xs={8}>
+                                <span className={classes.tabItemLabelField}>Tên kế hoạch sản xuất: </span>
                                 <TextField
                                   fullWidth
-                                  type="date"
                                   variant="outlined"
-                                  name="date"
-                                  value={workorderRequest.date}
                                   size="small"
+                                  name="full_name"
+                                  className={classes.inputField}
                                   onChange={handleChange}
                                 />
                               </Grid>
                               <Grid item lg={1} md={1} xs={1}></Grid>
-                              <Grid item lg={1} md={1} xs={1}>
+                              <Grid item lg={3} md={3} xs={3}>
+                                <span className={classes.tabItemLabelField}>Trạng thái: </span>
                                 <TextField
+                                  select
                                   fullWidth
-                                  type="date"
                                   variant="outlined"
-                                  name="date2"
-                                  value={workorderRequest.date2}
                                   size="small"
-                                  onChange={handleChange}
-                                />
+                                  value={workorderRequest.status_code}
+                                  onChange={(event) =>
+                                    setWorkorderRequest({ ...workorderRequest, status_code: event.key })
+                                  }
+                                >
+                                  {productionStatus &&
+                                    productionStatus.map((item) => (
+                                      <MenuItem key={item.key} value={item.key}>
+                                        {item.value}
+                                      </MenuItem>
+                                    ))}
+                                </TextField>
                               </Grid>
-                              <Grid item lg={1} md={1} xs={1}></Grid>
-                              <Grid item lg={7} md={7} xs={7}>
-                                <Grid container alignItems="center">
-                                  <Grid item lg={12} md={12} xs={12}>
-                                    <Grid container alignItems="center">
-                                      <Grid item lg={1.5} md={1.5} xs={1.5}>
-                                        <span className={classes.tabItemLabelField}>{'Số người làm: '}</span>
-                                      </Grid>
-                                      <Grid item lg={1} md={1} xs={1}>
-                                        <TextField
-                                          style={{ marginLeft: '10px' }}
-                                          type="number"
-                                          variant="outlined"
-                                          name="number_person"
-                                          InputProps={{ inputProps: { min: 1 } }}
-                                          value={workorderRequest.number_person}
-                                          size="small"
-                                          onChange={handleChange}
-                                        />
-                                      </Grid>
-                                      <Grid item lg={0.5} md={0.5} xs={0.5}>
-                                        {' '}
-                                      </Grid>
-                                      <Grid item lg={1.5} md={1.5} xs={1.5} style={{ marginLeft: '30px' }}>
-                                        <span className={classes.tabItemLabelField}>{'Số giờ làm: '}</span>
-                                      </Grid>
-                                      <Grid item lg={1} md={1} xs={1}>
-                                        <TextField
-                                          type="number"
-                                          variant="outlined"
-                                          name="number_hours"
-                                          InputProps={{ inputProps: { min: 1 } }}
-                                          value={workorderRequest.number_hours}
-                                          size="small"
-                                          style={{ marginLeft: '10px' }}
-                                          onChange={handleChange}
-                                        />
-                                      </Grid>
+                            </Grid>
 
-                                      <Grid item lg={1.5} md={1.5} xs={1.5} style={{ marginLeft: '30px' }}>
-                                        <span className={classes.tabItemLabelField}>{'Công suất hiện tại: '}</span>
-                                      </Grid>
-                                      <Grid item lg={2} md={2} xs={2}>
-                                        <TextField
-                                          type="number"
-                                          variant="outlined"
-                                          disabled
-                                          style={{ marginLeft: '10px' }}
-                                          value={percent}
-                                          size="small"
-                                          onChange={handleChange}
-                                        />
-                                      </Grid>
-
-                                      <Grid item lg={1.5} md={1.5} xs={1.5} style={{ marginLeft: '30px' }}>
-                                        <span className={classes.tabItemLabelField}>{'Công suất tổng: '}</span>
-                                      </Grid>
-                                      <Grid item lg={1} md={1} xs={1}>
-                                        <TextField
-                                          type="text"
-                                          variant="outlined"
-                                          disabled
-                                          style={{ marginLeft: '10px' }}
-                                          value={100}
-                                          size="small"
-                                          onChange={handleChange}
-                                        />
-                                      </Grid>
-                                    </Grid>
-                                  </Grid>
-                                </Grid>
+                            <Grid container className={classes.gridItemInfo}  >
+                             
+                              <Grid item lg={3} md={3} xs={3}>
+                                <span className={classes.tabItemLabelField} >Thời gian lập kế hoạch:</span>
+                                <TextField
+                                fullWidth
+                                type="date"
+                                variant="outlined"
+                                name="date"
+                                value={workorderRequest.date}
+                                className={classes.inputField}
+                                onChange={handleChange}
+                              />
                               </Grid>
 
-                              <Grid item>
-                                <IconButton onClick={handleAddRow} style={{ background: '#30bc41', color: '#FFFFFF' }}>
-                                  <AddCircle></AddCircle>
+                              <Grid item lg={2} md={2} xs={2}>  </Grid>
+                              <Grid item lg={3} md={3} xs={3}>
+                                <span className={classes.tabItemLabelField}>Thời gian kết thúc:</span>
+                                <TextField
+                                fullWidth
+                                type="date"
+                                variant="outlined"
+                                name="date2"
+                                value={workorderRequest.date2}
+                                className={classes.inputField}
+                                onChange={handleChange}
+                              />
+                              </Grid>
+                            </Grid>
+                          </Grid>
+                          <Grid item lg={6} md={6} xs={12} style={{ background: 'rgba(224, 224, 224, 1)' }}>
+                            <Grid container className={classes.gridItemInfo} alignItems="center" style={{marginTop: '20px'}}>
+                              <Grid item lg={3} md={3} xs={3} alignItems="center">
+                                <IconButton onClick={handlePreWeek}>
+                                  <SkipPrevious />
+                                </IconButton>
+                                <span>{'Tuần '+(currentWeek+1)}</span>
+                                <IconButton onClick={handleNextWeek}>
+                                  <SkipNext />
                                 </IconButton>
                               </Grid>
-                            </Grid>
-
-                            <Grid container className={classes.gridItem} alignItems="center">
-                              <Grid item lg={12} md={12} xs={12}>
-                                <span className={classes.tabItemLabelField}>Chi tiết sản xuất:</span>
-                                <TableContainer style={{ maxHeight: 400 }}>
-                                  {/* <TableScrollbar height="350px"> */}
-                                  <Table size="small" stickyHeader aria-label="sticky table">
-                                    <TableHead>
+                              <Grid item lg={9} md={9} xs={9} >
+                                <TableContainer component={Paper} >
+                                  <Table size="small" classes={{ root: classes.customTable }} >
+                                    <TableHead >
                                       <TableRow>
-                                        <TableCell>STT</TableCell>
-                                        <TableCell align="left">Mã ĐH</TableCell>
-                                        <TableCell align="left">Mã TP của TQT</TableCell>
-                                        <TableCell align="left">Mã TP của KH</TableCell>
-                                        <TableCell align="left">Mã TP theo TQT(Mã hiển thị)</TableCell>
-                                        <TableCell align="left">SL</TableCell>
-                                        <TableCell align="left">Đơn vị</TableCell>
-                                        <TableCell align="left">% công suất</TableCell>
-                                        <TableCell align="left">Vật tư</TableCell>
-                                        <TableCell align="left"></TableCell>
+                                        {dateList?.slice(start, end).map((item,index) => (
+                                          <TableCell align="center"  style={
+                                            currentDate === item.dateString
+                                              ? { background: 'rgb(97, 42, 255)', color: 'white' }
+                                              : {}
+                                          } onClick={()=>handleChangeDate(item.dateString,index+ currentWeek * 7)}>
+                                            <span>
+                                              {item.day}
+                                              <br />
+                                              {item.dateString}
+                                            </span>
+                                          </TableCell>
+                                        ))}
                                       </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                      {rows2?.map((item, index) => (
-                                        <TableRow
-                                          key={index}
-                                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                          hover
-                                        >
-                                          <TableCell align="left">{index + 1}</TableCell>
-                                          <TableCell align="left">{item.order_id}</TableCell>
-                                          <TableCell align="left">
-                                            <Autocomplete
-                                              value={item}
-                                              size="small"
-                                              disablePortal
-                                              options={rows}
-                                              onChange={(e, u) => handleChangeRow(u, index)}
-                                              getOptionLabel={(option) => option.product_code}
-                                              renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                            />
-                                          </TableCell>
-
-                                          <TableCell align="left">{item.product_customer_code}</TableCell>
-                                          <TableCell align="left">{item.product_name}</TableCell>
-                                          <TableCell align="left">
-                                            <TextField
-                                              fullWidth
-                                              type="number"
-                                              style={{ minWidth: 50 }}
-                                              variant="outlined"
-                                              InputProps={{ inputProps: { min: 1, max: item.quantity_in_box } }}
-                                              // name="date"
-                                              value={item.number}
-                                              className={classes.inputField}
-                                              onChange={(e) => handleChangeNumber(e, index)}
-                                            />
-                                          </TableCell>
-                                          <TableCell align="left">{item.unit_name}</TableCell>
-                                          <TableCell align="center">
-                                            <span>{item.percent + '%'}</span>
-                                          </TableCell>
-                                          <TableCell align="center"> {calculateQuantity(item.vattu)}</TableCell>
-                                          <TableCell align="right">
-                                            <IconButton
-                                              onClick={() => handleDeleteRow(index)}
-                                              style={{ background: '#f9c121', color: '#FFFFFF' }}
+                                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                        {dateList?.slice(start, end).map((item) => (
+                                          <TableCell component="th" scope="row" align="center">
+                                            <Typography
+                                              style={
+                                                item?.percent >= 100
+                                                  ? { backgroundColor: 'rgb(48, 188, 65)' }
+                                                  : { backgroundColor: 'yellow' }
+                                              }
                                             >
-                                              <DeleteForever />
-                                            </IconButton>
+                                              {item.percent.toLocaleString()+"%"}
+                                            </Typography>
                                           </TableCell>
-                                        </TableRow>
-                                      ))}
+                                        ))}
+                                      </TableRow>
                                     </TableBody>
                                   </Table>
-                                  {/* </TableScrollbar> */}
                                 </TableContainer>
                               </Grid>
                             </Grid>
                           </Grid>
-                        </div>
+
+                          <Grid container className={classes.gridItemInfo} alignItems="center" justifyContent='flex-end'>
+                            <Grid item lg={1} md={1} xs={1} >
+                            <span className={classes.tabItemLabelField} style={{marginLeft: '-70px'}} >Chi tiết sản xuất:</span>
+                            </Grid>
+                            <Grid item lg={1} md={1} xs={1}></Grid>
+                            <Grid item lg={1} md={1} xs={1}>
+                             
+                            </Grid>
+                            <Grid item lg={1} md={1} xs={1}></Grid>
+                            <Grid item lg={7} md={7} xs={7}>
+                              <Grid container alignItems="center">
+                                <Grid item lg={12} md={12} xs={12}>
+                                  <Grid container alignItems="center">
+                                    <Grid item lg={1.5} md={1.5} xs={1.5} >
+                                      <span className={classes.tabItemLabelField}>{'Số người làm: '}</span>
+                                    </Grid>
+                                    <Grid item lg={1} md={1} xs={1}>
+                                      <TextField
+                                        style={{ marginLeft: '10px' }}
+                                        type="number"
+                                        variant="outlined"
+                                        name="number_person"
+                               
+                                        InputProps={{ inputProps: { min: 1} }}
+                                        value={workorderRequest.number_person}
+                                        className={classes.inputField}
+                                        onChange={handleChange}
+                                      />
+                                    </Grid>
+                                    <Grid item lg={0.5} md={0.5} xs={0.5} >   </Grid>
+                                    <Grid item lg={1.5} md={1.5} xs={1.5} style={{ marginLeft: '30px' }}>
+                                      <span className={classes.tabItemLabelField}>{'Số giờ làm: '}</span>
+                                    </Grid>
+                                    <Grid item lg={1} md={1} xs={1}>
+                                      <TextField
+                                        type="number"
+                                        variant="outlined"
+                                        name="number_hours"
+                                        InputProps={{ inputProps: { min: 1} }}
+                                        value={workorderRequest.number_hours}
+                                        className={classes.inputField}
+                                        style={{ marginLeft: '10px' }}
+                                        onChange={handleChange}
+                                      />
+                                    </Grid>
+
+                                    <Grid item lg={1.5} md={1.5} xs={1.5} style={{ marginLeft: '30px' }}>
+                                      <span className={classes.tabItemLabelField}>{'Công suất hiện tại: '}</span>
+                                    </Grid>
+                                    <Grid item lg={2} md={2} xs={2}>
+                                      <TextField
+
+                                        type="text"
+                                        variant="outlined"
+                                        disabled
+                                        style={{ marginLeft: '10px' }}
+                                        value={percent.toLocaleString()+"%"}
+                                        className={classes.inputField}
+                                        onChange={handleChange}
+                                      />
+                                    </Grid>
+
+
+                                    <Grid item lg={1.5} md={1.5} xs={1.5} style={{ marginLeft: '30px' }}>
+                                      <span className={classes.tabItemLabelField}>{'Công suất tổng: '}</span>
+                                    </Grid>
+                                    <Grid item lg={1} md={1} xs={1}>
+                                      <TextField
+                                        type="text"
+                                        variant="outlined"
+                                        disabled
+                                        style={{ marginLeft: '10px' }}
+                                        value={100}
+                                        className={classes.inputField}
+                                        onChange={handleChange}
+                                      />
+                                    </Grid>
+
+                                  </Grid>
+                                </Grid>
+                              </Grid>
+                            </Grid>
+
+
+                            <Grid item>
+                              <IconButton
+                                onClick={handleAddRow}
+                                style={{ background: '#30bc41', color: '#FFFFFF' }}
+                              >
+                                <AddCircle></AddCircle>
+                              </IconButton>
+                            </Grid>
+                          </Grid>
+
+
+
+
+
+                          <Grid container className={classes.gridItem} alignItems="center">
+                            <Grid item lg={12} md={12} xs={12}>
+                            
+                              <TableContainer style={{ maxHeight: 430 }}>
+                                {/* <TableScrollbar height="350px"> */}
+                                <Table size="small" stickyHeader aria-label="sticky table">
+                                  <TableHead>
+                                    <TableRow>
+                                      <TableCell>STT</TableCell>
+                                      <TableCell align="left">Mã ĐH</TableCell>
+                                      <TableCell align="left">Mã TP của TQT</TableCell>
+                                      <TableCell align="left">Mã TP của KH</TableCell>
+                                      <TableCell align="left">Mã TP theo TQT(Mã hiển thị)</TableCell>
+                                      <TableCell align="left">SL</TableCell>
+                                      <TableCell align="left">Đơn vị</TableCell>
+                                      <TableCell align="left">% công suất</TableCell>
+                                      <TableCell align="left">Vật tư</TableCell>
+                                      <TableCell align="left"></TableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody>
+                                    {rows2?.map((item, index) => (
+                                      <TableRow
+                                        key={index}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        hover
+                                      >
+                                        <TableCell align="left">{index + 1}</TableCell>
+                                        <TableCell align="left">{item.order_id}</TableCell>
+                                        <TableCell align="left">
+                                          <Autocomplete
+                                            value={item}
+                                            size="small"
+                                            disablePortal
+                                            options={rows}
+                                            onChange={(e, u) => handleChangeRow(u, index)}
+                                            getOptionLabel={(option) => option.product_code}
+                                            renderInput={(params) => <TextField {...params} variant="outlined" />}
+                                          />
+                                        </TableCell>
+
+                                        <TableCell align="left">{item.product_customer_code}</TableCell>
+                                        <TableCell align="left">{item.product_name}</TableCell>
+                                        <TableCell align="left">
+                                          <TextField
+                                            fullWidth
+                                            type="number"
+                                            
+                                            style={{ minWidth: 50 }}
+                                            variant="outlined"
+                                            InputProps={{ inputProps: { min: 1, max: item.quantity_in_box } }}
+                                            // name="date"
+                                            value={item.number}
+                                            className={classes.inputField}
+                                            onChange={(e) => handleChangeNumber(e, index)}
+                                          />
+                                        </TableCell>
+                                        <TableCell align="left">{item.unit_name}</TableCell>
+                                        <TableCell align="center">
+
+                                          <span>{item.percent.toLocaleString() + '%'}</span>
+                                        </TableCell>
+                                        <TableCell align="center"> {calculateQuantity(item.vattu)}</TableCell>
+                                        <TableCell align="right">
+                                          <IconButton
+                                            onClick={() => handleDeleteRow(index)}
+                                            style={{ background: '#f9c121', color: '#FFFFFF' }}
+                                          >
+                                            <DeleteForever />
+                                          </IconButton>
+                                        </TableCell>
+                                      </TableRow>
+                                    ))}
+                                  </TableBody>
+                                </Table>
+                                {/* </TableScrollbar> */}
+                              </TableContainer>
+                            </Grid>
+                          </Grid>
+                        </Grid>
                       </div>
-                    </Grid>
+                    </div>
                   </Grid>
-                </TabPanel>
-              </Grid>
+                </Grid>
+              </TabPanel>
             </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Grid container justifyContent="space-between">
-              <Grid item>
-                <Button
-                  variant="contained"
-                  style={{ background: 'rgb(70, 81, 105)' }}
-                  onClick={() => handleCloseDialog()}
-                >
-                  Đóng
-                </Button>
-              </Grid>
-              <Grid item>
-                <Grid container spacing={2} justifyContent="flex-end">
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Grid container justifyContent="space-between">
+            <Grid item>
+              <Button
+                variant="contained"
+                style={{ background: 'rgb(70, 81, 105)' }}
+                onClick={() => handleCloseDialog()}
+              >
+                Đóng
+              </Button>
+            </Grid>
+            <Grid item>
+              <Grid container spacing={2} justifyContent="flex-end">
+                <Grid item>
+                  {/* <Link to={`/dashboard/workorder/${workorderRequest.id}`} target="_blank" rel="noopener noreferrer"> */}
+                  <Button
+                    variant="contained"
+                    style={{ background: 'rgb(97, 42, 255)' }}
+                    onClick={() =>
+                      popupWindow(`/dashboard/workorder/${workorderRequest.id}`, `Mục tiêu sản xuất`, 400)
+                    }
+                  >
+                    Mục tiêu sản xuất
+                  </Button>
+                  {/* </Link> */}
+                </Grid>
+                {!workorderRequest.id && (
                   <Grid item>
-                    {/* <Link to={`/dashboard/workorder/${workorderRequest.id}`} target="_blank" rel="noopener noreferrer"> */}
                     <Button
                       variant="contained"
                       style={{ background: 'rgb(97, 42, 255)' }}
-                      onClick={() =>
-                        popupWindow(`/dashboard/workorder/${workorderRequest.id}`, `Mục tiêu sản xuất`, 400)
-                      }
+                      onClick={() => handleUpdateAccount()}
                     >
-                      Mục tiêu sản xuất
+                      {'Tạo mới'}
                     </Button>
-                    {/* </Link> */}
                   </Grid>
-                  {!workorderRequest.id && (
-                    <Grid item>
-                      <Button
-                        variant="contained"
-                        style={{ background: 'rgb(97, 42, 255)' }}
-                        onClick={() => handleUpdateAccount()}
-                      >
-                        {'Tạo mới'}
-                      </Button>
-                    </Grid>
-                  )}
-                  {!!workorderRequest.id && (
-                    <Grid item>
-                      <Button
-                        variant="contained"
-                        style={{ background: 'rgb(97, 42, 255)' }}
-                        onClick={() => handleUpdateAccount()}
-                      >
-                        Lưu
-                      </Button>
-                    </Grid>
-                  )}
-                </Grid>
+                )}
+                {!!workorderRequest.id && (
+                  <Grid item>
+                    <Button
+                      variant="contained"
+                      style={{ background: 'rgb(97, 42, 255)' }}
+                      onClick={() => handleUpdateAccount()}
+                    >
+                      Lưu
+                    </Button>
+                  </Grid>
+                )}
               </Grid>
             </Grid>
-          </DialogActions>
-        </Dialog>
-      </Grid>
-    </React.Fragment>
+          </Grid>
+        </DialogActions>
+      </Dialog>
+    </Grid>
+  </React.Fragment>
   );
 };
 
