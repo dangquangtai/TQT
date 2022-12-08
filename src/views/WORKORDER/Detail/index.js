@@ -74,7 +74,7 @@ const WorkorderModal = () => {
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
-
+  
   const { selectedDocument } = useSelector((state) => state.document);
   const { detailDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { order } = useSelector((state) => state.order);
@@ -84,14 +84,15 @@ const WorkorderModal = () => {
   const [start, setStart] = useState(0);
   const [indexDate, setIndexDate] = useState(0);
   const [currentDate, setCurrentDate] = useState('');
+  const [currentWeek, setCurrentWeek] = useState(0);
   const [workorderRequest, setWorkorderRequest] = React.useState({
     status_code: '',
     title: '',
     date: '',
     date2: '',
     order_id: '',
-    number_person: 0,
-    number_hours: 0,
+    number_person: 1,
+    number_hours: 1,
   });
   const [productionStatus, setProductionStatus] = React.useState([
     { key: 1, value: 'Nháp' },
@@ -105,12 +106,16 @@ const WorkorderModal = () => {
   };
   const [percent, setPercent] = useState(0);
   const handleChangeRow = (row, index) => {
-    rows2[index] = row;
-    setRows([...rows2]);
-    setPercent(0);
-    for (const value of rows2) {
-      setPercent(percent + value.percent);
+    if (!!row) {
+      rows2[index] = row;
+      setRows([...rows2]);
+      let per=0;
+      for (const value of rows2) {
+        per=per+value.percent
+      }
+      setPercent(per);
     }
+
   };
   const handleAddRow = () => {
     setRows([
@@ -127,11 +132,15 @@ const WorkorderModal = () => {
         status: null,
         order_id: '',
         product_id: '',
+        percent: 0,
+        number:1,
+        vattu: '',
       },
     ]);
   };
   const handleDeleteRow = (index) => {
     rows2.splice(index, 1);
+  
     setRows([...rows2]);
   };
 
@@ -185,67 +194,135 @@ const WorkorderModal = () => {
       ...workorderRequest,
       [e.target.name]: value,
     });
+    if (e.target.name==='number_person' || e.target.name==='number_hours'){
+      dateList[indexDate].number_person = workorderRequest.number_person;
+      dateList[indexDate].number_hours = workorderRequest.number_hours;
+      setDateList(dateList);
+      
+      for (const value of rows2) {
+        value.percent=calculatePercent(dateList[indexDate].number_person,dateList[indexDate].number_hours,value.piece,value.number,value.productivity)
+    
+      }
+      let per=0;
+      for (const value of rows2) {
+        per=per+value.percent
+      }
+      setPercent(per);
+      dateList[indexDate].rows=rows2;
+      setDateList(dateList);
+    }
   };
+
   const handleChangeNumber = (e, index) => {
     const value = e.target.value;
     rows2[index].number = value;
+    rows2[index].percent = calculatePercent(dateList[indexDate].number_person,dateList[indexDate].number_hours,rows2[index].piece,value,rows2[index].productivity)
     setRows([...rows2]);
+      let per=0;
+      for (const value of rows2) {
+        per=per+value.percent
+      }
+      setPercent(per);
   };
+  const calculatePercent = (number_person,number_hours,piece,sl, productivity) =>{
+    return parseFloat(((sl*piece/(number_person*(number_hours/8)*productivity))*100).toFixed(2));
+  }
   const handleNextDate = () => {
-    if (end < indexDate + 2) {
-      if (dateList.length - end >= 7) {
-        setStart(start + 7);
-        setEnd(end + 7);
-      } else {
-        setStart(dateList.length - 7);
-        setEnd(dateList.length);
+    if (indexDate < dateList.length - 1) {
+      if (end < indexDate + 2) {
+        if (dateList.length - end >= 7) {
+          setStart(start + 7);
+          setEnd(end + 7);
+        } else {
+          setStart(dateList.length - 7);
+          setEnd(dateList.length);
+        }
       }
+      let index = dateList.findIndex((obj) => obj.dateString === currentDate);
+      dateList[index].rows = rows2;
+      dateList[index].percent = percent;
+      dateList[index].number_person = workorderRequest.number_person;
+      dateList[index].number_hours = workorderRequest.number_hours;
+      setDateList(dateList);
+      setCurrentDate(dateList[indexDate + 1].dateString);
+      setIndexDate(indexDate + 1);
+      index = dateList.findIndex((obj) => obj.dateString === dateList[indexDate + 1].dateString);
+      setRows([...dateList[index].rows]);
+      setPercent(dateList[index].percent);
+      setWorkorderRequest({
+        ...workorderRequest,
+        number_hours: dateList[index].number_hours,
+        number_person: dateList[index].number_person,
+      });
     }
-    let index = dateList.findIndex((obj) => obj.dateString === currentDate);
-    dateList[index].rows = rows2;
-    dateList[index].percent = percent;
-    dateList[index].number_person = workorderRequest.number_person;
-    dateList[index].number_hours = workorderRequest.number_hours;
-    setDateList(dateList);
-    setCurrentDate(dateList[indexDate + 1].dateString);
-    setIndexDate(indexDate + 1);
-    index = dateList.findIndex((obj) => obj.dateString === dateList[indexDate + 1].dateString);
-    setRows([...dateList[index].rows]);
-    setPercent(dateList[index].percent);
-    setWorkorderRequest({
-      ...workorderRequest,
-      number_hours: dateList[index].number_hours,
-      number_person: dateList[index].number_person,
-    });
+
   };
+  const handleNextWeek = () => {
+    if ((currentWeek+1) * 7 < dateList.length ){
+      setCurrentWeek(currentWeek+1);
+      setStart(start+7);
+      setEnd(end+7);
+    }
+  }
+  const handlePreWeek = () => {
+    if (currentWeek>0){
+      setCurrentWeek(currentWeek-1);
+      setStart(start-7);
+      setEnd(end-7);
+    }
+  }
   const handlePreDate = () => {
-    if (start > indexDate - 1) {
-      if (end - 7 < 7) {
-        setEnd(7);
-        setStart(0);
-      } else {
-        setStart(start - 7);
-        setEnd(end - 7);
+    if (indexDate > 0) {
+      if (start > indexDate - 1) {
+        if (end - 7 < 7) {
+          setEnd(7);
+          setStart(0);
+        } else {
+          setStart(start - 7);
+          setEnd(end - 7);
+        }
       }
+      let index = dateList.findIndex((obj) => obj.dateString === currentDate);
+      dateList[index].rows = rows2;
+      dateList[index].percent = percent;
+      dateList[index].number_person = workorderRequest.number_person;
+      dateList[index].number_hours = workorderRequest.number_hours;
+      setDateList(dateList);
+      setCurrentDate(dateList[indexDate - 1].dateString);
+      setIndexDate(indexDate - 1);
+      index = dateList.findIndex((obj) => obj.dateString === dateList[indexDate - 1].dateString);
+      setRows([]);
+      setRows(dateList[index].rows);
+      setPercent(dateList[index].percent);
+      setWorkorderRequest({
+        ...workorderRequest,
+        number_hours: dateList[index].number_hours,
+        number_person: dateList[index].number_person,
+      });
     }
-    let index = dateList.findIndex((obj) => obj.dateString === currentDate);
-    dateList[index].rows = rows2;
-    dateList[index].percent = percent;
-    dateList[index].number_person = workorderRequest.number_person;
-    dateList[index].number_hours = workorderRequest.number_hours;
-    setDateList(dateList);
-    setCurrentDate(dateList[indexDate - 1].dateString);
-    setIndexDate(indexDate - 1);
-    index = dateList.findIndex((obj) => obj.dateString === dateList[indexDate - 1].dateString);
-    setRows([]);
-    setRows(dateList[index].rows);
-    setPercent(dateList[index].percent);
-    setWorkorderRequest({
-      ...workorderRequest,
-      number_hours: dateList[index].number_hours,
-      number_person: dateList[index].number_person,
-    });
+
+
   };
+  const handleChangeDate = (date,index) => {
+      
+      console.log(index);
+      dateList[indexDate].rows = rows2;
+      dateList[indexDate].percent = percent;
+      dateList[indexDate].number_person = workorderRequest.number_person;
+      dateList[indexDate].number_hours = workorderRequest.number_hours;
+      setDateList(dateList);
+      setCurrentDate(date);
+      setIndexDate(index);
+      setRows([]);
+      setRows(dateList[index].rows);
+      setPercent(dateList[index].percent);
+      setWorkorderRequest({
+        ...workorderRequest,
+        number_hours: dateList[index].number_hours,
+        number_person: dateList[index].number_person,
+      });
+    }
+
   const setDocumentToDefault = async () => {
     setTabIndex(0);
   };
@@ -271,17 +348,13 @@ const WorkorderModal = () => {
   };
 
   useEffect(() => {
-    console.log(order);
-  }, [order]);
-
-  useEffect(() => {
     if (!selectedDocument) return;
   }, [selectedDocument]);
 
   useEffect(() => {
     let dateCurrent = '';
     let dateCurrent2 = '';
-    const month = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+
     let date = new Date();
     if (date.getDate() < 10) {
       dateCurrent = date.getFullYear() + '-' + month[date.getMonth()] + '-0' + date.getDate();
@@ -319,9 +392,9 @@ const WorkorderModal = () => {
             day: weekday[d.getDay()],
             rows: [],
             percent: 0,
-            number_hours: 0,
-            number_person: 0,
-            number: 0,
+            number_hours: 1,
+            number_person: 1,
+            number: 1,
           },
         ];
       }
@@ -370,26 +443,7 @@ const WorkorderModal = () => {
           <DialogContent className={classes.dialogContent}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <Tabs
-                  value={tabIndex}
-                  indicatorColor="primary"
-                  textColor="primary"
-                  onChange={handleChangeTab}
-                  aria-label="simple tabs example"
-                  variant="scrollable"
-                >
-                  <Tab
-                    className={classes.unUpperCase}
-                    label={
-                      <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <AccountCircleOutlinedIcon className={`${tabIndex === 0 ? classes.tabActiveIcon : ''}`} />
-                        Thông tin
-                      </Typography>
-                    }
-                    value={0}
-                    {...a11yProps(0)}
-                  />
-                </Tabs>
+
               </Grid>
               <Grid item xs={12}>
                 <TabPanel value={tabIndex} index={0}>
@@ -399,17 +453,10 @@ const WorkorderModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={1}>
                             <Grid item lg={6} md={6} xs={12}>
-                              <Grid container className={classes.gridItemInfo} alignItems="center">
-                                <Grid item lg={5} md={5} xs={5}>
-                                  <span className={classes.tabItemLabelField}>Tên kế hoạch sản xuất: </span>
-                                </Grid>
-                                <Grid item lg={4} md={4} xs={4}></Grid>
-                                <Grid item lg={3} md={3} xs={3}>
-                                  <span className={classes.tabItemLabelField}>Trạng thái: </span>
-                                </Grid>
-                              </Grid>
+
                               <Grid container className={classes.gridItemInfo} alignItems="center">
                                 <Grid item lg={8} md={8} xs={8}>
+                                  <span className={classes.tabItemLabelField}>Tên kế hoạch sản xuất: </span>
                                   <TextField
                                     fullWidth
                                     variant="outlined"
@@ -421,6 +468,7 @@ const WorkorderModal = () => {
                                 </Grid>
                                 <Grid item lg={1} md={1} xs={1}></Grid>
                                 <Grid item lg={3} md={3} xs={3}>
+                                  <span className={classes.tabItemLabelField}>Trạng thái: </span>
                                   <TextField
                                     select
                                     fullWidth
@@ -441,73 +489,42 @@ const WorkorderModal = () => {
                                 </Grid>
                               </Grid>
 
-                              <Grid container className={classes.gridItemInfo}>
-                                <Grid item lg={7} md={7} xs={7}>
-                                  <span className={classes.tabItemLabelField}>Thời gian lập kế hoạch:</span>
+                              <Grid container className={classes.gridItemInfo}  >
+                                <Grid item lg={1} md={1} xs={1}></Grid>
+                                <Grid item lg={4} md={4} xs={4}>
+                                  <span className={classes.tabItemLabelField} >Thời gian lập kế hoạch:</span>
                                 </Grid>
 
-                                <Grid item lg={5} md={5} xs={5}>
+
+                                <Grid item lg={4} md={4} xs={4}>
                                   <span className={classes.tabItemLabelField}>Thời gian kết thúc kế hoạch:</span>
                                 </Grid>
                               </Grid>
-
-                              <Grid container className={classes.gridItemInfo} alignItems="center">
-                                <Grid item lg={5} md={5} xs={5}>
-                                  <TextField
-                                    fullWidth
-                                    type="date"
-                                    variant="outlined"
-                                    name="date"
-                                    value={workorderRequest.date}
-                                    className={classes.inputField}
-                                    onChange={handleChange}
-                                  />
-                                </Grid>
-                                <Grid item lg={2} md={2} xs={2}></Grid>
-                                <Grid item lg={5} md={5} xs={5}>
-                                  <TextField
-                                    fullWidth
-                                    type="date"
-                                    variant="outlined"
-                                    name="date2"
-                                    value={workorderRequest.date2}
-                                    className={classes.inputField}
-                                    onChange={handleChange}
-                                  />
-                                </Grid>
-                              </Grid>
                             </Grid>
-                            <Grid item lg={6} md={6} xs={12}>
+                            <Grid item lg={6} md={6} xs={12} style={{ background: 'rgba(224, 224, 224, 1)' }}>
                               <Grid container className={classes.gridItemInfo} alignItems="center">
                                 <Grid item lg={3} md={3} xs={3} alignItems="center">
-                                  {indexDate > 0 && (
-                                    <IconButton onClick={handlePreDate}>
-                                      <SkipPrevious />
-                                    </IconButton>
-                                  )}
 
-                                  <TextField
-                                    style={{ maxWith: 50 }}
-                                    type="text"
-                                    variant="outlined"
-                                    disabled
-                                    value={currentDate}
-                                    className={classes.inputField}
-
-                                  />
-                                  {indexDate < dateList.length - 1 && (
-                                    <IconButton onClick={handleNextDate}>
-                                      <SkipNext />
-                                    </IconButton>
-                                  )}
+                                  <IconButton onClick={handlePreWeek}>
+                                    <SkipPrevious />
+                                  </IconButton>
+                                    
+                                  <span>{'Tuần '+(currentWeek+1)}</span>
+                              
+                              
+                                  <IconButton onClick={handleNextWeek}>
+                                    <SkipNext />
+                                  </IconButton>
+                             
+                         
                                 </Grid>
-                                <Grid item lg={9} md={9} xs={9}>
-                                  <TableContainer component={Paper}>
-                                    <Table size="small" stickyHeader aria-label="sticky table">
-                                      <TableHead>
+                                <Grid item lg={9} md={9} xs={9} >
+                                  <TableContainer component={Paper} >
+                                    <Table size="small" classes={{ root: classes.customTable }} >
+                                      <TableHead >
                                         <TableRow>
-                                          {dateList?.slice(start, end).map((item) => (
-                                            <TableCell align="center">
+                                          {dateList?.slice(start, end).map((item,index) => (
+                                            <TableCell align="center"   style={{ background: currentDate===item.dateString ? 'rgb(97, 42, 255)':'none'}} onClick={()=>handleChangeDate(item.dateString,index+ currentWeek * 7)}>
                                               <span>
                                                 {item.day}
                                                 <br />
@@ -523,7 +540,7 @@ const WorkorderModal = () => {
                                             <TableCell component="th" scope="row" align="center">
                                               <Typography
                                                 style={
-                                                  item?.percent === 100
+                                                  item?.percent >= 100
                                                     ? { backgroundColor: 'rgb(48, 188, 65)' }
                                                     : { backgroundColor: 'yellow' }
                                                 }
@@ -540,92 +557,124 @@ const WorkorderModal = () => {
                               </Grid>
                             </Grid>
 
-                            <Grid container className={classes.gridItemInfo} alignItems="center">
-                              <Grid item lg={6} md={6} xs={6}>
-                                <Grid container className={classes.gridItemInfo} alignItems="center">
-                                  <Grid item lg={3} md={3} xs={3}>
-                                    <span className={classes.tabItemLabelField}>Chi tiết sản xuất:</span>
-                                  </Grid>
-                                  <Grid item lg={6} md={6} xs={6}></Grid>
-                                  <Grid item lg={1.5} md={1.5} xs={1.5}>
-                                    <span className={classes.tabItemLabelField}>Số người làm:</span>
-                                  </Grid>
-                                  <Grid item lg={1} md={1} xs={1}>
-                                    <TextField
-                                      style={{ maxWith: 50 }}
-                                      type="text"
-                                      variant="outlined"
-                                      name="number_person"
-                                      value={workorderRequest.number_person}
-                                      className={classes.inputField}
-                                      onChange={handleChange}
-                                    />
+                            <Grid container className={classes.gridItemInfo} alignItems="center" justifyContent='flex-end'>
+                              <Grid item lg={1} md={1} xs={1}>
+                                <TextField
+                                  fullWidth
+                                  type="date"
+                                  variant="outlined"
+                                  name="date"
+                                  value={workorderRequest.date}
+                                  className={classes.inputField}
+                                  onChange={handleChange}
+                                />
+                              </Grid>
+                              <Grid item lg={1} md={1} xs={1}></Grid>
+                              <Grid item lg={1} md={1} xs={1}>
+                                <TextField
+                                  fullWidth
+                                  type="date"
+                                  variant="outlined"
+                                  name="date2"
+                                  value={workorderRequest.date2}
+                                  className={classes.inputField}
+                                  onChange={handleChange}
+                                />
+                              </Grid>
+                              <Grid item lg={1} md={1} xs={1}></Grid>
+                              <Grid item lg={7} md={7} xs={7}>
+                                <Grid container alignItems="center">
+                                  <Grid item lg={12} md={12} xs={12}>
+                                    <Grid container alignItems="center">
+                                      <Grid item lg={1.5} md={1.5} xs={1.5} >
+                                        <span className={classes.tabItemLabelField}>{'Số người làm: '}</span>
+                                      </Grid>
+                                      <Grid item lg={1} md={1} xs={1}>
+                                        <TextField
+                                          style={{ marginLeft: '10px' }}
+                                          type="number"
+                                          variant="outlined"
+                                          name="number_person"
+                                 
+                                          InputProps={{ inputProps: { min: 1} }}
+                                          value={workorderRequest.number_person}
+                                          className={classes.inputField}
+                                          onChange={handleChange}
+                                        />
+                                      </Grid>
+                                      <Grid item lg={0.5} md={0.5} xs={0.5} >   </Grid>
+                                      <Grid item lg={1.5} md={1.5} xs={1.5} style={{ marginLeft: '30px' }}>
+                                        <span className={classes.tabItemLabelField}>{'Số giờ làm: '}</span>
+                                      </Grid>
+                                      <Grid item lg={1} md={1} xs={1}>
+                                        <TextField
+                                          type="number"
+                                          variant="outlined"
+                                          name="number_hours"
+                                          InputProps={{ inputProps: { min: 1} }}
+                                          value={workorderRequest.number_hours}
+                                          className={classes.inputField}
+                                          style={{ marginLeft: '10px' }}
+                                          onChange={handleChange}
+                                        />
+                                      </Grid>
+
+                                      <Grid item lg={1.5} md={1.5} xs={1.5} style={{ marginLeft: '30px' }}>
+                                        <span className={classes.tabItemLabelField}>{'Công suất hiện tại: '}</span>
+                                      </Grid>
+                                      <Grid item lg={2} md={2} xs={2}>
+                                        <TextField
+
+                                          type="number"
+                                          variant="outlined"
+                                          disabled
+                                          style={{ marginLeft: '10px' }}
+                                          value={percent}
+                                          className={classes.inputField}
+                                          onChange={handleChange}
+                                        />
+                                      </Grid>
+
+
+                                      <Grid item lg={1.5} md={1.5} xs={1.5} style={{ marginLeft: '30px' }}>
+                                        <span className={classes.tabItemLabelField}>{'Công suất tổng: '}</span>
+                                      </Grid>
+                                      <Grid item lg={1} md={1} xs={1}>
+                                        <TextField
+                                          type="text"
+                                          variant="outlined"
+                                          disabled
+                                          style={{ marginLeft: '10px' }}
+                                          value={100}
+                                          className={classes.inputField}
+                                          onChange={handleChange}
+                                        />
+                                      </Grid>
+
+                                    </Grid>
                                   </Grid>
                                 </Grid>
                               </Grid>
-                              <Grid item lg={6} md={6} xs={6}>
-                                <Grid container className={classes.gridItemInfo} alignItems="center">
-                                  <Grid item lg={1.5} md={1.5} xs={1.5} alignContent="right">
-                                    <span className={classes.tabItemLabelField}>Số giờ làm:</span>
-                                  </Grid>
-                                  <Grid item lg={1} md={1} xs={1}>
-                                    <TextField
-                                      type="text"
-                                      variant="outlined"
-                                      name="number_hours"
-                                      value={workorderRequest.number_hours}
-                                      className={classes.inputField}
-                                      fullWidth
-                                      onChange={handleChange}
-                                    />
-                                  </Grid>
-                                  <Grid item lg={1} md={1} xs={1} alignContent="right"></Grid>
-                                  <Grid item lg={1.5} md={1.5} xs={1.5}>
-                                    <span className={classes.tabItemLabelField}>Công suất hiện tại</span>
-                                  </Grid>
-                                  <Grid item lg={1} md={1} xs={1}>
-                                    <TextField
-                                      fullWidth
-                                      type="text"
-                                      variant="outlined"
-                                      disabled
-                                      value={percent}
-                                      className={classes.inputField}
-                                      onChange={handleChange}
-                                    />
-                                  </Grid>
-                                  <Grid item lg={1} md={1} xs={1} alignContent="right"></Grid>
 
-                                  <Grid item lg={1.5} md={1.5} xs={1.5}>
-                                    <span className={classes.tabItemLabelField}>Công suất tổng</span>
-                                  </Grid>
-                                  <Grid item lg={1} md={1} xs={1}>
-                                    <TextField
-                                      type="text"
-                                      variant="outlined"
-                                      disabled
-                                      value={100}
-                                      className={classes.inputField}
-                                      onChange={handleChange}
-                                    />
-                                  </Grid>
-                                  <Grid item lg={1} md={1} xs={1} alignContent="right"></Grid>
 
-                                  <Grid item lg={1} md={1} xs={1} alignItems="right">
-                                    <IconButton
-                                      onClick={handleAddRow}
-                                      style={{ background: '#30bc41', color: '#FFFFFF' }}
-                                    >
-                                      <AddCircle></AddCircle>
-                                    </IconButton>
-                                  </Grid>
-                                </Grid>
+                              <Grid item>
+                                <IconButton
+                                  onClick={handleAddRow}
+                                  style={{ background: '#30bc41', color: '#FFFFFF' }}
+                                >
+                                  <AddCircle></AddCircle>
+                                </IconButton>
                               </Grid>
                             </Grid>
 
+
+
+
+
                             <Grid container className={classes.gridItem} alignItems="center">
                               <Grid item lg={12} md={12} xs={12}>
-                                <TableContainer style={{ maxHeight: 350 }}>
+                                <span className={classes.tabItemLabelField}>Chi tiết sản xuất:</span>
+                                <TableContainer style={{ maxHeight: 400 }}>
                                   {/* <TableScrollbar height="350px"> */}
                                   <Table size="small" stickyHeader aria-label="sticky table">
                                     <TableHead>
@@ -655,7 +704,7 @@ const WorkorderModal = () => {
                                             <Autocomplete
                                               value={item}
                                               size="small"
-                                              fullWidth
+                                              disablePortal
                                               options={rows}
                                               onChange={(e, u) => handleChangeRow(u, index)}
                                               getOptionLabel={(option) => option.product_code}
@@ -669,10 +718,10 @@ const WorkorderModal = () => {
                                             <TextField
                                               fullWidth
                                               type="number"
-                                              defaultValue={0}
+                                              
                                               style={{ minWidth: 50 }}
                                               variant="outlined"
-                                              InputProps={{ inputProps: { min: 0, max: item.quantity_in_box } }}
+                                              InputProps={{ inputProps: { min: 1, max: item.quantity_in_box } }}
                                               // name="date"
                                               value={item.number}
                                               className={classes.inputField}
@@ -681,6 +730,7 @@ const WorkorderModal = () => {
                                           </TableCell>
                                           <TableCell align="left">{item.unit_name}</TableCell>
                                           <TableCell align="center">
+
                                             <span>{item.percent + '%'}</span>
                                           </TableCell>
                                           <TableCell align="center"> {calculateQuantity(item.vattu)}</TableCell>

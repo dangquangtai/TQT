@@ -1,4 +1,4 @@
-export const weekday = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+export const weekday = ['CN', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
 export const month = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 export const rowsList = [
@@ -15,7 +15,9 @@ export const rowsList = [
     order_id: 'KHT10-001',
     product_id: 'a4a304d8-6d69-11ed-b85f-005056a3c175',
     vattu: 'Thiếu',
-    percent: 30,
+    percent: 0,
+    productivity: 1200,
+    piece: 360
   },
   {
     unit_name: 'Thùng',
@@ -30,7 +32,9 @@ export const rowsList = [
     order_id: 'KHT10-001',
     product_id: 'a4a304d2-6d69-11ed-b85f-005056a3c175',
     vattu: 'Đủ',
-    percent: 30,
+    percent: 0,
+    productivity: 6000,
+    piece: 1200
   },
   {
     unit_name: 'Thùng',
@@ -45,7 +49,9 @@ export const rowsList = [
     order_id: 'KHT10-002',
     product_id: 'a4a304d1-6d69-11ed-b85f-005056a3c175',
     vattu: 'Thiếu',
-    percent: 30,
+    percent: 0,
+    productivity: 1200,
+    piece: 360
   },
   {
     unit_name: 'Thùng',
@@ -60,7 +66,9 @@ export const rowsList = [
     order_id: 'KHT10-002',
     product_id: 'a4a304d1-6d69-11ed-b85f-005056a3c175',
     vattu: 'Đủ',
-    percent: 10,
+    percent: 0,
+    productivity: 6000,
+    piece: 1200
   },
   {
     unit_name: 'Thùng',
@@ -75,7 +83,9 @@ export const rowsList = [
     order_id: 'KHT10-002',
     product_id: 'a4a304d2-6d69-11ed-b85f-005056a3c175',
     vattu: 'Thiếu',
-    percent: 30,
+    percent: 0,
+    productivity: 6000,
+    piece: 1200
   },
   {
     unit_name: 'Thùng',
@@ -90,7 +100,9 @@ export const rowsList = [
     order_id: 'KHT10-001',
     product_id: 'a4a304d8-6d69-11ed-b85f-005056a3c175',
     vattu: 'Đủ',
-    percent: 20,
+    percent: 0,
+    productivity: 6000,
+    piece: 1200
   },
   {
     unit_name: 'Thùng',
@@ -105,7 +117,9 @@ export const rowsList = [
     order_id: 'KHT10-001',
     product_id: 'a4a304d2-6d69-11ed-b85f-005056a3c175',
     vattu: 'Thiếu',
-    percent: 30,
+    percent: 0,
+    productivity: 6000,
+    piece: 1200
   },
   {
     unit_name: 'Thùng',
@@ -120,7 +134,9 @@ export const rowsList = [
     order_id: 'KHT10-002',
     product_id: 'a4a304d1-6d69-11ed-b85f-005056a3c175',
     vattu: 'Đủ',
-    percent: 40,
+    percent: 0,
+    productivity: 6000,
+    piece: 1200
   },
   {
     unit_name: 'Thùng',
@@ -135,7 +151,9 @@ export const rowsList = [
     order_id: 'KHT10-002',
     product_id: 'a4a304d1-6d69-11ed-b85f-005056a3c175',
     vattu: 'Đủ',
-    percent: 30,
+    percent: 0,
+    productivity: 6000,
+    piece: 1200
   },
 ];
 

@@ -19,6 +19,11 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: 'unset'
     },
   },
+  customTable: {
+    "& .MuiTableCell-sizeSmall": {
+      padding: "6px 0px 6px 16px" // <-- arbitrary value
+    }
+  },
   dialogTitle: {
     background: '#F1F1F9 !important',
     padding: '8px 24px',
@@ -28,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '0 24px',
     overflowY: 'hidden'
   },
+  
   gridItemInfo: {
     padding: '0 12px 10px',
     [theme.breakpoints.down('xs')]: {
