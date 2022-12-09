@@ -24,7 +24,6 @@ import {
   Paper,
   IconButton,
 } from '@material-ui/core';
-import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import Alert from '../../../component/Alert/index.js';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -34,6 +33,7 @@ import { AddCircle, SkipNext, SkipPrevious } from '@material-ui/icons';
 import { DeleteForever } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { month, rowsList, weekday } from './../data';
+import { number } from 'echarts';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -66,7 +66,170 @@ function a11yProps(index) {
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
-
+const rowsList2 = [
+  {
+    unit_name: 'Thùng',
+    unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
+    quantity_produced: 0,
+    quantity_in_box: 1200,
+    product_customer_code: 'F921',
+    product_name: 'Khăn lau kính.30g/c.20x30cm.3P (Nv,Br,Bk)',
+    product_code: 'BST0008',
+    id: '17a74935-7252-11ed-b85f-005056a3c175',
+    status: '',
+    order_id: 'KHT10-001',
+    product_id: 'a4a304d8-6d69-11ed-b85f-005056a3c175',
+    vattu: 'Thiếu',
+    percent: 0,
+    number: 0,
+    productivity: 1200,
+    piece: 360
+  },
+  {
+    unit_name: 'Thùng',
+    unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
+    quantity_produced: 0,
+    quantity_in_box: 500,
+    product_customer_code: 'TVF-659',
+    product_name: 'Khăn bếp.21g/c.33x33cm 5P (B,G,Y,P,O)',
+    product_code: 'BST0002',
+    id: '1',
+    status: null,
+    order_id: 'KHT10-001',
+    product_id: 'a4a304d2-6d69-11ed-b85f-005056a3c174',
+    vattu: 'Đủ',
+    percent: 0,
+    number: 0,
+    productivity: 6000,
+    piece: 1200
+  },
+  {
+    unit_name: 'Thùng',
+    unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
+    quantity_produced: 0,
+    quantity_in_box: 500,
+    product_customer_code: 'TVF-658',
+    product_name: 'Khăn hạt na.25g/c.26x37cm. 3P (P,Y,G)',
+    product_code: 'BST0001',
+    id: '5de651d4-7254-11ed-b85f-005056a3c175',
+    status: null,
+    order_id: 'KHT10-002',
+    product_id: 'a4a304d1-6d69-11ed-b85f-005056a3c173',
+    vattu: 'Thiếu',
+    percent: 0,
+    number: 0,
+    productivity: 1200,
+    piece: 360
+  },
+  {
+    unit_name: 'Thùng',
+    unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
+    quantity_produced: 0,
+    quantity_in_box: 100,
+    product_customer_code: 'TVF-658',
+    product_name: 'Khăn hạt na.25g/c.26x37cm. 3P (P,Y,G)',
+    product_code: 'BST0003',
+    id: 'f3febeac-7220-11ed-b85f-005056a3c175',
+    status: null,
+    order_id: 'KHT10-002',
+    product_id: 'a4a304d1-6d69-11ed-b85f-005056a3c172',
+    vattu: 'Đủ',
+    percent: 0,
+    number: 0,
+    productivity: 6000,
+    piece: 1200
+  },
+  {
+    unit_name: 'Thùng',
+    unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
+    quantity_produced: 500,
+    quantity_in_box: 500,
+    product_customer_code: 'TVF-659',
+    product_name: 'Khăn bếp.21g/c.33x33cm 5P (B,G,Y,P,O)',
+    product_code: 'BST0007',
+    id: '1',
+    status: null,
+    order_id: 'KHT10-002',
+    product_id: 'a4a304d2-6d69-11ed-b85f-005056a3c171',
+    vattu: 'Thiếu',
+    percent: 0,
+    number: 0,
+    productivity: 6000,
+    piece: 1200
+  },
+  {
+    unit_name: 'Thùng',
+    unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
+    quantity_produced: 0,
+    quantity_in_box: 1200,
+    product_customer_code: 'F921',
+    product_name: 'Khăn lau kính.30g/c.20x30cm.3P (Nv,Br,Bk)',
+    product_code: 'BST0009',
+    id: '17a74935-7252-11ed-b85f-005056a3c175',
+    status: '',
+    order_id: 'KHT10-001',
+    product_id: 'a4a304d8-6d69-11ed-b85f-005056a3c170',
+    vattu: 'Đủ',
+    percent: 0,
+    number: 0,
+    productivity: 6000,
+    piece: 1200
+  },
+  {
+    unit_name: 'Thùng',
+    unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
+    quantity_produced: 0,
+    quantity_in_box: 500,
+    product_customer_code: 'TVF-659',
+    product_name: 'Khăn bếp.21g/c.33x33cm 5P (B,G,Y,P,O)',
+    product_code: 'BST00012',
+    id: '1',
+    status: null,
+    order_id: 'KHT10-001',
+    product_id: 'a4a304d2-6d69-11ed-b85f-005056a3c177',
+    vattu: 'Thiếu',
+    percent: 0,
+    number: 0,
+    productivity: 6000,
+    piece: 1200
+  },
+  {
+    unit_name: 'Thùng',
+    unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
+    quantity_produced: 0,
+    quantity_in_box: 500,
+    product_customer_code: 'TVF-658',
+    product_name: 'Khăn hạt na.25g/c.26x37cm. 3P (P,Y,G)',
+    product_code: 'BST00011',
+    id: '5de651d4-7254-11ed-b85f-005056a3c175',
+    status: null,
+    order_id: 'KHT10-002',
+    product_id: 'a4a304d1-6d69-11ed-b85f-005056a3c178',
+    vattu: 'Đủ',
+    percent: 0,
+    number: 0,
+    productivity: 6000,
+    piece: 1200
+  },
+  {
+    unit_name: 'Thùng',
+    unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
+    quantity_produced: 0,
+    quantity_in_box: 100,
+    product_customer_code: 'TVF-658',
+    product_name: 'Khăn hạt na.25g/c.26x37cm. 3P (P,Y,G)',
+    product_code: 'BST00013',
+    id: 'f3febeac-7220-11ed-b85f-005056a3c175',
+    status: null,
+    order_id: 'KHT10-002',
+    product_id: 'a4a304d1-6d69-11ed-b85f-005056a3c179',
+    vattu: 'Đủ',
+    percent: 0,
+    number: 0,
+    productivity: 6000,
+    piece: 1200
+  },
+];
 const WorkorderModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -107,8 +270,27 @@ const WorkorderModal = () => {
   const [percent, setPercent] = useState(0);
   const handleChangeRow = (row, index) => {
     if (!!row) {
-      rows2[index] = row;
-      setRows([...rows2]);
+      const newProductList = [...rows2];
+      const newProduct = {
+          unit_name: row?.unit_name || 'Thùng',
+          unit_id: row?.unit_id,
+          quantity_produced: row?.quantity_produced,
+          quantity_in_box: row?.quantity_in_box,
+          product_customer_code: row?.product_customer_code,
+          product_name: row?.product_name,
+          product_code: row?.product_code,
+          id: row?.id,
+          status: null,
+          order_id: row?.order_id,
+          product_id: row?.product_id,
+          vattu: row?.vattu,
+          percent: 0,
+          number: 0,
+          productivity: row?.productivity,
+          piece: row?.piece
+      };
+      newProductList[index] = { ...newProductList[index], ...newProduct };
+      setRows(newProductList);
       let per = 0;
       for (const value of rows2) {
         per = per + value.percent;
@@ -132,14 +314,21 @@ const WorkorderModal = () => {
         order_id: '',
         product_id: '',
         percent: 0,
-        number: 1,
+        number: 0,
         vattu: '',
       },
     ]);
   };
   const handleDeleteRow = (index) => {
+    let orderDetail = order?.orderDetail;
+    orderDetail.find((x) => x.id === rows2[index].id).quantity_produced -= rows2[index].number;
+    dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
     rows2.splice(index, 1);
-
+    let per = 0;
+      for (const value of rows2) {
+        per = per + value.percent;
+      }
+    setPercent(per);
     setRows([...rows2]);
   };
 
@@ -161,30 +350,7 @@ const WorkorderModal = () => {
     });
   };
   const handleUpdateAccount = async () => {
-    // try {
-    //   if (!workorderRequest.id) {
-    //     let check = true;
-    //     if (check == true) {
-    //       handleOpenSnackbar(true, 'success', 'Tạo mới thành công!');
-    //       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'account' });
-    //       handleCloseDialog();
-    //     } else {
-    //       handleOpenSnackbar(true, 'error', 'Tài khoản đã tồn tại!');
-    //     }
-    //   } else {
-    //     let check = true;
-    //     if (check == true) {
-    //       handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
-    //       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'account' });
-    //       handleCloseDialog();
-    //     } else {
-    //       handleOpenSnackbar(true, 'error', 'Tài khoản đã tồn tại!');
-    //     }
-    //   }
-    // } catch (error) {
-    //   handleOpenSnackbar(true, 'error', 'Vui lòng chọn ngày tháng năm sinh!');
-    // } finally {
-    // }
+   
   };
 
   const handleChange = (e) => {
@@ -220,9 +386,8 @@ const WorkorderModal = () => {
   const handleChangeNumber = (e, index) => {
     const value = e.target.value;
     let orderDetail = order?.orderDetail;
-    orderDetail.find((x) => x.id === rows2[index].id).quantity_produced = value;
+    orderDetail.find((x) => x.id === rows2[index].id).quantity_produced += value - rows2[index].number;
     dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
-    console.log(orderDetail);
     rows2[index].number = value;
     rows2[index].percent = calculatePercent(
       dateList[indexDate].number_person,
@@ -241,35 +406,7 @@ const WorkorderModal = () => {
   const calculatePercent = (number_person, number_hours, piece, sl, productivity) => {
     return parseFloat((((sl * piece) / (number_person * (number_hours / 8) * productivity)) * 100).toFixed(2));
   };
-  const handleNextDate = () => {
-    if (indexDate < dateList.length - 1) {
-      if (end < indexDate + 2) {
-        if (dateList.length - end >= 7) {
-          setStart(start + 7);
-          setEnd(end + 7);
-        } else {
-          setStart(dateList.length - 7);
-          setEnd(dateList.length);
-        }
-      }
-      let index = dateList.findIndex((obj) => obj.dateString === currentDate);
-      dateList[index].rows = rows2;
-      dateList[index].percent = percent;
-      dateList[index].number_person = workorderRequest.number_person;
-      dateList[index].number_hours = workorderRequest.number_hours;
-      setDateList(dateList);
-      setCurrentDate(dateList[indexDate + 1].dateString);
-      setIndexDate(indexDate + 1);
-      index = dateList.findIndex((obj) => obj.dateString === dateList[indexDate + 1].dateString);
-      setRows([...dateList[index].rows]);
-      setPercent(dateList[index].percent);
-      setWorkorderRequest({
-        ...workorderRequest,
-        number_hours: dateList[index].number_hours,
-        number_person: dateList[index].number_person,
-      });
-    }
-  };
+  
   const handleNextWeek = () => {
     if ((currentWeek + 1) * 7 < dateList.length) {
       setCurrentWeek(currentWeek + 1);
@@ -284,46 +421,15 @@ const WorkorderModal = () => {
       setEnd(end - 7);
     }
   };
-  const handlePreDate = () => {
-    if (indexDate > 0) {
-      if (start > indexDate - 1) {
-        if (end - 7 < 7) {
-          setEnd(7);
-          setStart(0);
-        } else {
-          setStart(start - 7);
-          setEnd(end - 7);
-        }
-      }
-      let index = dateList.findIndex((obj) => obj.dateString === currentDate);
-      dateList[index].rows = rows2;
-      dateList[index].percent = percent;
-      dateList[index].number_person = workorderRequest.number_person;
-      dateList[index].number_hours = workorderRequest.number_hours;
-      setDateList(dateList);
-      setCurrentDate(dateList[indexDate - 1].dateString);
-      setIndexDate(indexDate - 1);
-      index = dateList.findIndex((obj) => obj.dateString === dateList[indexDate - 1].dateString);
-      setRows([]);
-      setRows(dateList[index].rows);
-      setPercent(dateList[index].percent);
-      setWorkorderRequest({
-        ...workorderRequest,
-        number_hours: dateList[index].number_hours,
-        number_person: dateList[index].number_person,
-      });
-    }
-  };
+  
   const handleChangeDate = (date, index) => {
-    console.log(index);
-    dateList[indexDate].rows = rows2;
+    dateList[indexDate].rows =[...rows2];
     dateList[indexDate].percent = percent;
     dateList[indexDate].number_person = workorderRequest.number_person;
     dateList[indexDate].number_hours = workorderRequest.number_hours;
     setDateList(dateList);
     setCurrentDate(date);
     setIndexDate(index);
-    setRows([]);
     setRows(dateList[index].rows);
     setPercent(dateList[index].percent);
     setWorkorderRequest({
@@ -386,8 +492,8 @@ const WorkorderModal = () => {
   }, []);
 
   useEffect(() => {
-    setRowsList(rowsList.filter((item) => item.order_id === order.id));
-    console.log(order);
+    let data =rowsList2.filter((item) => item.order_id === order.id)
+    setRowsList(data);
   }, [order.id]);
 
   useEffect(() => {
@@ -409,13 +515,17 @@ const WorkorderModal = () => {
           },
         ];
       }
-      setStart(0);
+      
       if (date.length > 7) {
         setEnd(7);
-      } else {
+        setStart(0);
+        setCurrentDate(date[0].dateString);
+      } else if (date.length > 0) {
         setEnd(date.length);
+        setStart(0);
+        setCurrentDate(date[0].dateString);
       }
-      setCurrentDate(date[0].dateString);
+      
       setDateList(date);
     }
   }, [workorderRequest.date, workorderRequest.date2]);
