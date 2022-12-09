@@ -29,12 +29,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import useStyles from './classes.js';
 import { FLOATING_MENU_CHANGE, ORDER_DETAIL_CHANGE } from '../../../store/actions.js';
-import { AddCircle, SkipNext, SkipPrevious } from '@material-ui/icons';
-import { DeleteForever } from '@material-ui/icons';
+import {  SkipNext, SkipPrevious } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { month, rowsList, weekday } from './../data';
-import { number } from 'echarts';
-
+import { Delete} from '@material-ui/icons';
+import { AddCircleOutline } from '@material-ui/icons';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -66,170 +65,7 @@ function a11yProps(index) {
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
-const rowsList2 = [
-  {
-    unit_name: 'Thùng',
-    unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
-    quantity_produced: 0,
-    quantity_in_box: 1200,
-    product_customer_code: 'F921',
-    product_name: 'Khăn lau kính.30g/c.20x30cm.3P (Nv,Br,Bk)',
-    product_code: 'BST0008',
-    id: '17a74935-7252-11ed-b85f-005056a3c175',
-    status: '',
-    order_id: 'KHT10-001',
-    product_id: 'a4a304d8-6d69-11ed-b85f-005056a3c175',
-    vattu: 'Thiếu',
-    percent: 0,
-    number: 0,
-    productivity: 1200,
-    piece: 360
-  },
-  {
-    unit_name: 'Thùng',
-    unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
-    quantity_produced: 0,
-    quantity_in_box: 500,
-    product_customer_code: 'TVF-659',
-    product_name: 'Khăn bếp.21g/c.33x33cm 5P (B,G,Y,P,O)',
-    product_code: 'BST0002',
-    id: '1',
-    status: null,
-    order_id: 'KHT10-001',
-    product_id: 'a4a304d2-6d69-11ed-b85f-005056a3c174',
-    vattu: 'Đủ',
-    percent: 0,
-    number: 0,
-    productivity: 6000,
-    piece: 1200
-  },
-  {
-    unit_name: 'Thùng',
-    unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
-    quantity_produced: 0,
-    quantity_in_box: 500,
-    product_customer_code: 'TVF-658',
-    product_name: 'Khăn hạt na.25g/c.26x37cm. 3P (P,Y,G)',
-    product_code: 'BST0001',
-    id: '5de651d4-7254-11ed-b85f-005056a3c175',
-    status: null,
-    order_id: 'KHT10-002',
-    product_id: 'a4a304d1-6d69-11ed-b85f-005056a3c173',
-    vattu: 'Thiếu',
-    percent: 0,
-    number: 0,
-    productivity: 1200,
-    piece: 360
-  },
-  {
-    unit_name: 'Thùng',
-    unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
-    quantity_produced: 0,
-    quantity_in_box: 100,
-    product_customer_code: 'TVF-658',
-    product_name: 'Khăn hạt na.25g/c.26x37cm. 3P (P,Y,G)',
-    product_code: 'BST0003',
-    id: 'f3febeac-7220-11ed-b85f-005056a3c175',
-    status: null,
-    order_id: 'KHT10-002',
-    product_id: 'a4a304d1-6d69-11ed-b85f-005056a3c172',
-    vattu: 'Đủ',
-    percent: 0,
-    number: 0,
-    productivity: 6000,
-    piece: 1200
-  },
-  {
-    unit_name: 'Thùng',
-    unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
-    quantity_produced: 500,
-    quantity_in_box: 500,
-    product_customer_code: 'TVF-659',
-    product_name: 'Khăn bếp.21g/c.33x33cm 5P (B,G,Y,P,O)',
-    product_code: 'BST0007',
-    id: '1',
-    status: null,
-    order_id: 'KHT10-002',
-    product_id: 'a4a304d2-6d69-11ed-b85f-005056a3c171',
-    vattu: 'Thiếu',
-    percent: 0,
-    number: 0,
-    productivity: 6000,
-    piece: 1200
-  },
-  {
-    unit_name: 'Thùng',
-    unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
-    quantity_produced: 0,
-    quantity_in_box: 1200,
-    product_customer_code: 'F921',
-    product_name: 'Khăn lau kính.30g/c.20x30cm.3P (Nv,Br,Bk)',
-    product_code: 'BST0009',
-    id: '17a74935-7252-11ed-b85f-005056a3c175',
-    status: '',
-    order_id: 'KHT10-001',
-    product_id: 'a4a304d8-6d69-11ed-b85f-005056a3c170',
-    vattu: 'Đủ',
-    percent: 0,
-    number: 0,
-    productivity: 6000,
-    piece: 1200
-  },
-  {
-    unit_name: 'Thùng',
-    unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
-    quantity_produced: 0,
-    quantity_in_box: 500,
-    product_customer_code: 'TVF-659',
-    product_name: 'Khăn bếp.21g/c.33x33cm 5P (B,G,Y,P,O)',
-    product_code: 'BST00012',
-    id: '1',
-    status: null,
-    order_id: 'KHT10-001',
-    product_id: 'a4a304d2-6d69-11ed-b85f-005056a3c177',
-    vattu: 'Thiếu',
-    percent: 0,
-    number: 0,
-    productivity: 6000,
-    piece: 1200
-  },
-  {
-    unit_name: 'Thùng',
-    unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
-    quantity_produced: 0,
-    quantity_in_box: 500,
-    product_customer_code: 'TVF-658',
-    product_name: 'Khăn hạt na.25g/c.26x37cm. 3P (P,Y,G)',
-    product_code: 'BST00011',
-    id: '5de651d4-7254-11ed-b85f-005056a3c175',
-    status: null,
-    order_id: 'KHT10-002',
-    product_id: 'a4a304d1-6d69-11ed-b85f-005056a3c178',
-    vattu: 'Đủ',
-    percent: 0,
-    number: 0,
-    productivity: 6000,
-    piece: 1200
-  },
-  {
-    unit_name: 'Thùng',
-    unit_id: 'ccd58746-67df-11ed-b85d-005056a3c175',
-    quantity_produced: 0,
-    quantity_in_box: 100,
-    product_customer_code: 'TVF-658',
-    product_name: 'Khăn hạt na.25g/c.26x37cm. 3P (P,Y,G)',
-    product_code: 'BST00013',
-    id: 'f3febeac-7220-11ed-b85f-005056a3c175',
-    status: null,
-    order_id: 'KHT10-002',
-    product_id: 'a4a304d1-6d69-11ed-b85f-005056a3c179',
-    vattu: 'Đủ',
-    percent: 0,
-    number: 0,
-    productivity: 6000,
-    piece: 1200
-  },
-];
+
 const WorkorderModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -241,7 +77,22 @@ const WorkorderModal = () => {
   const { selectedDocument } = useSelector((state) => state.document);
   const { detailDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { order } = useSelector((state) => state.order);
-  const [rows2, setRows] = useState([]);
+  const [rows2, setRows] = useState([{
+    unit_name: 'Thùng',
+    unit_id: '',
+    quantity_produced: 0,
+    quantity_in_box: 0,
+    product_customer_code: '',
+    product_name: '',
+    product_code: '',
+    id: '',
+    status: null,
+    order_id: '',
+    product_id: '',
+    percent: 0,
+    number: 0,
+    vattu: '',
+  }]);
   const [dateList, setDateList] = useState([]);
   const [end, setEnd] = useState(0);
   const [start, setStart] = useState(0);
@@ -268,6 +119,7 @@ const WorkorderModal = () => {
     return <Typography style={{ backgroundColor: color }}>{vattu}</Typography>;
   };
   const [percent, setPercent] = useState(0);
+  
   const handleChangeRow = (row, index) => {
     if (!!row) {
       const newProductList = [...rows2];
@@ -290,12 +142,35 @@ const WorkorderModal = () => {
           piece: row?.piece
       };
       newProductList[index] = { ...newProductList[index], ...newProduct };
-      setRows(newProductList);
+      let data = newProductList.find((x)=>x.id==='')
+      if(!data){
+        setRows([...newProductList,  {
+          unit_name: 'Thùng',
+          unit_id: '',
+          quantity_produced: 0,
+          quantity_in_box: 0,
+          product_customer_code: '',
+          product_name: '',
+          product_code: '',
+          id: '',
+          status: null,
+          order_id: '',
+          product_id: '',
+          percent: 0,
+          number: 0,
+          vattu: '',
+        },]);
+        
+      } else {
+        setRows(newProductList);
+      }
+     
       let per = 0;
       for (const value of rows2) {
         per = per + value.percent;
       }
       setPercent(per);
+      
     }
   };
   const handleAddRow = () => {
@@ -320,9 +195,11 @@ const WorkorderModal = () => {
     ]);
   };
   const handleDeleteRow = (index) => {
-    let orderDetail = order?.orderDetail;
-    orderDetail.find((x) => x.id === rows2[index].id).quantity_produced -= rows2[index].number;
-    dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
+    if(rows2[index].id!=''){
+      let orderDetail = order?.orderDetail;
+      orderDetail.find((x) => (x.id === rows2[index].id )).quantity_produced -= rows2[index].number;
+      dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
+    }
     rows2.splice(index, 1);
     let per = 0;
       for (const value of rows2) {
@@ -336,7 +213,10 @@ const WorkorderModal = () => {
     setDocumentToDefault();
     dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: false });
   };
-
+  
+    
+    
+  
   const [snackbarStatus, setSnackbarStatus] = useState({
     isOpen: false,
     type: '',
@@ -492,7 +372,7 @@ const WorkorderModal = () => {
   }, []);
 
   useEffect(() => {
-    let data =rowsList2.filter((item) => item.order_id === order.id)
+    let data =rowsList.filter((item) => item.order_id === order.id)
     setRowsList(data);
   }, [order.id]);
 
@@ -507,7 +387,22 @@ const WorkorderModal = () => {
           {
             dateString: dateString,
             day: weekday[d.getDay()],
-            rows: [],
+            rows: [{
+              unit_name: 'Thùng',
+              unit_id: '',
+              quantity_produced: 0,
+              quantity_in_box: 0,
+              product_customer_code: '',
+              product_name: '',
+              product_code: '',
+              id: '',
+              status: null,
+              order_id: '',
+              product_id: '',
+              percent: 0,
+              number: 0,
+              vattu: '',
+            }],
             percent: 0,
             number_hours: 1,
             number_person: 1,
@@ -781,9 +676,9 @@ const WorkorderModal = () => {
                             <Grid item>
                               <IconButton
                                 onClick={handleAddRow}
-                                style={{ background: '#30bc41', color: '#FFFFFF' }}
+                              
                               >
-                                <AddCircle></AddCircle>
+                                 <AddCircleOutline />
                               </IconButton>
                             </Grid>
                           </Grid>
@@ -858,9 +753,9 @@ const WorkorderModal = () => {
                                         <TableCell align="right">
                                           <IconButton
                                             onClick={() => handleDeleteRow(index)}
-                                            style={{ background: '#f9c121', color: '#FFFFFF' }}
+                                          
                                           >
-                                            <DeleteForever />
+                                            <Delete />
                                           </IconButton>
                                         </TableCell>
                                       </TableRow>
