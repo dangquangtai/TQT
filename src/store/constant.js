@@ -110,10 +110,17 @@ export const apiEndpoints = {
   update_order: '/Primary/?FlowAlias=bs_api_order_update_order_request&action=api',
   get_status_list: '/Primary/?FlowAlias=bs_api_order_get_order_status_list&action=api',
   delete_order_detail: '/Primary/?FlowAlias=bs_api_order_delete_order_detail&action=api',
-
+  get_order_completed_list: '/Primary/?FlowAlias=bs_api_order_get_order_completed_list_by_company&action=api',
   // Customer
   get_all_customer: '/Primary/?FlowAlias=bs_api_customer_get_list_by_company&action=api',
   get_product_requesr_list: '/Primary/?FlowAlias=bs_api_factory_workorder_get_list_by_page&action=api',
+
+  //Work Order
+  get_work_order_status_list: '/Primary/?FlowAlias=bs_api_factory_get_work_order_status_list&action=api',
+  get_work_order_list: '/Primary/?FlowAlias=bs_api_factory_workorder_get_list_by_page&action=api',
+  create_work_order: '/Primary/?FlowAlias=bs_api_factory_create_production_request&action=api',
+  get_work_order_detail: '/Primary/?FlowAlias=bs_api_factory_get_production_request&action=api',
+
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'

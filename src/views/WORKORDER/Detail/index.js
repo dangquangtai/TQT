@@ -31,9 +31,10 @@ import useStyles from './classes.js';
 import { FLOATING_MENU_CHANGE, ORDER_DETAIL_CHANGE } from '../../../store/actions.js';
 import {  SkipNext, SkipPrevious } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
-import { month, rowsList, weekday } from './../data';
+import { month, dropdownDataList, weekday } from './../data';
 import { Delete} from '@material-ui/icons';
 import { AddCircleOutline } from '@material-ui/icons';
+import {getStatusList, createWorkorOrder} from '../../../services/api/Workorder/index.js';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -70,14 +71,11 @@ const WorkorderModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [tabIndex, setTabIndex] = React.useState(0);
-  const handleChangeTab = (event, newValue) => {
-    setTabIndex(newValue);
-  };
-
   const { selectedDocument } = useSelector((state) => state.document);
   const { detailDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { order } = useSelector((state) => state.order);
-  const [rows2, setRows] = useState([{
+  const { order: orderRedux } = useSelector((state) => state.order);
+  const [productList, setProductList] = useState([{
     unit_name: 'Thùng',
     unit_id: '',
     quantity_produced: 0,
@@ -93,27 +91,25 @@ const WorkorderModal = () => {
     number: 0,
     vattu: '',
   }]);
-  const [dateList, setDateList] = useState([]);
+  const [productionDailyRequestList, setProductionDailyRequest] = useState([]);
   const [end, setEnd] = useState(0);
   const [start, setStart] = useState(0);
   const [indexDate, setIndexDate] = useState(0);
   const [currentDate, setCurrentDate] = useState('');
   const [currentWeek, setCurrentWeek] = useState(0);
   const [workorderRequest, setWorkorderRequest] = React.useState({
-    status_code: 1,
+    status_code: '',
     title: '',
-    date: '',
-    date2: '',
+    to_date: '',
+    from_date: '',
     order_id: '',
-    number_person: 1,
-    number_hours: 1,
   });
   const [productionStatus, setProductionStatus] = React.useState([
-    { key: 1, value: 'Nháp' },
-    { key: 2, value: 'Hoàn thành' },
+    {id:'',
+    value:''}
   ]);
 
-  const [rows, setRowsList] = useState([]);
+  const [dropdownData, setDopDownData] = useState([]);
   const calculateQuantity = (vattu) => {
     const color = vattu === 'Thiếu' ? 'yellow' : 'rgb(48, 188, 65)';
     return <Typography style={{ backgroundColor: color }}>{vattu}</Typography>;
@@ -122,7 +118,7 @@ const WorkorderModal = () => {
   
   const handleChangeRow = (row, index) => {
     if (!!row) {
-      const newProductList = [...rows2];
+      const newProductList = [...productList];
       const newProduct = {
           unit_name: row?.unit_name || 'Thùng',
           unit_id: row?.unit_id,
@@ -136,15 +132,14 @@ const WorkorderModal = () => {
           order_id: row?.order_id,
           product_id: row?.product_id,
           vattu: row?.vattu,
-          percent: 0,
-          number: 0,
-          productivity: row?.productivity,
-          piece: row?.piece
+          no_piece_per_box: row?.no_piece_per_box,
+          productivity_per_worker: row?.productivity_per_worker,
+        
       };
       newProductList[index] = { ...newProductList[index], ...newProduct };
       let data = newProductList.find((x)=>x.id==='')
       if(!data){
-        setRows([...newProductList,  {
+        setProductList([...newProductList,  {
           unit_name: 'Thùng',
           unit_id: '',
           quantity_produced: 0,
@@ -156,17 +151,15 @@ const WorkorderModal = () => {
           status: null,
           order_id: '',
           product_id: '',
-          percent: 0,
-          number: 0,
           vattu: '',
         },]);
         
       } else {
-        setRows(newProductList);
+        setProductList(newProductList);
       }
      
       let per = 0;
-      for (const value of rows2) {
+      for (const value of productList) {
         per = per + value.percent;
       }
       setPercent(per);
@@ -174,8 +167,8 @@ const WorkorderModal = () => {
     }
   };
   const handleAddRow = () => {
-    setRows([
-      ...rows2,
+    setProductList([
+      ...productList,
       {
         unit_name: 'Thùng',
         unit_id: '',
@@ -188,30 +181,28 @@ const WorkorderModal = () => {
         status: null,
         order_id: '',
         product_id: '',
-        percent: 0,
-        number: 0,
         vattu: '',
       },
     ]);
   };
   const handleDeleteRow = (index) => {
-    if(rows2[index].id!=''){
+    if(productList[index].id!=''){
       let orderDetail = order?.orderDetail;
-      orderDetail.find((x) => (x.id === rows2[index].id )).quantity_produced -= rows2[index].number;
+      orderDetail.find((x) => (x.id === productList[index].id )).quantity_produced -= productList[index].number;
       dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
     }
-    rows2.splice(index, 1);
+    productList.splice(index, 1);
     let per = 0;
-      for (const value of rows2) {
+      for (const value of productList) {
         per = per + value.percent;
       }
     setPercent(per);
-    setRows([...rows2]);
+    setProductList([...productList]);
   };
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
-    dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: false });
+    dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: false  });
   };
   
     
@@ -229,9 +220,23 @@ const WorkorderModal = () => {
       text: text,
     });
   };
-  const handleUpdateAccount = async () => {
-   
+  const handleCreateWorkOrder = async () => {
+    await createWorkorOrder({
+      to_date: workorderRequest.to_date, 
+      from_date: workorderRequest.from_date,
+      title: workorderRequest.title,
+      order_id: order.id,
+      status_code: workorderRequest.status_code,
+      daily_request_list: [...productionDailyRequestList]})
   };
+  const handleChangeStatus = (e) => {
+    const value = e.target.value;
+    
+    setWorkorderRequest({
+      ...workorderRequest,
+      status_code: value,
+    });
+  }
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -239,56 +244,50 @@ const WorkorderModal = () => {
       ...workorderRequest,
       [e.target.name]: value,
     });
-    if (e.target.name === 'number_person' || e.target.name === 'number_hours') {
-      dateList[indexDate].number_person = workorderRequest.number_person;
-      dateList[indexDate].number_hours = workorderRequest.number_hours;
-      setDateList(dateList);
+    if (e.target.name === 'number_of_worker' || e.target.name === 'number_of_working_hour') {
+      productionDailyRequestList[indexDate].number_of_worker = workorderRequest.number_of_worker;
+      productionDailyRequestList[indexDate].number_of_working_hour = workorderRequest.number_of_working_hour;
+      setProductionDailyRequest(productionDailyRequestList);
 
-      for (const value of rows2) {
+      for (const value of productList) {
         value.percent = calculatePercent(
-          dateList[indexDate].number_person,
-          dateList[indexDate].number_hours,
+          productionDailyRequestList[indexDate].number_of_worker,
+          productionDailyRequestList[indexDate].number_of_working_hour,
           value.piece,
           value.number,
-          value.productivity
+          value.productivity_per_worker
         );
       }
       let per = 0;
-      for (const value of rows2) {
+      for (const value of productList) {
         per = per + value.percent;
       }
       setPercent(per);
-      dateList[indexDate].rows = rows2;
-      setDateList(dateList);
+      productionDailyRequestList[indexDate].product_list = productList;
+      setProductionDailyRequest(productionDailyRequestList);
     }
   };
 
   const handleChangeNumber = (e, index) => {
     const value = e.target.value;
     let orderDetail = order?.orderDetail;
-    orderDetail.find((x) => x.id === rows2[index].id).quantity_produced += value - rows2[index].number;
+    orderDetail.find((x) => x.id === productList[index].id).quantity_produced += value - productList[index].number;
     dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
-    rows2[index].number = value;
-    rows2[index].percent = calculatePercent(
-      dateList[indexDate].number_person,
-      dateList[indexDate].number_hours,
-      rows2[index].piece,
-      value,
-      rows2[index].productivity
-    );
-    setRows([...rows2]);
+    productList[index].quantity_in_box=value;
+    setProductList([...productList]);
     let per = 0;
-    for (const value of rows2) {
+    for (const value of productList) {
       per = per + value.percent;
     }
     setPercent(per);
   };
-  const calculatePercent = (number_person, number_hours, piece, sl, productivity) => {
-    return parseFloat((((sl * piece) / (number_person * (number_hours / 8) * productivity)) * 100).toFixed(2));
+  const calculatePercent = (number_of_worker, number_of_working_hour, piece, sl, productivity_per_worker) => {
+   
+    return parseFloat((((sl * piece) / (number_of_worker * (number_of_working_hour / 8) * productivity_per_worker)) * 100).toFixed(2));
   };
   
   const handleNextWeek = () => {
-    if ((currentWeek + 1) * 7 < dateList.length) {
+    if ((currentWeek + 1) * 7 < productionDailyRequestList.length) {
       setCurrentWeek(currentWeek + 1);
       setStart(start + 7);
       setEnd(end + 7);
@@ -303,19 +302,19 @@ const WorkorderModal = () => {
   };
   
   const handleChangeDate = (date, index) => {
-    dateList[indexDate].rows =[...rows2];
-    dateList[indexDate].percent = percent;
-    dateList[indexDate].number_person = workorderRequest.number_person;
-    dateList[indexDate].number_hours = workorderRequest.number_hours;
-    setDateList(dateList);
+    productionDailyRequestList[indexDate].product_list =[...productList];
+    productionDailyRequestList[indexDate].percent = percent;
+    productionDailyRequestList[indexDate].number_of_worker = workorderRequest.number_of_worker;
+    productionDailyRequestList[indexDate].number_of_working_hour = workorderRequest.number_of_working_hour;
+    setProductionDailyRequest(productionDailyRequestList);
     setCurrentDate(date);
     setIndexDate(index);
-    setRows(dateList[index].rows);
-    setPercent(dateList[index].percent);
+    setProductList(productionDailyRequestList[index].product_list);
+    setPercent(productionDailyRequestList[index].percent);
     setWorkorderRequest({
       ...workorderRequest,
-      number_hours: dateList[index].number_hours,
-      number_person: dateList[index].number_person,
+      number_of_working_hour: productionDailyRequestList[index].number_of_working_hour,
+      number_of_worker: productionDailyRequestList[index].number_of_worker,
     });
   };
 
@@ -344,50 +343,59 @@ const WorkorderModal = () => {
   };
 
   useEffect(() => {
-    if (!selectedDocument) return;
+    if (!selectedDocument) {
+      let dateCurrent = '';
+      let dateCurrent2 = '';
+      let date = new Date();
+      if (date.getDate() < 10) {
+        dateCurrent = date.getFullYear() + '-' + month[date.getMonth()] + '-0' + date.getDate();
+      } else {    
+        dateCurrent = date.getFullYear() +
+          '-' +
+          month[date.getMonth()] +
+          '-' +
+          date.getDate();
+      }
+      date.setDate(date.getDate() + 7);
+      if (date.getDate() < 10) {
+        dateCurrent2 = date.getFullYear() + '-' + month[date.getMonth()] + '-0' + date.getDate();
+      } else {
+        dateCurrent2 = date.getFullYear() + '-' + month[date.getMonth()] + '-' + date.getDate();
+      }
+      fetchStatus();
+      setWorkorderRequest({ ...workorderRequest, from_date: dateCurrent, to_date: dateCurrent2 }); 
+    } else{
+      setWorkorderRequest({
+        title: selectedDocument.order_title, 
+        to_date: selectedDocument.to_date, 
+        from_date: selectedDocument.from_date,
+        status_code: selectedDocument.status,
+      })
+      setProductionDailyRequest(selectedDocument.production_daily_request)
+    }
   }, [selectedDocument]);
 
-  useEffect(() => {
-    let dateCurrent = '';
-    let dateCurrent2 = '';
+  const fetchStatus = async () =>{
+    let data= await getStatusList();
+    setProductionStatus(data);
+  }
 
-    let date = new Date();
-    if (date.getDate() < 10) {
-      dateCurrent = date.getFullYear() + '-' + month[date.getMonth()] + '-0' + date.getDate();
-    } else {
-      dateCurrent =
-        date.setDate(date.getDate() + 7).getFullYear() +
-        '-' +
-        month[date.setDate(date.getDate() + 7).getMonth()] +
-        '-' +
-        date.setDate(date.getDate() + 7).getDate();
-    }
-    date.setDate(date.getDate() + 7);
-    if (date.getDate() < 10) {
-      dateCurrent2 = date.getFullYear() + '-' + month[date.getMonth()] + '-0' + date.getDate();
-    } else {
-      dateCurrent2 = date.getFullYear() + '-' + month[date.getMonth()] + '-' + date.getDate();
-    }
-    setWorkorderRequest({ ...workorderRequest, date: dateCurrent, date2: dateCurrent2 });
-  }, []);
 
   useEffect(() => {
-    let data =rowsList.filter((item) => item.order_id === order.id)
-    setRowsList(data);
+    if (orderRedux.orderDetail?.length > 0) setDopDownData(orderRedux.orderDetail);
   }, [order.id]);
 
   useEffect(() => {
-    setDateList([]);
+    setProductionDailyRequest([]);
     let date = [];
-    if (workorderRequest.date !== '' && workorderRequest.date2 !== '') {
-      for (var d = new Date(workorderRequest.date); d <= new Date(workorderRequest.date2); d.setDate(d.getDate() + 1)) {
-        let dateString = d.getDate() + '/' + month[d.getMonth()];
+    if (workorderRequest.to_date!== '' && workorderRequest.from_date !== '') {
+      for (var d = new Date(workorderRequest.from_date); d <= new Date(workorderRequest.to_date); d.setDate(d.getDate() + 1)) {
+        const day = d ;
         date = [
           ...date,
           {
-            dateString: dateString,
-            day: weekday[d.getDay()],
-            rows: [{
+            work_order_date: day,
+            product_list: [{
               unit_name: 'Thùng',
               unit_id: '',
               quantity_produced: 0,
@@ -399,14 +407,10 @@ const WorkorderModal = () => {
               status: null,
               order_id: '',
               product_id: '',
-              percent: 0,
-              number: 0,
               vattu: '',
             }],
-            percent: 0,
-            number_hours: 1,
-            number_person: 1,
-            number: 1,
+            number_of_working_hours: 1,
+            number_of_worker: 1,
           },
         ];
       }
@@ -414,16 +418,16 @@ const WorkorderModal = () => {
       if (date.length > 7) {
         setEnd(7);
         setStart(0);
-        setCurrentDate(date[0].dateString);
+        setCurrentDate(date[0].work_order_date);
+        console.log(date[5].work_order_date)
       } else if (date.length > 0) {
         setEnd(date.length);
         setStart(0);
-        setCurrentDate(date[0].dateString);
+        setCurrentDate(date[0].work_order_date);
       }
-      
-      setDateList(date);
+      setProductionDailyRequest(date);
     }
-  }, [workorderRequest.date, workorderRequest.date2]);
+  }, [workorderRequest.to_date, workorderRequest.from_date]);
   return (
     <React.Fragment>
     {snackbarStatus.isOpen && (
@@ -477,7 +481,8 @@ const WorkorderModal = () => {
                                   fullWidth
                                   variant="outlined"
                                   size="small"
-                                  name="full_name"
+                                  name="title"
+                                  value={workorderRequest.title}
                                   className={classes.inputField}
                                   onChange={handleChange}
                                 />
@@ -491,13 +496,13 @@ const WorkorderModal = () => {
                                   variant="outlined"
                                   size="small"
                                   value={workorderRequest.status_code}
-                                  onChange={(event) =>
-                                    setWorkorderRequest({ ...workorderRequest, status_code: event.key })
+                                  onChange={(event) => handleChangeStatus(event)
                                   }
+                                 
                                 >
                                   {productionStatus &&
                                     productionStatus.map((item) => (
-                                      <MenuItem key={item.key} value={item.key}>
+                                      <MenuItem key={item.id} value={item.id}>
                                         {item.value}
                                       </MenuItem>
                                     ))}
@@ -514,7 +519,7 @@ const WorkorderModal = () => {
                                 type="date"
                                 variant="outlined"
                                 name="date"
-                                value={workorderRequest.date}
+                                value={workorderRequest.from_date}
                                 className={classes.inputField}
                                 onChange={handleChange}
                               />
@@ -528,7 +533,7 @@ const WorkorderModal = () => {
                                 type="date"
                                 variant="outlined"
                                 name="date2"
-                                value={workorderRequest.date2}
+                                value={workorderRequest.to_date}
                                 className={classes.inputField}
                                 onChange={handleChange}
                               />
@@ -551,16 +556,16 @@ const WorkorderModal = () => {
                                   <Table size="small" classes={{ root: classes.customTable }} >
                                     <TableHead >
                                       <TableRow>
-                                        {dateList?.slice(start, end).map((item,index) => (
+                                        {productionDailyRequestList?.slice(start, end).map((item,index) => (
                                           <TableCell align="center"  style={
-                                            currentDate === item.dateString
+                                            currentDate === item.work_order_date
                                               ? { background: 'rgb(97, 42, 255)', color: 'white' }
                                               : {}
-                                          } onClick={()=>handleChangeDate(item.dateString,index+ currentWeek * 7)}>
+                                          } onClick={()=>handleChangeDate(item.work_order_date,index+ currentWeek * 7)}>
                                             <span>
-                                              {item.day}
+                                              {weekday[item.work_order_date.getDay()]}
                                               <br />
-                                              {item.dateString}
+                                              {item.work_order_date.getDate()+'/'+ month[item.work_order_date.getMonth()]}
                                             </span>
                                           </TableCell>
                                         ))}
@@ -568,7 +573,7 @@ const WorkorderModal = () => {
                                     </TableHead>
                                     <TableBody>
                                       <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                        {dateList?.slice(start, end).map((item) => (
+                                        {productionDailyRequestList?.slice(start, end).map((item) => (
                                           <TableCell component="th" scope="row" align="center">
                                             <Typography
                                               style={
@@ -577,7 +582,7 @@ const WorkorderModal = () => {
                                                   : { backgroundColor: 'yellow' }
                                               }
                                             >
-                                              {item.percent.toLocaleString()+"%"}
+                                              {calculatePercent(item.number_of_worker, item.number_of_working_hour, item.no_piece_per_box, item.quantity_in_box, item.productivity_per_worker)?.toLocaleString()+"%"}
                                             </Typography>
                                           </TableCell>
                                         ))}
@@ -610,10 +615,10 @@ const WorkorderModal = () => {
                                         style={{ marginLeft: '10px' }}
                                         type="number"
                                         variant="outlined"
-                                        name="number_person"
+                                        name="number_of_worker"
                                
                                         InputProps={{ inputProps: { min: 1} }}
-                                        value={workorderRequest.number_person}
+                                   
                                         className={classes.inputField}
                                         onChange={handleChange}
                                       />
@@ -626,9 +631,9 @@ const WorkorderModal = () => {
                                       <TextField
                                         type="number"
                                         variant="outlined"
-                                        name="number_hours"
+                                        name="number_of_working_hour"
                                         InputProps={{ inputProps: { min: 1} }}
-                                        value={workorderRequest.number_hours}
+                                
                                         className={classes.inputField}
                                         style={{ marginLeft: '10px' }}
                                         onChange={handleChange}
@@ -645,7 +650,7 @@ const WorkorderModal = () => {
                                         variant="outlined"
                                         disabled
                                         style={{ marginLeft: '10px' }}
-                                        value={percent.toLocaleString()+"%"}
+                                        value={"%"}
                                         className={classes.inputField}
                                         onChange={handleChange}
                                       />
@@ -708,7 +713,7 @@ const WorkorderModal = () => {
                                     </TableRow>
                                   </TableHead>
                                   <TableBody>
-                                    {rows2?.map((item, index) => (
+                                    {productList?.map((item, index) => (
                                       <TableRow
                                         key={index}
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -721,7 +726,7 @@ const WorkorderModal = () => {
                                             value={item}
                                             size="small"
                                             disablePortal
-                                            options={rows}
+                                            options={dropdownData}
                                             onChange={(e, u) => handleChangeRow(u, index)}
                                             getOptionLabel={(option) => option.product_code}
                                             renderInput={(params) => <TextField {...params} variant="outlined" />}
@@ -739,7 +744,8 @@ const WorkorderModal = () => {
                                             variant="outlined"
                                             InputProps={{ inputProps: { min: 1, max: item.quantity_in_box } }}
                                             // name="date"
-                                            value={item.number}
+                                            
+                                            value={item.quantity_in_box}
                                             className={classes.inputField}
                                             onChange={(e) => handleChangeNumber(e, index)}
                                           />
@@ -747,7 +753,7 @@ const WorkorderModal = () => {
                                         <TableCell align="left">{item.unit_name}</TableCell>
                                         <TableCell align="center">
 
-                                          <span>{item.percent.toLocaleString() + '%'}</span>
+                                          <span> {calculatePercent(workorderRequest.number_of_worker, workorderRequest.number_of_working_hour, item.no_piece_per_box, item.quantity_in_box, item.productivity_per_worker)?.toLocaleString()+"%"}</span>
                                         </TableCell>
                                         <TableCell align="center"> {calculateQuantity(item.vattu)}</TableCell>
                                         <TableCell align="right">
@@ -806,7 +812,7 @@ const WorkorderModal = () => {
                     <Button
                       variant="contained"
                       style={{ background: 'rgb(97, 42, 255)' }}
-                      onClick={() => handleUpdateAccount()}
+                      onClick={() => handleCreateWorkOrder()}
                     >
                       {'Tạo mới'}
                     </Button>
@@ -817,7 +823,7 @@ const WorkorderModal = () => {
                     <Button
                       variant="contained"
                       style={{ background: 'rgb(97, 42, 255)' }}
-                      onClick={() => handleUpdateAccount()}
+                      onClick={() => handleCreateWorkOrder()}
                     >
                       Lưu
                     </Button>

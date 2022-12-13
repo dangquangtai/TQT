@@ -16,7 +16,20 @@ export const getDetailOrder = (id, setView) => {
       console.log(error);
     });
 };
-
+export const getOrderProductDetail = (id) => {
+  return axiosServices
+    .post(apiEndpoints.get_order_detail, { id })
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        const { data } = response.data;
+        return data.order_detail;
+      }
+      return [];
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 export const getStatusList = () => {
   return axiosServices
     .post(apiEndpoints.get_status_list, {})
@@ -61,4 +74,17 @@ export const deleteOrderDetail = (id) => {
     .catch((error) => {
       console.log(error);
     });
+};
+export const getOrderCompletedList = () => {
+  return axiosServices
+    .post(apiEndpoints.get_order_completed_list, {
+      company_code: "TQT",
+      outputtype: "RawJson"})
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return response.data.list;
+      }
+      return [];
+    })
+   ;
 };

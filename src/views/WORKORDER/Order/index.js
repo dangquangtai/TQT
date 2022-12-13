@@ -24,8 +24,8 @@ import { Autocomplete } from '@material-ui/lab';
 import useStyles from './../../../utils/classes';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { ORDER_CHANGE } from './../../../store/actions';
-import { orderCode, orderDetailList } from './../data';
 
+import { getOrderCompletedList, getOrderProductDetail } from '../../../services/api/Order/index.js';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="bottom" ref={ref} {...props} />;
 });
@@ -36,14 +36,12 @@ const OrderModal = () => {
   const { order: orderRedux } = useSelector((state) => state.order);
   const [order, setOrder] = useState({
     id: '',
-    title: '',
-    customer_name: '',
-    order_date: '',
+    value: '',
   });
   const [orderDetail, setOrderDetail] = useState([]);
-
-  const handleOrderChange = (e, value) => {
-    const orderDetail = orderDetailList.filter((item) => item.order_id === value.id) || [];
+  const [orderList, setOrderList] = useState([]);
+  const handleOrderChange = async (e, value) => {
+    const orderDetail = await getOrderProductDetail(value.id);
     if (value) {
       dispatch({ type: ORDER_CHANGE, order: value, orderDetail: orderDetail });
       setOrder(value);
@@ -69,7 +67,22 @@ const OrderModal = () => {
   useEffect(() => {
     if (orderRedux.orderDetail?.length > 0) setOrderDetail(orderRedux.orderDetail);
   }, [orderRedux.orderDetail]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let data = await getOrderCompletedList();
+        setOrderList(data);
+      }
+      catch {
+        let data = await getOrderCompletedList();
+        setOrderList(data);
+      }
 
+    }
+    fetchData();
+
+
+  }, []);
   return (
     <React.Fragment>
       <Grid container>
@@ -100,8 +113,8 @@ const OrderModal = () => {
                                   <Grid item lg={12} md={12} xs={12}>
                                     <Autocomplete
                                       id="combo-box-demo"
-                                      options={orderCode}
-                                      getOptionLabel={(option) => option.title}
+                                      options={orderList}
+                                      getOptionLabel={(option) => option.value}
                                       onChange={handleOrderChange}
                                       renderInput={(params) => (
                                         <TextField {...params} variant="outlined" size="small" fullWidth />
