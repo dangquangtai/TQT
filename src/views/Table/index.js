@@ -40,7 +40,7 @@ import { getDetailProductCategory } from './../../services/api/Setting/ProductCa
 import { getDetailCustomerCategory } from './../../services/api/Setting/CustomerCategory';
 import { getDetailProduct } from './../../services/api/Product/Product';
 import { getDetailOrder } from './../../services/api/Order/index';
-
+import {getDetailWorkorOrder} from './../../services/api/Workorder/index'
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance
     .post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured })
@@ -99,6 +99,10 @@ export default function GeneralTable(props) {
       is_active: tableColumns.includes('is_active'),
       customer_name: tableColumns.includes('customer_name'),
       order_date: tableColumns.includes('order_date'),
+      order__title: tableColumns.includes('order__title'),
+      from__date: tableColumns.includes('from__date'),
+      to__date: tableColumns.includes('to__date'),
+      status__display: tableColumns.includes('status__display'),
       expected_deliver_date: tableColumns.includes('expected_deliver_date'),
     };
     setDisplayOptions(initOptions);
@@ -381,6 +385,11 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, orderDocument: true });
         break;
+        case 'workorder':
+          detailDocument = await getDetailWorkorOrder(selectedDocument.id, setView);
+          dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+          dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
+          break;
       default:
         break;
     }
@@ -890,6 +899,18 @@ export default function GeneralTable(props) {
                                 <TableCell align="left">
                                   {row.created_date ? formatDate(new Date(row.created_date), 'dd/MM/yyyy') : ''}
                                 </TableCell>
+                              )}
+                              {displayOptions.order__title && (
+                                <TableCell align="left"  onClick={(event) => openDetailDocument(event, row)}>{row.order_title} </TableCell>
+                              )}
+                              {displayOptions.from__date && (
+                                <TableCell align="left"  onClick={(event) => openDetailDocument(event, row)}>{row.from_date}</TableCell>
+                              )}
+                              {displayOptions.to__date && (
+                                <TableCell align="left"  onClick={(event) => openDetailDocument(event, row)}>{row.to_date}</TableCell>
+                              )}
+                              {displayOptions.status__display && (
+                                <TableCell align="left"  onClick={(event) => openDetailDocument(event, row)}>{row.status_display}</TableCell>
                               )}
                               {displayOptions.is_active && (
                                 <TableCell align="left">
