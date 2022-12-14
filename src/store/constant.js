@@ -120,7 +120,7 @@ export const apiEndpoints = {
   get_work_order_list: '/Primary/?FlowAlias=bs_api_factory_workorder_get_list_by_page&action=api',
   create_work_order: '/Primary/?FlowAlias=bs_api_factory_create_production_request&action=api',
   get_work_order_detail: '/Primary/?FlowAlias=bs_api_factory_get_production_request&action=api',
-
+  update_work_order: '/Primary/?FlowAlias=bs_api_factory_update_production_daily_request&action=api',
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'

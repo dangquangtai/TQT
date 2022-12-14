@@ -39,7 +39,14 @@ export const createWorkorOrder = (data) => {
     return false;
   });
 };
-
+export const updateWorkorOrder = (data) => {
+  return axiosServices.post(apiEndpoints.update_work_order, data).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return true;
+    }
+    return false;
+  });
+};
 export const updateOrder = (data) => {
   return axiosServices.post(apiEndpoints.update_order, data).then((response) => {
     if (response.status === 200 && response.data.return === 200) {

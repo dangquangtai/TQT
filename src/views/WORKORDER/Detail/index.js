@@ -7,11 +7,10 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Tabs,
+
   Box,
   Typography,
-  Tab,
-  Select,
+  
   MenuItem,
   TextField,
   Snackbar,
@@ -34,7 +33,8 @@ import { Autocomplete } from '@material-ui/lab';
 import { month, dropdownDataList, weekday } from './../data';
 import { Delete} from '@material-ui/icons';
 import { AddCircleOutline } from '@material-ui/icons';
-import {getStatusList, createWorkorOrder} from '../../../services/api/Workorder/index.js';
+import {getStatusList, createWorkorOrder, updateWorkorOrder} from '../../../services/api/Workorder/index.js';
+import { update } from 'lodash';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -70,41 +70,26 @@ function a11yProps(index) {
 const WorkorderModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [tabIndex, setTabIndex] = React.useState(0);
+  const [tabIndex, setTabIndex] = useState(0);
   const { selectedDocument } = useSelector((state) => state.document);
   const { detailDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { order } = useSelector((state) => state.order);
   const { order: orderRedux } = useSelector((state) => state.order);
-  const [productList, setProductList] = useState([{
-    unit_name: 'Thùng',
-    unit_id: '',
-    quantity_produced: 0,
-    quantity_in_box: 0,
-    product_customer_code: '',
-    product_name: '',
-    product_code: '',
-    id: '',
-    status: null,
-    order_id: '',
-    product_id: '',
-    percent: 0,
-    number: 0,
-    vattu: '',
-  }]);
+  const [productList, setProductList] = useState([]);
   const [productionDailyRequestList, setProductionDailyRequest] = useState([]);
   const [end, setEnd] = useState(0);
   const [start, setStart] = useState(0);
   const [indexDate, setIndexDate] = useState(0);
   const [currentDate, setCurrentDate] = useState('');
   const [currentWeek, setCurrentWeek] = useState(0);
-  const [workorderRequest, setWorkorderRequest] = React.useState({
+  const [workorderRequest, setWorkorderRequest] = useState({
     status_code: '',
     title: '',
     to_date: '',
     from_date: '',
-    order_id: '',
+   
   });
-  const [productionStatus, setProductionStatus] = React.useState([
+  const [productionStatus, setProductionStatus] = useState([
     {id:'',
     value:''}
   ]);
@@ -128,16 +113,16 @@ const WorkorderModal = () => {
           product_name: row?.product_name,
           product_code: row?.product_code,
           id: row?.id,
-          status: null,
           order_id: row?.order_id,
-          product_id: row?.product_id,
-          vattu: row?.vattu,
+          product_id: row?.id,
           no_piece_per_box: row?.no_piece_per_box,
           productivity_per_worker: row?.productivity_per_worker,
-        
       };
+
       newProductList[index] = { ...newProductList[index], ...newProduct };
+
       let data = newProductList.find((x)=>x.id==='')
+
       if(!data){
         setProductList([...newProductList,  {
           unit_name: 'Thùng',
@@ -148,23 +133,18 @@ const WorkorderModal = () => {
           product_name: '',
           product_code: '',
           id: '',
-          status: null,
+          no_piece_per_box: 0,
           order_id: '',
           product_id: '',
-          vattu: '',
+          productivity_per_worker:0,
         },]);
-        
+
       } else {
         setProductList(newProductList);
       }
      
-      let per = 0;
-      for (const value of productList) {
-        per = per + value.percent;
-      }
-      setPercent(per);
-      
     }
+    updateDataDailyRequest();
   };
   const handleAddRow = () => {
     setProductList([
@@ -192,17 +172,14 @@ const WorkorderModal = () => {
       dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
     }
     productList.splice(index, 1);
-    let per = 0;
-      for (const value of productList) {
-        per = per + value.percent;
-      }
-    setPercent(per);
     setProductList([...productList]);
+    updateDataDailyRequest();
   };
 
   const handleCloseDialog = () => {
+  
     setDocumentToDefault();
-    dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: false  });
+    dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: false, documentType: 'workorder'  });
   };
   
     
@@ -221,17 +198,44 @@ const WorkorderModal = () => {
     });
   };
   const handleCreateWorkOrder = async () => {
-    await createWorkorOrder({
-      to_date: workorderRequest.to_date, 
-      from_date: workorderRequest.from_date,
-      title: workorderRequest.title,
-      order_id: order.id,
-      status_code: workorderRequest.status_code,
-      daily_request_list: [...productionDailyRequestList]})
+    try{
+      if (productionDailyRequestList.length<2){
+        handleOpenSnackbar(true, 'fail', 'Số ngày kế hoạch không ther < 2 !');
+      }
+      else {
+        if (!selectedDocument){
+          await createWorkorOrder({
+            workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
+            to_date: workorderRequest.to_date, 
+            from_date: workorderRequest.from_date,
+            title: workorderRequest.title,
+            order_id: workorderRequest.order_id,
+            status_code: workorderRequest.status_code,
+            daily_request_list: [...productionDailyRequestList]})
+          handleOpenSnackbar(true, 'success', 'Cập nhật Đơn hàng thành công!');
+        }
+        else {
+          await updateWorkorOrder({
+            workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
+            id: selectedDocument.id,
+            to_date: workorderRequest.to_date, 
+            from_date: workorderRequest.from_date,
+            title: workorderRequest.title,
+            order_id: selectedDocument.order_id,
+            status_code: workorderRequest.status_code,
+            daily_request_list: [...productionDailyRequestList]})
+          handleOpenSnackbar(true, 'success', 'Cập nhật Đơn hàng thành công!');
+        }
+      }
+      
+    }
+   catch {
+
+   }
+    handleCloseDialog();
   };
   const handleChangeStatus = (e) => {
     const value = e.target.value;
-    
     setWorkorderRequest({
       ...workorderRequest,
       status_code: value,
@@ -244,30 +248,23 @@ const WorkorderModal = () => {
       ...workorderRequest,
       [e.target.name]: value,
     });
-    if (e.target.name === 'number_of_worker' || e.target.name === 'number_of_working_hour') {
-      productionDailyRequestList[indexDate].number_of_worker = workorderRequest.number_of_worker;
-      productionDailyRequestList[indexDate].number_of_working_hour = workorderRequest.number_of_working_hour;
-      setProductionDailyRequest(productionDailyRequestList);
-
-      for (const value of productList) {
-        value.percent = calculatePercent(
-          productionDailyRequestList[indexDate].number_of_worker,
-          productionDailyRequestList[indexDate].number_of_working_hour,
-          value.piece,
-          value.number,
-          value.productivity_per_worker
-        );
-      }
-      let per = 0;
-      for (const value of productList) {
-        per = per + value.percent;
-      }
-      setPercent(per);
-      productionDailyRequestList[indexDate].product_list = productList;
-      setProductionDailyRequest(productionDailyRequestList);
+    if (e.target.name==='to_date'){
+      handleSetDate(workorderRequest.from_date, e.target.value);
+    } else {
+      handleSetDate(e.target.value, workorderRequest.to_date);
     }
+ 
   };
-
+  const handleChangeHours = (e) => {
+    const value = e.target.value;
+    if (e.target.name=='number_of_worker'){
+      productionDailyRequestList[indexDate].number_of_worker=value;
+    }
+    else{
+      productionDailyRequestList[indexDate].number_of_working_hour=value;
+    }
+    setProductionDailyRequest([...productionDailyRequestList])
+  }
   const handleChangeNumber = (e, index) => {
     const value = e.target.value;
     let orderDetail = order?.orderDetail;
@@ -275,14 +272,10 @@ const WorkorderModal = () => {
     dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
     productList[index].quantity_in_box=value;
     setProductList([...productList]);
-    let per = 0;
-    for (const value of productList) {
-      per = per + value.percent;
-    }
-    setPercent(per);
+    updateDataDailyRequest();
   };
+
   const calculatePercent = (number_of_worker, number_of_working_hour, piece, sl, productivity_per_worker) => {
-   
     return parseFloat((((sl * piece) / (number_of_worker * (number_of_working_hour / 8) * productivity_per_worker)) * 100).toFixed(2));
   };
   
@@ -302,32 +295,29 @@ const WorkorderModal = () => {
   };
   
   const handleChangeDate = (date, index) => {
-    productionDailyRequestList[indexDate].product_list =[...productList];
-    productionDailyRequestList[indexDate].percent = percent;
-    productionDailyRequestList[indexDate].number_of_worker = workorderRequest.number_of_worker;
-    productionDailyRequestList[indexDate].number_of_working_hour = workorderRequest.number_of_working_hour;
-    setProductionDailyRequest(productionDailyRequestList);
+    updateDataDailyRequest();
     setCurrentDate(date);
     setIndexDate(index);
     setProductList(productionDailyRequestList[index].product_list);
-    setPercent(productionDailyRequestList[index].percent);
-    setWorkorderRequest({
-      ...workorderRequest,
-      number_of_working_hour: productionDailyRequestList[index].number_of_working_hour,
-      number_of_worker: productionDailyRequestList[index].number_of_worker,
-    });
+   
   };
 
+  const updateDataDailyRequest =() =>{
+    productionDailyRequestList[indexDate].product_list =[...productList];
+    productionDailyRequestList[indexDate].percent =calculateTotalPercent();
+    setProductionDailyRequest(productionDailyRequestList);
+  }
   const setDocumentToDefault = async () => {
+    setWorkorderRequest({title: '',status: '', order_id: '' ,to_date: '', from_date: ''});
+    setProductList([]);
+    setProductionDailyRequest([]);
     setTabIndex(0);
   };
 
   const popupWindow = (url, title, h) => {
     var width = window.outerWidth ? window.outerWidth : document.documentElement.clientWidth;
     var height = window.outerHeight ? window.outerHeight : document.documentElement.clientHeight;
-
     var w = width * 0.9;
-
     var left = width / 2 - w / 2;
     var top = height / 2 - h / 2;
     var newWindow = window.open(
@@ -335,22 +325,40 @@ const WorkorderModal = () => {
       title,
       'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left
     );
-
     // Puts focus on the newWindow
     if (window.focus) {
       newWindow.focus();
     }
   };
 
-  useEffect(() => {
+  const calculateTotalPercent = () =>{
+    let total = 0;
+    productList.forEach(element => {
+      total += calculatePercent(productionDailyRequestList[indexDate].number_of_worker, 
+        productionDailyRequestList[indexDate].number_of_working_hour,
+        element.no_piece_per_box,
+        element.quantity_in_box, 
+        element.productivity_per_worker)
+    });
+    return total;
+  }
+
+  const fetchStatus = async () =>{
+    let data= await getStatusList();
+    setProductionStatus(data);
+  }
+  const handleSetProduct = async() =>{
+   
+    let to_date = '';
+    let from_date = '';
+    let title ='';
+    let status_code= '';
     if (!selectedDocument) {
-      let dateCurrent = '';
-      let dateCurrent2 = '';
       let date = new Date();
       if (date.getDate() < 10) {
-        dateCurrent = date.getFullYear() + '-' + month[date.getMonth()] + '-0' + date.getDate();
+        from_date = date.getFullYear() + '-' + month[date.getMonth()] + '-0' + date.getDate();
       } else {    
-        dateCurrent = date.getFullYear() +
+        from_date = date.getFullYear() +
           '-' +
           month[date.getMonth()] +
           '-' +
@@ -358,76 +366,156 @@ const WorkorderModal = () => {
       }
       date.setDate(date.getDate() + 7);
       if (date.getDate() < 10) {
-        dateCurrent2 = date.getFullYear() + '-' + month[date.getMonth()] + '-0' + date.getDate();
+        to_date = date.getFullYear() + '-' + month[date.getMonth()] + '-0' + date.getDate();
       } else {
-        dateCurrent2 = date.getFullYear() + '-' + month[date.getMonth()] + '-' + date.getDate();
+        to_date = date.getFullYear() + '-' + month[date.getMonth()] + '-' + date.getDate();
       }
-      fetchStatus();
-      setWorkorderRequest({ ...workorderRequest, from_date: dateCurrent, to_date: dateCurrent2 }); 
+      status_code = productionStatus[0].id;
     } else{
-      setWorkorderRequest({
-        title: selectedDocument.order_title, 
-        to_date: selectedDocument.to_date, 
-        from_date: selectedDocument.from_date,
-        status_code: selectedDocument.status,
-      })
-      setProductionDailyRequest(selectedDocument.production_daily_request)
+      to_date=selectedDocument.to_date;
+      from_date=selectedDocument.from_date;
+      title= selectedDocument.order_title;
+      status_code = selectedDocument.status
     }
-  }, [selectedDocument]);
+    setWorkorderRequest({ ...workorderRequest, to_date: to_date, from_date: from_date, title: title, status_code: status_code}); 
+    var date = [];
+    if (to_date!== '' && from_date !== '') {
+      let index =0;
+      for (var d = new Date(from_date); d <= new Date(to_date); d.setDate(d.getDate() + 1)) {
+        const day = d.getFullYear()+'-'+month[d.getMonth()]+'-'+d.getDate();
+        if(!selectedDocument){
+          date = [
+            ...date,
+            {
+              work_order_date: day,
+              product_list: [{
+                unit_name: 'Thùng',
+                unit_id: '',
+                quantity_produced: 0,
+                quantity_in_box: 0,
+                product_customer_code: '',
+                product_name: '',
+                product_code: '',
+                id: '',
+                status: null,
+                order_id: '',
+                product_id: '',
+                vattu: '',
+              }],
+              number_of_working_hours: 1,
+              number_of_worker: 1,
+            },
+          ];
+        }
+        else{
+          date = [
+            ...date,
+            { number_of_worker: selectedDocument.production_daily_request[index].number_of_worker,
+              number_of_working_hour: selectedDocument.production_daily_request[index].number_of_working_hour,
+              work_order_date: day,
+              product_list: [...selectedDocument.production_daily_request[index].product_list],
+              id: selectedDocument.production_daily_request[index].id,
+              order_id: selectedDocument.production_daily_request[index].order_id,
+              no_piece_per_box: selectedDocument.production_daily_request[index].no_piece_per_box,
+              productivity_per_worker: selectedDocument.production_daily_request[index].productivity_per_worker,
 
-  const fetchStatus = async () =>{
-    let data= await getStatusList();
-    setProductionStatus(data);
-  }
-
-
-  useEffect(() => {
-    if (orderRedux.orderDetail?.length > 0) setDopDownData(orderRedux.orderDetail);
-  }, [order.id]);
-
-  useEffect(() => {
-    setProductionDailyRequest([]);
-    let date = [];
-    if (workorderRequest.to_date!== '' && workorderRequest.from_date !== '') {
-      for (var d = new Date(workorderRequest.from_date); d <= new Date(workorderRequest.to_date); d.setDate(d.getDate() + 1)) {
-        const day = d ;
-        date = [
-          ...date,
-          {
-            work_order_date: day,
-            product_list: [{
-              unit_name: 'Thùng',
-              unit_id: '',
-              quantity_produced: 0,
-              quantity_in_box: 0,
-              product_customer_code: '',
-              product_name: '',
-              product_code: '',
-              id: '',
-              status: null,
-              order_id: '',
-              product_id: '',
-              vattu: '',
-            }],
-            number_of_working_hours: 1,
-            number_of_worker: 1,
-          },
-        ];
+            }
+          ];
+          index++;
+        }
       }
-      
+      setProductList([...date[0].product_list])
+      setProductionDailyRequest(date);
+  
       if (date.length > 7) {
         setEnd(7);
         setStart(0);
         setCurrentDate(date[0].work_order_date);
-        console.log(date[5].work_order_date)
       } else if (date.length > 0) {
         setEnd(date.length);
         setStart(0);
         setCurrentDate(date[0].work_order_date);
       }
-      setProductionDailyRequest(date);
+      setIndexDate(0);
+      setCurrentWeek(0);
     }
-  }, [workorderRequest.to_date, workorderRequest.from_date]);
+  }
+  const handleSetDate = (from_date, to_date) =>{
+    var date = [];
+    if (to_date!== '' && from_date !== '') {
+      
+      for (var d = new Date(from_date); d <= new Date(to_date); d.setDate(d.getDate() + 1)) {
+        const day = d.getFullYear()+'-'+month[d.getMonth()]+'-'+d.getDate();
+        let data = productionDailyRequestList.find((x)=>x.work_order_date===day)
+        if (!data){
+          date = [
+            ...date,
+            {
+              work_order_date: day,
+              product_list: [{
+                unit_name: 'Thùng',
+                unit_id: '',
+                quantity_produced: 0,
+                quantity_in_box: 0,
+                product_customer_code: '',
+                product_name: '',
+                product_code: '',
+                id: '',
+                status: null,
+                order_id: '',
+                product_id: '',
+            
+              }],
+              number_of_working_hours: 1,
+              number_of_worker: 1,
+              id: '',
+              order_id:'', 
+            },
+          ];
+        }
+        else{
+          date = [
+            ...date,
+            { number_of_worker: data.number_of_worker ,
+              number_of_working_hour: data.number_of_working_hour,
+              work_order_date: day,
+              product_list: [...data.product_list],
+              id: data.id,
+              order_id: data.order_id,
+              no_piece_per_box: data.no_piece_per_box,
+              productivity_per_worker: data.productivity_per_worker,
+            }
+          ];
+        }
+      }
+      setProductList([...date[0].product_list]);
+
+      setProductionDailyRequest([...date]);
+      if (date.length > 7) {
+        setEnd(7);
+        setStart(0);
+        setCurrentDate(date[0].work_order_date);
+      } else if (date.length > 0) {
+        setEnd(date.length);
+        setStart(0);
+        setCurrentDate(date[0].work_order_date);
+      }
+      setIndexDate(0);
+      setCurrentWeek(0);
+    }
+  }
+  useEffect(() => {
+    if (orderRedux.orderDetail?.length > 0) setDopDownData(orderRedux.orderDetail);
+  }, [order.id]);
+  
+  useEffect(() => {
+    fetchStatus()
+  }, []);
+
+  useEffect(() => {
+   
+    handleSetProduct();
+  }, [ selectedDocument]);
   return (
     <React.Fragment>
     {snackbarStatus.isOpen && (
@@ -518,7 +606,7 @@ const WorkorderModal = () => {
                                 fullWidth
                                 type="date"
                                 variant="outlined"
-                                name="date"
+                                name="from_date"
                                 value={workorderRequest.from_date}
                                 className={classes.inputField}
                                 onChange={handleChange}
@@ -532,8 +620,23 @@ const WorkorderModal = () => {
                                 fullWidth
                                 type="date"
                                 variant="outlined"
-                                name="date2"
+                                name="to_date"
                                 value={workorderRequest.to_date}
+                                className={classes.inputField}
+                                onChange={handleChange}
+                              />
+                              </Grid>
+                              
+                              <Grid item lg={1} md={1} xs={1}>  </Grid>
+                              <Grid item lg={3} md={3} xs={3}>
+                                <span className={classes.tabItemLabelField}>Xưởng:</span>
+                                <TextField
+                                fullWidth
+                                disabled
+                              
+                                variant="outlined"
+                                name="to_date"
+                                value={'Xưởng Minh Khai'}
                                 className={classes.inputField}
                                 onChange={handleChange}
                               />
@@ -563,9 +666,9 @@ const WorkorderModal = () => {
                                               : {}
                                           } onClick={()=>handleChangeDate(item.work_order_date,index+ currentWeek * 7)}>
                                             <span>
-                                              {weekday[item.work_order_date.getDay()]}
+                                              {weekday[new Date(item.work_order_date).getDay()]}
                                               <br />
-                                              {item.work_order_date.getDate()+'/'+ month[item.work_order_date.getMonth()]}
+                                              {new Date(item.work_order_date).getDate()+'/'+ month[new Date(item.work_order_date).getMonth()]}
                                             </span>
                                           </TableCell>
                                         ))}
@@ -582,7 +685,7 @@ const WorkorderModal = () => {
                                                   : { backgroundColor: 'yellow' }
                                               }
                                             >
-                                              {calculatePercent(item.number_of_worker, item.number_of_working_hour, item.no_piece_per_box, item.quantity_in_box, item.productivity_per_worker)?.toLocaleString()+"%"}
+                                              {item?.percent+"%"}
                                             </Typography>
                                           </TableCell>
                                         ))}
@@ -616,11 +719,10 @@ const WorkorderModal = () => {
                                         type="number"
                                         variant="outlined"
                                         name="number_of_worker"
-                               
                                         InputProps={{ inputProps: { min: 1} }}
-                                   
+                                        value={productionDailyRequestList[indexDate]?.number_of_worker}
                                         className={classes.inputField}
-                                        onChange={handleChange}
+                                        onChange={handleChangeHours}
                                       />
                                     </Grid>
                                     <Grid item lg={0.5} md={0.5} xs={0.5} >   </Grid>
@@ -633,10 +735,10 @@ const WorkorderModal = () => {
                                         variant="outlined"
                                         name="number_of_working_hour"
                                         InputProps={{ inputProps: { min: 1} }}
-                                
+                                        value={productionDailyRequestList[indexDate]?.number_of_working_hour}
                                         className={classes.inputField}
                                         style={{ marginLeft: '10px' }}
-                                        onChange={handleChange}
+                                        onChange={handleChangeHours}
                                       />
                                     </Grid>
 
@@ -650,7 +752,7 @@ const WorkorderModal = () => {
                                         variant="outlined"
                                         disabled
                                         style={{ marginLeft: '10px' }}
-                                        value={"%"}
+                                        value={calculateTotalPercent()+"%"}
                                         className={classes.inputField}
                                         onChange={handleChange}
                                       />
@@ -734,7 +836,11 @@ const WorkorderModal = () => {
                                         </TableCell>
 
                                         <TableCell align="left">{item.product_customer_code}</TableCell>
-                                        <TableCell align="left">{item.product_name}</TableCell>
+                                  
+                                        <TableCell align="left" style={{ maxWidth: 50, overflow: 'hidden', textOverflow: 'ellipsis' }} >
+                                     
+                                          {item.product_name}
+                                           </TableCell>
                                         <TableCell align="left">
                                           <TextField
                                             fullWidth
@@ -753,7 +859,7 @@ const WorkorderModal = () => {
                                         <TableCell align="left">{item.unit_name}</TableCell>
                                         <TableCell align="center">
 
-                                          <span> {calculatePercent(workorderRequest.number_of_worker, workorderRequest.number_of_working_hour, item.no_piece_per_box, item.quantity_in_box, item.productivity_per_worker)?.toLocaleString()+"%"}</span>
+                                          <span> {calculatePercent(productionDailyRequestList[indexDate].number_of_worker, productionDailyRequestList[indexDate].number_of_working_hour, item.no_piece_per_box, item.quantity_in_box, item.productivity_per_worker)?.toLocaleString()+"%"}</span>
                                         </TableCell>
                                         <TableCell align="center"> {calculateQuantity(item.vattu)}</TableCell>
                                         <TableCell align="right">
@@ -807,7 +913,7 @@ const WorkorderModal = () => {
                   </Button>
                   {/* </Link> */}
                 </Grid>
-                {!workorderRequest.id && (
+                {!selectedDocument && (
                   <Grid item>
                     <Button
                       variant="contained"
@@ -818,7 +924,7 @@ const WorkorderModal = () => {
                     </Button>
                   </Grid>
                 )}
-                {!!workorderRequest.id && (
+                {!!selectedDocument && (
                   <Grid item>
                     <Button
                       variant="contained"
