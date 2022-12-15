@@ -166,11 +166,16 @@ const WorkorderModal = () => {
     ]);
   };
   const handleDeleteRow = (index) => {
-    if(productList[index].id!=''){
+    try{
+       if(productList[index].id!=''){
       let orderDetail = order?.orderDetail;
       orderDetail.find((x) => (x.id === productList[index].id )).quantity_produced -= productList[index].number;
       dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
     }
+    } catch {
+      
+    }
+   
     productList.splice(index, 1);
     setProductList([...productList]);
     updateDataDailyRequest();
@@ -496,7 +501,7 @@ const WorkorderModal = () => {
         setCurrentDate(date[0].work_order_date);
       } else if (date.length > 0) {
         setProductList([...date[0].product_list]);
-      setProductionDailyRequest([...date]);
+        setProductionDailyRequest([...date]);
         setEnd(date.length);
         setStart(0);
         setCurrentDate(date[0].work_order_date);
