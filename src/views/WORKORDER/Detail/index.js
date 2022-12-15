@@ -441,9 +441,8 @@ const WorkorderModal = () => {
     }
   }
   const handleSetDate = (from_date, to_date) =>{
-    var date = [];
+    let date = [];
     if (to_date!== '' && from_date !== '') {
-      
       for (var d = new Date(from_date); d <= new Date(to_date); d.setDate(d.getDate() + 1)) {
         const day = d.getFullYear()+'-'+month[d.getMonth()]+'-'+d.getDate();
         let data = productionDailyRequestList.find((x)=>x.work_order_date===day)
@@ -488,14 +487,16 @@ const WorkorderModal = () => {
           ];
         }
       }
-      setProductList([...date[0].product_list]);
-
-      setProductionDailyRequest([...date]);
+      
       if (date.length > 7) {
+        setProductList([...date[0].product_list]);
+        setProductionDailyRequest([...date]);
         setEnd(7);
         setStart(0);
         setCurrentDate(date[0].work_order_date);
       } else if (date.length > 0) {
+        setProductList([...date[0].product_list]);
+      setProductionDailyRequest([...date]);
         setEnd(date.length);
         setStart(0);
         setCurrentDate(date[0].work_order_date);
