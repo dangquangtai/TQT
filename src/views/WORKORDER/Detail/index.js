@@ -7,10 +7,9 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-
   Box,
   Typography,
-
+  Tooltip,
   MenuItem,
   TextField,
   Snackbar,
@@ -923,7 +922,7 @@ const WorkorderModal = () => {
                                         <TableCell align="left">Mã ĐH</TableCell>
                                         <TableCell align="left">Mã TP của TQT</TableCell>
                                         <TableCell align="left">Mã TP của KH</TableCell>
-                                        <TableCell align="left">Mã TP theo TQT(Mã hiển thị)</TableCell>
+                                        <TableCell align="left">Tên TP</TableCell>
                                         <TableCell align="left">SL</TableCell>
                                         <TableCell align="left">Đơn vị</TableCell>
                                         <TableCell align="left">% công suất</TableCell>
@@ -943,13 +942,18 @@ const WorkorderModal = () => {
                                           hover
                                         >
                                           <TableCell align="left">{index + 1}</TableCell>
-                                          <TableCell align="left">{item.order_id}</TableCell>
+                                          <TableCell align="left" style={{ maxWidth: 50, overflow: 'hidden', textOverflow: 'ellipsis' }} >
+                                          <Tooltip title={item.order_id}>
+                                            <span> {item.order_id}</span>
+                                          </Tooltip>
+                                          </TableCell>
                                           <TableCell align="left">
                                             <Autocomplete
                                               value={item}
                                               size="small"
                                               disablePortal
                                               options={dropdownData}
+                                             
                                               onChange={(e, u) => handleChangeRow(u, index)}
                                               getOptionLabel={(option) => option.product_code}
                                               renderInput={(params) => <TextField {...params} variant="outlined" />}
@@ -958,15 +962,16 @@ const WorkorderModal = () => {
 
                                           <TableCell align="left">{item.product_customer_code}</TableCell>
 
-                                          <TableCell align="left" style={{ maxWidth: 50, overflow: 'hidden', textOverflow: 'ellipsis' }} >
-
-                                            {item.product_name}
+                                          <TableCell align="left" style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis' }} >
+                                          <Tooltip title={item.product_name}>
+                                            <span> {item.product_name}</span>
+                                          </Tooltip>
                                           </TableCell>
                                           <TableCell align="left">
                                             <TextField
                                               fullWidth
                                               type="number"
-                                              style={{ minWidth: 50 }}
+                                              style={{ minWidth: 80, maxWidth: 80 }}
                                               variant="outlined"
                                               InputProps={{ inputProps: { min: 1, max: item.maxValue } }}
                                               // name="date"
