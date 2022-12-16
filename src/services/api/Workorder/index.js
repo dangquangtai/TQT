@@ -34,7 +34,8 @@ export const getStatusList = () => {
 export const createWorkorOrder = (data) => {
   return axiosServices.post(apiEndpoints.create_work_order, data).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
-      return true;
+      return {work_order_request_id: response.data.work_order_request_id, 
+        work_order_daily_request_id: response.data.work_order_daily_request_id};
     }
     return false;
   });
@@ -42,17 +43,19 @@ export const createWorkorOrder = (data) => {
 export const updateWorkorOrder = (data) => {
   return axiosServices.post(apiEndpoints.update_work_order, data).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
-      return true;
+      return {work_order_request_id: response.data.work_order_request_id, 
+        work_order_daily_request_id: response.data.work_order_daily_request_id};
     }
     return false;
   });
 };
-export const updateOrder = (data) => {
-  return axiosServices.post(apiEndpoints.update_order, data).then((response) => {
+
+export const checkMaterial = (data) => {
+  return axiosServices.post(apiEndpoints.check_daily_workorder_material_avaiability, data).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
-      return true;
+      return response.data.list;
     }
-    return false;
+    return [];
   });
 };
 

@@ -10,7 +10,7 @@ import {
 
   Box,
   Typography,
-  
+
   MenuItem,
   TextField,
   Snackbar,
@@ -27,14 +27,14 @@ import Alert from '../../../component/Alert/index.js';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import useStyles from './classes.js';
-import { FLOATING_MENU_CHANGE, ORDER_DETAIL_CHANGE } from '../../../store/actions.js';
-import {  SkipNext, SkipPrevious } from '@material-ui/icons';
+import { FLOATING_MENU_CHANGE, ORDER_DETAIL_CHANGE, DOCUMENT_CHANGE } from '../../../store/actions.js';
+import { SkipNext, SkipPrevious } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
-import { month, dropdownDataList, weekday } from './../data';
-import { Delete} from '@material-ui/icons';
+import { month, weekday } from './../data';
+import { Delete } from '@material-ui/icons';
 import { AddCircleOutline } from '@material-ui/icons';
-import {getStatusList, createWorkorOrder, updateWorkorOrder} from '../../../services/api/Workorder/index.js';
-import { update } from 'lodash';
+import AlertDialogSlide from '../Material/index.js';
+import { getStatusList, createWorkorOrder, updateWorkorOrder, checkMaterial } from '../../../services/api/Workorder/index.js';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -87,44 +87,59 @@ const WorkorderModal = () => {
     title: '',
     to_date: '',
     from_date: '',
-   
-  });
-  const [productionStatus, setProductionStatus] = useState([
-    {id:'',
-    value:''}
-  ]);
 
+  });
+  const [open, setOpen] = useState(false);
+  const [productionStatus, setProductionStatus] = useState([
+    {
+      id: '',
+      value: ''
+    }
+  ]);
+  const [prodct, setProduct] = useState({});
   const [dropdownData, setDopDownData] = useState([]);
-  const calculateQuantity = (vattu) => {
-    const color = vattu === 'Thiếu' ? 'yellow' : 'rgb(48, 188, 65)';
-    return <Typography style={{ backgroundColor: color }}>{vattu}</Typography>;
+  const handleViewDetailMaterial = (product) => {
+    setOpen(true);
+    
+    setProduct({...product})
+  }
+  const calculateQuantity = (product) => {
+
+    const color = product.is_enough ? 'rgb(48, 188, 65)' : 'yellow';
+
+    return <><Typography style={{ backgroundColor: color }}>{product.is_enough ? 'Đủ' : 'Thiếu'}</Typography>
+      <u><label onClick={() => handleViewDetailMaterial(product)}>Chi tiết</label></u></>;
   };
   const [percent, setPercent] = useState(0);
-  
+
   const handleChangeRow = (row, index) => {
     if (!!row) {
       const newProductList = [...productList];
       const newProduct = {
-          unit_name: row?.unit_name || 'Thùng',
-          unit_id: row?.unit_id,
-          quantity_produced: row?.quantity_produced,
-          quantity_in_box: row?.quantity_in_box,
-          product_customer_code: row?.product_customer_code,
-          product_name: row?.product_name,
-          product_code: row?.product_code,
-          id: row?.id,
-          order_id: row?.order_id,
-          product_id: row?.id,
-          no_piece_per_box: row?.no_piece_per_box,
-          productivity_per_worker: row?.productivity_per_worker,
+        unit_name: row?.unit_name || 'Thùng',
+        unit_id: row?.unit_id,
+        quantity_produced: row?.quantity_produced,
+        quantity_in_box: 0,
+        maxValue: row?.quantity_in_box,
+        product_customer_code: row?.product_customer_code,
+        product_name: row?.product_name,
+        product_code: row?.product_code,
+        id: row?.id,
+        order_id: row?.order_id,
+        product_id: row?.id,
+        no_piece_per_box: row?.no_piece_per_box,
+        productivity_per_worker: row?.productivity_per_worker,
+        part_list: [],
+        is_enough: false,
+        
       };
 
       newProductList[index] = { ...newProductList[index], ...newProduct };
 
-      let data = newProductList.find((x)=>x.id==='')
+      let data = newProductList.find((x) => x.id === '')
 
-      if(!data){
-        setProductList([...newProductList,  {
+      if (!data) {
+        setProductList([...newProductList, {
           unit_name: 'Thùng',
           unit_id: '',
           quantity_produced: 0,
@@ -136,13 +151,15 @@ const WorkorderModal = () => {
           no_piece_per_box: 0,
           order_id: '',
           product_id: '',
-          productivity_per_worker:0,
+          productivity_per_worker: 0,
+          part_list: [],
+          is_enough: false,
         },]);
 
       } else {
         setProductList(newProductList);
       }
-     
+
     }
     updateDataDailyRequest();
   };
@@ -161,35 +178,37 @@ const WorkorderModal = () => {
         status: null,
         order_id: '',
         product_id: '',
-        vattu: '',
+        part_list: [],
+        is_enough: false,
       },
     ]);
   };
   const handleDeleteRow = (index) => {
-    try{
-       if(productList[index].id!=''){
-      let orderDetail = order?.orderDetail;
-      orderDetail.find((x) => (x.id === productList[index].id )).quantity_produced -= productList[index].number;
-      dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
-    }
+    try {
+      if (productList[index].id != '') {
+        let orderDetail = order?.orderDetail;
+        orderDetail.find((x) => (x.id === productList[index].id)).quantity_produced -= productList[index].quantity_in_box;
+        dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
+      }
     } catch {
-      
+
     }
-   
+
     productList.splice(index, 1);
     setProductList([...productList]);
     updateDataDailyRequest();
   };
 
   const handleCloseDialog = () => {
-  
+
     setDocumentToDefault();
-    dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: false, documentType: 'workorder'  });
+    dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'workorder' });
+    dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: false, documentType: 'workorder' });
   };
-  
-    
-    
-  
+
+
+
+
   const [snackbarStatus, setSnackbarStatus] = useState({
     isOpen: false,
     type: '',
@@ -203,41 +222,98 @@ const WorkorderModal = () => {
     });
   };
   const handleCreateWorkOrder = async () => {
-    try{
-      if (productionDailyRequestList.length<2){
+    try {
+      if (productionDailyRequestList.length < 2) {
         handleOpenSnackbar(true, 'fail', 'Số ngày kế hoạch không ther < 2 !');
       }
       else {
-        if (!selectedDocument){
-          await createWorkorOrder({
+     
+        if (!selectedDocument) {
+         await createWorkorOrder({
             workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
-            to_date: workorderRequest.to_date, 
+            to_date: workorderRequest.to_date,
+            index_request: indexDate,
             from_date: workorderRequest.from_date,
             title: workorderRequest.title,
-            order_id: workorderRequest.order_id,
+            order_id: order.id,
             status_code: workorderRequest.status_code,
-            daily_request_list: [...productionDailyRequestList]})
+            daily_request_list: [...productionDailyRequestList]
+          })
           handleOpenSnackbar(true, 'success', 'Cập nhật Đơn hàng thành công!');
         }
         else {
           await updateWorkorOrder({
             workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
             id: selectedDocument.id,
-            to_date: workorderRequest.to_date, 
+            index_request: indexDate,
+            to_date: workorderRequest.to_date,
             from_date: workorderRequest.from_date,
             title: workorderRequest.title,
             order_id: selectedDocument.order_id,
             status_code: workorderRequest.status_code,
-            daily_request_list: [...productionDailyRequestList]})
+            daily_request_list: [...productionDailyRequestList]
+          })
           handleOpenSnackbar(true, 'success', 'Cập nhật Đơn hàng thành công!');
         }
+       
       }
-      
-    }
-   catch {
 
-   }
+    }
+    catch {
+
+    }
     handleCloseDialog();
+  };
+  const handleUpdateWorkOrder = async () => {
+    try {
+      if (productionDailyRequestList.length < 2) {
+        handleOpenSnackbar(true, 'fail', 'Số ngày kế hoạch không ther < 2 !');
+      }
+      else {
+        let work_id ={}
+        if (!selectedDocument) {
+          work_id = await createWorkorOrder({
+            workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
+            to_date: workorderRequest.to_date,
+            index_request: indexDate,
+            from_date: workorderRequest.from_date,
+            title: workorderRequest.title,
+            order_id: order.id,
+            status_code: workorderRequest.status_code,
+            daily_request_list: [...productionDailyRequestList]
+          })
+
+        }
+        else {
+         work_id = await updateWorkorOrder({
+            workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
+            index_request: indexDate,
+            id: selectedDocument.id,
+            to_date: workorderRequest.to_date,
+            from_date: workorderRequest.from_date,
+            title: workorderRequest.title,
+            order_id: selectedDocument.order_id,
+            status_code: workorderRequest.status_code,
+            daily_request_list: [...productionDailyRequestList]
+          })
+
+        }
+        setWorkorderRequest({...workorderRequest,id: work_id.work_order_request_id})
+        productionDailyRequestList[indexDate].id=work_id.work_order_daily_request_id;
+        let dataPartList = await checkMaterial({ work_order_id: work_id.work_order_request_id, daily_work_order_id: work_id.work_order_daily_request_id});
+        dataPartList.forEach(element => {
+          productList.find((x) => (x.product_code === element.Product_Code)).is_enough = element.Is_Enough;
+          productList.find((x) => (x.product_code === element.Product_Code)).part_list = [...element.Part_List];
+        });
+
+        setProductList(productList)
+      }
+
+    }
+    catch {
+
+    }
+
   };
   const handleChangeStatus = (e) => {
     const value = e.target.value;
@@ -253,29 +329,35 @@ const WorkorderModal = () => {
       ...workorderRequest,
       [e.target.name]: value,
     });
-    if (e.target.name==='to_date'){
+    if (e.target.name === 'to_date') {
       handleSetDate(workorderRequest.from_date, e.target.value);
     } else {
       handleSetDate(e.target.value, workorderRequest.to_date);
     }
- 
+
   };
   const handleChangeHours = (e) => {
     const value = e.target.value;
-    if (e.target.name=='number_of_worker'){
-      productionDailyRequestList[indexDate].number_of_worker=value;
+    if (e.target.name == 'number_of_worker') {
+      productionDailyRequestList[indexDate].number_of_worker = value;
     }
-    else{
-      productionDailyRequestList[indexDate].number_of_working_hour=value;
+    else {
+      productionDailyRequestList[indexDate].number_of_working_hour = value;
     }
     setProductionDailyRequest([...productionDailyRequestList])
   }
   const handleChangeNumber = (e, index) => {
     const value = e.target.value;
-    let orderDetail = order?.orderDetail;
-    orderDetail.find((x) => x.id === productList[index].id).quantity_produced += value - productList[index].number;
-    dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
-    productList[index].quantity_in_box=value;
+    try {
+      let orderDetail = order?.orderDetail;
+      orderDetail.find((x) => x.id === productList[index].id).quantity_produced += value - productList[index].quantity_in_box;
+      dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
+    }
+    catch {
+
+    }
+
+    productList[index].quantity_in_box = value;
     setProductList([...productList]);
     updateDataDailyRequest();
   };
@@ -283,7 +365,7 @@ const WorkorderModal = () => {
   const calculatePercent = (number_of_worker, number_of_working_hour, piece, sl, productivity_per_worker) => {
     return parseFloat((((sl * piece) / (number_of_worker * (number_of_working_hour / 8) * productivity_per_worker)) * 100).toFixed(2));
   };
-  
+
   const handleNextWeek = () => {
     if ((currentWeek + 1) * 7 < productionDailyRequestList.length) {
       setCurrentWeek(currentWeek + 1);
@@ -298,22 +380,22 @@ const WorkorderModal = () => {
       setEnd(end - 7);
     }
   };
-  
+
   const handleChangeDate = (date, index) => {
     updateDataDailyRequest();
     setCurrentDate(date);
     setIndexDate(index);
     setProductList(productionDailyRequestList[index].product_list);
-   
+
   };
 
-  const updateDataDailyRequest =() =>{
-    productionDailyRequestList[indexDate].product_list =[...productList];
-    productionDailyRequestList[indexDate].percent =calculateTotalPercent();
+  const updateDataDailyRequest = () => {
+    productionDailyRequestList[indexDate].product_list = [...productList];
+    productionDailyRequestList[indexDate].percent = calculateTotalPercent();
     setProductionDailyRequest(productionDailyRequestList);
   }
   const setDocumentToDefault = async () => {
-    setWorkorderRequest({title: '',status: '', order_id: '' ,to_date: '', from_date: ''});
+    setWorkorderRequest({ title: '', status: '', order_id: '', to_date: '', from_date: '' });
     setProductList([]);
     setProductionDailyRequest([]);
     setTabIndex(0);
@@ -336,33 +418,36 @@ const WorkorderModal = () => {
     }
   };
 
-  const calculateTotalPercent = () =>{
+  const calculateTotalPercent = () => {
     let total = 0;
     productList.forEach(element => {
-      total += calculatePercent(productionDailyRequestList[indexDate].number_of_worker, 
+      total += calculatePercent(productionDailyRequestList[indexDate].number_of_worker,
         productionDailyRequestList[indexDate].number_of_working_hour,
         element.no_piece_per_box,
-        element.quantity_in_box, 
+        element.quantity_in_box,
         element.productivity_per_worker)
     });
     return total;
   }
 
-  const fetchStatus = async () =>{
-    let data= await getStatusList();
+  const fetchStatus = async () => {
+    let data = await getStatusList();
     setProductionStatus(data);
   }
-  const handleSetProduct = async() =>{
-   
+  const handleCheckMaterial = () => {
+    handleUpdateWorkOrder();
+
+  }
+  const handleSetProduct = async () => {
     let to_date = '';
     let from_date = '';
-    let title ='';
-    let status_code= '';
+    let title = '';
+    let status_code = '';
     if (!selectedDocument) {
       let date = new Date();
       if (date.getDate() < 10) {
         from_date = date.getFullYear() + '-' + month[date.getMonth()] + '-0' + date.getDate();
-      } else {    
+      } else {
         from_date = date.getFullYear() +
           '-' +
           month[date.getMonth()] +
@@ -376,22 +461,23 @@ const WorkorderModal = () => {
         to_date = date.getFullYear() + '-' + month[date.getMonth()] + '-' + date.getDate();
       }
       status_code = productionStatus[0].id;
-    } else{
-      to_date=selectedDocument.to_date;
-      from_date=selectedDocument.from_date;
-      title= selectedDocument.order_title;
+    } else {
+      to_date = selectedDocument.to_date;
+      from_date = selectedDocument.from_date;
+      title = selectedDocument.order_title;
       status_code = selectedDocument.status
     }
-    setWorkorderRequest({ ...workorderRequest, to_date: to_date, from_date: from_date, title: title, status_code: status_code}); 
+    setWorkorderRequest({ ...workorderRequest, to_date: to_date, from_date: from_date, title: title, status_code: status_code });
     var date = [];
-    if (to_date!== '' && from_date !== '') {
-      let index =0;
+    if (to_date !== '' && from_date !== '') {
+      let index = 0;
       for (var d = new Date(from_date); d <= new Date(to_date); d.setDate(d.getDate() + 1)) {
-        const day = d.getFullYear()+'-'+month[d.getMonth()]+'-'+d.getDate();
-        if(!selectedDocument){
+        const day = d.getFullYear() + '-' + month[d.getMonth()] + '-' + d.getDate();
+        if (!selectedDocument) {
           date = [
             ...date,
             {
+              id: '',
               work_order_date: day,
               product_list: [{
                 unit_name: 'Thùng',
@@ -405,17 +491,19 @@ const WorkorderModal = () => {
                 status: null,
                 order_id: '',
                 product_id: '',
-                vattu: '',
+                part_list: [],
+                is_enough: false,
               }],
               number_of_working_hours: 1,
               number_of_worker: 1,
             },
           ];
         }
-        else{
+        else {
           date = [
             ...date,
-            { number_of_worker: selectedDocument.production_daily_request[index].number_of_worker,
+            {
+              number_of_worker: selectedDocument.production_daily_request[index].number_of_worker,
               number_of_working_hour: selectedDocument.production_daily_request[index].number_of_working_hour,
               work_order_date: day,
               product_list: [...selectedDocument.production_daily_request[index].product_list],
@@ -423,7 +511,8 @@ const WorkorderModal = () => {
               order_id: selectedDocument.production_daily_request[index].order_id,
               no_piece_per_box: selectedDocument.production_daily_request[index].no_piece_per_box,
               productivity_per_worker: selectedDocument.production_daily_request[index].productivity_per_worker,
-
+              part_list: [],
+              is_enough: false,
             }
           ];
           index++;
@@ -431,7 +520,7 @@ const WorkorderModal = () => {
       }
       setProductList([...date[0].product_list])
       setProductionDailyRequest(date);
-  
+
       if (date.length > 7) {
         setEnd(7);
         setStart(0);
@@ -443,15 +532,16 @@ const WorkorderModal = () => {
       }
       setIndexDate(0);
       setCurrentWeek(0);
+    
     }
   }
-  const handleSetDate = (from_date, to_date) =>{
+  const handleSetDate = (from_date, to_date) => {
     let date = [];
-    if (to_date!== '' && from_date !== '') {
+    if (to_date !== '' && from_date !== '') {
       for (var d = new Date(from_date); d <= new Date(to_date); d.setDate(d.getDate() + 1)) {
-        const day = d.getFullYear()+'-'+month[d.getMonth()]+'-'+d.getDate();
-        let data = productionDailyRequestList.find((x)=>x.work_order_date===day)
-        if (!data){
+        const day = d.getFullYear() + '-' + month[d.getMonth()] + '-' + d.getDate();
+        let data = productionDailyRequestList.find((x) => x.work_order_date === day)
+        if (!data) {
           date = [
             ...date,
             {
@@ -468,19 +558,22 @@ const WorkorderModal = () => {
                 status: null,
                 order_id: '',
                 product_id: '',
-            
+                part_list: [],
+                is_enough: false,
+
               }],
               number_of_working_hours: 1,
               number_of_worker: 1,
               id: '',
-              order_id:'', 
+              order_id: '',
             },
           ];
         }
-        else{
+        else {
           date = [
             ...date,
-            { number_of_worker: data.number_of_worker ,
+            {
+              number_of_worker: data.number_of_worker,
               number_of_working_hour: data.number_of_working_hour,
               work_order_date: day,
               product_list: [...data.product_list],
@@ -488,11 +581,13 @@ const WorkorderModal = () => {
               order_id: data.order_id,
               no_piece_per_box: data.no_piece_per_box,
               productivity_per_worker: data.productivity_per_worker,
+              part_list: [],
+              is_enough: false,
             }
           ];
         }
       }
-      
+
       if (date.length > 7) {
         setProductList([...date[0].product_list]);
         setProductionDailyRequest([...date]);
@@ -508,446 +603,440 @@ const WorkorderModal = () => {
       }
       setIndexDate(0);
       setCurrentWeek(0);
+ 
     }
   }
   useEffect(() => {
     if (orderRedux.orderDetail?.length > 0) setDopDownData(orderRedux.orderDetail);
   }, [order.id]);
-  
+
   useEffect(() => {
     fetchStatus()
   }, []);
 
   useEffect(() => {
-   
     handleSetProduct();
-  }, [ selectedDocument]);
+  }, [selectedDocument]);
   return (
     <React.Fragment>
-    {snackbarStatus.isOpen && (
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        open={snackbarStatus.isOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-      >
-        <Alert
+      <AlertDialogSlide
+        open={open}
+        setOpen={setOpen}
+        detail={prodct}
+      />
+      {snackbarStatus.isOpen && (
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          open={snackbarStatus.isOpen}
+          autoHideDuration={3000}
           onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-          severity={snackbarStatus.type}
-          sx={{ width: '100%' }}
         >
-          {snackbarStatus.text}
-        </Alert>
-      </Snackbar>
-    )}
+          <Alert
+            onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
+            severity={snackbarStatus.type}
+            sx={{ width: '100%' }}
+          >
+            {snackbarStatus.text}
+          </Alert>
+        </Snackbar>
+      )}
 
-    <Grid container>
-      <Dialog
-        open={openDialog || false}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleCloseDialog}
-        className={classes.useradddialog}
-      >
-        <DialogTitle className={classes.dialogTitle}>
-          <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-            Thông tin kế hoạch
-          </Grid>
-        </DialogTitle>
-        <DialogContent className={classes.dialogContent}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-
+      <Grid container>
+        <Dialog
+          open={openDialog || false}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleCloseDialog}
+          className={classes.useradddialog}
+        >
+          <DialogTitle className={classes.dialogTitle}>
+            <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
+              Thông tin kế hoạch
             </Grid>
-            <Grid item xs={12}>
-              <TabPanel value={tabIndex} index={0}>
-                <Grid container spacing={1}>
-                  <Grid item lg={12} md={12} xs={12}>
-                    <div className={classes.tabItem}>
-                      <div className={classes.tabItemBody}>
-                        <Grid container spacing={1}>
-                          <Grid item lg={6} md={6} xs={12}>
+          </DialogTitle>
+          <DialogContent className={classes.dialogContent}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
 
-                            <Grid container className={classes.gridItemInfo} alignItems="center">
-                              <Grid item lg={8} md={8} xs={8}>
-                                <span className={classes.tabItemLabelField}>Tên kế hoạch sản xuất: </span>
-                                <TextField
-                                  fullWidth
-                                  variant="outlined"
-                                  size="small"
-                                  name="title"
-                                  value={workorderRequest.title}
-                                  className={classes.inputField}
-                                  onChange={handleChange}
-                                />
-                              </Grid>
-                              <Grid item lg={1} md={1} xs={1}></Grid>
-                              <Grid item lg={3} md={3} xs={3}>
-                                <span className={classes.tabItemLabelField}>Trạng thái: </span>
-                                <TextField
-                                  select
-                                  fullWidth
-                                  variant="outlined"
-                                  size="small"
-                                  value={workorderRequest.status_code}
-                                  onChange={(event) => handleChangeStatus(event)
-                                  }
-                                 
-                                >
-                                  {productionStatus &&
-                                    productionStatus.map((item) => (
-                                      <MenuItem key={item.id} value={item.id}>
-                                        {item.value}
-                                      </MenuItem>
-                                    ))}
-                                </TextField>
-                              </Grid>
-                            </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <TabPanel value={tabIndex} index={0}>
+                  <Grid container spacing={1}>
+                    <Grid item lg={12} md={12} xs={12}>
+                      <div className={classes.tabItem}>
+                        <div className={classes.tabItemBody}>
+                          <Grid container spacing={1}>
+                            <Grid item lg={6} md={6} xs={12}>
 
-                            <Grid container className={classes.gridItemInfo}  >
-                             
-                              <Grid item lg={3} md={3} xs={3}>
-                                <span className={classes.tabItemLabelField} >Thời gian lập kế hoạch:</span>
-                                <TextField
-                                fullWidth
-                                type="date"
-                                variant="outlined"
-                                name="from_date"
-                                value={workorderRequest.from_date}
-                                className={classes.inputField}
-                                onChange={handleChange}
-                              />
+                              <Grid container className={classes.gridItemInfo} alignItems="center">
+                                <Grid item lg={8} md={8} xs={8}>
+                                  <span className={classes.tabItemLabelField}>Tên kế hoạch sản xuất: </span>
+                                  <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    size="small"
+                                    name="title"
+                                    value={workorderRequest.title}
+                                    className={classes.inputField}
+                                    onChange={handleChange}
+                                  />
+                                </Grid>
+                                <Grid item lg={1} md={1} xs={1}></Grid>
+                                <Grid item lg={3} md={3} xs={3}>
+                                  <span className={classes.tabItemLabelField}>Trạng thái: </span>
+                                  <TextField
+                                    select
+                                    fullWidth
+                                    variant="outlined"
+                                    size="small"
+                                    value={workorderRequest.status_code}
+                                    onChange={(event) => handleChangeStatus(event)
+                                    }
+
+                                  >
+                                    {productionStatus &&
+                                      productionStatus.map((item) => (
+                                        <MenuItem key={item.id} value={item.id}>
+                                          {item.value}
+                                        </MenuItem>
+                                      ))}
+                                  </TextField>
+                                </Grid>
                               </Grid>
 
-                              <Grid item lg={2} md={2} xs={2}>  </Grid>
-                              <Grid item lg={3} md={3} xs={3}>
-                                <span className={classes.tabItemLabelField}>Thời gian kết thúc:</span>
-                                <TextField
-                                fullWidth
-                                type="date"
-                                variant="outlined"
-                                name="to_date"
-                                value={workorderRequest.to_date}
-                                className={classes.inputField}
-                                onChange={handleChange}
-                              />
-                              </Grid>
-                              
-                              <Grid item lg={1} md={1} xs={1}>  </Grid>
-                              <Grid item lg={3} md={3} xs={3}>
-                                <span className={classes.tabItemLabelField}>Xưởng:</span>
-                                <TextField
-                                fullWidth
-                                disabled
-                              
-                                variant="outlined"
-                                name="to_date"
-                                value={'Xưởng Minh Khai'}
-                                className={classes.inputField}
-                                onChange={handleChange}
-                              />
-                              </Grid>
-                            </Grid>
-                          </Grid>
-                          <Grid item lg={6} md={6} xs={12} style={{ background: 'rgba(224, 224, 224, 1)' }}>
-                            <Grid container className={classes.gridItemInfo} alignItems="center" style={{marginTop: '20px'}}>
-                              <Grid item lg={3} md={3} xs={3} alignItems="center">
-                                <IconButton onClick={handlePreWeek}>
-                                  <SkipPrevious />
-                                </IconButton>
-                                <span>{'Tuần '+(currentWeek+1)}</span>
-                                <IconButton onClick={handleNextWeek}>
-                                  <SkipNext />
-                                </IconButton>
-                              </Grid>
-                              <Grid item lg={9} md={9} xs={9} >
-                                <TableContainer component={Paper} >
-                                  <Table size="small" classes={{ root: classes.customTable }} >
-                                    <TableHead >
-                                      <TableRow>
-                                        {productionDailyRequestList?.slice(start, end).map((item,index) => (
-                                          <TableCell align="center"  style={
-                                            currentDate === item.work_order_date
-                                              ? { background: 'rgb(97, 42, 255)', color: 'white' }
-                                              : {}
-                                          } onClick={()=>handleChangeDate(item.work_order_date,index+ currentWeek * 7)}>
-                                            <span>
-                                              {weekday[new Date(item.work_order_date).getDay()]}
-                                              <br />
-                                              {new Date(item.work_order_date).getDate()+'/'+ month[new Date(item.work_order_date).getMonth()]}
-                                            </span>
-                                          </TableCell>
-                                        ))}
-                                      </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                        {productionDailyRequestList?.slice(start, end).map((item) => (
-                                          <TableCell component="th" scope="row" align="center">
-                                            <Typography
-                                              style={
-                                                item?.percent >= 100
-                                                  ? { backgroundColor: 'rgb(48, 188, 65)' }
-                                                  : { backgroundColor: 'yellow' }
-                                              }
-                                            >
-                                              {item?.percent+"%"}
-                                            </Typography>
-                                          </TableCell>
-                                        ))}
-                                      </TableRow>
-                                    </TableBody>
-                                  </Table>
-                                </TableContainer>
+                              <Grid container className={classes.gridItemInfo}  >
+
+                                <Grid item lg={3} md={3} xs={3}>
+                                  <span className={classes.tabItemLabelField} >Thời gian lập kế hoạch:</span>
+                                  <TextField
+                                    fullWidth
+                                    type="date"
+                                    variant="outlined"
+                                    name="from_date"
+                                    value={workorderRequest.from_date}
+                                    className={classes.inputField}
+                                    onChange={handleChange}
+                                  />
+                                </Grid>
+
+                                <Grid item lg={2} md={2} xs={2}>  </Grid>
+                                <Grid item lg={3} md={3} xs={3}>
+                                  <span className={classes.tabItemLabelField}>Thời gian kết thúc:</span>
+                                  <TextField
+                                    fullWidth
+                                    type="date"
+                                    variant="outlined"
+                                    name="to_date"
+                                    value={workorderRequest.to_date}
+                                    className={classes.inputField}
+                                    onChange={handleChange}
+                                  />
+                                </Grid>
+
+                                <Grid item lg={1} md={1} xs={1}>  </Grid>
+                                <Grid item lg={3} md={3} xs={3}>
+                                  <span className={classes.tabItemLabelField}>Xưởng:</span>
+                                  <TextField
+                                    fullWidth
+                                    disabled
+
+                                    variant="outlined"
+                                    name="to_date"
+                                    value={'Xưởng Minh Khai'}
+                                    className={classes.inputField}
+                                    onChange={handleChange}
+                                  />
+                                </Grid>
                               </Grid>
                             </Grid>
-                          </Grid>
-
-                          <Grid container className={classes.gridItemInfo} alignItems="center" justifyContent='flex-end'>
-                            <Grid item lg={1} md={1} xs={1} >
-                            <span className={classes.tabItemLabelField} style={{marginLeft: '-70px'}} >Chi tiết sản xuất:</span>
-                            </Grid>
-                            <Grid item lg={1} md={1} xs={1}></Grid>
-                            <Grid item lg={1} md={1} xs={1}>
-                             
-                            </Grid>
-                            <Grid item lg={1} md={1} xs={1}></Grid>
-                            <Grid item lg={7} md={7} xs={7}>
-                              <Grid container alignItems="center">
-                                <Grid item lg={12} md={12} xs={12}>
-                                  <Grid container alignItems="center">
-                                    <Grid item lg={1.5} md={1.5} xs={1.5} >
-                                      <span className={classes.tabItemLabelField}>{'Số người làm: '}</span>
-                                    </Grid>
-                                    <Grid item lg={1} md={1} xs={1}>
-                                      <TextField
-                                        style={{ marginLeft: '10px' }}
-                                        type="number"
-                                        variant="outlined"
-                                        name="number_of_worker"
-                                        InputProps={{ inputProps: { min: 1} }}
-                                        value={productionDailyRequestList[indexDate]?.number_of_worker}
-                                        className={classes.inputField}
-                                        onChange={handleChangeHours}
-                                      />
-                                    </Grid>
-                                    <Grid item lg={0.5} md={0.5} xs={0.5} >   </Grid>
-                                    <Grid item lg={1.5} md={1.5} xs={1.5} style={{ marginLeft: '30px' }}>
-                                      <span className={classes.tabItemLabelField}>{'Số giờ làm: '}</span>
-                                    </Grid>
-                                    <Grid item lg={1} md={1} xs={1}>
-                                      <TextField
-                                        type="number"
-                                        variant="outlined"
-                                        name="number_of_working_hour"
-                                        InputProps={{ inputProps: { min: 1} }}
-                                        value={productionDailyRequestList[indexDate]?.number_of_working_hour}
-                                        className={classes.inputField}
-                                        style={{ marginLeft: '10px' }}
-                                        onChange={handleChangeHours}
-                                      />
-                                    </Grid>
-
-                                    <Grid item lg={1.5} md={1.5} xs={1.5} style={{ marginLeft: '30px' }}>
-                                      <span className={classes.tabItemLabelField}>{'Công suất hiện tại: '}</span>
-                                    </Grid>
-                                    <Grid item lg={2} md={2} xs={2}>
-                                      <TextField
-
-                                        type="text"
-                                        variant="outlined"
-                                        disabled
-                                        style={{ marginLeft: '10px' }}
-                                        value={calculateTotalPercent()+"%"}
-                                        className={classes.inputField}
-                                        onChange={handleChange}
-                                      />
-                                    </Grid>
-
-
-                                    <Grid item lg={1.5} md={1.5} xs={1.5} style={{ marginLeft: '30px' }}>
-                                      <span className={classes.tabItemLabelField}>{'Công suất tổng: '}</span>
-                                    </Grid>
-                                    <Grid item lg={1} md={1} xs={1}>
-                                      <TextField
-                                        type="text"
-                                        variant="outlined"
-                                        disabled
-                                        style={{ marginLeft: '10px' }}
-                                        value={100}
-                                        className={classes.inputField}
-                                        onChange={handleChange}
-                                      />
-                                    </Grid>
-
-                                  </Grid>
+                            <Grid item lg={6} md={6} xs={12} style={{ background: 'rgba(224, 224, 224, 1)' }}>
+                              <Grid container className={classes.gridItemInfo} alignItems="center" style={{ marginTop: '20px' }}>
+                                <Grid item lg={3} md={3} xs={3} alignItems="center">
+                                  <IconButton onClick={handlePreWeek}>
+                                    <SkipPrevious />
+                                  </IconButton>
+                                  <span>{'Tuần ' + (currentWeek + 1)}</span>
+                                  <IconButton onClick={handleNextWeek}>
+                                    <SkipNext />
+                                  </IconButton>
+                                </Grid>
+                                <Grid item lg={9} md={9} xs={9} >
+                                  <TableContainer component={Paper} >
+                                    <Table size="small" classes={{ root: classes.customTable }} >
+                                      <TableHead >
+                                        <TableRow>
+                                          {productionDailyRequestList?.slice(start, end).map((item, index) => (
+                                            <TableCell align="center" style={
+                                              currentDate === item.work_order_date
+                                                ? { background: 'rgb(97, 42, 255)', color: 'white' }
+                                                : {}
+                                            } onClick={() => handleChangeDate(item.work_order_date, index + currentWeek * 7)}>
+                                              <span>
+                                                {weekday[new Date(item.work_order_date).getDay()]}
+                                                <br />
+                                                {new Date(item.work_order_date).getDate() + '/' + month[new Date(item.work_order_date).getMonth()]}
+                                              </span>
+                                            </TableCell>
+                                          ))}
+                                        </TableRow>
+                                      </TableHead>
+                                      <TableBody>
+                                        <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                          {productionDailyRequestList?.slice(start, end).map((item) => (
+                                            <TableCell component="th" scope="row" align="center">
+                                              <Typography
+                                                style={
+                                                  item?.percent >= 100
+                                                    ? { backgroundColor: 'rgb(48, 188, 65)' }
+                                                    : { backgroundColor: 'yellow' }
+                                                }
+                                              >
+                                                {item?.percent + "%"}
+                                              </Typography>
+                                            </TableCell>
+                                          ))}
+                                        </TableRow>
+                                      </TableBody>
+                                    </Table>
+                                  </TableContainer>
                                 </Grid>
                               </Grid>
                             </Grid>
 
+                            <Grid container className={classes.gridItemInfo} alignItems="center" justifyContent='flex-end'>
+                              <Grid item lg={1} md={1} xs={1} >
+                                <span className={classes.tabItemLabelField} style={{ marginLeft: '-70px' }} >Chi tiết sản xuất:</span>
+                              </Grid>
+                              <Grid item lg={1} md={1} xs={1}></Grid>
+                              <Grid item lg={1} md={1} xs={1}>
 
-                            <Grid item>
-                              <IconButton
-                                onClick={handleAddRow}
-                              
-                              >
-                                 <AddCircleOutline />
-                              </IconButton>
+                              </Grid>
+                              <Grid item lg={1} md={1} xs={1}></Grid>
+                              <Grid item lg={7} md={7} xs={7}>
+                                <Grid container alignItems="center">
+                                  <Grid item lg={12} md={12} xs={12}>
+                                    <Grid container alignItems="center">
+                                      <Grid item lg={1.5} md={1.5} xs={1.5} >
+                                        <span className={classes.tabItemLabelField}>{'Số người làm: '}</span>
+                                      </Grid>
+                                      <Grid item lg={1} md={1} xs={1}>
+                                        <TextField
+                                          style={{ marginLeft: '10px' }}
+                                          type="number"
+                                          variant="outlined"
+                                          name="number_of_worker"
+                                          InputProps={{ inputProps: { min: 1 } }}
+                                          value={productionDailyRequestList[indexDate]?.number_of_worker}
+                                          className={classes.inputField}
+                                          onChange={handleChangeHours}
+                                        />
+                                      </Grid>
+                                      <Grid item lg={0.5} md={0.5} xs={0.5} >   </Grid>
+                                      <Grid item lg={1.5} md={1.5} xs={1.5} style={{ marginLeft: '30px' }}>
+                                        <span className={classes.tabItemLabelField}>{'Số giờ làm: '}</span>
+                                      </Grid>
+                                      <Grid item lg={1} md={1} xs={1}>
+                                        <TextField
+                                          type="number"
+                                          variant="outlined"
+                                          name="number_of_working_hour"
+                                          InputProps={{ inputProps: { min: 1 } }}
+                                          value={productionDailyRequestList[indexDate]?.number_of_working_hour}
+                                          className={classes.inputField}
+                                          style={{ marginLeft: '10px' }}
+                                          onChange={handleChangeHours}
+                                        />
+                                      </Grid>
+                                      <Grid item lg={1.5} md={1.5} xs={1.5} style={{ marginLeft: '30px' }}>
+                                        <span className={classes.tabItemLabelField}>{'Công suất hiện tại: '}</span>
+                                      </Grid>
+                                      <Grid item lg={2} md={2} xs={2}>
+                                        <TextField
+                                          type="text"
+                                          variant="outlined"
+                                          disabled
+                                          style={{ marginLeft: '10px' }}
+                                          value={calculateTotalPercent() + "%"}
+                                          className={classes.inputField}
+                                          onChange={handleChange}
+                                        />
+                                      </Grid>
+                                      <Grid item lg={1.5} md={1.5} xs={1.5} style={{ marginLeft: '30px' }}>
+                                        <span className={classes.tabItemLabelField}>{'Công suất tổng: '}</span>
+                                      </Grid>
+                                      <Grid item lg={1} md={1} xs={1}>
+                                        <TextField
+                                          type="text"
+                                          variant="outlined"
+                                          disabled
+                                          style={{ marginLeft: '10px' }}
+                                          value={100}
+                                          className={classes.inputField}
+                                          onChange={handleChange}
+                                        />
+                                      </Grid>
+                                    </Grid>
+                                  </Grid>
+                                </Grid>
+                              </Grid>
+                              <Grid item>
+                                <IconButton
+                                  onClick={handleAddRow}
+
+                                >
+                                  <AddCircleOutline />
+                                </IconButton>
+                              </Grid>
                             </Grid>
-                          </Grid>
+                            <Grid container className={classes.gridItem} alignItems="center">
+                              <Grid item lg={12} md={12} xs={12}>
 
+                                <TableContainer style={{ maxHeight: 430 }}>
+                                  {/* <TableScrollbar height="350px"> */}
+                                  <Table size="small" stickyHeader aria-label="sticky table">
+                                    <TableHead>
+                                      <TableRow>
+                                        <TableCell>STT</TableCell>
+                                        <TableCell align="left">Mã ĐH</TableCell>
+                                        <TableCell align="left">Mã TP của TQT</TableCell>
+                                        <TableCell align="left">Mã TP của KH</TableCell>
+                                        <TableCell align="left">Mã TP theo TQT(Mã hiển thị)</TableCell>
+                                        <TableCell align="left">SL</TableCell>
+                                        <TableCell align="left">Đơn vị</TableCell>
+                                        <TableCell align="left">% công suất</TableCell>
+                                        <TableCell align="left">Vật tư</TableCell>
+                                        <TableCell align="left"><Button variant="contained"
+                                          style={{ background: 'rgb(97, 42, 255)' }}
+                                          onClick={() => handleCheckMaterial()
 
-
-
-
-                          <Grid container className={classes.gridItem} alignItems="center">
-                            <Grid item lg={12} md={12} xs={12}>
-                            
-                              <TableContainer style={{ maxHeight: 430 }}>
-                                {/* <TableScrollbar height="350px"> */}
-                                <Table size="small" stickyHeader aria-label="sticky table">
-                                  <TableHead>
-                                    <TableRow>
-                                      <TableCell>STT</TableCell>
-                                      <TableCell align="left">Mã ĐH</TableCell>
-                                      <TableCell align="left">Mã TP của TQT</TableCell>
-                                      <TableCell align="left">Mã TP của KH</TableCell>
-                                      <TableCell align="left">Mã TP theo TQT(Mã hiển thị)</TableCell>
-                                      <TableCell align="left">SL</TableCell>
-                                      <TableCell align="left">Đơn vị</TableCell>
-                                      <TableCell align="left">% công suất</TableCell>
-                                      <TableCell align="left">Vật tư</TableCell>
-                                      <TableCell align="left"></TableCell>
-                                    </TableRow>
-                                  </TableHead>
-                                  <TableBody>
-                                    {productList?.map((item, index) => (
-                                      <TableRow
-                                        key={index}
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                        hover
-                                      >
-                                        <TableCell align="left">{index + 1}</TableCell>
-                                        <TableCell align="left">{item.order_id}</TableCell>
-                                        <TableCell align="left">
-                                          <Autocomplete
-                                            value={item}
-                                            size="small"
-                                            disablePortal
-                                            options={dropdownData}
-                                            onChange={(e, u) => handleChangeRow(u, index)}
-                                            getOptionLabel={(option) => option.product_code}
-                                            renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                          />
-                                        </TableCell>
-
-                                        <TableCell align="left">{item.product_customer_code}</TableCell>
-                                  
-                                        <TableCell align="left" style={{ maxWidth: 50, overflow: 'hidden', textOverflow: 'ellipsis' }} >
-                                     
-                                          {item.product_name}
-                                           </TableCell>
-                                        <TableCell align="left">
-                                          <TextField
-                                            fullWidth
-                                            type="number"
-                                            
-                                            style={{ minWidth: 50 }}
-                                            variant="outlined"
-                                            InputProps={{ inputProps: { min: 1, max: item.quantity_in_box } }}
-                                            // name="date"
-                                            
-                                            value={item.quantity_in_box}
-                                            className={classes.inputField}
-                                            onChange={(e) => handleChangeNumber(e, index)}
-                                          />
-                                        </TableCell>
-                                        <TableCell align="left">{item.unit_name}</TableCell>
-                                        <TableCell align="center">
-
-                                          <span> {calculatePercent(productionDailyRequestList[indexDate].number_of_worker, productionDailyRequestList[indexDate].number_of_working_hour, item.no_piece_per_box, item.quantity_in_box, item.productivity_per_worker)?.toLocaleString()+"%"}</span>
-                                        </TableCell>
-                                        <TableCell align="center"> {calculateQuantity(item.vattu)}</TableCell>
-                                        <TableCell align="right">
-                                          <IconButton
-                                            onClick={() => handleDeleteRow(index)}
-                                          
-                                          >
-                                            <Delete />
-                                          </IconButton>
-                                        </TableCell>
+                                          }>Kiểm tra</Button></TableCell>
                                       </TableRow>
-                                    ))}
-                                  </TableBody>
-                                </Table>
-                                {/* </TableScrollbar> */}
-                              </TableContainer>
+                                    </TableHead>
+                                    <TableBody>
+                                      {productList?.map((item, index) => (
+                                        <TableRow
+                                          key={index}
+                                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                          hover
+                                        >
+                                          <TableCell align="left">{index + 1}</TableCell>
+                                          <TableCell align="left">{item.order_id}</TableCell>
+                                          <TableCell align="left">
+                                            <Autocomplete
+                                              value={item}
+                                              size="small"
+                                              disablePortal
+                                              options={dropdownData}
+                                              onChange={(e, u) => handleChangeRow(u, index)}
+                                              getOptionLabel={(option) => option.product_code}
+                                              renderInput={(params) => <TextField {...params} variant="outlined" />}
+                                            />
+                                          </TableCell>
+
+                                          <TableCell align="left">{item.product_customer_code}</TableCell>
+
+                                          <TableCell align="left" style={{ maxWidth: 50, overflow: 'hidden', textOverflow: 'ellipsis' }} >
+
+                                            {item.product_name}
+                                          </TableCell>
+                                          <TableCell align="left">
+                                            <TextField
+                                              fullWidth
+                                              type="number"
+                                              style={{ minWidth: 50 }}
+                                              variant="outlined"
+                                              InputProps={{ inputProps: { min: 1, max: item.maxValue } }}
+                                              // name="date"
+                                              value={item.quantity_in_box}
+                                              className={classes.inputField}
+                                              onChange={(e) => handleChangeNumber(e, index)}
+                                            />
+                                          </TableCell>
+                                          <TableCell align="left">{item.unit_name}</TableCell>
+                                          <TableCell align="center">
+
+                                            <span> {calculatePercent(productionDailyRequestList[indexDate].number_of_worker, productionDailyRequestList[indexDate].number_of_working_hour, item.no_piece_per_box, item.quantity_in_box, item.productivity_per_worker)?.toLocaleString() + "%"}</span>
+                                          </TableCell>
+                                          <TableCell align="center"> {calculateQuantity(item)}</TableCell>
+                                          <TableCell align="right">
+                                            <IconButton
+                                              onClick={() => handleDeleteRow(index)}
+                                            >
+                                              <Delete />
+                                            </IconButton>
+                                          </TableCell>
+                                        </TableRow>
+                                      ))}
+                                    </TableBody>
+                                  </Table>
+                                  {/* </TableScrollbar> */}
+                                </TableContainer>
+                              </Grid>
                             </Grid>
                           </Grid>
-                        </Grid>
+                        </div>
                       </div>
-                    </div>
+                    </Grid>
                   </Grid>
-                </Grid>
-              </TabPanel>
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Grid container justifyContent="space-between">
-            <Grid item>
-              <Button
-                variant="contained"
-                style={{ background: 'rgb(70, 81, 105)' }}
-                onClick={() => handleCloseDialog()}
-              >
-                Đóng
-              </Button>
-            </Grid>
-            <Grid item>
-              <Grid container spacing={2} justifyContent="flex-end">
-                <Grid item>
-                  {/* <Link to={`/dashboard/workorder/${workorderRequest.id}`} target="_blank" rel="noopener noreferrer"> */}
-                  <Button
-                    variant="contained"
-                    style={{ background: 'rgb(97, 42, 255)' }}
-                    onClick={() =>
-                      popupWindow(`/dashboard/workorder/${workorderRequest.id}`, `Mục tiêu sản xuất`, 400)
-                    }
-                  >
-                    Mục tiêu sản xuất
-                  </Button>
-                  {/* </Link> */}
-                </Grid>
-                {!selectedDocument && (
-                  <Grid item>
-                    <Button
-                      variant="contained"
-                      style={{ background: 'rgb(97, 42, 255)' }}
-                      onClick={() => handleCreateWorkOrder()}
-                    >
-                      {'Tạo mới'}
-                    </Button>
-                  </Grid>
-                )}
-                {!!selectedDocument && (
-                  <Grid item>
-                    <Button
-                      variant="contained"
-                      style={{ background: 'rgb(97, 42, 255)' }}
-                      onClick={() => handleCreateWorkOrder()}
-                    >
-                      Lưu
-                    </Button>
-                  </Grid>
-                )}
+                </TabPanel>
               </Grid>
             </Grid>
-          </Grid>
-        </DialogActions>
-      </Dialog>
-    </Grid>
-  </React.Fragment>
+          </DialogContent>
+          <DialogActions>
+            <Grid container justifyContent="space-between">
+              <Grid item>
+                <Button
+                  variant="contained"
+                  style={{ background: 'rgb(70, 81, 105)' }}
+                  onClick={() => handleCloseDialog()}
+                >
+                  Đóng
+                </Button>
+              </Grid>
+              <Grid item>
+                <Grid container spacing={2} justifyContent="flex-end">
+                  <Grid item>
+                    {/* <Link to={`/dashboard/workorder/${workorderRequest.id}`} target="_blank" rel="noopener noreferrer"> */}
+                    <Button
+                      variant="contained"
+                      style={{ background: 'rgb(97, 42, 255)' }}
+                      onClick={() =>
+                        popupWindow(`/dashboard/workorder/${workorderRequest.id}`, `Mục tiêu sản xuất`, 400)
+                      }
+                    >
+                      Mục tiêu sản xuất
+                    </Button>
+                    {/* </Link> */}
+                  </Grid>
+                  {!selectedDocument && (
+                    <Grid item>
+                      <Button
+                        variant="contained"
+                        style={{ background: 'rgb(97, 42, 255)' }}
+                        onClick={() => handleCreateWorkOrder()}
+                      >
+                        {'Tạo mới'}
+                      </Button>
+                    </Grid>
+                  )}
+                  {!!selectedDocument && (
+                    <Grid item>
+                      <Button
+                        variant="contained"
+                        style={{ background: 'rgb(97, 42, 255)' }}
+                        onClick={() => handleCreateWorkOrder()}
+                      >
+                        Lưu
+                      </Button>
+                    </Grid>
+                  )}
+                </Grid>
+              </Grid>
+            </Grid>
+          </DialogActions>
+        </Dialog>
+      </Grid>
+    </React.Fragment>
   );
 };
 
