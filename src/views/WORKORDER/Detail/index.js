@@ -325,14 +325,36 @@ const WorkorderModal = () => {
 
   const handleChange = (e) => {
     const value = e.target.value;
+    let from_date = workorderRequest.from_date;
+    let to_date = workorderRequest.to_date;
     setWorkorderRequest({
       ...workorderRequest,
       [e.target.name]: value,
     });
     if (e.target.name === 'to_date') {
-      handleSetDate(workorderRequest.from_date, e.target.value);
+      if (workorderRequest.from_date < value){
+        handleSetDate(workorderRequest.from_date, e.target.value);
+      }
+      else{
+        setWorkorderRequest({
+          ...workorderRequest,
+          to_date: to_date,
+          from_date: from_date
+        });
+      }
+     
     } else {
-      handleSetDate(e.target.value, workorderRequest.to_date);
+      if (value < workorderRequest.to_date){
+        handleSetDate(e.target.value, workorderRequest.to_date);
+      }
+      else{
+        setWorkorderRequest({
+          ...workorderRequest,
+          to_date: to_date,
+          from_date: from_date
+        });
+      }
+     
     }
 
   };
@@ -386,6 +408,7 @@ const WorkorderModal = () => {
     setCurrentDate(date);
     setIndexDate(index);
     setProductList(productionDailyRequestList[index].product_list);
+    handleCheckMaterial();
 
   };
 
