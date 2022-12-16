@@ -408,7 +408,7 @@ const WorkorderModal = () => {
     setCurrentDate(date);
     setIndexDate(index);
     setProductList(productionDailyRequestList[index].product_list);
-    handleCheckMaterial();
+    // handleCheckMaterial();
 
   };
 
