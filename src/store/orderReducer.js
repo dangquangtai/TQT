@@ -3,6 +3,7 @@ import * as actionTypes from './actions';
 export const initialState = {
   orderList: [],
   order: {},
+  workorderDetail: {}
 };
 
 const orderReducer = (state = initialState, action) => {
@@ -28,6 +29,15 @@ const orderReducer = (state = initialState, action) => {
           orderDetail: action.orderDetail,
         },
       };
+      case actionTypes.MATERIAL_CHANGE:
+    
+        return {
+          ...state,
+          order: {
+            ...state.order,
+            workorderDetail: action.workorderDetail,
+          },
+        };
     default:
       return state;
   }

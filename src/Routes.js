@@ -10,7 +10,7 @@ import AuthGuard from './component/Auth/AuthGuard';
 import MinimalLayout from './layout/MinimalLayout';
 import AppLayout from './layout/AppLayout/index';
 import OrderModal from './views/WORKORDER/Order/index.js';
-
+import AlertDialogSlide from './views/WORKORDER/Material';
 const AuthLogin = lazy(() => import('./views/Login'));
 const App = lazy(() => import('./views/Dashboard/App/index.js'));
 const DashboardDefault = lazy(() => import('./views/Dashboard/Default'));
@@ -54,6 +54,7 @@ const Routes = () => {
                     <Route path="/dashboard/app" component={App} />
                     <Route path="/dashboard/default" component={DashboardDefault} />
                     <Route path="/dashboard/workorder/:id" component={OrderModal} />
+                    <Route path="/dashboard/workorder/material" component={AlertDialogSlide} />
                   </AuthGuard>
                 </NavMotion>
               </Switch>

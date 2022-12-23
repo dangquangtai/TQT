@@ -22,7 +22,7 @@ export const getOrderProductDetail = (id) => {
     .then((response) => {
       if (response.status === 200 && response.data.return === 200) {
         const { data } = response.data;
-        return data.order_detail;
+        return data;
       }
       return [];
     })
@@ -52,6 +52,7 @@ export const createOrder = (data) => {
     return false;
   });
 };
+
 
 export const updateOrder = (data) => {
   return axiosServices.post(apiEndpoints.update_order, data).then((response) => {

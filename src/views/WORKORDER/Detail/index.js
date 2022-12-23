@@ -26,14 +26,14 @@ import Alert from '../../../component/Alert/index.js';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import useStyles from './classes.js';
-import { FLOATING_MENU_CHANGE, ORDER_DETAIL_CHANGE, DOCUMENT_CHANGE } from '../../../store/actions.js';
-import { SkipNext, SkipPrevious } from '@material-ui/icons';
+import { FLOATING_MENU_CHANGE, ORDER_DETAIL_CHANGE, DOCUMENT_CHANGE, MATERIAL_CHANGE } from '../../../store/actions.js';
+import { LocalConvenienceStoreOutlined, SkipNext, SkipPrevious } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { month, weekday } from './../data';
 import { Delete } from '@material-ui/icons';
 import { AddCircleOutline } from '@material-ui/icons';
-import AlertDialogSlide from '../Material/index.js';
-import { getStatusList, createWorkorOrder, updateWorkorOrder, checkMaterial } from '../../../services/api/Workorder/index.js';
+
+import { getStatusList, createWorkorOrder, updateWorkorOrder, checkMaterial, getMaterialDaily, getDetailWorkorOrder } from '../../../services/api/Workorder/index.js';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -97,17 +97,28 @@ const WorkorderModal = () => {
   ]);
   const [prodct, setProduct] = useState({});
   const [dropdownData, setDopDownData] = useState([]);
-  const handleViewDetailMaterial = (product) => {
-    setOpen(true);
+  const handleViewDetailMaterial = async (product,index) => {
+    // setOpen(true);
+    handleUpdateWorkOrder(product,index);
     
-    setProduct({...product})
+    
+    // setProduct({...product})
+   
+    let data = await getMaterialDaily(productList[index].id);
+    dispatch({ type: MATERIAL_CHANGE, order: null, orderDetail: null, 
+      workorderDetail: {...productList[index],
+        work_order_id: selectedDocument.id, 
+        order_date:productionDailyRequestList[indexDate].work_order_date,  
+        daily_work_order_id:productionDailyRequestList[indexDate].id, 
+        supplierList: [...data]}});
+    popupWindow(`/dashboard/workorder/material`, `Vật tư`, 400)
   }
-  const calculateQuantity = (product) => {
+  const calculateQuantity = (product,index) => {
 
     const color = product.is_enough ? 'rgb(48, 188, 65)' : 'yellow';
 
     return <><Typography style={{ backgroundColor: color }}>{product.is_enough ? 'Đủ' : 'Thiếu'}</Typography>
-      <u><label onClick={() => handleViewDetailMaterial(product)}>Chi tiết</label></u></>;
+      <u><label onClick={() => handleViewDetailMaterial(product,index)}>Chi tiết</label></u></>;
   };
   const [percent, setPercent] = useState(0);
 
@@ -125,6 +136,7 @@ const WorkorderModal = () => {
         product_code: row?.product_code,
         id: row?.id,
         order_id: row?.order_id,
+        customer_order_code: order?.order_code,
         product_id: row?.id,
         no_piece_per_box: row?.no_piece_per_box,
         productivity_per_worker: row?.productivity_per_worker,
@@ -226,7 +238,6 @@ const WorkorderModal = () => {
         handleOpenSnackbar(true, 'fail', 'Số ngày kế hoạch không ther < 2 !');
       }
       else {
-     
         if (!selectedDocument) {
          await createWorkorOrder({
             workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
@@ -263,7 +274,7 @@ const WorkorderModal = () => {
     }
     handleCloseDialog();
   };
-  const handleUpdateWorkOrder = async () => {
+  const handleUpdateWorkOrder = async (product,index) => {
     try {
       if (productionDailyRequestList.length < 2) {
         handleOpenSnackbar(true, 'fail', 'Số ngày kế hoạch không ther < 2 !');
@@ -299,13 +310,22 @@ const WorkorderModal = () => {
         }
         setWorkorderRequest({...workorderRequest,id: work_id.work_order_request_id})
         productionDailyRequestList[indexDate].id=work_id.work_order_daily_request_id;
-        let dataPartList = await checkMaterial({ work_order_id: work_id.work_order_request_id, daily_work_order_id: work_id.work_order_daily_request_id});
-        dataPartList.forEach(element => {
-          productList.find((x) => (x.product_code === element.Product_Code)).is_enough = element.Is_Enough;
-          productList.find((x) => (x.product_code === element.Product_Code)).part_list = [...element.Part_List];
-        });
-
-        setProductList(productList)
+        
+        if (!productList[index].id){
+          productList[index].id=work_id.id_list[index];
+        }
+        
+     
+        // let dataPartListWorkorder = await checkMaterial({ work_order_id: work_id.work_order_request_id, daily_work_order_id: work_id.work_order_daily_request_id});
+        // dataPartListWorkorder.forEach((dataPartList,index)=>{
+        //   dataPartList.Daily_Detail_List.forEach((element) => {
+        //     productionDailyRequestList[index].product_list.find((x) => (x.product_code === element.Product_Code)).is_enough = element.Is_Enough;
+        //     productionDailyRequestList[index].product_list.find((x) => (x.product_code === element.Product_Code)).part_list = [...element.Part_List];
+        //   });
+  
+        // })
+        
+     
       }
 
     }
@@ -330,6 +350,7 @@ const WorkorderModal = () => {
       ...workorderRequest,
       [e.target.name]: value,
     });
+    updateDataDailyRequest();
     if (e.target.name === 'to_date') {
       if (workorderRequest.from_date < value){
         handleSetDate(workorderRequest.from_date, e.target.value);
@@ -342,7 +363,7 @@ const WorkorderModal = () => {
         });
       }
      
-    } else {
+    } else  if (e.target.name === 'from_date') {
       if (value < workorderRequest.to_date){
         handleSetDate(e.target.value, workorderRequest.to_date);
       }
@@ -451,7 +472,21 @@ const WorkorderModal = () => {
     });
     return total;
   }
+  const calculateTotalPercentList = (product_List, number_of_worker,number_of_working_hour) => {
+      let total = 0;
+            product_List.forEach(element => {
+            total += calculatePercent(number_of_worker,
+            number_of_working_hour,
+            element.no_piece_per_box,
+            element.quantity_in_box,
+            element.productivity_per_worker)
+        });
+      return total;
 
+    
+  
+
+  }
   const fetchStatus = async () => {
     let data = await getStatusList();
     setProductionStatus(data);
@@ -625,11 +660,12 @@ const WorkorderModal = () => {
       }
       setIndexDate(0);
       setCurrentWeek(0);
- 
+   
     }
   }
   useEffect(() => {
     if (orderRedux.orderDetail?.length > 0) setDopDownData(orderRedux.orderDetail);
+    console.log(order)
   }, [order.id]);
 
   useEffect(() => {
@@ -638,14 +674,11 @@ const WorkorderModal = () => {
 
   useEffect(() => {
     handleSetProduct();
+  
   }, [selectedDocument]);
   return (
     <React.Fragment>
-      <AlertDialogSlide
-        open={open}
-        setOpen={setOpen}
-        detail={prodct}
-      />
+     
       {snackbarStatus.isOpen && (
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -696,6 +729,7 @@ const WorkorderModal = () => {
                                   <TextField
                                     fullWidth
                                     variant="outlined"
+                                    type='text'
                                     size="small"
                                     name="title"
                                     value={workorderRequest.title}
@@ -813,7 +847,7 @@ const WorkorderModal = () => {
                                                     : { backgroundColor: 'yellow' }
                                                 }
                                               >
-                                                {item?.percent + "%"}
+                                                {(!item.percent ? calculateTotalPercentList(item.product_list, item.number_of_worker, item.number_of_working_hour): item.percent) +"%" }
                                               </Typography>
                                             </TableCell>
                                           ))}
@@ -927,11 +961,13 @@ const WorkorderModal = () => {
                                         <TableCell align="left">Đơn vị</TableCell>
                                         <TableCell align="left">% công suất</TableCell>
                                         <TableCell align="left">Vật tư</TableCell>
-                                        <TableCell align="left"><Button variant="contained"
+                                        <TableCell align="left">
+                                          {/* <Button variant="contained"
                                           style={{ background: 'rgb(97, 42, 255)' }}
                                           onClick={() => handleCheckMaterial()
 
-                                          }>Kiểm tra</Button></TableCell>
+                                          }>Kiểm tra</Button> */}
+                                          </TableCell>
                                       </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -943,17 +979,18 @@ const WorkorderModal = () => {
                                         >
                                           <TableCell align="left">{index + 1}</TableCell>
                                           <TableCell align="left" style={{ maxWidth: 50, overflow: 'hidden', textOverflow: 'ellipsis' }} >
-                                          <Tooltip title={item.order_id}>
-                                            <span> {item.order_id}</span>
+                                          <Tooltip title={item.customer_order_code}>
+                                            <span> {item.customer_order_code}</span>
                                           </Tooltip>
                                           </TableCell>
-                                          <TableCell align="left">
+                                          <TableCell align="left" style={{minWidth:150,maxWidth:150}}>
                                             <Autocomplete
                                               value={item}
                                               size="small"
                                               disablePortal
                                               options={dropdownData}
-                                             
+                                              disableClearable
+                                              fullWidth
                                               onChange={(e, u) => handleChangeRow(u, index)}
                                               getOptionLabel={(option) => option.product_code}
                                               renderInput={(params) => <TextField {...params} variant="outlined" />}
@@ -962,7 +999,7 @@ const WorkorderModal = () => {
 
                                           <TableCell align="left">{item.product_customer_code}</TableCell>
 
-                                          <TableCell align="left" style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis' }} >
+                                          <TableCell align="left" style={{ maxWidth: 250, overflow: 'hidden', textOverflow: 'ellipsis' }} >
                                           <Tooltip title={item.product_name}>
                                             <span> {item.product_name}</span>
                                           </Tooltip>
@@ -985,7 +1022,7 @@ const WorkorderModal = () => {
 
                                             <span> {calculatePercent(productionDailyRequestList[indexDate].number_of_worker, productionDailyRequestList[indexDate].number_of_working_hour, item.no_piece_per_box, item.quantity_in_box, item.productivity_per_worker)?.toLocaleString() + "%"}</span>
                                           </TableCell>
-                                          <TableCell align="center"> {calculateQuantity(item)}</TableCell>
+                                          <TableCell align="center"> {calculateQuantity(item,index)}</TableCell>
                                           <TableCell align="right">
                                             <IconButton
                                               onClick={() => handleDeleteRow(index)}

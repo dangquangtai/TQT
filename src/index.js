@@ -14,10 +14,10 @@ import reducer from './store/reducer';
 import config from './config';
 import './assets/scss/style.scss';
 import * as serviceWorker from './serviceWorker';
-import { ORDER_CHANGE, ORDER_LIST, ORDER_DETAIL_CHANGE } from './store/actions.js';
+import { ORDER_CHANGE, ORDER_LIST, ORDER_DETAIL_CHANGE ,MATERIAL_CHANGE } from './store/actions.js';
 
 const syncConfig = {
-  whitelist: [ORDER_LIST, ORDER_CHANGE, ORDER_DETAIL_CHANGE],
+  whitelist: [ORDER_LIST, ORDER_CHANGE, ORDER_DETAIL_CHANGE, MATERIAL_CHANGE],
 };
 const middlewares = [createStateSyncMiddleware(syncConfig)];
 const store = createStore(reducer, {}, applyMiddleware(...middlewares));

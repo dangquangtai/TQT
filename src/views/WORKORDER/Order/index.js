@@ -24,7 +24,6 @@ import { Autocomplete } from '@material-ui/lab';
 import useStyles from './../../../utils/classes';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { ORDER_CHANGE } from './../../../store/actions';
-
 import { getOrderCompletedList, getOrderProductDetail } from '../../../services/api/Order/index.js';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="bottom" ref={ref} {...props} />;
@@ -37,15 +36,17 @@ const OrderModal = () => {
   const [order, setOrder] = useState({
     id: '',
     value: '',
+    order_code: '',
   });
   const [orderDetail, setOrderDetail] = useState([]);
   const [orderList, setOrderList] = useState([]);
   const handleOrderChange = async (e, value) => {
     const orderDetail = await getOrderProductDetail(value.id);
     if (value) {
-      dispatch({ type: ORDER_CHANGE, order: value, orderDetail: orderDetail });
-      setOrder(value);
-      setOrderDetail(orderDetail);
+      setOrder({...value, order_code: orderDetail.order_code});
+      console.log({...value, order_code: orderDetail.order_code})
+      dispatch({ type: ORDER_CHANGE, order: {...value, order_code: orderDetail.order_code}, orderDetail: orderDetail.order_detail });
+      setOrderDetail(orderDetail.order_detail);
     } else {
       dispatch({ type: ORDER_CHANGE, order: null, orderDetail: orderDetail });
       setOrder({
@@ -53,6 +54,7 @@ const OrderModal = () => {
         title: '',
         customer_name: '',
         order_date: '',
+        order_code: '',
       });
       setOrderDetail(orderDetail);
     }
@@ -227,16 +229,17 @@ const OrderModal = () => {
           <DialogActions>
             <Grid container justifyContent="space-between">
               <Grid item>
-                <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }}>
-                  Đóng
-                </Button>
+               
               </Grid>
               <Grid item>
                 <Grid container spacing={2} justifyContent="flex-end">
                   <Grid item>
-                    <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }}>
+                  <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }}>
+                  Đóng
+                </Button>
+                    {/* <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }}>
                       Lưu
-                    </Button>
+                    </Button> */}
                   </Grid>
                 </Grid>
               </Grid>

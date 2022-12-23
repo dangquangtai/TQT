@@ -23,4 +23,5 @@ export const SELECTED_APP_CHANGE = '@app/SELECTED_APP_CHANGE';
 export const METADATA = '@share/METADATA';
 export const ORDER_LIST = '@order/ORDER_LIST';
 export const ORDER_CHANGE = '@order/ORDER_CHANGE';
+export const MATERIAL_CHANGE = '@order/MATERIAL_CHANGE';
 export const ORDER_DETAIL_CHANGE = '@order/ORDER_DETAIL_CHANGE';
