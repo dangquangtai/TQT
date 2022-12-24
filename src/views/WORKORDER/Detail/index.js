@@ -226,7 +226,9 @@ const WorkorderModal = () => {
         handleOpenSnackbar(true, 'fail', 'Số ngày kế hoạch không ther < 2 !');
       }
       else {
-        let work_id = {};
+      
+ 
+        let work_id = {}
         if (!selectedDocument) {
           work_id = await createWorkorOrder({
             workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
@@ -238,15 +240,15 @@ const WorkorderModal = () => {
             status_code: workorderRequest.status_code,
             daily_request_list: [...productionDailyRequestList]
           })
-          handleOpenSnackbar(true, 'success', 'Cập nhật Đơn hàng thành công!');
+          handleOpenSnackbar(true, 'success', 'Tạo kế hoạch thành công!');
           let data= await getDetail(work_id.work_order_request_id            )
           dispatch({ type: DOCUMENT_CHANGE, selectedDocument: data, documentType: 'workorder' });
         }
         else {
           work_id = await updateWorkorOrder({
             workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
-            id: selectedDocument.id,
             index_request: indexDate,
+            id: selectedDocument.id,
             to_date: workorderRequest.to_date,
             from_date: workorderRequest.from_date,
             title: workorderRequest.title,
@@ -254,9 +256,11 @@ const WorkorderModal = () => {
             status_code: workorderRequest.status_code,
             daily_request_list: [...productionDailyRequestList]
           })
-          handleOpenSnackbar(true, 'success', 'Cập nhật Đơn hàng thành công!');
+          handleOpenSnackbar(true, 'success', 'Cập nhật kế hoạch thành công!');
         }
- 
+        setWorkorderRequest({ ...workorderRequest, id: work_id.work_order_request_id })
+        productionDailyRequestList[indexDate].id = work_id.work_order_daily_request_id;
+        
       }
 
     }
@@ -441,6 +445,8 @@ const WorkorderModal = () => {
     setProductionDailyRequest(productionDailyRequestList);
   }
   const setDocumentToDefault = async () => {
+    setIndexDate(0);
+    setCurrentWeek(0);
     setWorkorderRequest({ title: '', status: '', order_id: '', to_date: '', from_date: '' });
     setProductList([]);
     setProductionDailyRequest([]);
@@ -575,22 +581,28 @@ const WorkorderModal = () => {
           index++;
         }
       }
-      setProductList([...date[0].product_list])
-      setProductionDailyRequest(date);
-
-      if (date.length > 7) {
-        setEnd(7);
-        setStart(0);
-        setCurrentDate(date[0].work_order_date);
-      } else if (date.length > 0) {
-        setEnd(date.length);
-        setStart(0);
-        setCurrentDate(date[0].work_order_date);
+      if (indexDate===0){
+        setProductList([...date[0].product_list])
+        setProductionDailyRequest(date);
+  
+        if (date.length > 7) {
+          setEnd(7);
+          setStart(0);
+          setCurrentDate(date[0].work_order_date);
+        } else if (date.length > 0) {
+          setEnd(date.length);
+          setStart(0);
+          setCurrentDate(date[0].work_order_date);
+        }
+        setIndexDate(0);
+        setCurrentWeek(0);
+  
+      } else {
+        setProductList([...date[indexDate].product_list])
+        setProductionDailyRequest(date);
       }
-      setIndexDate(0);
-      setCurrentWeek(0);
-
-    }
+      }
+      
   }
   const handleSetDate = (from_date, to_date) => {
     let date = [];
@@ -683,7 +695,7 @@ const WorkorderModal = () => {
 
   useEffect(() => {
     handleSetProduct();
-    console.log(selectedDocument)
+  
   }, [selectedDocument]);
   return (
     <React.Fragment>

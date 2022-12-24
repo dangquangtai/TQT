@@ -41,6 +41,7 @@ export default function AlertDialogSlide() {
   const [detail, setDetail] = useState({});
   const [indexColor, setIndexColor] = useState();
   const classes = useStyles();
+  const[ total, setTotal]= useState(0);
   const [supplierList, setSupplierList] = useState([
 
   ]);
@@ -53,12 +54,13 @@ export default function AlertDialogSlide() {
 
   ]);
   const handleChangeRow = (row, index) => {
+    
     if (!!row) {
       const newProductList = [...supplierList];
-
+      console.log(row.quantity_in_piece , total)
       const newProduct = {
         supplier_name: row.supplier_name,
-        quantity_in_piece: detail.part_list[indexColor].Quantity_In_Piece,
+        quantity_in_piece:row.quantity_in_piece - total >= 0 ? total : row.quantity_in_piece,
         supplier_id: row.supplier_id,
         part_code: row.part_code,
         part_id: row.part_id,
@@ -67,8 +69,8 @@ export default function AlertDialogSlide() {
         work_order_id: detail.work_order_id,
         daily_work_order_id: detail.daily_work_order_id,
         quantity_in_wh: row.quantity_in_piece,
-        is_enough: row.quantity_in_piece - detail.part_list[indexColor].Quantity_In_Piece >= 0 ? true : false,
-        quantity: detail.part_list[indexColor].Quantity_In_Piece - row.quantity_in_piece
+        is_enough: row.quantity_in_piece - total >= 0 ? true : false,
+        quantity: total - row.quantity_in_piece
       };
       newProductList[index] = { ...newProductList[index], ...newProduct };
       setSupplierList([...newProductList]);
@@ -119,10 +121,15 @@ export default function AlertDialogSlide() {
 
   const handleGetsupllier = (index) => {
     setIndexColor(index)
+    setTotal(orderRedux.workorderDetail.part_list[index].Quantity_In_Piece)
+    
     let data = supplierListAll.filter((x) => x.part_code === orderRedux.workorderDetail.part_list[index].Part_Code)
     let data2 = supplierListAll.filter((x) => x.part_code !== orderRedux.workorderDetail.part_list[index].Part_Code)
-    console.log(orderRedux.workorderDetail.part_list[index].Part_Code)
     setSupplierListAll([...data2, ...supplierList])
+    data.forEach(element => {
+      setTotal(total - element.quantity_in_piece)
+    });
+    console.log(total);
     setSupplierList([...data])
     fetchData(index)
   };
