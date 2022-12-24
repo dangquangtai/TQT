@@ -171,7 +171,7 @@ export default function AlertDialogSlide() {
             >
 
             </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div" style={{color:'white'}}>
               CHI TIẾT VẬT TƯ
             </Typography>
 
@@ -287,9 +287,9 @@ export default function AlertDialogSlide() {
                             <Autocomplete
                               value={item}
                               size="small"
-                              disablePortal
+                      
                               options={supplierListDrop}
-                              disableClearable
+                       
                               fullWidth
                               onChange={(e, u) => handleChangeRow(u, index)}
                               getOptionLabel={(option) => option.supplier_name}
@@ -330,7 +330,7 @@ export default function AlertDialogSlide() {
         </DialogContent>
         <DialogActions>
           <Grid container spacing={2} justifyContent="flex-end">
-            <Button onClick={handleSubmit} variant="contained" style={{ background: 'rgb(97, 42, 255)', color: 'white' }}>
+            <Button onClick={handleSubmit} variant="contained" style={{ background: 'rgb(97, 42, 255)', color: 'white',margin: 10 }}>
               {'Lưu'}
             </Button>
           </Grid>
