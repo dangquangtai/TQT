@@ -16,10 +16,36 @@ export const getDetailWorkorOrder = (id, setView) => {
       console.log(error);
     });
 };
-
+export const getDetail = (id) => {
+  return axiosServices
+    .post(apiEndpoints.get_work_order_detail, { id })
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        const { data, view } = response.data;
+        return data;
+      }
+      return [];
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 export const getStatusList = () => {
   return axiosServices
     .post(apiEndpoints.get_work_order_status_list, {})
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return response.data.list;
+      }
+      return [];
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+export const getPartList = (id) => {
+  return axiosServices
+    .post(apiEndpoints.get_part_list, {id: id})
     .then((response) => {
       if (response.status === 200 && response.data.return === 200) {
         return response.data.list;

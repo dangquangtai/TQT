@@ -24,12 +24,13 @@ import {
 } from '@material-ui/core';
 import { Delete, AddCircleOutline } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
-import { Close } from '@mui/icons-material';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { getMaterialInventoryList, createMaterialRequisition, getMaterialDaily } from '../../../services/api/Workorder';
+import { getMaterialInventoryList, createMaterialRequisition } from '../../../services/api/Workorder';
 import useStyles from '../Detail/classes';
+import { FLOATING_MENU_CHANGE, ORDER_DETAIL_CHANGE, DOCUMENT_CHANGE, MATERIAL_CHANGE } from '../../../store/actions.js';
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -43,6 +44,7 @@ export default function AlertDialogSlide() {
   const [supplierList, setSupplierList] = useState([
 
   ]);
+  const dispatch = useDispatch();
   const [supplierListAll, setSupplierListAll] = useState([
 
   ]);
@@ -66,7 +68,7 @@ export default function AlertDialogSlide() {
         daily_work_order_id: detail.daily_work_order_id,
         quantity_in_wh: row.quantity_in_piece,
         is_enough: row.quantity_in_piece - detail.part_list[indexColor].Quantity_In_Piece >= 0 ? true : false,
-        quantity: row.quantity_in_piece - detail.part_list[indexColor].Quantity_In_Piece
+        quantity: detail.part_list[indexColor].Quantity_In_Piece - row.quantity_in_piece
       };
       newProductList[index] = { ...newProductList[index], ...newProduct };
       setSupplierList([...newProductList]);
@@ -82,11 +84,15 @@ export default function AlertDialogSlide() {
   const handleSubmit = async () => {
     await createMaterialRequisition({
       order_date: detail.order_date,
-      daily_requisition_detail_list: [...supplierListAll,...supplierList],
-      requisition_id: detail?.supplierList[0]?.requisition_id|'',
+      daily_requisition_detail_list: [...supplierListAll, ...supplierList],
+      requisition_id: detail?.supplierList[0]?.requisition_id | '',
       daily_work_order_detail_id: detail.id,
       work_order_id: detail.work_order_id,
     })
+    dispatch({
+      type: MATERIAL_CHANGE, order: null, orderDetail: null,
+      workorderDetail: {data: 1}
+    });
     window.opener = null;
     window.open("", "_self");
     window.close();
@@ -96,9 +102,9 @@ export default function AlertDialogSlide() {
   };
   const fetchData = async (index) => {
     let data = await getMaterialInventoryList(detail.work_order_id, detail.part_list[index].Part_Code)
-    let data2 =[]
+    let data2 = []
     data.forEach(element => {
-      data2=[...data2,{
+      data2 = [...data2, {
         supplier_name: element.Supplier_Name,
         supplier_id: element.Supplier_ID,
         part_code: element.Part_Code,
@@ -116,9 +122,23 @@ export default function AlertDialogSlide() {
     let data = supplierListAll.filter((x) => x.part_code === orderRedux.workorderDetail.part_list[index].Part_Code)
     let data2 = supplierListAll.filter((x) => x.part_code !== orderRedux.workorderDetail.part_list[index].Part_Code)
     console.log(orderRedux.workorderDetail.part_list[index].Part_Code)
-    setSupplierListAll([...data2,...supplierList])
+    setSupplierListAll([...data2, ...supplierList])
     setSupplierList([...data])
     fetchData(index)
+  };
+  const handleCheck = (item) => {
+    let data = supplierListAll.filter((x) => x.part_code === item.Part_Code)
+    if(data.length>0){
+      let data2 = supplierListAll.filter((x) => x.part_code === item.Part_Code && x.is_enough)
+        if (data2.length===data.length){
+          return   <Typography style={{ backgroundColor:'rgb(48, 188, 65)'  }}>
+            {item.Quantity_In_Piece
+          }</Typography>
+        }
+    }
+    return   <Typography style={{ backgroundColor: 'yellow' }}>
+    {item.Quantity_In_Piece
+  }</Typography>
   };
   const handleDeleteRow = (index) => {
     supplierList.splice(index, 1);
@@ -130,7 +150,7 @@ export default function AlertDialogSlide() {
     setDetail(orderRedux.workorderDetail);
     setSupplierList([])
     setSupplierListAll([...orderRedux.workorderDetail.supplierList])
-  
+
   }, [orderRedux.workorderDetail])
 
   return (
@@ -141,20 +161,20 @@ export default function AlertDialogSlide() {
         onClose={handleClose}
         TransitionComponent={Transition}
       >
-       <AppBar sx={{ position: 'relative' }}>
+        <AppBar sx={{ position: 'relative' }}>
           <Toolbar>
             <IconButton
               edge="start"
               color="inherit"
-            
+
               aria-label="close"
             >
-           
+
             </IconButton>
             <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
               CHI TIẾT VẬT TƯ
             </Typography>
-           
+
           </Toolbar>
         </AppBar>
         <DialogContent>
@@ -198,7 +218,7 @@ export default function AlertDialogSlide() {
               <Grid item lg={5} md={5} xs={5}>
                 <span ><b>Tồn kho nhà cung cấp</b> </span></Grid>
               <Grid item lg={1} md={1} xs={1} >
-                
+
               </Grid>
 
 
@@ -232,8 +252,7 @@ export default function AlertDialogSlide() {
                           </TableCell>
 
                           <TableCell component="th" scope="row" >
-                            <Typography style={{ backgroundColor: item.Is_Enough ? 'rgb(48, 188, 65)' : 'yellow' }}>{item.Quantity_In_Piece
-                            }</Typography>
+                           {handleCheck(item)}
                           </TableCell>
 
                         </TableRow>
@@ -254,10 +273,10 @@ export default function AlertDialogSlide() {
                         <TableCell>Sl thiếu</TableCell>
                         <TableCell>Trạng thái</TableCell>
                         <TableCell><IconButton
-                  onClick={handleAddRow}
-                >
-                  <AddCircleOutline />
-                </IconButton> </TableCell>
+                          onClick={handleAddRow}
+                        >
+                          <AddCircleOutline />
+                        </IconButton> </TableCell>
                       </TableRow>
                     </TableHead>
 
@@ -284,10 +303,7 @@ export default function AlertDialogSlide() {
                             {item.quantity_in_piece}
                           </TableCell>
                           <TableCell >
-                         
-                              {item.is_enough ? 0 : item.quantity}
-                          
-
+                            {item.is_enough ? 0 : item.quantity_in_piece- item.quantity_in_wh}
                           </TableCell>
                           <TableCell  >
                             <Typography style={{ backgroundColor: item.is_enough ? 'rgb(48, 188, 65)' : 'yellow' }}>
