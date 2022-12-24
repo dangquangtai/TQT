@@ -21,6 +21,7 @@ import {
   Table,
   Paper,
   IconButton,
+  Select
 } from '@material-ui/core';
 import Alert from '../../../component/Alert/index.js';
 import { useSelector, useDispatch } from 'react-redux';
@@ -995,14 +996,15 @@ const WorkorderModal = () => {
                                             <Autocomplete
                                               value={item}
                                               size="small"
-                                              disablePortal
+                                           
                                               options={dropdownData}
-                                              disableClearable
+                                             
                                               fullWidth
                                               onChange={(e, u) => handleChangeRow(u, index)}
                                               getOptionLabel={(option) => option.product_code}
                                               renderInput={(params) => <TextField {...params} variant="outlined" />}
                                             />
+                                           
                                           </TableCell>
 
                                           <TableCell align="left">{item.product_customer_code}</TableCell>
