@@ -82,6 +82,19 @@ export const getMaterialDaily= (daily_work_order_detail_id) => {
       console.log(error);
     });
 };
+export const getLink= (daily_work_order_id) => {
+  return axiosServices
+    .post(apiEndpoints.get_link_download_workorder, {daily_work_order_id: daily_work_order_id})
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return response.data.link;
+      }
+      return [];
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 export const createMaterialRequisition = (data) => {
   return axiosServices.post(apiEndpoints.create_material_requisition_request_daily, data).then((response) => {
     if (response.status === 200 && response.data.return === 200) {

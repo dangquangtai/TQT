@@ -34,7 +34,7 @@ import { month, weekday } from './../data';
 import { Delete } from '@material-ui/icons';
 import { AddCircleOutline } from '@material-ui/icons';
 
-import { getStatusList, createWorkorOrder, updateWorkorOrder, checkMaterial, getMaterialDaily, getDetailWorkorOrder, getPartList, getDetail } from '../../../services/api/Workorder/index.js';
+import { getStatusList, createWorkorOrder, updateWorkorOrder, checkMaterial, getMaterialDaily, getDetailWorkorOrder, getPartList, getDetail, getLink } from '../../../services/api/Workorder/index.js';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -269,6 +269,11 @@ const WorkorderModal = () => {
     }
 
   };
+  const handleGetlink = async () =>{
+    let link = await getLink(productionDailyRequestList[indexDate].id);
+    ///
+
+  }
   const handleUpdateWorkOrder = async (product, index) => {
     try {
       if (productionDailyRequestList.length < 2) {
@@ -1107,6 +1112,16 @@ const WorkorderModal = () => {
                     </Grid>
                   )}
                   {!!selectedDocument && (
+                    <>
+                     <Grid item>
+                    <Button
+                      variant="contained"
+                      style={{ background: 'rgb(97, 42, 255)' }}
+                      onClick={handleGetlink}
+                    >
+                      In lệnh sản xuất
+                    </Button>
+                  </Grid>
                     <Grid item>
                       <Button
                         variant="contained"
@@ -1116,6 +1131,9 @@ const WorkorderModal = () => {
                         Lưu
                       </Button>
                     </Grid>
+                   
+                    </>
+                    
                   )}
                 </Grid>
               </Grid>
