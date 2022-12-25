@@ -79,14 +79,18 @@ export default function AlertDialogSlide() {
   const handleAddRow = () => {
     const newProductList = [...supplierList];
     const newProduct = {
+      part_id:'',
     };
     setSupplierList([...newProductList, newProduct]);
 
   };
   const handleSubmit = async () => {
+    let data = supplierList.filter((x)=>x.part_id !== '')
+    let data2 = supplierListAll.filter((x)=>x.part_id !== '')
+    console.log(data,data2)
     await createMaterialRequisition({
       order_date: detail.order_date,
-      daily_requisition_detail_list: [...supplierListAll, ...supplierList],
+      daily_requisition_detail_list: [...data2, ...data],
       requisition_id: detail?.supplierList[0]?.requisition_id | '',
       daily_work_order_detail_id: detail.id,
       work_order_id: detail.work_order_id,
@@ -95,11 +99,16 @@ export default function AlertDialogSlide() {
       type: MATERIAL_CHANGE, order: null, orderDetail: null,
       workorderDetail: {data: 1}
     });
+    setSupplierDropList([]);
+    setSupplierListAll([]);
+    setSupplierList([]);
     window.opener = null;
     window.open("", "_self");
     window.close();
   }
   const handleClose = () => {
+    setSupplierList([]);
+    setSupplierDropList([]);
     setOpen(false);
   };
   const fetchData = async (index) => {
@@ -139,12 +148,12 @@ export default function AlertDialogSlide() {
       let data2 = supplierListAll.filter((x) => x.part_code === item.Part_Code && x.is_enough)
         if (data2.length===data.length){
           return   <Typography style={{ backgroundColor:'rgb(48, 188, 65)'  }}>
-            {item.Quantity_In_Piece
+            {item.Quantity_In_Piece.toLocaleString()
           }</Typography>
         }
     }
     return   <Typography style={{ backgroundColor: 'yellow' }}>
-    {item.Quantity_In_Piece
+    {item.Quantity_In_Piece.toLocaleString()
   }</Typography>
   };
   const handleDeleteRow = (index) => {
@@ -208,7 +217,7 @@ export default function AlertDialogSlide() {
                           {detail.product_name}
                         </TableCell>
                         <TableCell >
-                          {detail.quantity_in_box}
+                          {detail.quantity_in_box?.toLocaleString()}
                         </TableCell>
                         <TableCell >
                           {detail.unit_name}
@@ -276,8 +285,8 @@ export default function AlertDialogSlide() {
                       <TableRow>
                         <TableCell>Nhà cung cấp</TableCell>
                         <TableCell>Tồn kho</TableCell>
-                        <TableCell>Sl sử dụng </TableCell>
-                        <TableCell>Sl thiếu</TableCell>
+                        <TableCell>SL sử dụng </TableCell>
+                        <TableCell>SL thiếu</TableCell>
                         <TableCell>Trạng thái</TableCell>
                         <TableCell><IconButton
                           onClick={handleAddRow}
@@ -294,7 +303,7 @@ export default function AlertDialogSlide() {
                             <Autocomplete
                               value={item}
                               size="small"
-                      
+                              disableClearable
                               options={supplierListDrop}
                        
                               fullWidth
@@ -304,10 +313,10 @@ export default function AlertDialogSlide() {
                             />
                           </TableCell>
                           <TableCell >
-                            {item.quantity_in_wh}
+                            {item.quantity_in_wh?.toLocaleString()}
                           </TableCell>
                           <TableCell  >
-                            {item.quantity_in_piece}
+                            {item.quantity_in_piece?.toLocaleString()}
                           </TableCell>
                           <TableCell >
                             {item.is_enough ? 0 : item.quantity_in_piece- item.quantity_in_wh}

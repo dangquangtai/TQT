@@ -43,8 +43,7 @@ const OrderModal = () => {
   const handleOrderChange = async (e, value) => {
     const orderDetail = await getOrderProductDetail(value.id);
     if (value) {
-      setOrder({...value, order_code: orderDetail.order_code});
-      console.log({...value, order_code: orderDetail.order_code})
+      setOrder({...value, order_code: orderDetail.order_code, ...orderDetail});
       dispatch({ type: ORDER_CHANGE, order: {...value, order_code: orderDetail.order_code}, orderDetail: orderDetail.order_detail });
       setOrderDetail(orderDetail.order_detail);
     } else {
@@ -65,7 +64,12 @@ const OrderModal = () => {
     const color = quantity > 0 ? 'yellow' : 'green';
     return <Typography style={{ backgroundColor: color }}>{quantity.toLocaleString()}</Typography>;
   };
-
+  const handleClose = () =>{
+    dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
+    window.opener = null;
+    window.open("", "_self");
+    window.close();
+  }
   useEffect(() => {
     if (orderRedux.orderDetail?.length > 0) setOrderDetail(orderRedux.orderDetail);
   }, [orderRedux.orderDetail]);
@@ -114,7 +118,9 @@ const OrderModal = () => {
                                   </Grid>
                                   <Grid item lg={12} md={12} xs={12}>
                                     <Autocomplete
-                                      id="combo-box-demo"
+                                      size='small'
+                                      fullWidth
+                                      disableClearable
                                       options={orderList}
                                       getOptionLabel={(option) => option.value}
                                       onChange={handleOrderChange}
@@ -125,7 +131,23 @@ const OrderModal = () => {
                                   </Grid>
                                 </Grid>
                               </Grid>
-                              <Grid item lg={4} md={6} xs={12}>
+                              <Grid item lg={3} md={6} xs={12}>
+                                <Grid container spacing={1}>
+                                  <Grid item lg={12} md={12} xs={12}>
+                                    <Typography variant="h6">Tên đơn hàng</Typography>
+                                  </Grid>
+                                  <Grid item lg={12} md={12} xs={12}>
+                                    <TextField
+                                      disabled
+                                      variant="outlined"
+                                      size="small"
+                                      fullWidth
+                                      value={order?.title}
+                                    />
+                                  </Grid>
+                                </Grid>
+                              </Grid>
+                              <Grid item lg={3} md={6} xs={12}>
                                 <Grid container spacing={1}>
                                   <Grid item lg={12} md={12} xs={12}>
                                     <Typography variant="h6">Tên khách hàng</Typography>
@@ -169,7 +191,7 @@ const OrderModal = () => {
                                 </Tooltip>
                               </Grid>
                               <Grid item>
-                                <Typography>Last update: 5 phút trước</Typography>
+                                <Typography>5 phút trước</Typography>
                               </Grid>
                             </Grid>
                           </Grid>
@@ -234,7 +256,7 @@ const OrderModal = () => {
               <Grid item>
                 <Grid container spacing={2} justifyContent="flex-end">
                   <Grid item>
-                  <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }}>
+                  <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }} onClick={handleClose} >
                   Đóng
                 </Button>
                     {/* <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }}>
