@@ -877,20 +877,7 @@ const WorkorderModal = () => {
                           <Grid container spacing={1}>
                             <Grid item lg={6} md={6} xs={12}>
                               <Grid container className={classes.gridItemInfo} alignItems="center">
-                                <Grid item lg={4} md={4} xs={4}>
-                                  <span className={classes.tabItemLabelField}>Tên kế hoạch sản xuất: </span>
-                                  <TextField
-                                    fullWidth
-                                    variant="outlined"
-                                    type="text"
-                                    size="small"
-                                    name="title"
-                                    value={workorderRequest.title}
-                                    className={classes.inputField}
-                                    onChange={handleChange}
-                                  />
-                                </Grid>
-                                <Grid item lg={1} md={1} xs={1}></Grid>
+                               
                                 <Grid item lg={3} md={3} xs={3}>
                                   <span className={classes.tabItemLabelField}>Mã hoạch sản xuất: </span>
                                   <TextField
@@ -904,12 +891,30 @@ const WorkorderModal = () => {
                                     onChange={handleChange}
                                   />
                                 </Grid>
-                                <Grid item lg={1} md={1} xs={1}></Grid>
-                                <Grid item lg={3} md={3} xs={3}>
+                                 <Grid item lg={1} md={1} xs={1}></Grid>
+                                 <Grid item lg={8} md={8} xs={8}>
+                                  <span className={classes.tabItemLabelField}>Tên kế hoạch sản xuất: </span>
+                                  <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    type="text"
+                                    size="small"
+                                    name="title"
+                                    value={workorderRequest.title}
+                                    className={classes.inputField}
+                                    onChange={handleChange}
+                                  />
+                                </Grid>
+                               
+                              </Grid>
+
+                              <Grid container className={classes.gridItemInfo}>
+                                    <Grid item lg={3} md={3} xs={3}>
                                   <span className={classes.tabItemLabelField}>Trạng thái: </span>
                                   <TextField
                                     select
                                     fullWidth
+                                     id="outlined-size-small"
                                     variant="outlined"
                                     size="small"
                                     value={workorderRequest.status_code}
@@ -923,9 +928,9 @@ const WorkorderModal = () => {
                                       ))}
                                   </TextField>
                                 </Grid>
-                              </Grid>
-
-                              <Grid container className={classes.gridItemInfo}>
+                                 <Grid item lg={1} md={1} xs={1}>
+                                  {' '}
+                                </Grid>
                                 <Grid item lg={3} md={3} xs={3}>
                                   <span className={classes.tabItemLabelField}>Thời gian lập kế hoạch:</span>
                                   <TextField
@@ -955,11 +960,9 @@ const WorkorderModal = () => {
                                   />
                                 </Grid>
 
-                                <Grid item lg={1} md={1} xs={1}>
-                                  {' '}
-                                </Grid>
-                                <Grid item lg={3} md={3} xs={3}>
-                                  {/* <span className={classes.tabItemLabelField}>Xưởng:</span>
+                               
+                                {/* <Grid item lg={3} md={3} xs={3}>
+                                   <span className={classes.tabItemLabelField}>Xưởng:</span>
                                   <TextField
                                     fullWidth
                                     disabled
@@ -968,8 +971,8 @@ const WorkorderModal = () => {
                                     value={'Xưởng Minh Khai'}
                                     className={classes.inputField}
                                     onChange={handleChange}
-                                  /> */}
-                                </Grid>
+                                  /> 
+                                </Grid> */}
                               </Grid>
                             </Grid>
                             <Grid item lg={6} md={6} xs={12} style={{ background: 'rgba(224, 224, 224, 1)' }}>
