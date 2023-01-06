@@ -21,7 +21,6 @@ import {
   Table,
   Paper,
   IconButton,
-  Select,
 } from '@material-ui/core';
 import Alert from '../../../component/Alert/index.js';
 import { useSelector, useDispatch } from 'react-redux';
@@ -29,7 +28,7 @@ import { useRef } from 'react';
 import PropTypes from 'prop-types';
 import useStyles from './classes.js';
 import { FLOATING_MENU_CHANGE, ORDER_DETAIL_CHANGE, DOCUMENT_CHANGE, MATERIAL_CHANGE } from '../../../store/actions.js';
-import { LocalConvenienceStoreOutlined, SkipNext, SkipPrevious } from '@material-ui/icons';
+import { SkipNext, SkipPrevious } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { month, weekday } from './../data';
 import { Delete } from '@material-ui/icons';
@@ -40,14 +39,11 @@ import {
   getStatusList,
   createWorkorOrder,
   updateWorkorOrder,
-  checkMaterial,
   getMaterialDaily,
-  getDetailWorkorOrder,
   getPartList,
   getDetail,
   getLink,
 } from '../../../services/api/Workorder/index.js';
-import { date } from 'yup';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -175,15 +171,8 @@ const WorkorderModal = () => {
           },
         ]);
         try {
-
-          virtuoso.current.scrollIntoView({ block: "end" })
-        }
-        catch
-        {
-
-        }
-
-
+          virtuoso.current.scrollIntoView({ block: 'end' });
+        } catch {}
       } else {
         setProductList([...newProductList]);
       }
@@ -210,12 +199,8 @@ const WorkorderModal = () => {
       },
     ]);
     try {
-      virtuoso.current.scrollIntoView({ block: "end" })
-    }
-    catch
-    {
-
-    }
+      virtuoso.current.scrollIntoView({ block: 'end' });
+    } catch {}
   };
   const handleDeleteRow = (index) => {
     try {
@@ -224,7 +209,7 @@ const WorkorderModal = () => {
         orderDetail.find((x) => x.id === productList[index].id).quantity_produced -= productList[index].quantity_in_box;
         dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
       }
-    } catch { }
+    } catch {}
 
     productList.splice(index, 1);
     setProductList([...productList]);
@@ -286,7 +271,7 @@ const WorkorderModal = () => {
         setWorkorderRequest({ ...workorderRequest, id: work_id.work_order_request_id });
         productionDailyRequestList[indexDate].id = work_id.work_order_daily_request_id;
       }
-    } catch { }
+    } catch {}
   };
   const handleGetlink = async () => {
     setSnackbarStatus({
@@ -372,7 +357,7 @@ const WorkorderModal = () => {
 
         // })
       }
-    } catch { }
+    } catch {}
   };
   const handleChangeStatus = (e) => {
     const value = e.target.value;
@@ -429,7 +414,7 @@ const WorkorderModal = () => {
       orderDetail.find((x) => x.id === productList[index].id).quantity_produced +=
         value - productList[index].quantity_in_box;
       dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
-    } catch { }
+    } catch {}
 
     productList[index].quantity_in_box = value;
     setProductList([...productList]);
@@ -441,21 +426,20 @@ const WorkorderModal = () => {
       (((sl * piece) / (number_of_worker * (number_of_working_hour / 8) * productivity_per_worker)) * 100).toFixed(2)
     );
   };
-  const [dateListNull, setDateListNull]=useState([]);
+  const [dateListNull, setDateListNull] = useState([]);
   const handleNextWeek = () => {
     if ((currentWeek + 1) * 7 < productionDailyRequestList.length) {
       setCurrentWeek(currentWeek + 1);
-      setDateListNull([])
-      if(productionDailyRequestList.length < (end+7)){
-        let datenull=[];
-        for (var d = 0; d < end + 7 - productionDailyRequestList.length; d++){
-          datenull=[...datenull, {check: true}]
+      setDateListNull([]);
+      if (productionDailyRequestList.length < end + 7) {
+        let datenull = [];
+        for (var d = 0; d < end + 7 - productionDailyRequestList.length; d++) {
+          datenull = [...datenull, { check: true }];
         }
-        setDateListNull(datenull)
+        setDateListNull(datenull);
       }
       setStart(start + 7);
       setEnd(end + 7);
-      
     }
   };
   const handlePreWeek = () => {
@@ -464,7 +448,6 @@ const WorkorderModal = () => {
       setDateListNull([]);
       setStart(start - 7);
       setEnd(end - 7);
-     
     }
   };
 
@@ -490,10 +473,11 @@ const WorkorderModal = () => {
     setTabIndex(0);
   };
 
-  const popupWindow = (url, title, h) => {
+  const popupWindow = (url, title) => {
     var width = window.outerWidth ? window.outerWidth : document.documentElement.clientWidth;
     var height = window.outerHeight ? window.outerHeight : document.documentElement.clientHeight;
     var w = width * 0.9;
+    var h = height * 0.7;
     var left = width / 2 - w / 2;
     var top = height / 2 - h / 2;
     var newWindow = window.open(
@@ -571,7 +555,7 @@ const WorkorderModal = () => {
       from_date: from_date,
       title: title,
       status_code: status_code,
-      order_code: order_code
+      order_code: order_code,
     });
     var date = [];
     if (to_date !== '' && from_date !== '') {
@@ -639,23 +623,21 @@ const WorkorderModal = () => {
         }
         setIndexDate(0);
         setCurrentWeek(0);
-        setDateListNull([])
-        if(date.length < 7){
-          let datenull=[];
-          for (var d = 0; d < 7 - date.length; d++){
-            datenull=[...datenull, {check: true}]
+        setDateListNull([]);
+        if (date.length < 7) {
+          let datenull = [];
+          for (var d = 0; d < 7 - date.length; d++) {
+            datenull = [...datenull, { check: true }];
           }
-          setDateListNull(datenull)
+          setDateListNull(datenull);
         }
-      
-
       } else {
         setProductList([...date[indexDate].product_list]);
         setProductionDailyRequest(date);
       }
     }
   };
-  
+
   const handleSetDate = (from_date, to_date) => {
     let date = [];
     if (to_date !== '' && from_date !== '') {
@@ -724,96 +706,85 @@ const WorkorderModal = () => {
       }
       setIndexDate(0);
       setCurrentWeek(0);
-      setDateListNull([])
-      if(date.length < 7){
-        let datenull=[];
-        for (var d = 0; d < 7 - date.length; d++){
-          datenull=[...datenull, {check: true}]
+      setDateListNull([]);
+      if (date.length < 7) {
+        let datenull = [];
+        for (var d = 0; d < 7 - date.length; d++) {
+          datenull = [...datenull, { check: true }];
         }
-        setDateListNull(datenull)
+        setDateListNull(datenull);
       }
     }
   };
   const handleRenderTableRow = (item, index) => {
+    return (
+      <>
+        {' '}
+        <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} hover>
+          <TableCell align="left">{index + 1}</TableCell>
+          <TableCell align="left" style={{ maxWidth: 50, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <Tooltip title={item.customer_order_code}>
+              <span> {item.customer_order_code}</span>
+            </Tooltip>
+          </TableCell>
+          <TableCell align="left" style={{ minWidth: 150, maxWidth: 150 }}>
+            <Autocomplete
+              value={item}
+              size="small"
+              disableClearable
+              options={dropdownData}
+              fullWidth
+              onChange={(e, u) => handleChangeRow(u, index)}
+              getOptionLabel={(option) => option.product_code}
+              renderInput={(params) => <TextField {...params} variant="outlined" />}
+            />
+          </TableCell>
 
-    return <>  <TableRow
-      key={index}
+          <TableCell align="left">{item.product_customer_code}</TableCell>
 
-      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-      hover
-    >
-      <TableCell align="left">{index + 1}</TableCell>
-      <TableCell
-        align="left"
-        style={{ maxWidth: 50, overflow: 'hidden', textOverflow: 'ellipsis' }}
-      >
-        <Tooltip title={item.customer_order_code}>
-          <span> {item.customer_order_code}</span>
-        </Tooltip>
-      </TableCell>
-      <TableCell align="left" style={{ minWidth: 150, maxWidth: 150 }}>
-        <Autocomplete
-          value={item}
-          size="small"
-          disableClearable
-          options={dropdownData}
-          fullWidth
-          onChange={(e, u) => handleChangeRow(u, index)}
-          getOptionLabel={(option) => option.product_code}
-          renderInput={(params) => <TextField {...params} variant="outlined" />}
-        />
-      </TableCell>
-
-      <TableCell align="left">{item.product_customer_code}</TableCell>
-
-      <TableCell
-        align="left"
-        style={{ maxWidth: 250, overflow: 'hidden', textOverflow: 'ellipsis' }}
-      >
-        <Tooltip title={item.product_name}>
-          <span> {item.product_name}</span>
-        </Tooltip>
-      </TableCell>
-      <TableCell align="left">
-        <TextField
-          fullWidth
-          type="number"
-          style={{ minWidth: 80, maxWidth: 80 }}
-          variant="outlined"
-          InputProps={{ inputProps: { min: 1, max: item.maxValue } }}
-          // name="date"
-          value={item.quantity_in_box}
-          className={classes.inputField}
-          onChange={(e) => handleChangeNumber(e, index)}
-        />
-      </TableCell>
-      <TableCell align="left">{item.unit_name}</TableCell>
-      <TableCell align="center">
-        <span>
-          {' '}
-          {calculatePercent(
-            productionDailyRequestList[indexDate].number_of_worker,
-            productionDailyRequestList[indexDate].number_of_working_hour,
-            item.no_piece_per_box,
-            item.quantity_in_box,
-            item.productivity_per_worker
-          )?.toLocaleString() + '%'}
-        </span>
-      </TableCell>
-      <TableCell align="center"> {calculateQuantity(item, index)}</TableCell>
-      <TableCell align="right">
-        <IconButton onClick={() => handleDeleteRow(index)}>
-          <Delete />
-        </IconButton>
-      </TableCell>
-    </TableRow>
-    </>
-
-
-  }
+          <TableCell align="left" style={{ maxWidth: 250, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <Tooltip title={item.product_name}>
+              <span> {item.product_name}</span>
+            </Tooltip>
+          </TableCell>
+          <TableCell align="left">
+            <TextField
+              fullWidth
+              type="number"
+              style={{ minWidth: 80, maxWidth: 80 }}
+              variant="outlined"
+              InputProps={{ inputProps: { min: 1, max: item.maxValue } }}
+              value={item.quantity_in_box}
+              size="small"
+              onChange={(e) => handleChangeNumber(e, index)}
+            />
+          </TableCell>
+          <TableCell align="left">{item.unit_name}</TableCell>
+          <TableCell align="center">
+            <span>
+              {' '}
+              {calculatePercent(
+                productionDailyRequestList[indexDate].number_of_worker,
+                productionDailyRequestList[indexDate].number_of_working_hour,
+                item.no_piece_per_box,
+                item.quantity_in_box,
+                item.productivity_per_worker
+              )?.toLocaleString() + '%'}
+            </span>
+          </TableCell>
+          <TableCell align="center"> {calculateQuantity(item, index)}</TableCell>
+          <TableCell align="right">
+            <IconButton onClick={() => handleDeleteRow(index)}>
+              <Delete />
+            </IconButton>
+          </TableCell>
+        </TableRow>
+      </>
+    );
+  };
   useEffect(() => {
-    if (orderRedux.orderDetail?.length > 0) setDopDownData(orderRedux.orderDetail);
-  }, [order.id]);
+    setDopDownData(orderRedux.orderDetail || []);
+  }, [orderRedux.orderDetail]);
 
   useEffect(() => {
     fetchStatus();
@@ -832,7 +803,7 @@ const WorkorderModal = () => {
   useEffect(() => {
     handleSetProduct();
   }, [selectedDocument]);
- 
+
   return (
     <React.Fragment>
       {snackbarStatus.isOpen && (
@@ -877,7 +848,6 @@ const WorkorderModal = () => {
                           <Grid container spacing={1}>
                             <Grid item lg={6} md={6} xs={12}>
                               <Grid container className={classes.gridItemInfo} alignItems="center">
-                               
                                 <Grid item lg={3} md={3} xs={3}>
                                   <span className={classes.tabItemLabelField}>Mã hoạch sản xuất: </span>
                                   <TextField
@@ -887,12 +857,11 @@ const WorkorderModal = () => {
                                     size="small"
                                     name="order_code"
                                     value={workorderRequest.order_code}
-                                    className={classes.inputField}
                                     onChange={handleChange}
                                   />
                                 </Grid>
-                                 <Grid item lg={1} md={1} xs={1}></Grid>
-                                 <Grid item lg={8} md={8} xs={8}>
+                                <Grid item lg={1} md={1} xs={1}></Grid>
+                                <Grid item lg={8} md={8} xs={8}>
                                   <span className={classes.tabItemLabelField}>Tên kế hoạch sản xuất: </span>
                                   <TextField
                                     fullWidth
@@ -901,20 +870,18 @@ const WorkorderModal = () => {
                                     size="small"
                                     name="title"
                                     value={workorderRequest.title}
-                                    className={classes.inputField}
                                     onChange={handleChange}
                                   />
                                 </Grid>
-                               
                               </Grid>
 
                               <Grid container className={classes.gridItemInfo}>
-                                    <Grid item lg={3} md={3} xs={3}>
+                                <Grid item lg={3} md={3} xs={3}>
                                   <span className={classes.tabItemLabelField}>Trạng thái: </span>
                                   <TextField
                                     select
                                     fullWidth
-                                     id="outlined-size-small"
+                                    id="outlined-size-small"
                                     variant="outlined"
                                     size="small"
                                     value={workorderRequest.status_code}
@@ -928,7 +895,7 @@ const WorkorderModal = () => {
                                       ))}
                                   </TextField>
                                 </Grid>
-                                 <Grid item lg={1} md={1} xs={1}>
+                                <Grid item lg={1} md={1} xs={1}>
                                   {' '}
                                 </Grid>
                                 <Grid item lg={3} md={3} xs={3}>
@@ -939,7 +906,7 @@ const WorkorderModal = () => {
                                     variant="outlined"
                                     name="from_date"
                                     value={workorderRequest.from_date}
-                                    className={classes.inputField}
+                                    size="small"
                                     onChange={handleChange}
                                   />
                                 </Grid>
@@ -955,12 +922,11 @@ const WorkorderModal = () => {
                                     variant="outlined"
                                     name="to_date"
                                     value={workorderRequest.to_date}
-                                    className={classes.inputField}
+                                    size="small"
                                     onChange={handleChange}
                                   />
                                 </Grid>
 
-                               
                                 {/* <Grid item lg={3} md={3} xs={3}>
                                    <span className={classes.tabItemLabelField}>Xưởng:</span>
                                   <TextField
@@ -1006,9 +972,8 @@ const WorkorderModal = () => {
                                               align="center"
                                               style={
                                                 currentDate === item.work_order_date
-                                                  ? { background: 'rgb(97, 42, 255)', color: 'white', }
+                                                  ? { background: 'rgb(97, 42, 255)', color: 'white' }
                                                   : {}
-                                                  
                                               }
                                               onClick={() =>
                                                 handleChangeDate(item.work_order_date, index + currentWeek * 7)
@@ -1022,14 +987,10 @@ const WorkorderModal = () => {
                                                   month[new Date(item.work_order_date).getMonth()]}
                                               </span>
                                             </TableCell>
-                                          ))
-                                          }
-                                          {dateListNull.map((item)=>(
+                                          ))}
+                                          {dateListNull.map((item) => (
                                             <TableCell align="center">{''}</TableCell>
-                                          ))
-
-                                          }
-                                       
+                                          ))}
                                         </TableRow>
                                       </TableHead>
                                       <TableBody>
@@ -1040,10 +1001,10 @@ const WorkorderModal = () => {
                                                 style={
                                                   (!item.percent
                                                     ? calculateTotalPercentList(
-                                                      item.product_list,
-                                                      item.number_of_worker,
-                                                      item.number_of_working_hour
-                                                    )
+                                                        item.product_list,
+                                                        item.number_of_worker,
+                                                        item.number_of_working_hour
+                                                      )
                                                     : item.percent) >= 100
                                                     ? { backgroundColor: 'rgb(48, 188, 65)' }
                                                     : { backgroundColor: 'yellow' }
@@ -1051,19 +1012,17 @@ const WorkorderModal = () => {
                                               >
                                                 {(!item.percent
                                                   ? calculateTotalPercentList(
-                                                    item.product_list,
-                                                    item.number_of_worker,
-                                                    item.number_of_working_hour
-                                                  )
+                                                      item.product_list,
+                                                      item.number_of_worker,
+                                                      item.number_of_working_hour
+                                                    )
                                                   : item.percent) + '%'}
                                               </Typography>
                                             </TableCell>
                                           ))}
-                                           {dateListNull.map((item)=>(
+                                          {dateListNull.map((item) => (
                                             <TableCell align="center">{''}</TableCell>
-                                          ))
-
-                                          }
+                                          ))}
                                         </TableRow>
                                       </TableBody>
                                     </Table>
@@ -1077,6 +1036,7 @@ const WorkorderModal = () => {
                               className={classes.gridItemInfo}
                               alignItems="center"
                               justifyContent="flex-end"
+                              style={{ marginTop: '20px' }}
                             >
                               <Grid item lg={1} md={1} xs={1}>
                                 <span className={classes.tabItemLabelField} style={{ marginLeft: '-70px' }}>
@@ -1101,7 +1061,7 @@ const WorkorderModal = () => {
                                           name="number_of_worker"
                                           InputProps={{ inputProps: { min: 1 } }}
                                           value={productionDailyRequestList[indexDate]?.number_of_worker}
-                                          className={classes.inputField}
+                                          size="small"
                                           onChange={handleChangeHours}
                                         />
                                       </Grid>
@@ -1118,7 +1078,7 @@ const WorkorderModal = () => {
                                           name="number_of_working_hour"
                                           InputProps={{ inputProps: { min: 1 } }}
                                           value={productionDailyRequestList[indexDate]?.number_of_working_hour}
-                                          className={classes.inputField}
+                                          size="small"
                                           style={{ marginLeft: '10px' }}
                                           onChange={handleChangeHours}
                                         />
@@ -1133,7 +1093,7 @@ const WorkorderModal = () => {
                                           disabled
                                           style={{ marginLeft: '10px' }}
                                           value={calculateTotalPercent() + '%'}
-                                          className={classes.inputField}
+                                          size="small"
                                           onChange={handleChange}
                                         />
                                       </Grid>
@@ -1147,7 +1107,7 @@ const WorkorderModal = () => {
                                           disabled
                                           style={{ marginLeft: '10px' }}
                                           value={100}
-                                          className={classes.inputField}
+                                          size="small"
                                           onChange={handleChange}
                                         />
                                       </Grid>
@@ -1187,12 +1147,9 @@ const WorkorderModal = () => {
                                       </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                      {productList?.map((item, index) => (
-                                        handleRenderTableRow(item, index)
-                                      ))}
+                                      {productList?.map((item, index) => handleRenderTableRow(item, index))}
                                       <div ref={virtuoso} />
                                     </TableBody>
-
                                   </Table>
                                   {/* </TableScrollbar> */}
                                 </TableContainer>
@@ -1225,9 +1182,7 @@ const WorkorderModal = () => {
                     <Button
                       variant="contained"
                       style={{ background: 'rgb(97, 42, 255)' }}
-                      onClick={() =>
-                        popupWindow(`/dashboard/workorder/${workorderRequest.id}`, `Mục tiêu sản xuất`, 400)
-                      }
+                      onClick={() => popupWindow(`/dashboard/workorder/order-list`, `Mục tiêu sản xuất`)}
                     >
                       Mục tiêu sản xuất
                     </Button>

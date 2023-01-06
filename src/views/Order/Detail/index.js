@@ -176,7 +176,6 @@ const OrderModal = () => {
 
   const handleAddProduct = () => {
     setProductList([
-      ...productList,
       {
         order_id: selectedDocument?.id || '',
         id: '',
@@ -190,6 +189,7 @@ const OrderModal = () => {
         quantity_in_box: 0,
         quantity_produced: 0,
       },
+      ...productList,
     ]);
   };
 
@@ -505,20 +505,20 @@ const OrderModal = () => {
                                         size="small"
                                         value={products.find((item) => item.product_code === row.product_code) || null}
                                         onChange={(event, newValue) => handleChangeProductCode(index, newValue)}
-                                        renderInput={(params) => <TextField {...params} variant="standard" />}
+                                        renderInput={(params) => <TextField {...params} variant="outlined" />}
                                       />
                                     </TableCell>
                                     <TableCell align="left">{row?.product_customer_code}</TableCell>
                                     <TableCell align="left" className={classes.maxWidthCell}>
                                       {row?.product_name}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '100px' }}>
+                                    <TableCell align="left" style={{ width: '140px' }}>
                                       <TextField
                                         InputProps={{
                                           inputProps: { min: 0 },
                                         }}
                                         fullWidth
-                                        variant="standard"
+                                        variant="outlined"
                                         name="quantity_in_box"
                                         type="number"
                                         size="small"

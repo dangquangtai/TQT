@@ -43,8 +43,12 @@ const OrderModal = () => {
   const handleOrderChange = async (e, value) => {
     const orderDetail = await getOrderProductDetail(value.id);
     if (value) {
-      setOrder({...value, order_code: orderDetail.order_code, ...orderDetail});
-      dispatch({ type: ORDER_CHANGE, order: {...value, order_code: orderDetail.order_code}, orderDetail: orderDetail.order_detail });
+      setOrder({ ...value, order_code: orderDetail.order_code, ...orderDetail });
+      dispatch({
+        type: ORDER_CHANGE,
+        order: { ...value, order_code: orderDetail.order_code },
+        orderDetail: orderDetail.order_detail,
+      });
       setOrderDetail(orderDetail.order_detail);
     } else {
       dispatch({ type: ORDER_CHANGE, order: null, orderDetail: orderDetail });
@@ -64,31 +68,27 @@ const OrderModal = () => {
     const color = quantity > 0 ? 'yellow' : 'green';
     return <Typography style={{ backgroundColor: color }}>{quantity.toLocaleString()}</Typography>;
   };
-  const handleClose = () =>{
+
+  const handleClose = () => {
     dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
     window.opener = null;
-    window.open("", "_self");
+    window.open('', '_self');
     window.close();
-  }
-  useEffect(() => {
-    if (orderRedux.orderDetail?.length > 0) setOrderDetail(orderRedux.orderDetail);
-  }, [orderRedux.orderDetail]);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         let data = await getOrderCompletedList();
         setOrderList(data);
-      }
-      catch {
+      } catch (error) {
         let data = await getOrderCompletedList();
         setOrderList(data);
       }
-
-    }
+    };
     fetchData();
-
-
   }, []);
+
   return (
     <React.Fragment>
       <Grid container>
@@ -118,7 +118,7 @@ const OrderModal = () => {
                                   </Grid>
                                   <Grid item lg={12} md={12} xs={12}>
                                     <Autocomplete
-                                      size='small'
+                                      size="small"
                                       fullWidth
                                       disableClearable
                                       options={orderList}
@@ -250,15 +250,13 @@ const OrderModal = () => {
           </DialogContent>
           <DialogActions>
             <Grid container justifyContent="space-between">
-              <Grid item>
-               
-              </Grid>
+              <Grid item></Grid>
               <Grid item>
                 <Grid container spacing={2} justifyContent="flex-end">
                   <Grid item>
-                  <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }} onClick={handleClose} >
-                  Đóng
-                </Button>
+                    <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }} onClick={handleClose}>
+                      Đóng
+                    </Button>
                     {/* <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }}>
                       Lưu
                     </Button> */}
