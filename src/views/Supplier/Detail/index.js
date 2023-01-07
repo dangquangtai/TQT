@@ -29,6 +29,7 @@ import { format as formatDate } from 'date-fns';
 import { AccountCircleOutlined as AccountCircleOutlinedIcon, Today as TodayIcon } from '@material-ui/icons';
 import { createSupplier, updateSupplier } from '../../../services/api/Partner/Supplier.js';
 import { getAllSupplierCategory } from '../../../services/api/Setting/SupplierCategory.js';
+import { SNACKBAR_OPEN } from './../../../store/actions';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -78,11 +79,7 @@ const SupplierModal = () => {
     open: false,
     type: '',
   });
-  const [snackbarStatus, setSnackbarStatus] = useState({
-    isOpen: false,
-    type: '',
-    text: '',
-  });
+
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
@@ -92,11 +89,13 @@ const SupplierModal = () => {
     dispatch({ type: FLOATING_MENU_CHANGE, SupplierDocument: false });
   };
 
-  const handleOpenSnackbar = (isOpen, type, text) => {
-    setSnackbarStatus({
-      isOpen: isOpen,
-      type: type,
-      text: text,
+  const handleOpenSnackbar = (type, text) => {
+    dispatch({
+      type: SNACKBAR_OPEN,
+      open: true,
+      variant: 'alert',
+      message: text,
+      alertSeverity: type,
     });
   };
 
@@ -129,15 +128,15 @@ const SupplierModal = () => {
     try {
       if (selectedDocument?.id) {
         await updateSupplier(supplierData);
-        handleOpenSnackbar(true, 'success', 'Cập nhật Nhà cung cấp thành công!');
+        handleOpenSnackbar('success', 'Cập nhật Nhà cung cấp thành công!');
       } else {
         await createSupplier(supplierData);
-        handleOpenSnackbar(true, 'success', 'Tạo mới Nhà cung cấp thành công!');
+        handleOpenSnackbar('success', 'Tạo mới Nhà cung cấp thành công!');
       }
       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'supplier' });
       handleCloseDialog();
     } catch (error) {
-      handleOpenSnackbar(true, 'error', 'Có lỗi xảy ra, vui lòng thử lại sau!');
+      handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
     }
   };
 
@@ -168,20 +167,6 @@ const SupplierModal = () => {
 
   return (
     <React.Fragment>
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        open={snackbarStatus.isOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-      >
-        <Alert
-          onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-          severity={snackbarStatus.type}
-          sx={{ width: '100%' }}
-        >
-          {snackbarStatus.text}
-        </Alert>
-      </Snackbar>
       <FirebaseUpload
         open={dialogUpload.open || false}
         onSuccess={setURL}

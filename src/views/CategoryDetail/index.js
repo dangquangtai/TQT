@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useView from './../../hooks/useView';
-import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from './../../store/actions.js';
+import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE, SNACKBAR_OPEN } from './../../store/actions.js';
 import { view } from './../../store/constant';
 import useStyles from './../../utils/classes';
 import { DescriptionOutlined as DescriptionOutlinedIcon, InfoOutlined as InfoOutlinedIcon } from '@material-ui/icons';
@@ -76,11 +76,6 @@ const CategoryModal = () => {
   const buttonUpdateProductCategory = formButtons.find((button) => button.name === view.productCategory.detail.save);
   const [tabIndex, setTabIndex] = React.useState(0);
   const [categoryData, setCategoryData] = React.useState(initCategory);
-  const [snackbarStatus, setSnackbarStatus] = useState({
-    isOpen: false,
-    type: '',
-    text: '',
-  });
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
@@ -91,11 +86,13 @@ const CategoryModal = () => {
     setTabIndex(newValue);
   };
 
-  const handleOpenSnackbar = (isOpen, type, text) => {
-    setSnackbarStatus({
-      isOpen: isOpen,
-      type: type,
-      text: text,
+  const handleOpenSnackbar = (type, text) => {
+    dispatch({
+      type: SNACKBAR_OPEN,
+      open: true,
+      variant: 'alert',
+      message: text,
+      alertSeverity: type,
     });
   };
 
@@ -128,7 +125,7 @@ const CategoryModal = () => {
           default:
             break;
         }
-        handleOpenSnackbar(true, 'success', 'Cập nhật thành công!');
+        handleOpenSnackbar('success', 'Cập nhật Danh mục thành công!');
       } else {
         switch (documentType) {
           case 'materialCategory':
@@ -146,12 +143,12 @@ const CategoryModal = () => {
           default:
             break;
         }
-        handleOpenSnackbar(true, 'success', 'Tạo mới thành công!');
+        handleOpenSnackbar('success', 'Tạo mới Danh mục thành công!');
       }
       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: documentType });
       handleCloseDialog();
     } catch (error) {
-      handleOpenSnackbar(true, 'error', 'Có lỗi xảy ra, vui lòng thử lại sau!');
+      handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
     }
   };
 
@@ -162,20 +159,6 @@ const CategoryModal = () => {
 
   return (
     <React.Fragment>
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        open={snackbarStatus.isOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-      >
-        <Alert
-          onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-          severity={snackbarStatus.type}
-          sx={{ width: '100%' }}
-        >
-          {snackbarStatus.text}
-        </Alert>
-      </Snackbar>
       <Grid container>
         <Dialog
           open={openDialog || false}

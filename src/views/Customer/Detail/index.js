@@ -29,6 +29,7 @@ import { format as formatDate } from 'date-fns';
 import { AccountCircleOutlined as AccountCircleOutlinedIcon, Today as TodayIcon } from '@material-ui/icons';
 import { createCustomer, updateCustomer } from '../../../services/api/Partner/Customer.js';
 import { getAllCustomerCategory } from '../../../services/api/Setting/CustomerCategory.js';
+import { SNACKBAR_OPEN } from './../../../store/actions';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -78,11 +79,7 @@ const CustomerModal = () => {
     open: false,
     type: '',
   });
-  const [snackbarStatus, setSnackbarStatus] = useState({
-    isOpen: false,
-    type: '',
-    text: '',
-  });
+
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
@@ -92,11 +89,13 @@ const CustomerModal = () => {
     dispatch({ type: FLOATING_MENU_CHANGE, customerDocument: false });
   };
 
-  const handleOpenSnackbar = (isOpen, type, text) => {
-    setSnackbarStatus({
-      isOpen: isOpen,
-      type: type,
-      text: text,
+  const handleOpenSnackbar = (type, text) => {
+    dispatch({
+      type: SNACKBAR_OPEN,
+      open: true,
+      variant: 'alert',
+      message: text,
+      alertSeverity: type,
     });
   };
 
@@ -129,15 +128,15 @@ const CustomerModal = () => {
     try {
       if (selectedDocument?.id) {
         await updateCustomer(customerData);
-        handleOpenSnackbar(true, 'success', 'Cập nhật Khách hàng thành công!');
+        handleOpenSnackbar('success', 'Cập nhật Khách hàng thành công!');
       } else {
         await createCustomer(customerData);
-        handleOpenSnackbar(true, 'success', 'Tạo mới Khách hàng thành công!');
+        handleOpenSnackbar('success', 'Tạo mới Khách hàng thành công!');
       }
       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'customer' });
       handleCloseDialog();
     } catch (error) {
-      handleOpenSnackbar(true, 'error', 'Có lỗi xảy ra, vui lòng thử lại sau!');
+      handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
     }
   };
 
@@ -168,20 +167,6 @@ const CustomerModal = () => {
 
   return (
     <React.Fragment>
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        open={snackbarStatus.isOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-      >
-        <Alert
-          onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-          severity={snackbarStatus.type}
-          sx={{ width: '100%' }}
-        >
-          {snackbarStatus.text}
-        </Alert>
-      </Snackbar>
       <FirebaseUpload
         open={dialogUpload.open || false}
         onSuccess={setURL}

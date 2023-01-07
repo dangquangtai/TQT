@@ -35,6 +35,7 @@ import useStyles from './../../../../utils/classes';
 import FirebaseUpload from '../../../FloatingMenu/FirebaseUpload/index.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { updateProduct } from '../../../../services/api/Product/Product.js';
+import { SNACKBAR_OPEN } from './../../../../store/actions';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -79,12 +80,6 @@ const ProductModal = () => {
   const [tabIndex, setTabIndex] = React.useState(0);
   const [openDialogUploadImage, setOpenDiaLogUploadImage] = React.useState(false);
 
-  const [snackbarStatus, setSnackbarStatus] = useState({
-    isOpen: false,
-    type: '',
-    text: '',
-  });
-
   const [productData, setProductData] = useState({});
   const [partList, setPartList] = useState([]);
   const { materials } = useSelector((state) => state.metadata);
@@ -98,11 +93,13 @@ const ProductModal = () => {
     setTabIndex(newValue);
   };
 
-  const handleOpenSnackbar = (isOpen, type, text) => {
-    setSnackbarStatus({
-      isOpen: isOpen,
-      type: type,
-      text: text,
+  const handleOpenSnackbar = (type, text) => {
+    dispatch({
+      type: SNACKBAR_OPEN,
+      open: true,
+      variant: 'alert',
+      message: text,
+      alertSeverity: type,
     });
   };
 
@@ -121,20 +118,6 @@ const ProductModal = () => {
   const handleChanges = (e) => {
     const { name, value } = e.target;
     setProductData({ ...productData, [name]: value });
-  };
-
-  const handleSubmitForm = async () => {
-    try {
-      if (selectedDocument?.id) {
-        handleOpenSnackbar(true, 'success', 'Cập nhật Product thành công!');
-      } else {
-        handleOpenSnackbar(true, 'success', 'Tạo mới Product thành công!');
-      }
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'Product' });
-      handleCloseDialog();
-    } catch (error) {
-      handleOpenSnackbar(true, 'error', 'Có lỗi xảy ra, vui lòng thử lại sau!');
-    }
   };
 
   const handleAddPart = () => {
@@ -188,14 +171,14 @@ const ProductModal = () => {
         part_list: partList,
       });
       if (update) {
-        handleOpenSnackbar(true, 'success', 'Cập nhật Thành phẩm thành công!');
+        handleOpenSnackbar('success', 'Cập nhật Thành phẩm thành công!');
       } else {
-        handleOpenSnackbar(true, 'success', 'Tạo mới Thành phẩm thành công!');
+        handleOpenSnackbar('error', 'Cập nhật Thành phẩm thất bại!');
       }
       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'product' });
       handleCloseDialog();
     } catch (error) {
-      handleOpenSnackbar(true, 'error', 'Có lỗi xảy ra, vui lòng thử lại sau!');
+      handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
     }
   };
 
@@ -210,23 +193,6 @@ const ProductModal = () => {
 
   return (
     <React.Fragment>
-      {snackbarStatus.isOpen && (
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          open={snackbarStatus.isOpen}
-          autoHideDuration={3000}
-          onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-        >
-          <Alert
-            onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-            severity={snackbarStatus.type}
-            sx={{ width: '100%' }}
-          >
-            {snackbarStatus.text}
-          </Alert>
-        </Snackbar>
-      )}
-      {/* <PermissionModal open={openDialogUploadImage || false} onSuccess={setURL} onClose={handleCloseDiaLog} /> */}
       <FirebaseUpload
         open={openDialogUploadImage}
         onSuccess={setURL}

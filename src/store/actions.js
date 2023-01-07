@@ -5,6 +5,7 @@ export const MENU_TYPE = '@customization/MENU_TYPE';
 export const THEME_LOCALE = '@customization/THEME_LOCALE';
 export const THEME_RTL = '@customization/THEME_RTL';
 export const SNACKBAR_OPEN = '@snackbar/SNACKBAR_OPEN';
+export const SNACKBAR_CLOSE = '@snackbar/SNACKBAR_CLOSE';
 export const ACCOUNT_INITIALISE = 'ACCOUNT_INITIALISE';
 export const FOLDER_CHANGE = '@folder/CHANGE';
 export const SELECTED_FOLDER_CHANGE = '@folder/SELECTED_FOLDER_CHANGE';
