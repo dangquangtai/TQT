@@ -14,22 +14,11 @@ export const ShareProvider = ({ children }) => {
   function getMetadata() {
     axiosInstance.post(apiEndpoints.get_metadata, { outputtype: 'RawJson', guest: true }).then((response) => {
       if (response.status === 200 && response.data.return === 200) {
-        const {
-          province_list: provinces,
-          gender_list: genders,
-          weekday_list: weekday,
-          degree_list: degree,
-          career_category_list: careers,
-          career_topic_list: topics,
-        } = response.data;
+        const { product_list: products, material_list: materials } = response.data;
         dispatch({
           type: METADATA,
-          provinces,
-          genders,
-          weekday,
-          degree,
-          careers,
-          topics,
+          products,
+          materials,
         });
       }
     });
