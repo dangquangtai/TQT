@@ -22,6 +22,8 @@ import DepartmentListModal from '../../views/DepartmentList/Detail';
 import CategoryModal from './../../views/CategoryDetail/index';
 import ProductModal from './../../views/Product/Product/Detail/index';
 import OrderModal from './../../views/Order/Detail/index';
+import SupplierModal from './../../views/Supplier/Detail/index';
+import CustomerModal from './../../views/Customer/Detail/index';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -80,7 +82,7 @@ const MainLayout = ({ children }) => {
     switch (documentType) {
       case 'account':
         return <AccountModal />;
-   
+
       case 'department':
         return <DepartmentModal />;
       case 'role':
@@ -104,8 +106,12 @@ const MainLayout = ({ children }) => {
         return <ProductModal />;
       case 'order':
         return <OrderModal />;
-        case 'workorder':
-         return <WorkorderModal />;
+      case 'workorder':
+        return <WorkorderModal />;
+      case 'supplier':
+        return <SupplierModal />;
+      case 'customer':
+        return <CustomerModal />;
       default:
         return null;
     }

@@ -4,6 +4,8 @@ export const headCells = [
   { id: 'title', numeric: false, disablePadding: false, label: 'Tiêu đề', maxWidth: 150 },
   { id: 'part_code', numeric: false, disablePadding: false, label: 'Mã phụ tùng', maxWidth: 150 },
   { id: 'product_code', numeric: false, disablePadding: false, label: 'Mã thành phẩm', maxWidth: 150 },
+  { id: 'customer_code', numeric: false, disablePadding: false, label: 'Mã khách hàng', maxWidth: 150 },
+  { id: 'supplier_code', numeric: false, disablePadding: false, label: 'Mã nhà cung cấp', maxWidth: 150 },
   { id: 'category_name', numeric: false, disablePadding: false, label: 'Danh mục', maxWidth: 150 },
   { id: 'customer_name', numeric: false, disablePadding: false, label: 'Khách hàng', maxWidth: 150 },
   { id: 'product_customer_code', numeric: false, disablePadding: false, label: 'Mã khách hàng', maxWidth: 150 },

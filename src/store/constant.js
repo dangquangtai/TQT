@@ -131,6 +131,18 @@ export const apiEndpoints = {
     '/Primary/?FlowAlias=bs_api_factory_get_material_daily_requisition_detail&action=api',
   get_part_list: '/Primary/?FlowAlias=bs_api_factory_get_part_list&action=api',
   get_link_download_workorder: '/Primary/?FlowAlias=bs_api_factory_get_link_export_workorder_daily&action=api',
+
+  // Customer
+  get_customer_list: '/Primary/?FlowAlias=bs_api_factory_get_customer_list&action=api',
+  get_customer_detail: '/Primary/?FlowAlias=bs_api_factory_get_customer_detail&action=api',
+  create_customer: '/Primary/?FlowAlias=bs_api_factory_create_customer&action=api',
+  update_customer: '/Primary/?FlowAlias=bs_api_factory_update_customer&action=api',
+
+  // Supplier
+  get_supplier_list: '/Primary/?FlowAlias=bs_api_factory_get_supplier_list&action=api',
+  get_supplier_detail: '/Primary/?FlowAlias=bs_api_factory_get_supplier_detail&action=api',
+  create_supplier: '/Primary/?FlowAlias=bs_api_factory_create_supplier&action=api',
+  update_supplier: '/Primary/?FlowAlias=bs_api_factory_update_supplier&action=api',
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
@@ -175,6 +187,12 @@ export const orderActions = {
 };
 export const productrequestActions = {
   list_product: 'TQT_WORKORDER_DEFAULT_OPEN_WORKORDER_LIST',
+};
+export const customerActions = {
+  list_customer: 'TQT_PARTNER_DEFAULT_OPEN_CUSTOMER_LIST',
+};
+export const supplierActions = {
+  list_supplier: 'TQT_PARTNER_DEFAULT_OPEN_SUPPLIER_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -276,6 +294,22 @@ export const view = {
     },
     detail: {
       save: 'TQT_SETTING_DEFAULT_PRODUCT_SAVE_FORM_BUTTON',
+    },
+  },
+  customer: {
+    list: {
+      create: 'TQT_PARTNER_DEFAULT_CREATE_CUSTOMER_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_PARTNER_DEFAULT_CUSTOMER_DETAIL_SAVE_FORM_BUTTON',
+    },
+  },
+  supplier: {
+    list: {
+      create: 'TQT_PARTNER_DEFAULT_CREATE_SUPPLIER_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_PARTNER_DEFAULT_SUPPLIER_DETAIL_SAVE_FORM_BUTTON',
     },
   },
 };
