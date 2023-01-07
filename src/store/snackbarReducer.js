@@ -8,9 +8,9 @@ const initialState = {
     vertical: 'bottom',
     horizontal: 'right',
   },
-  variant: 'default',
+  variant: 'alert',
   alertSeverity: 'success',
-  transition: 'Fade',
+  transition: 'SlideRight',
 };
 
 const snackbarReducer = (state = initialState, action) => {
@@ -25,6 +25,12 @@ const snackbarReducer = (state = initialState, action) => {
         variant: action.variant ? action.variant : initialState.variant,
         alertSeverity: action.alertSeverity ? action.alertSeverity : initialState.alertSeverity,
         transition: action.transition ? action.transition : initialState.transition,
+      };
+    case actionTypes.SNACKBAR_CLOSE:
+      return {
+        ...state,
+        action: !state.action,
+        open: false,
       };
     default:
       return state;

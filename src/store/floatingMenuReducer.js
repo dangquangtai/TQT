@@ -12,7 +12,9 @@ export const initialState = {
   categoryDocument: false,
   productDocument: false,
   orderDocument: false,
-  order_id:'',
+  order_id: '',
+  customerDocument: false,
+  supplierDocument: false,
 };
 
 const floatingMenuReducer = (state = initialState, action) => {
@@ -32,6 +34,8 @@ const floatingMenuReducer = (state = initialState, action) => {
         productDocument: action.productDocument,
         orderDocument: action.orderDocument,
         order_id: action.order_id,
+        customerDocument: action.customerDocument,
+        supplierDocument: action.supplierDocument,
       };
     default:
       return state;

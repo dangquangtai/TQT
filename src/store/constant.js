@@ -8,7 +8,7 @@ export const apiEndpoints = {
   get_project_list: '/Primary/?FlowAlias=bs_menu_api_get_project_list&action=api',
   get_app_list: '/Primary/?FlowAlias=bs_menu_api_get_list_app&action=api',
   get_folders: '/Primary/?FlowAlias=bs_menu_api_get_menu_tree&action=api',
-  get_metadata: '/Primary/?FlowAlias=bs_api_mym_get_meta_data&action=api',
+  get_metadata: '/Primary/?FlowAlias=bs_api_tqt_get_meta_data&action=api',
   // Account
   get_all_active_account: '/Primary/?FlowAlias=bs_user_api_get_all_active_account_by_page&action=api',
   get_all_deactive_account: '/Primary/?FlowAlias=bs_user_api_get_all_deactive_account_by_page&action=api',
@@ -102,6 +102,7 @@ export const apiEndpoints = {
   get_product_list: '/Primary/?FlowAlias=bs_api_factory_get_list_product&action=api',
   get_product_detail: '/Primary/?FlowAlias=bs_api_factory_get_detail_product&action=api',
   get_all_product_list: '/Primary/?FlowAlias=bs_api_factory_get_all_product_list&action=api',
+  update_product: '/Primary/?FlowAlias=bs_api_factory_update_product&action=api',
 
   // Order
   get_order_list: '/Primary/?FlowAlias=bs_api_order_get_order_list_by_page&action=api',
@@ -121,12 +122,27 @@ export const apiEndpoints = {
   create_work_order: '/Primary/?FlowAlias=bs_api_factory_create_production_request&action=api',
   get_work_order_detail: '/Primary/?FlowAlias=bs_api_factory_get_production_request&action=api',
   update_work_order: '/Primary/?FlowAlias=bs_api_factory_update_production_daily_request&action=api',
-  check_daily_workorder_material_avaiability: '/Primary/?FlowAlias=bs_api_factory_check_daily_workorder_material_avaiability&action=api',
+  check_daily_workorder_material_avaiability:
+    '/Primary/?FlowAlias=bs_api_factory_check_daily_workorder_material_avaiability&action=api',
   get_material_inventory: '/Primary/?FlowAlias=bs_api_factory_get_material_inventory&action=api',
-  create_material_requisition_request_daily: '/Primary/?FlowAlias=bs_api_factory_create_daily_request_requisition&action=api',
-  get_material_requisition_daily_detail: '/Primary/?FlowAlias=bs_api_factory_get_material_daily_requisition_detail&action=api',
+  create_material_requisition_request_daily:
+    '/Primary/?FlowAlias=bs_api_factory_create_daily_request_requisition&action=api',
+  get_material_requisition_daily_detail:
+    '/Primary/?FlowAlias=bs_api_factory_get_material_daily_requisition_detail&action=api',
   get_part_list: '/Primary/?FlowAlias=bs_api_factory_get_part_list&action=api',
   get_link_download_workorder: '/Primary/?FlowAlias=bs_api_factory_get_link_export_workorder_daily&action=api',
+
+  // Customer
+  get_customer_list: '/Primary/?FlowAlias=bs_api_factory_get_customer_list&action=api',
+  get_customer_detail: '/Primary/?FlowAlias=bs_api_factory_get_customer_detail&action=api',
+  create_customer: '/Primary/?FlowAlias=bs_api_factory_create_customer&action=api',
+  update_customer: '/Primary/?FlowAlias=bs_api_factory_update_customer&action=api',
+
+  // Supplier
+  get_supplier_list: '/Primary/?FlowAlias=bs_api_factory_get_supplier_list&action=api',
+  get_supplier_detail: '/Primary/?FlowAlias=bs_api_factory_get_supplier_detail&action=api',
+  create_supplier: '/Primary/?FlowAlias=bs_api_factory_create_supplier&action=api',
+  update_supplier: '/Primary/?FlowAlias=bs_api_factory_update_supplier&action=api',
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
@@ -171,6 +187,12 @@ export const orderActions = {
 };
 export const productrequestActions = {
   list_product: 'TQT_WORKORDER_DEFAULT_OPEN_WORKORDER_LIST',
+};
+export const customerActions = {
+  list_customer: 'TQT_PARTNER_DEFAULT_OPEN_CUSTOMER_LIST',
+};
+export const supplierActions = {
+  list_supplier: 'TQT_PARTNER_DEFAULT_OPEN_SUPPLIER_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -265,5 +287,29 @@ export const view = {
       create: 'TQT_WORKORDER_DEFAULT_CREATE_WORKORDER_MENU_BUTTON',
     },
     detail: {},
+  },
+  product: {
+    list: {
+      create: 'TQT_PRODUCT_DEFAULT_CREATE_PRODUCT_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_SETTING_DEFAULT_PRODUCT_SAVE_FORM_BUTTON',
+    },
+  },
+  customer: {
+    list: {
+      create: 'TQT_PARTNER_DEFAULT_CREATE_CUSTOMER_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_PARTNER_DEFAULT_CUSTOMER_DETAIL_SAVE_FORM_BUTTON',
+    },
+  },
+  supplier: {
+    list: {
+      create: 'TQT_PARTNER_DEFAULT_CREATE_SUPPLIER_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_PARTNER_DEFAULT_SUPPLIER_DETAIL_SAVE_FORM_BUTTON',
+    },
   },
 };

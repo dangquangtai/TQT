@@ -42,6 +42,7 @@ import DatePicker from '../../../component/DatePicker/index.js';
 import { AddCircleOutline } from '@material-ui/icons';
 import { getAllProduct } from '../../../services/api/Product/Product.js';
 import { createOrder, deleteOrderDetail } from './../../../services/api/Order/index';
+import { SNACKBAR_OPEN } from './../../../store/actions';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -93,11 +94,7 @@ const OrderModal = () => {
     open: false,
     type: '',
   });
-  const [snackbarStatus, setSnackbarStatus] = useState({
-    isOpen: false,
-    type: '',
-    text: '',
-  });
+
   const [products, setProducts] = useState([]);
   const [productList, setProductList] = useState([]);
   const handleChangeTab = (event, newValue) => {
@@ -109,11 +106,13 @@ const OrderModal = () => {
     dispatch({ type: FLOATING_MENU_CHANGE, orderDocument: false });
   };
 
-  const handleOpenSnackbar = (isOpen, type, text) => {
-    setSnackbarStatus({
-      isOpen: isOpen,
-      type: type,
-      text: text,
+  const handleOpenSnackbar = (type, text) => {
+    dispatch({
+      type: SNACKBAR_OPEN,
+      open: true,
+      variant: 'alert',
+      message: text,
+      alertSeverity: type,
     });
   };
 
@@ -148,15 +147,15 @@ const OrderModal = () => {
     try {
       if (selectedDocument?.id) {
         await updateOrder({ ...orderData, order_detail: productList });
-        handleOpenSnackbar(true, 'success', 'Cập nhật Đơn hàng thành công!');
+        handleOpenSnackbar('success', 'Cập nhật Đơn hàng thành công!');
       } else {
         await createOrder({ ...orderData, order_detail: productList });
-        handleOpenSnackbar(true, 'success', 'Tạo Đơn hàng thành công!');
+        handleOpenSnackbar('success', 'Tạo mới Đơn hàng thành công!');
       }
       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'order' });
       handleCloseDialog();
     } catch (error) {
-      handleOpenSnackbar(true, 'error', 'Có lỗi xảy ra, vui lòng thử lại sau!');
+      handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
     }
   };
 
@@ -261,20 +260,6 @@ const OrderModal = () => {
 
   return (
     <React.Fragment>
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        open={snackbarStatus.isOpen}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-      >
-        <Alert
-          onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-          severity={snackbarStatus.type}
-          sx={{ width: '100%' }}
-        >
-          {snackbarStatus.text}
-        </Alert>
-      </Snackbar>
       <FirebaseUpload
         open={dialogUpload.open || false}
         onSuccess={setURL}
@@ -510,7 +495,9 @@ const OrderModal = () => {
                                     </TableCell>
                                     <TableCell align="left">{row?.product_customer_code}</TableCell>
                                     <TableCell align="left" className={classes.maxWidthCell}>
-                                      {row?.product_name}
+                                      <Tooltip title={row?.product_name}>
+                                        <span>{row?.product_name}</span>
+                                      </Tooltip>
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '140px' }}>
                                       <TextField

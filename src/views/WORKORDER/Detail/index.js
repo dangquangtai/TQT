@@ -12,7 +12,6 @@ import {
   Tooltip,
   MenuItem,
   TextField,
-  Snackbar,
   TableBody,
   TableRow,
   TableCell,
@@ -22,18 +21,22 @@ import {
   Paper,
   IconButton,
 } from '@material-ui/core';
-import Alert from '../../../component/Alert/index.js';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRef } from 'react';
 import PropTypes from 'prop-types';
 import useStyles from './classes.js';
-import { FLOATING_MENU_CHANGE, ORDER_DETAIL_CHANGE, DOCUMENT_CHANGE, MATERIAL_CHANGE } from '../../../store/actions.js';
+import {
+  FLOATING_MENU_CHANGE,
+  ORDER_DETAIL_CHANGE,
+  DOCUMENT_CHANGE,
+  MATERIAL_CHANGE,
+  SNACKBAR_OPEN,
+} from '../../../store/actions.js';
 import { SkipNext, SkipPrevious } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { month, weekday } from './../data';
 import { Delete } from '@material-ui/icons';
 import { AddCircleOutline } from '@material-ui/icons';
-
 import { downloadFile } from './../../../utils/helper';
 import {
   getStatusList,
@@ -222,22 +225,20 @@ const WorkorderModal = () => {
     dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: false, documentType: 'workorder' });
   };
 
-  const [snackbarStatus, setSnackbarStatus] = useState({
-    isOpen: false,
-    type: '',
-    text: '',
-  });
-  const handleOpenSnackbar = (isOpen, type, text) => {
-    setSnackbarStatus({
-      isOpen: isOpen,
-      type: type,
-      text: text,
+  const handleOpenSnackbar = (type, text) => {
+    dispatch({
+      type: SNACKBAR_OPEN,
+      open: true,
+      variant: 'alert',
+      message: text,
+      alertSeverity: type,
     });
   };
+
   const handleCreateWorkOrder = async () => {
     try {
       if (productionDailyRequestList.length < 2) {
-        handleOpenSnackbar(true, 'fail', 'Số ngày kế hoạch không ther < 2 !');
+        handleOpenSnackbar('error', 'Số ngày kế hoạch không thể nhỏ hơn 2 !');
       } else {
         let work_id = {};
         if (!selectedDocument) {
@@ -251,7 +252,7 @@ const WorkorderModal = () => {
             status_code: workorderRequest.status_code,
             daily_request_list: [...productionDailyRequestList],
           });
-          handleOpenSnackbar(true, 'success', 'Tạo kế hoạch thành công!');
+          handleOpenSnackbar('success', 'Tạo kế hoạch thành công!');
           let data = await getDetail(work_id.work_order_request_id);
           dispatch({ type: DOCUMENT_CHANGE, selectedDocument: data, documentType: 'workorder' });
         } else {
@@ -266,7 +267,7 @@ const WorkorderModal = () => {
             status_code: workorderRequest.status_code,
             daily_request_list: [...productionDailyRequestList],
           });
-          handleOpenSnackbar(true, 'success', 'Cập nhật kế hoạch thành công!');
+          handleOpenSnackbar('success', 'Cập nhật kế hoạch thành công!');
         }
         setWorkorderRequest({ ...workorderRequest, id: work_id.work_order_request_id });
         productionDailyRequestList[indexDate].id = work_id.work_order_daily_request_id;
@@ -274,32 +275,20 @@ const WorkorderModal = () => {
     } catch {}
   };
   const handleGetlink = async () => {
-    setSnackbarStatus({
-      isOpen: true,
-      type: 'info',
-      text: 'Vui lòng chờ trong giây lát. Báo cáo đang được tải xuống',
-    });
+    handleOpenSnackbar('info', 'Vui lòng chờ trong giây lát. Báo cáo đang được tải xuống');
     const link = await getLink(productionDailyRequestList[indexDate].id);
     if (link !== '') {
       downloadFile(link);
-      setSnackbarStatus({
-        isOpen: true,
-        type: 'success',
-        text: 'Tải xuống báo cáo thành công',
-      });
+      handleOpenSnackbar('success', 'Tải xuống báo cáo thành công');
     } else {
-      setSnackbarStatus({
-        isOpen: true,
-        type: 'error',
-        text: 'Tải xuống báo cáo thất bại',
-      });
+      handleOpenSnackbar('error', 'Tải xuống báo cáo thất bại');
     }
     ///
   };
   const handleUpdateWorkOrder = async (product, index) => {
     try {
       if (productionDailyRequestList.length < 2) {
-        handleOpenSnackbar(true, 'fail', 'Số ngày kế hoạch không ther < 2 !');
+        handleOpenSnackbar('error', 'Số ngày kế hoạch không thể nhỏ hơn 2 !');
       } else {
         let work_id = {};
         if (!selectedDocument) {
@@ -806,23 +795,6 @@ const WorkorderModal = () => {
 
   return (
     <React.Fragment>
-      {snackbarStatus.isOpen && (
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          open={snackbarStatus.isOpen}
-          autoHideDuration={3000}
-          onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-        >
-          <Alert
-            onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-            severity={snackbarStatus.type}
-            sx={{ width: '100%' }}
-          >
-            {snackbarStatus.text}
-          </Alert>
-        </Snackbar>
-      )}
-
       <Grid container>
         <Dialog
           open={openDialog || false}

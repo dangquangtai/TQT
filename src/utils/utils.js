@@ -13,6 +13,8 @@ import {
   productActions,
   orderActions,
   productrequestActions,
+  customerActions,
+  supplierActions,
 } from '../store/constant.js';
 
 export function getUrlByAction(selectedFolder) {
@@ -61,6 +63,12 @@ export function getUrlByAction(selectedFolder) {
     }
     case productrequestActions.list_product: {
       return apiEndpoints.get_product_requesr_list;
+    }
+    case customerActions.list_customer: {
+      return apiEndpoints.get_customer_list;
+    }
+    case supplierActions.list_supplier: {
+      return apiEndpoints.get_supplier_list;
     }
     default: {
       return '';
