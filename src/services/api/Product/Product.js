@@ -30,3 +30,17 @@ export const getAllProduct = () => {
       console.log(error);
     });
 };
+
+export const updateProduct = (data) => {
+  return axiosServices
+    .post(apiEndpoints.update_product, data)
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return true;
+      }
+      return false;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};

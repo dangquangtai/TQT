@@ -510,7 +510,9 @@ const OrderModal = () => {
                                     </TableCell>
                                     <TableCell align="left">{row?.product_customer_code}</TableCell>
                                     <TableCell align="left" className={classes.maxWidthCell}>
-                                      {row?.product_name}
+                                      <Tooltip title={row?.product_name}>
+                                        <span>{row?.product_name}</span>
+                                      </Tooltip>
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '140px' }}>
                                       <TextField
