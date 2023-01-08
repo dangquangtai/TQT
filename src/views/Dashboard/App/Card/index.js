@@ -1,61 +1,76 @@
 import React from 'react';
-import { makeStyles, Card, CardContent, Grid, Typography, Button, Box } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import {
+  makeStyles,
+  Card,
+  CardContent,
+  Chip,
+  Divider,
+  Grid,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  ListItemAvatar,
+  Avatar,
+} from '@material-ui/core';
+import SvgIcon from '@material-ui/core/SvgIcon';
+import MailTwoToneIcon from '@material-ui/icons/MailTwoTone';
 
-const useStyles = makeStyles((theme) => ({
-  revenuecard: {
-    position: 'relative',
-    color: '#fff',
-  },
-  img: {
-    width: 'auto',
-    height: '100px',
-  },
-  content: {
-    marginTop: '30px',
-  },
-  abs: {
-    position: 'absolute',
-    top: '20px',
-    right: 0,
-    width: '50px',
-    height: '15px',
-    borderRadius: '5px 0 0 5px',
-    boxShadow: '0 0 10px 0 rgba(0,0,0,0.2)',
-  },
-}));
+const useStyles = makeStyles((theme) => ({}));
 
 const AppCard = (props) => {
-  const { title, description, image, color } = props;
-  const classes = useStyles();
+  const { title, description, icon } = props;
+
+  const Icon = (
+    <SvgIcon>
+      <g dangerouslySetInnerHTML={{ __html: icon }} />
+    </SvgIcon>
+  );
 
   return (
-    <Card className={classes.revenuecard} style={{ backgroundColor: color }}>
+    <Card>
       <CardContent>
-        <Grid container justifyContent="center">
-          <img className={classes.img} src={image} alt="app" />
-        </Grid>
-        <Grid container justifyContent="center" className={classes.content}>
-          <Grid item>
-            <Typography gutterBottom variant="h3" align="center">
+        <Grid container spacing={2} alignItems="center">
+          {/* <Grid item></Grid> */}
+          <Grid item xs zeroMinWidth>
+            <Typography align="left" variant="h5">
               {title}
             </Typography>
-            <Typography variant="body2" color="textSecondary" align="center">
+            <Typography align="left" variant="subtitle2" color="inherit">
               {description}
             </Typography>
           </Grid>
+          <Grid item>
+            <Chip size="small" label="Pro" color="primary" />
+          </Grid>
         </Grid>
-        {/* <Grid container justifyContent="center">
-          <Box mt={3}>
-            <Button variant="contained" style={{ backgroundColor: color }}>
-              <Link to="/dashboard/default" onClick={handleClick} style={{ textDecoration: 'none', color: 'white' }}>
-                Vào ngay
-              </Link>
-            </Button>
-          </Box>
-        </Grid> */}
       </CardContent>
-      {/* <div className={classes.abs} style={{ backgroundColor: color }}></div> */}
+      <Divider />
+      <List component="nav" aria-label="main mailbox folders">
+        <ListItem button>
+          <ListItemAvatar>
+            <Avatar style={{ backgroundColor: '#F2F2F2' }}>
+              <MailTwoToneIcon />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText
+            primary={<Typography variant="h6">Danh sách công việc</Typography>}
+            secondary="Theo dõi các công việc đã bàn giao cho nhân viên."
+          />
+        </ListItem>
+        <Divider />
+        <ListItem button>
+          <ListItemAvatar>
+            <Avatar>
+              <MailTwoToneIcon />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText
+            primary={<Typography variant="h6">Danh sách công việc</Typography>}
+            secondary="Theo dõi các công việc đã bàn giao cho nhân viên."
+          />
+        </ListItem>
+      </List>
     </Card>
   );
 };

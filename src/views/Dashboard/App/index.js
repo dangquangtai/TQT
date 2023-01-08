@@ -7,6 +7,7 @@ import { SELECTED_APP_CHANGE } from './../../../store/actions';
 import { gridSpacing } from './../../../store/constant';
 import HoverCard from './HoverCard/index';
 import useShare from '../../../hooks/useShare.js';
+import AppCard from './Card/index';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,15 +73,20 @@ const App = () => {
   return (
     <Grid container justifyContent="center" alignItems="center">
       <Grid item xs={12} sm={12} md={12} lg={12}>
-        <Typography variant="h2" className={classes.margin}>
+        {/* <Typography variant="h2" className={classes.margin}>
           TQT App Center
-        </Typography>
+        </Typography> */}
         <Grid container spacing={gridSpacing} alignItems="center">
-          {apps?.map((app) => (
+          {/* {apps?.map((app) => (
             <Grid key={app.app_code} item lg={4} sm={6} xs={12}>
               <RouterLink className={classes.link} to="/dashboard/default" onClick={() => handleAppClick(app)}>
                 <HoverCard title={app.app_name} image={app.icon} color={app.color} />
               </RouterLink>
+            </Grid>
+          ))} */}
+          {apps?.map((app) => (
+            <Grid key={app.app_code} item lg={4} sm={6} xs={12}>
+              <AppCard title={app.app_name} image={app.icon} color={app.color} />
             </Grid>
           ))}
         </Grid>
