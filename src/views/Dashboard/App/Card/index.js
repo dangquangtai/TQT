@@ -3,7 +3,6 @@ import {
   makeStyles,
   Card,
   CardContent,
-  Chip,
   Divider,
   Grid,
   List,
@@ -13,63 +12,80 @@ import {
   ListItemAvatar,
   Avatar,
 } from '@material-ui/core';
-import SvgIcon from '@material-ui/core/SvgIcon';
-import MailTwoToneIcon from '@material-ui/icons/MailTwoTone';
+import { useDispatch } from 'react-redux';
+import { SELECTED_APP_CHANGE, PROJECT_SELECTED, PROJECT_CHANGE } from './../../../../store/actions';
+import { NavLink } from 'react-router-dom';
 
-const useStyles = makeStyles((theme) => ({}));
+const useStyles = makeStyles((theme) => ({
+  img: {
+    width: '24px',
+    height: '24px',
+    objectFit: 'contain',
+  },
+  h4: {
+    textTransform: 'uppercase',
+    fontWeight: 'bold',
+    fontSize: '1.1rem',
+  },
+}));
 
-const AppCard = (props) => {
-  const { title, description, icon } = props;
+const defaultImage =
+  'https://firebasestorage.googleapis.com/v0/b/tqtapp-873d6.appspot.com/o/Icon%2Fsetting.png?alt=media&token=d3717224-a809-4347-8ff4-67d242be6835';
 
-  const Icon = (
-    <SvgIcon>
-      <g dangerouslySetInnerHTML={{ __html: icon }} />
-    </SvgIcon>
-  );
+const AppCard = ({ app }) => {
+  const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const { app_name, description, projects: projectList } = app;
+
+  const handleAppClick = () => {
+    dispatch({ type: SELECTED_APP_CHANGE, app });
+  };
+
+  const handleProjectClick = async (project) => {
+    dispatch({ type: SELECTED_APP_CHANGE, app });
+    const newProjectList = projectList.map((item) => {
+      return {
+        ...item,
+        selected: item.id === project.id ? true : false,
+      };
+    });
+    console.log('newProjectList', newProjectList);
+    dispatch({ type: PROJECT_CHANGE, projects: newProjectList });
+  };
 
   return (
     <Card>
       <CardContent>
-        <Grid container spacing={2} alignItems="center">
-          {/* <Grid item></Grid> */}
+        <Grid container alignItems="center">
           <Grid item xs zeroMinWidth>
-            <Typography align="left" variant="h5">
-              {title}
+            <Typography align="left" className={classes.h4}>
+              {app_name}
             </Typography>
             <Typography align="left" variant="subtitle2" color="inherit">
               {description}
             </Typography>
           </Grid>
-          <Grid item>
-            <Chip size="small" label="Pro" color="primary" />
-          </Grid>
         </Grid>
       </CardContent>
       <Divider />
-      <List component="nav" aria-label="main mailbox folders">
-        <ListItem button>
-          <ListItemAvatar>
-            <Avatar style={{ backgroundColor: '#F2F2F2' }}>
-              <MailTwoToneIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText
-            primary={<Typography variant="h6">Danh sách công việc</Typography>}
-            secondary="Theo dõi các công việc đã bàn giao cho nhân viên."
-          />
-        </ListItem>
-        <Divider />
-        <ListItem button>
-          <ListItemAvatar>
-            <Avatar>
-              <MailTwoToneIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText
-            primary={<Typography variant="h6">Danh sách công việc</Typography>}
-            secondary="Theo dõi các công việc đã bàn giao cho nhân viên."
-          />
-        </ListItem>
+      <List component="nav">
+        {projectList?.map((project, index) => (
+          <React.Fragment key={index}>
+            <ListItem button component={NavLink} to="/dashboard/default" onClick={() => handleProjectClick(project)}>
+              <ListItemAvatar>
+                <Avatar style={{ backgroundColor: '#F2F2F2' }}>
+                  <img src={project.icon || defaultImage} alt="icon" className={classes.img} />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={<Typography variant="h6">{project.project_name}</Typography>}
+                secondary={project.project_description}
+              />
+            </ListItem>
+            <Divider />
+          </React.Fragment>
+        ))}
       </List>
     </Card>
   );
