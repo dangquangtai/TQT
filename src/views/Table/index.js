@@ -40,7 +40,9 @@ import { getDetailProductCategory } from './../../services/api/Setting/ProductCa
 import { getDetailCustomerCategory } from './../../services/api/Setting/CustomerCategory';
 import { getDetailProduct } from './../../services/api/Product/Product';
 import { getDetailOrder } from './../../services/api/Order/index';
-import {getDetailWorkorOrder} from './../../services/api/Workorder/index'
+import { getDetailWorkorOrder } from './../../services/api/Workorder/index';
+import { getDetailCustomer } from '../../services/api/Partner/Customer.js';
+import { getDetailSupplier } from './../../services/api/Partner/Supplier';
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance
     .post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured })
@@ -104,6 +106,8 @@ export default function GeneralTable(props) {
       to__date: tableColumns.includes('to__date'),
       status__display: tableColumns.includes('status__display'),
       expected_deliver_date: tableColumns.includes('expected_deliver_date'),
+      customer_code: tableColumns.includes('customer_code'),
+      supplier_code: tableColumns.includes('supplier_code'),
     };
     setDisplayOptions(initOptions);
   }, [tableColumns, selectedFolder]);
@@ -134,7 +138,10 @@ export default function GeneralTable(props) {
   const buttonCreateCustomerCategory = menuButtons.find((button) => button.name === view.customerCategory.list.create);
   const buttonCreateOrder = menuButtons.find((button) => button.name === view.order.list.create);
   const buttonCreateWorkorder = menuButtons.find((button) => button.name === view.workorder.list.create);
-  
+
+  const buttonCreateCustomer = menuButtons.find((button) => button.name === view.customer.list.create);
+  const buttonCreateSupplier = menuButtons.find((button) => button.name === view.supplier.list.create);
+
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
@@ -187,7 +194,6 @@ export default function GeneralTable(props) {
   const { getAccountDetail, activeAccount, assignAccount, removeAccount, getAllUser } = useAccount();
 
   useEffect(() => {
-    console.log(selectedFolder);
     if (selectedProject && selectedFolder && url) {
       fetchDocument(url, documentType, selectedProject.id, selectedFolder.id);
     } else {
@@ -385,11 +391,21 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, orderDocument: true });
         break;
-        case 'workorder':
-          detailDocument = await getDetailWorkorOrder(selectedDocument.id, setView);
-          dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
-          dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
-          break;
+      case 'workorder':
+        detailDocument = await getDetailWorkorOrder(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
+        break;
+      case 'customer':
+        detailDocument = await getDetailCustomer(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, customerDocument: true });
+        break;
+      case 'supplier':
+        detailDocument = await getDetailSupplier(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, supplierDocument: true });
+        break;
       default:
         break;
     }
@@ -401,7 +417,7 @@ export default function GeneralTable(props) {
       case 'account':
         dispatch({ type: FLOATING_MENU_CHANGE, accountDocument: true });
         break;
-        case 'workorder':
+      case 'workorder':
         dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
         break;
       case 'department':
@@ -424,6 +440,12 @@ export default function GeneralTable(props) {
         break;
       case 'order':
         dispatch({ type: FLOATING_MENU_CHANGE, orderDocument: true });
+        break;
+      case 'customer':
+        dispatch({ type: FLOATING_MENU_CHANGE, customerDocument: true });
+        break;
+      case 'supplier':
+        dispatch({ type: FLOATING_MENU_CHANGE, supplierDocument: true });
         break;
       default:
         break;
@@ -691,6 +713,8 @@ export default function GeneralTable(props) {
                 buttonCreateProductCategory={buttonCreateProductCategory}
                 buttonCreateCustomerCategory={buttonCreateCustomerCategory}
                 buttonCreateOrder={buttonCreateOrder}
+                buttonCreateCustomer={buttonCreateCustomer}
+                buttonCreateSupplier={buttonCreateSupplier}
               />
               <Grid container spacing={gridSpacing}>
                 {(documentType === 'department' || documentType === 'processrole') && (
@@ -802,6 +826,8 @@ export default function GeneralTable(props) {
                                   {row.product_code}
                                 </TableCell>
                               )}
+                              {displayOptions.customer_code && <TableCell align="left">{row.customer_code}</TableCell>}
+                              {displayOptions.supplier_code && <TableCell align="left">{row.supplier_code}</TableCell>}
                               {displayOptions.category_name && (
                                 <TableCell
                                   style={{ maxWidth: 450, overflow: 'hidden', textOverflow: 'ellipsis' }}
@@ -901,16 +927,24 @@ export default function GeneralTable(props) {
                                 </TableCell>
                               )}
                               {displayOptions.order__title && (
-                                <TableCell align="left"  onClick={(event) => openDetailDocument(event, row)}>{row.order_title} </TableCell>
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                  {row.order_title}{' '}
+                                </TableCell>
                               )}
                               {displayOptions.from__date && (
-                                <TableCell align="left"  onClick={(event) => openDetailDocument(event, row)}>{row.from_date}</TableCell>
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                  {row.from_date}
+                                </TableCell>
                               )}
                               {displayOptions.to__date && (
-                                <TableCell align="left"  onClick={(event) => openDetailDocument(event, row)}>{row.to_date}</TableCell>
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                  {row.to_date}
+                                </TableCell>
                               )}
                               {displayOptions.status__display && (
-                                <TableCell align="left"  onClick={(event) => openDetailDocument(event, row)}>{row.status_display}</TableCell>
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                  {row.status_display}
+                                </TableCell>
                               )}
                               {displayOptions.is_active && (
                                 <TableCell align="left">

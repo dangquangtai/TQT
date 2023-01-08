@@ -21,6 +21,8 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  Tooltip,
+  IconButton,
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -28,9 +30,12 @@ import { view } from '../../../../store/constant';
 import useView from '../../../../hooks/useView';
 import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../../store/actions';
 import Alert from '../../../../component/Alert';
-import { History, DescriptionOutlined as DescriptionOutlinedIcon } from '@material-ui/icons';
+import { History, DescriptionOutlined as DescriptionOutlinedIcon, AddCircleOutline, Delete } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import FirebaseUpload from '../../../FloatingMenu/FirebaseUpload/index.js';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { updateProduct } from '../../../../services/api/Product/Product.js';
+import { SNACKBAR_OPEN } from './../../../../store/actions';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -69,18 +74,15 @@ const ProductModal = () => {
   const dispatch = useDispatch();
 
   const { form_buttons: formButtons } = useView();
+  const buttonSave = formButtons.find((button) => button.name === view.product.detail.save);
   const { productDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
   const [tabIndex, setTabIndex] = React.useState(0);
   const [openDialogUploadImage, setOpenDiaLogUploadImage] = React.useState(false);
 
-  const [snackbarStatus, setSnackbarStatus] = useState({
-    isOpen: false,
-    type: '',
-    text: '',
-  });
-
   const [productData, setProductData] = useState({});
+  const [partList, setPartList] = useState([]);
+  const { materials } = useSelector((state) => state.metadata);
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
@@ -91,11 +93,13 @@ const ProductModal = () => {
     setTabIndex(newValue);
   };
 
-  const handleOpenSnackbar = (isOpen, type, text) => {
-    setSnackbarStatus({
-      isOpen: isOpen,
-      type: type,
-      text: text,
+  const handleOpenSnackbar = (type, text) => {
+    dispatch({
+      type: SNACKBAR_OPEN,
+      open: true,
+      variant: 'alert',
+      message: text,
+      alertSeverity: type,
     });
   };
 
@@ -116,17 +120,65 @@ const ProductModal = () => {
     setProductData({ ...productData, [name]: value });
   };
 
-  const handleSubmitForm = async () => {
+  const handleAddPart = () => {
+    setPartList([
+      ...partList,
+      {
+        part_id: '',
+        part_name: '',
+        part_code: '',
+        quantity_in_piece: 0,
+        unit_id: '',
+        unit_name: '',
+        category_id: '',
+        category_name: '',
+        product_id: productData?.id || '',
+      },
+    ]);
+  };
+
+  const handleDeletePart = (index) => {
+    const newParts = partList?.filter((item, i) => i !== index);
+    setPartList(newParts);
+  };
+
+  const handleChangePart = (index, newValue) => {
+    const newPartList = [...partList];
+    const newParts = {
+      part_id: newValue?.id || '',
+      part_name: newValue?.title || '',
+      part_code: newValue?.part_code || '',
+      quantity_in_piece: 0,
+      unit_id: newValue?.unit_id || '',
+      unit_name: newValue?.unit_name || '',
+      category_id: newValue?.category_id || '',
+      category_name: newValue?.category_name || '',
+    };
+    newPartList[index] = { ...newPartList[index], ...newParts };
+    setPartList(newPartList);
+  };
+
+  const handleChangeQuantity = (index, newValue) => {
+    const newPartList = [...partList];
+    newPartList[index] = { ...newPartList[index], quantity_in_piece: newValue };
+    setPartList(newPartList);
+  };
+
+  const handleSubmit = async () => {
     try {
-      if (selectedDocument?.id) {
-        handleOpenSnackbar(true, 'success', 'Cập nhật Product thành công!');
+      const update = await updateProduct({
+        ...productData,
+        part_list: partList,
+      });
+      if (update) {
+        handleOpenSnackbar('success', 'Cập nhật Thành phẩm thành công!');
       } else {
-        handleOpenSnackbar(true, 'success', 'Tạo mới Product thành công!');
+        handleOpenSnackbar('error', 'Cập nhật Thành phẩm thất bại!');
       }
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'Product' });
+      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'product' });
       handleCloseDialog();
     } catch (error) {
-      handleOpenSnackbar(true, 'error', 'Có lỗi xảy ra, vui lòng thử lại sau!');
+      handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
     }
   };
 
@@ -136,27 +188,11 @@ const ProductModal = () => {
       ...productData,
       ...selectedDocument,
     });
+    setPartList(selectedDocument?.part_list || []);
   }, [selectedDocument]);
 
   return (
     <React.Fragment>
-      {snackbarStatus.isOpen && (
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          open={snackbarStatus.isOpen}
-          autoHideDuration={3000}
-          onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-        >
-          <Alert
-            onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-            severity={snackbarStatus.type}
-            sx={{ width: '100%' }}
-          >
-            {snackbarStatus.text}
-          </Alert>
-        </Snackbar>
-      )}
-      {/* <PermissionModal open={openDialogUploadImage || false} onSuccess={setURL} onClose={handleCloseDiaLog} /> */}
       <FirebaseUpload
         open={openDialogUploadImage}
         onSuccess={setURL}
@@ -342,6 +378,11 @@ const ProductModal = () => {
                           <div className={classes.tabItemLabel}>
                             <span>Thành phần</span>
                           </div>
+                          <Tooltip title="Thêm sản phẩm">
+                            <IconButton onClick={handleAddPart}>
+                              <AddCircleOutline />
+                            </IconButton>
+                          </Tooltip>
                         </div>
                         <div className={classes.tabItemBody}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
@@ -352,17 +393,53 @@ const ProductModal = () => {
                                   <TableCell align="left">Tên thành phần</TableCell>
                                   <TableCell align="left">Số lượng</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
+                                  <TableCell align="left"></TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {productData?.part_list?.map((row) => (
-                                  <TableRow key={row.id}>
+                                {partList?.map((row, index) => (
+                                  <TableRow key={index}>
                                     <TableCell align="left" component="th" scope="row">
-                                      {row.part_code}
+                                      <Autocomplete
+                                        size="small"
+                                        options={materials}
+                                        getOptionLabel={(option) => option.part_code}
+                                        style={{ width: 250 }}
+                                        value={partList[index] || null}
+                                        getOptionSelected={(option, value) => option.id === value.part_id}
+                                        onChange={(event, newValue) => handleChangePart(index, newValue)}
+                                        renderInput={(params) => <TextField {...params} variant="outlined" />}
+                                      />
                                     </TableCell>
-                                    <TableCell align="left">{row.part_name}</TableCell>
-                                    <TableCell align="left">{row.quantity_in_piece}</TableCell>
+                                    <TableCell
+                                      align="left"
+                                      style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                                    >
+                                      <Tooltip title={row?.part_name || ''}>
+                                        <span>{row?.part_name || ''}</span>
+                                      </Tooltip>
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '140px' }}>
+                                      <TextField
+                                        InputProps={{
+                                          inputProps: { min: 0 },
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
+                                        type="number"
+                                        size="small"
+                                        value={row?.quantity_in_piece || ''}
+                                        onChange={(e) => handleChangeQuantity(index, e.target.value)}
+                                      />
+                                    </TableCell>
                                     <TableCell align="left">{row.unit_name}</TableCell>
+                                    <TableCell align="left">
+                                      <Tooltip title="Xóa">
+                                        <IconButton onClick={() => handleDeletePart(index)}>
+                                          <Delete />
+                                        </IconButton>
+                                      </Tooltip>
+                                    </TableCell>
                                   </TableRow>
                                 ))}
                               </TableBody>
@@ -388,9 +465,9 @@ const ProductModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
-                {!selectedDocument?.id && (
-                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
-                    Tạo mới
+                {selectedDocument?.id && buttonSave && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmit}>
+                    {buttonSave.text}
                   </Button>
                 )}
               </Grid>

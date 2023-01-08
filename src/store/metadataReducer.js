@@ -1,12 +1,8 @@
 import * as actionTypes from './actions';
 
 export const initialState = {
-  provinces: [],
-  genders: [],
-  weekday: [],
-  degree: [],
-  careers: [],
-  topics: [],
+  products: [],
+  materials: [],
 };
 
 const metadataReducer = (state = initialState, action) => {
@@ -14,12 +10,8 @@ const metadataReducer = (state = initialState, action) => {
     case actionTypes.METADATA:
       return {
         ...state,
-        provinces: action.provinces,
-        genders: action.genders,
-        weekday: action.weekday,
-        degree: action.degree,
-        careers: action.careers,
-        topics: action.topics,
+        products: action.products,
+        materials: action.materials,
       };
     default:
       return state;

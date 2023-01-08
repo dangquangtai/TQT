@@ -6,6 +6,7 @@ import useProject from './../../../hooks/useProject';
 import { SELECTED_APP_CHANGE } from './../../../store/actions';
 import { gridSpacing } from './../../../store/constant';
 import HoverCard from './HoverCard/index';
+import useShare from '../../../hooks/useShare.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,9 +56,12 @@ const App = () => {
 
   const { getApps } = useProject();
 
+  const { getMetadata } = useShare();
+
   React.useEffect(() => {
     setTimeout(() => {
       getApps();
+      getMetadata();
     }, 0);
   }, []);
 
