@@ -132,6 +132,13 @@ export const apiEndpoints = {
   get_part_list: '/Primary/?FlowAlias=bs_api_factory_get_part_list&action=api',
   get_link_download_workorder: '/Primary/?FlowAlias=bs_api_factory_get_link_export_workorder_daily&action=api',
 
+  get_work_order_daiy_request: '/Primary/?FlowAlias=bs_api_factory_get_daily_request_by_id&action=api',
+  remove_work_order_daiy_detail: '/Primary/?FlowAlias=bs_api_factory_remove_daily_detail_by_id&action=api',
+  remove_work_order_daiy_request: '/Primary/?FlowAlias=bs_api_factory_remove_daily_request_by_id&action=api',
+  create_work_order_daiy_detail: '/Primary/?FlowAlias=bs_api_factory_create_daily_detail&action=api',
+  create_work_order_daiy_request: '/Primary/?FlowAlias=bs_api_factory_create_daily_request&action=api',
+
+
   // Customer
   get_customer_list: '/Primary/?FlowAlias=bs_api_factory_get_customer_list&action=api',
   get_customer_detail: '/Primary/?FlowAlias=bs_api_factory_get_customer_detail&action=api',
@@ -143,6 +150,7 @@ export const apiEndpoints = {
   get_supplier_detail: '/Primary/?FlowAlias=bs_api_factory_get_supplier_detail&action=api',
   create_supplier: '/Primary/?FlowAlias=bs_api_factory_create_supplier&action=api',
   update_supplier: '/Primary/?FlowAlias=bs_api_factory_update_supplier&action=api',
+
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'

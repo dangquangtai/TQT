@@ -25,6 +25,7 @@ import useStyles from './../../../utils/classes';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { ORDER_CHANGE } from './../../../store/actions';
 import { getOrderCompletedList, getOrderProductDetail } from '../../../services/api/Order/index.js';
+import { testAPI } from '../../../services/api/Workorder';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="bottom" ref={ref} {...props} />;
 });
@@ -81,9 +82,11 @@ const OrderModal = () => {
       try {
         let data = await getOrderCompletedList();
         setOrderList(data);
+        
       } catch (error) {
         let data = await getOrderCompletedList();
         setOrderList(data);
+        
       }
     };
     fetchData();
