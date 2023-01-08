@@ -127,6 +127,11 @@ export const apiEndpoints = {
   get_material_requisition_daily_detail: '/Primary/?FlowAlias=bs_api_factory_get_material_daily_requisition_detail&action=api',
   get_part_list: '/Primary/?FlowAlias=bs_api_factory_get_part_list&action=api',
   get_link_download_workorder: '/Primary/?FlowAlias=bs_api_factory_get_link_export_workorder_daily&action=api',
+  get_work_order_daiy_request: '/Primary/?FlowAlias=bs_api_factory_get_daily_request_by_id&action=api',
+  remove_work_order_daiy_detail: '/Primary/?FlowAlias=bs_api_factory_remove_daily_detail_by_id&action=api',
+  remove_work_order_daiy_request: '/Primary/?FlowAlias=bs_api_factory_remove_daily_request_by_id&action=api',
+  create_work_order_daiy_detail: '/Primary/?FlowAlias=bs_api_factory_create_daily_detail&action=api',
+  create_work_order_daiy_request: '/Primary/?FlowAlias=bs_api_factory_create_daily_request&action=api',
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
