@@ -276,11 +276,12 @@ const WorkorderModal = () => {
               order_code: workorder.order_code,
               status_code: workorder.status_code,
             });
+           
             setWorkorder({...workorder, id: WorkOrderID})
           }
         let IdWorkorderRequest = !!productionDailyRequestList[indexDate].id ? productionDailyRequestList[indexDate].id : '';
-        if (checkChangeData.changeWorkOrderRequest)
-          IdWorkorderRequest = await createWorkOrderRequest({
+        if (checkChangeData.changeWorkOrderRequest){
+            IdWorkorderRequest = await createWorkOrderRequest({
             number_of_worker: workorderRequest.number_of_worker,
             number_of_working_hour: workorderRequest.number_of_working_hour,
             status: workorder.status_code,
@@ -290,6 +291,9 @@ const WorkorderModal = () => {
             work_order_date: currentDate,
             id: workorderRequest.id,
           })
+        
+        }
+          
         if (checkChangeData.changeWorkOrderDaily)
           await createWorkOrderDetailList({
             product_list: productList,
@@ -299,7 +303,7 @@ const WorkorderModal = () => {
           });
 
         setCheckChangeData({ changeWorkOrder: false, changeWorkOrderDaily: false, changeWorkOrderRequest: false })
-        handleOpenSnackbar(true, 'success', 'Tạo kế hoạch thành công!');
+        handleOpenSnackbar(true, 'success', 'Cập nhật thành công!');
         return handleGetWorkOrderRequest(IdWorkorderRequest)
        
       }
@@ -336,7 +340,6 @@ const WorkorderModal = () => {
         handleOpenSnackbar(true, 'fail', 'Số ngày kế hoạch không ther < 2 !');
       } else {
         let product_list = await handleCreateWorkOrder();
-
         dataMaterial = await getMaterialDaily(product_list[index].id);
         dispatch({
           type: MATERIAL_CHANGE,
@@ -345,7 +348,7 @@ const WorkorderModal = () => {
           workorderDetail: {
             ...product_list[index],
             part_list: [...product_list[index].part_list],
-            work_order_id: selectedDocument.id,
+            work_order_id: workorder.id,
             order_date: productionDailyRequestList[indexDate].work_order_date,
             daily_work_order_id: productionDailyRequestList[indexDate].id,
             supplierList: [...dataMaterial],
@@ -480,20 +483,21 @@ const WorkorderModal = () => {
         number_of_worker: workorderRequest.number_of_worker,
         number_of_working_hour: workorderRequest.number_of_working_hour,
         status: workorder.status_code,
-        work_order_id: selectedDocument.id,
+        work_order_id: workorder.id,
         order_code: workorder.order_code,
         order_title: workorder.title,
         work_order_date: currentDate,
         id: workorderRequest.id,
       })
       productionDailyRequestList[indexDate].id=IdWorkorderRequest
+     
     }
       
     if (checkChangeData.changeWorkOrderDaily)
       await createWorkOrderDetailList({
         product_list: productList,
         status_code: workorder.status_code,
-        work_order_id: selectedDocument.id,
+        work_order_id: workorder.id,
         daily_work_order_id: IdWorkorderRequest,
       });
     setCheckChangeData({ changeWorkOrder: false, changeWorkOrderDaily: false, changeWorkOrderRequest: false })
@@ -760,6 +764,7 @@ const WorkorderModal = () => {
           order_code: workorder.order_code,
           status_code: workorder.status_code,
         });
+
         setWorkorder({...workorder, id: WorkOrderID})
        }
        
@@ -852,13 +857,13 @@ const WorkorderModal = () => {
     fetchStatus();
   }, []);
   useEffect(() => {
-    if (orderRedux?.workorderDetail?.data === 1) {
-      const fetch = async () => {
-        let data = await getDetail(selectedDocument.id);
-        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: data, documentType: 'workorder' });
-      };
-      fetch();
-    }
+    // if (orderRedux?.workorderDetail?.data === 1) {
+    //   const fetch = async () => {
+    //     let data = await getDetail(selectedDocument.id);
+    //     dispatch({ type: DOCUMENT_CHANGE, selectedDocument: data, documentType: 'workorder' });
+    //   };
+    //   fetch();
+    // }
   }, [orderRedux.workorderDetail]);
 
   useEffect(() => {
@@ -1225,7 +1230,7 @@ const WorkorderModal = () => {
                     </Button>
                     {/* </Link> */}
                   </Grid>
-                  {!selectedDocument && (
+                  {!workorder.id && (
                     <Grid item>
                       <Button
                         variant="contained"
@@ -1236,7 +1241,7 @@ const WorkorderModal = () => {
                       </Button>
                     </Grid>
                   )}
-                  {!!selectedDocument && (
+                  {!!workorder.id && (
                     <>
                       <Grid item>
                         <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleGetlink}>
