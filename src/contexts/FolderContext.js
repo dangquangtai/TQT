@@ -34,7 +34,7 @@ export const FolderProvider = ({ children }) => {
             selectedItem = folders.children.children.find((item) => item.action !== '');
           }
 
-          dispatch({ type: MENU_OPEN, isOpen: selectedItem.id });
+          dispatch({ type: MENU_OPEN, isOpen: selectedItem?.id });
           dispatch({ type: SELECTED_FOLDER_CHANGE, selectedFolder: selectedItem });
         }
       });

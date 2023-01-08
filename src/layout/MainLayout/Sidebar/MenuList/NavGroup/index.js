@@ -34,7 +34,7 @@ const NavGroup = (props) => {
   const classes = useStyles();
 
   const { projects } = useSelector((state) => state.project);
-  const selectedProject = projects.find((project) => project.selected);
+  const selectedProject = projects?.find((project) => project.selected);
   const { selectedApp } = useSelector((state) => state.app);
   const { reloadFolders } = useFolder();
 

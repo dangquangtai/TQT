@@ -8,7 +8,7 @@ import { drawerWidth, gridSpacing } from './../../../store/constant';
 import logo from '../../../assets/svgs/logo.png';
 import { Link as RouterLink } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { FOLDER_CHANGE, SELECTED_APP_CHANGE } from './../../../store/actions';
+import { FOLDER_CHANGE, PROJECT_CHANGE, SELECTED_APP_CHANGE } from './../../../store/actions';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -47,6 +47,10 @@ const Header = (props) => {
     dispatch({
       type: SELECTED_APP_CHANGE,
       app: {},
+    });
+    dispatch({
+      type: PROJECT_CHANGE,
+      projects: [],
     });
     dispatch({
       type: FOLDER_CHANGE,

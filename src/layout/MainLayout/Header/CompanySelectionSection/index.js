@@ -80,23 +80,14 @@ const CompanySelectionSection = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { getProjects } = useProject();
-
   const { projects } = useSelector((state) => state.project);
-  const selectedProject = projects.find((project) => project.selected);
-  const { selectedApp } = useSelector((state) => state.app);
-
-  useEffect(() => {
-    setTimeout(() => {
-      getProjects(selectedApp?.id || '');
-    }, 0);
-  }, [selectedApp]);
+  const selectedProject = projects?.find((project) => project.selected);
 
   const theme = useTheme();
   const matchDownSm = useMediaQuery(theme.breakpoints.down('xs'));
 
   const handleClickProject = (id) => {
-    const newSelectedProjects = projects.map((project) => {
+    const newSelectedProjects = projects?.map((project) => {
       return {
         ...project,
         selected: project.id === id ? true : false,
@@ -110,21 +101,19 @@ const CompanySelectionSection = () => {
 
   return (
     <React.Fragment>
-      {projects.length > 0 && (
-        <Tooltip title="">
-          <Box className={classes.project} ml={matchDownSm ? '8px' : '24px'} mr={matchDownSm ? '8px' : '24px'}>
-            {projects.map((project) => (
-              <Tooltip title={<Typography fontSize={18}>{project.project_name}</Typography>} key={project.id} arrow>
-                <Button
-                  onClick={(e) => handleClickProject(project.id)}
-                  style={{ borderBottom: project.id === selectedProject.id ? 'solid 1px' : 'none' }}
-                >
-                  {project.project_name}
-                </Button>
-              </Tooltip>
-            ))}
-          </Box>
-        </Tooltip>
+      {projects?.length > 0 && (
+        <Box className={classes.project} ml={matchDownSm ? '8px' : '24px'} mr={matchDownSm ? '8px' : '24px'}>
+          {projects?.map((project) => (
+            <Tooltip title={<Typography fontSize={18}>{project.project_name}</Typography>} key={project.id} arrow>
+              <Button
+                onClick={(e) => handleClickProject(project.id)}
+                style={{ borderBottom: project.id === selectedProject?.id ? 'solid 1px' : 'none' }}
+              >
+                {project.project_name}
+              </Button>
+            </Tooltip>
+          ))}
+        </Box>
       )}
     </React.Fragment>
   );
