@@ -12,6 +12,7 @@ import {
   Tooltip,
   MenuItem,
   TextField,
+  Snackbar,
   TableBody,
   TableRow,
   TableCell,
@@ -21,17 +22,12 @@ import {
   Paper,
   IconButton,
 } from '@material-ui/core';
+import Alert from '../../../component/Alert/index.js';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRef } from 'react';
 import PropTypes from 'prop-types';
 import useStyles from './classes.js';
-import {
-  FLOATING_MENU_CHANGE,
-  ORDER_DETAIL_CHANGE,
-  DOCUMENT_CHANGE,
-  MATERIAL_CHANGE,
-  SNACKBAR_OPEN,
-} from '../../../store/actions.js';
+import { FLOATING_MENU_CHANGE, ORDER_DETAIL_CHANGE, DOCUMENT_CHANGE, MATERIAL_CHANGE } from '../../../store/actions.js';
 import { SkipNext, SkipPrevious } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { month, weekday } from './../data';
@@ -240,22 +236,23 @@ const WorkorderModal = () => {
     dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: false, documentType: 'workorder' });
   };
 
-  const handleOpenSnackbar = (type, text) => {
-    dispatch({
-      type: SNACKBAR_OPEN,
-      open: true,
-      variant: 'alert',
-      message: text,
-      alertSeverity: type,
+  const [snackbarStatus, setSnackbarStatus] = useState({
+    isOpen: false,
+    type: '',
+    text: '',
+  });
+  const handleOpenSnackbar = (isOpen, type, text) => {
+    setSnackbarStatus({
+      isOpen: isOpen,
+      type: type,
+      text: text,
     });
   };
-
   const handleCreateWorkOrder = async () => {
     try {
       if (productionDailyRequestList.length < 2) {
-        handleOpenSnackbar('error', 'Số ngày kế hoạch không thể nhỏ hơn 2 !');
+        handleOpenSnackbar(true, 'fail', 'Số ngày kế hoạch không ther < 2 !');
       } else {
-
         let WorkOrderID = workorder?.id || ''
         if (checkChangeData.changeWorkOrder)
          if (!!workorder.id) {
@@ -268,7 +265,6 @@ const WorkorderModal = () => {
             order_code: workorder.order_code,
             status_code: workorder.status_code,
           });
-
          }
           else {
             WorkOrderID= await createWorkorOrder({
@@ -296,8 +292,6 @@ const WorkorderModal = () => {
             id: workorderRequest.id,
           })
         
-
-          handleOpenSnackbar('success', 'Cập nhật kế hoạch thành công!');
         }
           
         if (checkChangeData.changeWorkOrderDaily)
@@ -318,20 +312,32 @@ const WorkorderModal = () => {
     } catch { }
   };
   const handleGetlink = async () => {
-    handleOpenSnackbar('info', 'Vui lòng chờ trong giây lát. Báo cáo đang được tải xuống');
+    setSnackbarStatus({
+      isOpen: true,
+      type: 'info',
+      text: 'Vui lòng chờ trong giây lát. Báo cáo đang được tải xuống',
+    });
     const link = await getLink(productionDailyRequestList[indexDate].id);
     if (link !== '') {
       downloadFile(link);
-      handleOpenSnackbar('success', 'Tải xuống báo cáo thành công');
+      setSnackbarStatus({
+        isOpen: true,
+        type: 'success',
+        text: 'Tải xuống báo cáo thành công',
+      });
     } else {
-      handleOpenSnackbar('error', 'Tải xuống báo cáo thất bại');
+      setSnackbarStatus({
+        isOpen: true,
+        type: 'error',
+        text: 'Tải xuống báo cáo thất bại',
+      });
     }
     ///
   };
   const handleUpdateWorkOrder = async (product, index) => {
     try {
       if (productionDailyRequestList.length < 2) {
-        handleOpenSnackbar('error', 'Số ngày kế hoạch không thể nhỏ hơn 2 !');
+        handleOpenSnackbar(true, 'fail', 'Số ngày kế hoạch không ther < 2 !');
       } else {
         let product_list = await handleCreateWorkOrder();
         dataMaterial = await getMaterialDaily(product_list[index].id);
@@ -866,6 +872,23 @@ const WorkorderModal = () => {
 
   return (
     <React.Fragment>
+      {snackbarStatus.isOpen && (
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          open={snackbarStatus.isOpen}
+          autoHideDuration={3000}
+          onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
+        >
+          <Alert
+            onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
+            severity={snackbarStatus.type}
+            sx={{ width: '100%' }}
+          >
+            {snackbarStatus.text}
+          </Alert>
+        </Snackbar>
+      )}
+
       <Grid container>
         <Dialog
           open={openDialog || false}
