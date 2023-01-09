@@ -13,10 +13,13 @@ import {
   Avatar,
 } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { SELECTED_APP_CHANGE, PROJECT_SELECTED, PROJECT_CHANGE } from './../../../../store/actions';
+import { SELECTED_APP_CHANGE, PROJECT_CHANGE } from './../../../../store/actions';
 import { NavLink } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    minHeight: 340,
+  },
   img: {
     width: '24px',
     height: '24px',
@@ -55,7 +58,7 @@ const AppCard = ({ app }) => {
   };
 
   return (
-    <Card>
+    <Card className={classes.root}>
       <CardContent>
         <Grid container alignItems="center">
           <Grid item xs zeroMinWidth>
@@ -83,7 +86,7 @@ const AppCard = ({ app }) => {
                 secondary={project.project_description}
               />
             </ListItem>
-            <Divider />
+            {index !== projectList.length - 1 && <Divider />}
           </React.Fragment>
         ))}
       </List>
