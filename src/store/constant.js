@@ -143,12 +143,14 @@ export const apiEndpoints = {
   get_customer_detail: '/Primary/?FlowAlias=bs_api_factory_get_customer_detail&action=api',
   create_customer: '/Primary/?FlowAlias=bs_api_factory_create_customer&action=api',
   update_customer: '/Primary/?FlowAlias=bs_api_factory_update_customer&action=api',
+  active_customer: '/Primary/?FlowAlias=bs_api_factory_active_customer&action=api',
 
   // Supplier
   get_supplier_list: '/Primary/?FlowAlias=bs_api_factory_get_supplier_list&action=api',
   get_supplier_detail: '/Primary/?FlowAlias=bs_api_factory_get_supplier_detail&action=api',
   create_supplier: '/Primary/?FlowAlias=bs_api_factory_create_supplier&action=api',
   update_supplier: '/Primary/?FlowAlias=bs_api_factory_update_supplier&action=api',
+  active_supplier: '/Primary/?FlowAlias=bs_api_factory_active_supplier&action=api',
 
   // Material Warehouse Category
   get_warehouse_category_list: '/Primary/?FlowAlias=bs_api_factory_get_material_warehouse_category_list&action=api',
@@ -209,6 +211,9 @@ export const supplierActions = {
 };
 export const warehouseCategoryActions = {
   list_warehouse_category: 'TQT_MATERIAL_DEFAULT_OPEN_WAREHOUSE_CATEGORY_LIST',
+};
+export const warehouseActions = {
+  list_warehouse: 'TQT_SETTING_DEFAULT_OPEN_MATERIALWHS_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -334,6 +339,14 @@ export const view = {
     },
     detail: {
       save: 'TQT_MATERIAL_DEFAULT_WAREHOUSE_CATEGORY_DETAIL_SAVE_FORM_BUTTON',
+    },
+  },
+  warehouse: {
+    list: {
+      create: 'TQT_SETTING_DEFAULT_MATERIALWHS_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_SETTING_DEFAULT_MATERIALWHS_SAVE_FORM_BUTTON',
     },
   },
 };

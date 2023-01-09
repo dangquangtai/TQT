@@ -4,6 +4,7 @@ import { DOCUMENT_CHANGE } from '../../store/actions.js';
 import SupplierTable from '../Table';
 import { getUrlByAction } from '../../utils/utils';
 import { getAllSupplierCategory } from '../../services/api/Setting/SupplierCategory.js';
+import { apiEndpoints } from '../../store/constant.js';
 const SupplierWrapper = () => {
   const dispatch = useDispatch();
 
@@ -30,7 +31,7 @@ const SupplierWrapper = () => {
         url={getUrlByAction(selectedFolder)}
         documentType="supplier"
         categories={categories}
-        // setActiveUrl={apiEndpoints.active_material_Part}
+        setActiveUrl={apiEndpoints.active_supplier}
       />
     </React.Fragment>
   );
