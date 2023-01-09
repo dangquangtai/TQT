@@ -150,6 +150,7 @@ export const apiEndpoints = {
   get_supplier_detail: '/Primary/?FlowAlias=bs_api_factory_get_supplier_detail&action=api',
   create_supplier: '/Primary/?FlowAlias=bs_api_factory_create_supplier&action=api',
   update_supplier: '/Primary/?FlowAlias=bs_api_factory_update_supplier&action=api',
+  get_order_by_work_order_id: '/Primary/?FlowAlias=bs_api_factory_get_order_detail_by_work_order_id&action=api',
 
 };
 export const apiDomain = 'https://upload.truebpm.vn';

@@ -16,6 +16,21 @@ export const getDetailOrder = (id, setView) => {
       console.log(error);
     });
 };
+export const getDetailOrderByWorkOrder = (id, work_order_id) => {
+  return axiosServices
+    .post(apiEndpoints.get_order_by_work_order_id, { id: id, work_order_id: work_order_id })
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        const { data } = response.data;
+       
+        return data;
+      }
+      return [];
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 export const getOrderProductDetail = (id) => {
   return axiosServices
     .post(apiEndpoints.get_order_detail, { id })

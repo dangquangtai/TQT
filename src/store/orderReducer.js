@@ -33,7 +33,7 @@ const orderReducer = (state = initialState, action) => {
     
         return {
           ...state,
-          order: {
+          workorderDetail: {
             ...state.order,
             workorderDetail: action.workorderDetail,
           },
