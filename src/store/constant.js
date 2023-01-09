@@ -151,6 +151,7 @@ export const apiEndpoints = {
   create_supplier: '/Primary/?FlowAlias=bs_api_factory_create_supplier&action=api',
   update_supplier: '/Primary/?FlowAlias=bs_api_factory_update_supplier&action=api',
   active_supplier: '/Primary/?FlowAlias=bs_api_factory_active_supplier&action=api',
+  get_order_by_work_order_id: '/Primary/?FlowAlias=bs_api_factory_get_order_detail_by_work_order_id&action=api',
 
   // Material Warehouse Category
   get_warehouse_category_list: '/Primary/?FlowAlias=bs_api_factory_get_material_warehouse_category_list&action=api',

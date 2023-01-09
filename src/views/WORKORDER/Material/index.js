@@ -36,7 +36,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function AlertDialogSlide() {
-  const { order: orderRedux } = useSelector((state) => state.order);
+  const { workorderDetail: orderRedux } = useSelector((state) => state.order);
   const [open, setOpen] = useState(true);
   const [detail, setDetail] = useState({});
   const [indexColor, setIndexColor] = useState(-1);
@@ -105,7 +105,6 @@ export default function AlertDialogSlide() {
   const handleSubmit = async () => {
     let data = supplierList.filter((x) => x.part_id !== '')
     let data2 = supplierListAll.filter((x) => x.part_id !== '')
-    console.log(data, data2)
     await createMaterialRequisition({
       order_date: detail.order_date,
       daily_requisition_detail_list: [...data2, ...data],
@@ -157,9 +156,9 @@ export default function AlertDialogSlide() {
     fetchData(index)
   };
   const handleCheck = (item) => {
-    if (item.Quantity_In_Piece === 0)
+    if (item.Quantity_In_Piece === 0 || orderRedux.workorderDetail.is_enough)
       return <Typography style={{ backgroundColor: 'rgb(48, 188, 65)' }}>
-        {item.Quantity_In_Piece.toLocaleString()
+        {0
         }</Typography>
     return <Typography style={{ backgroundColor: 'yellow' }}>
       {item.Quantity_In_Piece.toLocaleString()
@@ -177,23 +176,36 @@ export default function AlertDialogSlide() {
 
   useEffect(() => {
     if (!orderRedux.workorderDetail) return;
-    
     const detailData=[]
     orderRedux.workorderDetail.part_list.forEach(element=>{
       detailData.push({...element,check:0});
+ 
     })
     setSupplierList([])
     var newSupplierList = [];
-    orderRedux.workorderDetail.supplierList.forEach((row)=>{
-      newSupplierList=[...newSupplierList,{...row,
-        is_enough: row.quantity_in_piece-row.quantity_in_wh>0?false:true,
-        quantity: row.quantity_in_piece-row.quantity_in_wh>0?row.quantity_in_piece-row.quantity_in_wh:row.quantity_in_wh-row.quantity_in_piece
-      }]
-
-      let date2 =  orderRedux.workorderDetail.part_list.findIndex((x) => x.Part_Code === row.part_code)
-        detailData[date2] = {...detailData[date2],...orderRedux.workorderDetail.part_list[date2],Quantity_In_Piece: orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece-row.quantity_in_wh>0?orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece-row.quantity_in_wh:0}
-       
-    })
+    if(orderRedux.workorderDetail.is_enough){
+      orderRedux.workorderDetail.supplierList.forEach((row)=>{
+        newSupplierList=[...newSupplierList,{...row,
+          is_enough: true,
+          quantity: 0
+        }]
+        let date2 =  orderRedux.workorderDetail.part_list.findIndex((x) => x.Part_Code === row.part_code)
+          detailData[date2] = {...detailData[date2],...orderRedux.workorderDetail.part_list[date2],Quantity_In_Piece: orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece-row.quantity_in_wh>0?orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece-row.quantity_in_wh:0}
+         
+      })
+    } else{
+      orderRedux.workorderDetail.supplierList.forEach((row)=>{
+        newSupplierList=[...newSupplierList,{...row,
+          is_enough: row.quantity_in_piece-row.quantity_in_wh>0?false:true,
+          quantity: row.quantity_in_piece-row.quantity_in_wh>0?row.quantity_in_piece-row.quantity_in_wh:row.quantity_in_wh-row.quantity_in_piece
+        }]
+        let date2 =  orderRedux.workorderDetail.part_list.findIndex((x) => x.Part_Code === row.part_code)
+          detailData[date2] = {...detailData[date2],...orderRedux.workorderDetail.part_list[date2],Quantity_In_Piece: orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece-row.quantity_in_wh>0?orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece-row.quantity_in_wh:0}
+         
+      })
+    }
+   
+   
     setSupplierListAll([...newSupplierList])
     setDetail({...orderRedux.workorderDetail, part_list: [...detailData]});
   }, [orderRedux.workorderDetail])
@@ -353,7 +365,7 @@ export default function AlertDialogSlide() {
                           </TableCell>
                           <TableCell  >
                             <Typography style={{ backgroundColor: item.is_enough ? 'rgb(48, 188, 65)' : 'yellow' }}>
-                              {item.is_enough ? 'Đủ' : 'Thiếu'}
+                              { item.is_enough ? 'Đủ' : 'Thiếu'}
                             </Typography>
                           </TableCell>
                           <TableCell align="left">
