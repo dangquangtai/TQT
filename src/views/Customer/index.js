@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getAllCustomerCategory } from '../../services/api/Setting/CustomerCategory.js';
 import { DOCUMENT_CHANGE } from '../../store/actions.js';
+import { apiEndpoints } from '../../store/constant.js';
 import CustomerTable from '../Table';
 import { getUrlByAction } from './../../utils/utils';
 const CustomerWrapper = () => {
@@ -30,7 +31,7 @@ const CustomerWrapper = () => {
         url={getUrlByAction(selectedFolder)}
         documentType="customer"
         categories={categories}
-        // setActiveUrl={apiEndpoints.active_material_Part}
+        setActiveUrl={apiEndpoints.active_customer}
       />
     </React.Fragment>
   );

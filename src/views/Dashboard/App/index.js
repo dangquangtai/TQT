@@ -8,9 +8,7 @@ import AppCard from './Card/index';
 
 const App = () => {
   const { apps } = useSelector((state) => state.app);
-
   const { getApps } = useProject();
-
   const { getMetadata } = useShare();
 
   React.useEffect(() => {
@@ -23,9 +21,6 @@ const App = () => {
   return (
     <Grid container justifyContent="center" alignItems="center">
       <Grid item xs={12} sm={12} md={12} lg={12}>
-        {/* <Typography variant="h2" className={classes.margin}>
-          TQT App Center
-        </Typography> */}
         <Grid container spacing={gridSpacing} alignItems="stretch">
           {apps?.map((app) => (
             <Grid key={app.app_code} item lg={4} sm={6} xs={12}>

@@ -28,6 +28,7 @@ import { createMaterialCategory, updateMaterialCategory } from './../../services
 import { createSupplierCategory, updateSupplierCategory } from './../../services/api/Setting/SupplierCategory';
 import { createCustomerCategory, updateCustomerCategory } from './../../services/api/Setting/CustomerCategory';
 import { createProductCategory, updateProductCategory } from './../../services/api/Setting/ProductCategory';
+import { createWarehouseCategory, updateWarehouseCategory } from './../../services/api/Setting/WHSCategory';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -74,6 +75,9 @@ const CategoryModal = () => {
   const buttonUpdateSupplierCategory = formButtons.find((button) => button.name === view.supplierCategory.detail.save);
   const buttonUpdateCustomerCategory = formButtons.find((button) => button.name === view.customerCategory.detail.save);
   const buttonUpdateProductCategory = formButtons.find((button) => button.name === view.productCategory.detail.save);
+  const buttonUpdateWarehouseCategory = formButtons.find(
+    (button) => button.name === view.warehouseCategory.detail.save
+  );
   const [tabIndex, setTabIndex] = React.useState(0);
   const [categoryData, setCategoryData] = React.useState(initCategory);
 
@@ -122,6 +126,9 @@ const CategoryModal = () => {
           case 'customerCategory':
             await updateCustomerCategory(categoryData);
             break;
+          case 'warehouseCategory':
+            await updateWarehouseCategory(categoryData);
+            break;
           default:
             break;
         }
@@ -139,6 +146,9 @@ const CategoryModal = () => {
             break;
           case 'customerCategory':
             await createCustomerCategory(categoryData);
+            break;
+          case 'warehouseCategory':
+            await createWarehouseCategory(categoryData);
             break;
           default:
             break;
@@ -290,6 +300,11 @@ const CategoryModal = () => {
                 {buttonUpdateCustomerCategory && selectedDocument?.id && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
                     {buttonUpdateCustomerCategory.text}
+                  </Button>
+                )}
+                {buttonUpdateWarehouseCategory && selectedDocument?.id && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
+                    {buttonUpdateWarehouseCategory.text}
                   </Button>
                 )}
                 {!selectedDocument?.id && (

@@ -138,20 +138,27 @@ export const apiEndpoints = {
   create_work_order_daiy_detail: '/Primary/?FlowAlias=bs_api_factory_create_daily_detail&action=api',
   create_work_order_daiy_request: '/Primary/?FlowAlias=bs_api_factory_create_daily_request&action=api',
 
-
   // Customer
   get_customer_list: '/Primary/?FlowAlias=bs_api_factory_get_customer_list&action=api',
   get_customer_detail: '/Primary/?FlowAlias=bs_api_factory_get_customer_detail&action=api',
   create_customer: '/Primary/?FlowAlias=bs_api_factory_create_customer&action=api',
   update_customer: '/Primary/?FlowAlias=bs_api_factory_update_customer&action=api',
+  active_customer: '/Primary/?FlowAlias=bs_api_factory_active_customer&action=api',
 
   // Supplier
   get_supplier_list: '/Primary/?FlowAlias=bs_api_factory_get_supplier_list&action=api',
   get_supplier_detail: '/Primary/?FlowAlias=bs_api_factory_get_supplier_detail&action=api',
   create_supplier: '/Primary/?FlowAlias=bs_api_factory_create_supplier&action=api',
   update_supplier: '/Primary/?FlowAlias=bs_api_factory_update_supplier&action=api',
+  active_supplier: '/Primary/?FlowAlias=bs_api_factory_active_supplier&action=api',
   get_order_by_work_order_id: '/Primary/?FlowAlias=bs_api_factory_get_order_detail_by_work_order_id&action=api',
 
+  // Material Warehouse Category
+  get_warehouse_category_list: '/Primary/?FlowAlias=bs_api_factory_get_material_warehouse_category_list&action=api',
+  get_warehouse_category_detail: '/Primary/?FlowAlias=bs_api_factory_get_material_warehouse_category_detail&action=api',
+  create_warehouse_category: '/Primar/?FlowAlias=bs_api_factory_create_material_warehouse_category&action=api',
+  update_warehouse_category: '/Primary/?FlowAlias=bs_api_factory_update_material_warehouse_category&action=api',
+  active_warehouse_category: '/Primary/?FlowAlias=bs_api_factory_active_material_warehouse_category&action=api',
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
@@ -202,6 +209,12 @@ export const customerActions = {
 };
 export const supplierActions = {
   list_supplier: 'TQT_PARTNER_DEFAULT_OPEN_SUPPLIER_LIST',
+};
+export const warehouseCategoryActions = {
+  list_warehouse_category: 'TQT_MATERIAL_DEFAULT_OPEN_WAREHOUSE_CATEGORY_LIST',
+};
+export const warehouseActions = {
+  list_warehouse: 'TQT_SETTING_DEFAULT_OPEN_MATERIALWHS_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -319,6 +332,22 @@ export const view = {
     },
     detail: {
       save: 'TQT_PARTNER_DEFAULT_SUPPLIER_DETAIL_SAVE_FORM_BUTTON',
+    },
+  },
+  warehouseCategory: {
+    list: {
+      create: 'TQT_MATERIAL_DEFAULT_WAREHOUSE_CATEGORY_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_MATERIAL_DEFAULT_WAREHOUSE_CATEGORY_DETAIL_SAVE_FORM_BUTTON',
+    },
+  },
+  warehouse: {
+    list: {
+      create: 'TQT_SETTING_DEFAULT_MATERIALWHS_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_SETTING_DEFAULT_MATERIALWHS_SAVE_FORM_BUTTON',
     },
   },
 };

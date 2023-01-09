@@ -43,6 +43,7 @@ import { getDetailOrder } from './../../services/api/Order/index';
 import { getDetailWorkorOrder } from './../../services/api/Workorder/index';
 import { getDetailCustomer } from '../../services/api/Partner/Customer.js';
 import { getDetailSupplier } from './../../services/api/Partner/Supplier';
+import { getDetailWarehouseCategory } from './../../services/api/Setting/WHSCategory';
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance
     .post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured })
@@ -136,6 +137,9 @@ export default function GeneralTable(props) {
   const buttonCreateSupplierCategory = menuButtons.find((button) => button.name === view.supplierCategory.list.create);
   const buttonCreateProductCategory = menuButtons.find((button) => button.name === view.productCategory.list.create);
   const buttonCreateCustomerCategory = menuButtons.find((button) => button.name === view.customerCategory.list.create);
+  const buttonCreateWarehouseCategory = menuButtons.find(
+    (button) => button.name === view.warehouseCategory.list.create
+  );
   const buttonCreateOrder = menuButtons.find((button) => button.name === view.order.list.create);
   const buttonCreateWorkorder = menuButtons.find((button) => button.name === view.workorder.list.create);
 
@@ -381,6 +385,11 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, categoryDocument: true });
         break;
+      case 'warehouseCategory':
+        detailDocument = await getDetailWarehouseCategory(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, categoryDocument: true });
+        break;
       case 'product':
         detailDocument = await getDetailProduct(selectedDocument.id, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
@@ -427,15 +436,10 @@ export default function GeneralTable(props) {
         dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
         break;
       case 'materialCategory':
-        dispatch({ type: FLOATING_MENU_CHANGE, categoryDocument: true });
-        break;
       case 'supplierCategory':
-        dispatch({ type: FLOATING_MENU_CHANGE, categoryDocument: true });
-        break;
       case 'productCategory':
-        dispatch({ type: FLOATING_MENU_CHANGE, categoryDocument: true });
-        break;
       case 'customerCategory':
+      case 'warehouseCategory':
         dispatch({ type: FLOATING_MENU_CHANGE, categoryDocument: true });
         break;
       case 'order':
@@ -715,6 +719,7 @@ export default function GeneralTable(props) {
                 buttonCreateOrder={buttonCreateOrder}
                 buttonCreateCustomer={buttonCreateCustomer}
                 buttonCreateSupplier={buttonCreateSupplier}
+                buttonCreateWarehouseCategory={buttonCreateWarehouseCategory}
               />
               <Grid container spacing={gridSpacing}>
                 {(documentType === 'department' || documentType === 'processrole') && (
