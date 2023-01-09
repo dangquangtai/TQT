@@ -109,6 +109,7 @@ const MainLayout = ({ children }) => {
       case 'supplierCategory':
       case 'productCategory':
       case 'customerCategory':
+      case 'warehouseCategory':
         return <CategoryModal />;
       case 'product':
         return <ProductModal />;

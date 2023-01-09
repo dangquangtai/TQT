@@ -22,6 +22,7 @@ import {
   productrequestActions,
   customerActions,
   supplierActions,
+  warehouseCategoryActions,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
 import { Redirect } from 'react-router-dom';
@@ -37,6 +38,7 @@ import OrderWrapper from './../../Order/index';
 import WorkorderWrapper from './../../WORKORDER/index';
 import CustomerWrapper from './../../Customer/index';
 import SupplierWrapper from './../../Supplier/index';
+import WarehouseCategoryWrapper from './../../Setting/WarehouseCategory/index';
 
 const Default = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
@@ -60,6 +62,7 @@ const Default = () => {
 
   const availableCustomerEndpoint = Object.values(customerActions);
   const availableSupplierEndpoint = Object.values(supplierActions);
+  const availableWarehouseCategoryEndpoint = Object.values(warehouseCategoryActions);
 
   if (!selectedApp?.id) {
     return <Redirect to="/dashboard/app" />;
@@ -80,6 +83,7 @@ const Default = () => {
           {availableSupplierCategoryEndpoint.includes(selectedFolder?.action) && <SupplierCategoryWrapper />}
           {availableProductCategoryEndpoint.includes(selectedFolder?.action) && <ProductCategoryWrapper />}
           {availableCustomerCategoryEndpoint.includes(selectedFolder?.action) && <CustomerCategoryWrapper />}
+          {availableWarehouseCategoryEndpoint.includes(selectedFolder?.action) && <WarehouseCategoryWrapper />}
 
           {availableMaterialPartEndpoint.includes(selectedFolder?.action) && <MaterialPartWrapper />}
           {availableProductEndpoint.includes(selectedFolder?.action) && <ProductWrapper />}

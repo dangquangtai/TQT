@@ -15,6 +15,7 @@ import {
   productrequestActions,
   customerActions,
   supplierActions,
+  warehouseCategoryActions,
 } from '../store/constant.js';
 
 export function getUrlByAction(selectedFolder) {
@@ -69,6 +70,9 @@ export function getUrlByAction(selectedFolder) {
     }
     case supplierActions.list_supplier: {
       return apiEndpoints.get_supplier_list;
+    }
+    case warehouseCategoryActions.list_warehouse_category: {
+      return apiEndpoints.get_warehouse_category_list;
     }
     default: {
       return '';
