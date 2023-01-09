@@ -3,6 +3,7 @@ import * as actionTypes from './actions';
 export const initialState = {
   products: [],
   materials: [],
+  provinces: [],
 };
 
 const metadataReducer = (state = initialState, action) => {
@@ -12,6 +13,7 @@ const metadataReducer = (state = initialState, action) => {
         ...state,
         products: action.products,
         materials: action.materials,
+        provinces: action.provinces,
       };
     default:
       return state;
