@@ -343,6 +343,7 @@ const WorkorderModal = () => {
     try {
       
         let product_list = await handleCreateWorkOrder();
+
         dataMaterial = await getMaterialDaily(product_list[index].id);
         dispatch({
           type: MATERIAL_CHANGE,
@@ -470,7 +471,7 @@ const WorkorderModal = () => {
       setProductList(productListApi.work_order_detail);
       setWorkorderRequest({ ...productListApi.work_order_request });
       if (productListApi.work_order_detail[0]?.customer_order_id !='')
-     
+        if(productListApi.work_order_detail.length>0)
         dispatch({
           type: ORDER_CHANGE,
           order: {  id: productListApi.work_order_detail[0]?.customer_order_id, change: true, work_order_id: workorder.id, workorderDetail: orderRedux.workorderDetail,}
