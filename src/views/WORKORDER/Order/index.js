@@ -78,7 +78,6 @@ const OrderModal = () => {
     } else {
        orderDetailList = await getOrderProductDetail(value.id);
     }
-    
     setOrderSelected(value);
     if (value) {
       setOrder({ ...value, order_code: orderDetailList.order_code, ...orderDetailList });
@@ -119,15 +118,22 @@ const OrderModal = () => {
       try {
         let data = await getOrderCompletedList();
         setOrderList(data);
-        
+      
       } catch (error) {
         let data = await getOrderCompletedList();
         setOrderList(data);
-        
       }
+      
     };
     fetchData();
   }, []);
+  useEffect(() => {
+    if (!orderList || orderList.length===0) return;
+    if (!orderRedux) return;
+    if (!orderRedux.id) return;
+        let value = orderList.find(x=>x.id === orderRedux.id)
+        handleOrderChangeSelected({...value,work_order_id:''})
+  }, [orderList]);
   useEffect(() => {
     if (!orderRedux.orderDetail){
       if (orderRedux?.change) {

@@ -105,10 +105,11 @@ export default function AlertDialogSlide() {
   const handleSubmit = async () => {
     let data = supplierList.filter((x) => x.part_id !== '')
     let data2 = supplierListAll.filter((x) => x.part_id !== '')
+    console.log(data2,data, detail.supplierList[0])
     await createMaterialRequisition({
       order_date: detail.order_date,
       daily_requisition_detail_list: [...data2, ...data],
-      requisition_id: detail?.supplierList[0]?.requisition_id | '',
+      requisition_id: detail?.supplierList[0]?.requisition_id || '',
       daily_work_order_detail_id: detail.id,
       work_order_id: detail.work_order_id,
     })
@@ -158,7 +159,7 @@ export default function AlertDialogSlide() {
   const handleCheck = (item) => {
     if (item.Quantity_In_Piece === 0 || orderRedux.workorderDetail.is_enough)
       return <Typography style={{ backgroundColor: 'rgb(48, 188, 65)' }}>
-        {0
+        {item.Quantity_In_Piece 
         }</Typography>
     return <Typography style={{ backgroundColor: 'yellow' }}>
       {item.Quantity_In_Piece.toLocaleString()
@@ -190,7 +191,9 @@ export default function AlertDialogSlide() {
           quantity: 0
         }]
         let date2 =  orderRedux.workorderDetail.part_list.findIndex((x) => x.Part_Code === row.part_code)
-          detailData[date2] = {...detailData[date2],...orderRedux.workorderDetail.part_list[date2],Quantity_In_Piece: orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece-row.quantity_in_wh>0?orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece-row.quantity_in_wh:0}
+          detailData[date2] = {...detailData[date2],...orderRedux.workorderDetail.part_list[date2],
+            Quantity_In_Piece: orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece
+           }
          
       })
     } else{
@@ -358,10 +361,10 @@ export default function AlertDialogSlide() {
                             {item.quantity_in_wh?.toLocaleString()}
                           </TableCell>
                           <TableCell  >
-                            {item.quantity_in_piece}
+                            {item.quantity_in_piece?.toLocaleString()}
                           </TableCell>
                           <TableCell >
-                            {item.quantity?.toLocaleString() || 0}
+                            {item.is_enough? 0: (item.quantity?.toLocaleString() || 0)}
                           </TableCell>
                           <TableCell  >
                             <Typography style={{ backgroundColor: item.is_enough ? 'rgb(48, 188, 65)' : 'yellow' }}>
