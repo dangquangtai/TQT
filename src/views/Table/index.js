@@ -801,6 +801,42 @@ export default function GeneralTable(props) {
                                   {row.fullname}
                                 </TableCell>
                               )}
+                              {displayOptions.part_code && (
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.part_code}
+                                </TableCell>
+                              )}
+                              {displayOptions.product_code && (
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.product_code}
+                                </TableCell>
+                              )}
+                              {displayOptions.customer_code && (
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.customer_code}
+                                </TableCell>
+                              )}
+                              {displayOptions.supplier_code && (
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.supplier_code}
+                                </TableCell>
+                              )}
                               {displayOptions.title && (
                                 <TableCell
                                   style={{ maxWidth: 450, overflow: 'hidden', textOverflow: 'ellipsis' }}
@@ -811,28 +847,6 @@ export default function GeneralTable(props) {
                                   {row.title}
                                 </TableCell>
                               )}
-                              {displayOptions.part_code && (
-                                <TableCell
-                                  style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis' }}
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
-                                  {row.part_code}
-                                </TableCell>
-                              )}
-                              {displayOptions.product_code && (
-                                <TableCell
-                                  style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis' }}
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
-                                  {row.product_code}
-                                </TableCell>
-                              )}
-                              {displayOptions.customer_code && <TableCell align="left">{row.customer_code}</TableCell>}
-                              {displayOptions.supplier_code && <TableCell align="left">{row.supplier_code}</TableCell>}
                               {displayOptions.category_name && (
                                 <TableCell
                                   style={{ maxWidth: 450, overflow: 'hidden', textOverflow: 'ellipsis' }}

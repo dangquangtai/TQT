@@ -322,7 +322,7 @@ const ProductModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Số lượng:</span>
+                              <span className={classes.tabItemLabelField}>Số lượng thành phẩm/thùng:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -338,7 +338,7 @@ const ProductModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Năng suất:</span>
+                              <span className={classes.tabItemLabelField}>Năng suất 1 công nhân trong 8h:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -385,8 +385,8 @@ const ProductModal = () => {
                           </Tooltip>
                         </div>
                         <div className={classes.tabItemBody}>
-                          <TableContainer style={{ maxHeight: 500 }} component={Paper}>
-                            <Table aria-label="simple table">
+                          <TableContainer style={{ maxHeight: '65vh' }} component={Paper}>
+                            <Table stickyHeader aria-label="simple table">
                               <TableHead>
                                 <TableRow>
                                   <TableCell align="left">Mã thành phần</TableCell>
@@ -399,12 +399,12 @@ const ProductModal = () => {
                               <TableBody>
                                 {partList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" component="th" scope="row">
+                                    <TableCell align="left" component="th" scope="row" style={{ width: '25%' }}>
                                       <Autocomplete
                                         size="small"
                                         options={materials}
+                                        fullWidth
                                         getOptionLabel={(option) => option.part_code}
-                                        style={{ width: 250 }}
                                         value={partList[index] || null}
                                         getOptionSelected={(option, value) => option.id === value.part_id}
                                         onChange={(event, newValue) => handleChangePart(index, newValue)}
@@ -413,13 +413,13 @@ const ProductModal = () => {
                                     </TableCell>
                                     <TableCell
                                       align="left"
-                                      style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                                      style={{ width: '40%', overflow: 'hidden', textOverflow: 'ellipsis' }}
                                     >
                                       <Tooltip title={row?.part_name || ''}>
                                         <span>{row?.part_name || ''}</span>
                                       </Tooltip>
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '140px' }}>
+                                    <TableCell align="left" style={{ width: '15%' }}>
                                       <TextField
                                         InputProps={{
                                           inputProps: { min: 0 },
@@ -433,7 +433,7 @@ const ProductModal = () => {
                                       />
                                     </TableCell>
                                     <TableCell align="left">{row.unit_name}</TableCell>
-                                    <TableCell align="left">
+                                    <TableCell align="left" style={{ width: '10%' }}>
                                       <Tooltip title="Xóa">
                                         <IconButton onClick={() => handleDeletePart(index)}>
                                           <Delete />

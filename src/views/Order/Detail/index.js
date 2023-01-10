@@ -482,7 +482,7 @@ const OrderModal = () => {
                               <TableBody>
                                 {productList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ minWidth: '165px' }}>
+                                    <TableCell align="left" style={{ minWidth: '200px' }}>
                                       <Autocomplete
                                         options={products}
                                         getOptionLabel={(option) => option.product_code || ''}
@@ -499,7 +499,7 @@ const OrderModal = () => {
                                         <span>{row?.product_name}</span>
                                       </Tooltip>
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '140px' }}>
+                                    <TableCell align="left" style={{ minWidth: '130px' }}>
                                       <TextField
                                         InputProps={{
                                           inputProps: { min: 0 },
@@ -519,7 +519,7 @@ const OrderModal = () => {
                                       </TableCell>
                                     )}
                                     <TableCell align="left">{row.unit_name}</TableCell>
-                                    {selectedDocument?.id && <TableCell align="left">{row.status}</TableCell>}
+                                    {selectedDocument?.id && <TableCell align="left">{row.status_display}</TableCell>}
                                     <TableCell align="center">
                                       <IconButton onClick={() => handleDeleteProduct(index, row.id)}>
                                         <Delete />
