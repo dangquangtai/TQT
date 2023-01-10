@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles, useMediaQuery, useTheme, AppBar, CssBaseline, Toolbar, Snackbar, Slide } from '@material-ui/core';
-import { useSelector, useDispatch } from 'react-redux';
+import { makeStyles, useMediaQuery, useTheme, AppBar, CssBaseline, Toolbar } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 import { drawerWidth } from './../../store/constant';
 import Header from './Header';
 import Sidebar from './Sidebar';
@@ -24,8 +24,7 @@ import ProductModal from './../../views/Product/Product/Detail/index';
 import OrderModal from './../../views/Order/Detail/index';
 import SupplierModal from './../../views/Supplier/Detail/index';
 import CustomerModal from './../../views/Customer/Detail/index';
-import { SNACKBAR_CLOSE } from '../../store/actions.js';
-import Alert from './../../component/Alert/index';
+import InventoryModal from './../../views/Material/Inventory/Detail/index';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -71,20 +70,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function TransitionRight(props) {
-  return <Slide {...props} direction="right" />;
-}
-
 const MainLayout = ({ children }) => {
   const classes = useStyles();
   const theme = useTheme();
   const matchUpMd = useMediaQuery(theme.breakpoints.up('md'));
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const { loading } = useLoading();
-  const dispatch = useDispatch();
 
   const { documentType } = useSelector((state) => state.document);
-  const { open, message, alertSeverity, anchorOrigin } = useSelector((state) => state.snackbar);
 
   const renderDetailDialog = () => {
     switch (documentType) {
@@ -121,6 +114,8 @@ const MainLayout = ({ children }) => {
         return <SupplierModal />;
       case 'customer':
         return <CustomerModal />;
+      case 'materialInventory':
+        return <InventoryModal></InventoryModal>;
       default:
         return null;
     }
@@ -128,13 +123,6 @@ const MainLayout = ({ children }) => {
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    dispatch({ type: SNACKBAR_CLOSE });
   };
 
   React.useEffect(() => {

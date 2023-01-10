@@ -159,6 +159,10 @@ export const apiEndpoints = {
   create_warehouse_category: '/Primar/?FlowAlias=bs_api_factory_create_material_warehouse_category&action=api',
   update_warehouse_category: '/Primary/?FlowAlias=bs_api_factory_update_material_warehouse_category&action=api',
   active_warehouse_category: '/Primary/?FlowAlias=bs_api_factory_active_material_warehouse_category&action=api',
+
+  // Material Inventory
+  get_material_inventory_list: '/Primary/?FlowAlias=bs_api_factory_get_material_inventory_list&action=api',
+  get_material_inventory_detail: '/Primary/?FlowAlias=bs_api_factory_get_material_inventory_detail&action=api',
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
@@ -215,6 +219,9 @@ export const warehouseCategoryActions = {
 };
 export const warehouseActions = {
   list_warehouse: 'TQT_SETTING_DEFAULT_OPEN_MATERIALWHS_LIST',
+};
+export const materialInventoryActions = {
+  list_material_inventory: 'TQT_MATERIAL_DEFAULT_OPEN_INVENTORY_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';

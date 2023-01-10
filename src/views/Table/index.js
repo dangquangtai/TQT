@@ -13,6 +13,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
+  Chip,
 } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -44,6 +45,7 @@ import { getDetailWorkorOrder } from './../../services/api/Workorder/index';
 import { getDetailCustomer } from '../../services/api/Partner/Customer.js';
 import { getDetailSupplier } from './../../services/api/Partner/Supplier';
 import { getDetailWarehouseCategory } from './../../services/api/Setting/WHSCategory';
+import { getDetailInventory } from './../../services/api/Material/Inventory';
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance
     .post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured })
@@ -109,6 +111,13 @@ export default function GeneralTable(props) {
       expected_deliver_date: tableColumns.includes('expected_deliver_date'),
       customer_code: tableColumns.includes('customer_code'),
       supplier_code: tableColumns.includes('supplier_code'),
+      is_part_list_available: tableColumns.includes('is_part_list_available'),
+      part_name: tableColumns.includes('part_name'),
+      product_name: tableColumns.includes('product_name'),
+      supplier_name: tableColumns.includes('supplier_name'),
+      quantity_in_piece: tableColumns.includes('quantity_in_piece'),
+      broken_quantity_in_piece: tableColumns.includes('broken_quantity_in_piece'),
+      quantity_in_box: tableColumns.includes('quantity_in_box'),
     };
     setDisplayOptions(initOptions);
   }, [tableColumns, selectedFolder]);
@@ -414,6 +423,11 @@ export default function GeneralTable(props) {
         detailDocument = await getDetailSupplier(selectedDocument.id, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, supplierDocument: true });
+        break;
+      case 'materialInventory':
+        detailDocument = await getDetailInventory(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, materialInventoryDocument: true });
         break;
       default:
         break;
@@ -847,6 +861,44 @@ export default function GeneralTable(props) {
                                   {row.title}
                                 </TableCell>
                               )}
+                              {displayOptions.part_name && (
+                                <TableCell
+                                  style={{ maxWidth: 450, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.part_name || row.title}
+                                </TableCell>
+                              )}
+                              {displayOptions.product_name && (
+                                <TableCell
+                                  style={{ maxWidth: 450, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.product_name || row.title}
+                                </TableCell>
+                              )}
+                              {displayOptions.customer_name && (
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.customer_name || row.title}
+                                </TableCell>
+                              )}
+                              {displayOptions.supplier_name && (
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.supplier_name || row.title}
+                                </TableCell>
+                              )}
                               {displayOptions.category_name && (
                                 <TableCell
                                   style={{ maxWidth: 450, overflow: 'hidden', textOverflow: 'ellipsis' }}
@@ -857,7 +909,7 @@ export default function GeneralTable(props) {
                                   {row.category_name}
                                 </TableCell>
                               )}
-                              {displayOptions.customer_name && <TableCell align="left">{row.customer_name}</TableCell>}
+                              {/* {displayOptions.customer_name && <TableCell align="left">{row.customer_name}</TableCell>} */}
                               {displayOptions.product_customer_code && (
                                 <TableCell align="left">{row.product_customer_code}</TableCell>
                               )}
@@ -928,6 +980,15 @@ export default function GeneralTable(props) {
                                   </>
                                 </TableCell>
                               )}
+                              {displayOptions.is_part_list_available && (
+                                <TableCell align="left">
+                                  {row.is_part_list_available ? (
+                                    <Chip label="Có" color="primary" />
+                                  ) : (
+                                    <Chip label="Không" color="secondary" />
+                                  )}
+                                </TableCell>
+                              )}
                               {displayOptions.approval_role && (
                                 <TableCell align="left">
                                   <>
@@ -938,7 +999,15 @@ export default function GeneralTable(props) {
                                 </TableCell>
                               )}
                               {displayOptions.amount && <TableCell align="left">{row.amount || ''}</TableCell>}
-
+                              {displayOptions.quantity_in_piece && (
+                                <TableCell align="left">{row.quantity_in_piece}</TableCell>
+                              )}
+                              {displayOptions.quantity_in_box && (
+                                <TableCell align="left">{row.quantity_in_box}</TableCell>
+                              )}
+                              {displayOptions.broken_quantity_in_piece && (
+                                <TableCell align="left">{row.broken_quantity_in_piece}</TableCell>
+                              )}
                               {displayOptions.created_by && <TableCell align="left">{row.created_by || ''}</TableCell>}
                               {displayOptions.created_date && (
                                 <TableCell align="left">
