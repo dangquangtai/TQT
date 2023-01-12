@@ -66,7 +66,7 @@ const InventoryModal = () => {
   const dispatch = useDispatch();
 
   const { form_buttons: formButtons } = useView();
-  const buttonSave = formButtons.find((button) => button.name === view.Inventory.detail.save);
+  // const buttonSave = formButtons.find((button) => button.name === view.inventory.detail.save);
   const { materialInventoryDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
   const [tabIndex, setTabIndex] = React.useState(0);
@@ -361,11 +361,11 @@ const InventoryModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
-                {selectedDocument?.id && buttonSave && (
+                {/* {selectedDocument?.id && buttonSave && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmit}>
                     {buttonSave.text}
                   </Button>
-                )}
+                )} */}
               </Grid>
             </Grid>
           </DialogActions>

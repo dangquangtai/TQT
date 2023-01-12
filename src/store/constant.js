@@ -163,6 +163,17 @@ export const apiEndpoints = {
   // Material Inventory
   get_material_inventory_list: '/Primary/?FlowAlias=bs_api_factory_get_material_inventory_list&action=api',
   get_material_inventory_detail: '/Primary/?FlowAlias=bs_api_factory_get_material_inventory_detail&action=api',
+
+  // Material Inventory Check
+  get_material_inventory_check_list: '/Primary/?FlowAlias=bs_api_factory_get_material_inventory_check_list&action=api',
+  get_material_inventory_check_detail:
+    '/Primary/?FlowAlias=bs_api_factory_get_material_inventory_check_detail&action=api',
+  create_material_inventory_check: '/Primary/?FlowAlias=bs_api_factory_create_material_inventory_check&action=api',
+  update_material_inventory_check: '/Primary/?FlowAlias=bs_api_factory_update_material_inventory_check&action=api',
+  get_more_inventory_check: '/Primary/?FlowAlias=bs_api_factory_get_inventory_check_more&action=api',
+  import_material_inventory_check: '/Primary/?FlowAlias=bs_api_factory_import_material_inventory_check&action=api',
+  apply_material_inventory_check: '/Primary/?FlowAlias=bs_api_factory_apply_material_inventory_check&action=api',
+  remove_material_inventory_check: '/Primary/?FlowAlias=bs_api_factory_remove_material_inventory_check&action=api',
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
@@ -222,6 +233,9 @@ export const warehouseActions = {
 };
 export const materialInventoryActions = {
   list_material_inventory: 'TQT_MATERIAL_DEFAULT_OPEN_INVENTORY_LIST',
+};
+export const materialInventoryCheckActions = {
+  list_material_inventory_check: 'TQT_MATERIAL_DEFAULT_OPEN_MATERIAL_INVENTORY_CHECK',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -355,6 +369,17 @@ export const view = {
     },
     detail: {
       save: 'TQT_SETTING_DEFAULT_MATERIALWHS_SAVE_FORM_BUTTON',
+    },
+  },
+  materialInventoryCheck: {
+    list: {
+      create: 'TQT_MATERIAL_DEFAULT_MATERIAL_INVENTORY_CHECK_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_MATERIAL_DEFAULT_MATERIAL_INVENTORY_CHECK_SAVE_FORM_BUTTON',
+      import: 'TQT_MATERIAL_DEFAULT_INVENTORY_CHECK_IMPORT_FORM_BUTTON',
+      apply: 'TQT_MATERIAL_DEFAULT_INVENTORY_CHECK_APPLY_FORM_BUTTON',
+      remove: 'TQT_MATERIAL_DEFAULT_INVENTORY_CHECK_REMOVE_FORM_BUTTON',
     },
   },
 };
