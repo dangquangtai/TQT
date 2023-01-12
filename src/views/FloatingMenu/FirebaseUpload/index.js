@@ -73,6 +73,9 @@ export default function FirebaseUpload(props) {
       case 'pdf':
         setFileType('.pdf');
         break;
+      case 'excel':
+        setFileType('.xls,.xlsx');
+        break;
       case 'zip':
         setFileType('.zip,.rar');
         break;
