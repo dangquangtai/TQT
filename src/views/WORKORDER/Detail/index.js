@@ -27,7 +27,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useRef } from 'react';
 import PropTypes from 'prop-types';
 import useStyles from './classes.js';
-import { FLOATING_MENU_CHANGE, ORDER_DETAIL_CHANGE, DOCUMENT_CHANGE, MATERIAL_CHANGE ,ORDER_CHANGE } from '../../../store/actions.js';
+import { FLOATING_MENU_CHANGE, ORDER_DETAIL_CHANGE, DOCUMENT_CHANGE, MATERIAL_CHANGE, ORDER_CHANGE } from '../../../store/actions.js';
 import { SkipNext, SkipPrevious } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { month, weekday } from './../data';
@@ -233,6 +233,8 @@ const WorkorderModal = () => {
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
+    dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
+    dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null});
     dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'workorder' });
     dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: false, documentType: 'workorder' });
   };
@@ -249,13 +251,27 @@ const WorkorderModal = () => {
       text: text,
     });
   };
-  const handleCreateWorkOrder = async () => {
+  const handleCreateWorkOrder = async (popup, getdate, button) => {
     try {
       if (productionDailyRequestList.length < 2) {
         handleOpenSnackbar(true, 'fail', 'Số ngày kế hoạch không ther < 2 !');
       } else {
-        let WorkOrderID = workorder?.id || ''
-         if (!!workorder.id || checkChangeData.changeWorkOrder) {
+        let WorkOrderID = workorder.id;
+        if ((workorder.id === '')) {
+          WorkOrderID = await createWorkorOrder({
+            workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
+            id: '',
+            to_date: workorder.to_date,
+            from_date: workorder.from_date,
+            title: workorder.title,
+            order_code: workorder.order_code,
+            status_code: workorder.status_code,
+          });
+          setWorkorder({ ...workorder, id: WorkOrderID })
+
+        }
+        else if (checkChangeData.changeWorkOrder) {
+
           updateWorkorOrder({
             workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
             id: WorkOrderID,
@@ -265,24 +281,22 @@ const WorkorderModal = () => {
             order_code: workorder.order_code,
             status_code: workorder.status_code,
           });
-         }
-          else {
-            WorkOrderID= await createWorkorOrder({
-              workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
-              id: '',
-              to_date: workorder.to_date,
-              from_date: workorder.from_date,
-              title: workorder.title,
-              order_code: workorder.order_code,
-              status_code: workorder.status_code,
-            });
-           
-            setWorkorder({...workorder, id: WorkOrderID})
+
+        }
+        if (popup || button) {
+          if ((workorder.id === '')) {
+            handleOpenSnackbar(true, 'success', 'Tạo mới thành công!');
           }
-        let IdWorkorderRequest = !!productionDailyRequestList[indexDate].id ? productionDailyRequestList[indexDate].id : '';
-        if (checkChangeData.changeWorkOrderRequest && productList.length>0){
-            
-            IdWorkorderRequest = await createWorkOrderRequest({
+          else {
+            handleOpenSnackbar(true, 'success', 'Cập nhật thành công!');
+          }
+
+        }
+
+        let IdWorkorderRequest = workorderRequest.id;
+
+        if (checkChangeData.changeWorkOrderRequest || workorder.id === '' || (IdWorkorderRequest === '' && productList.length > 0)) {
+          IdWorkorderRequest = await createWorkOrderRequest({
             number_of_worker: workorderRequest.number_of_worker,
             number_of_working_hour: workorderRequest.number_of_working_hour,
             status: workorder.status_code,
@@ -292,25 +306,25 @@ const WorkorderModal = () => {
             work_order_date: currentDate,
             id: workorderRequest.id,
           })
-        
+          productionDailyRequestList[indexDate].id = IdWorkorderRequest
         }
-          
-        if (checkChangeData.changeWorkOrderDaily){
-          let productListFilter = productList.filter(x=>x.product_id!='')
-          if(productListFilter.length>0)
-          await createWorkOrderDetailList({
-            product_list: productListFilter,
-            status_code: workorder.status_code,
-            work_order_id: WorkOrderID,
-            daily_work_order_id: IdWorkorderRequest,
-          });
+        if (checkChangeData.changeWorkOrderDaily) {
+          let productListFilter = productList.filter(x => x.product_id != '')
+          if (productListFilter.length > 0)
+            await createWorkOrderDetailList({
+              product_list: productListFilter,
+              status_code: workorder.status_code,
+              work_order_id: WorkOrderID,
+              daily_work_order_id: IdWorkorderRequest,
+            });
         }
-          
+
 
         setCheckChangeData({ changeWorkOrder: false, changeWorkOrderDaily: false, changeWorkOrderRequest: false })
-        handleOpenSnackbar(true, 'success', 'Cập nhật thành công!');
-        return handleGetWorkOrderRequest(IdWorkorderRequest)
-       
+
+        if (getdate)
+          return handleGetWorkOrderRequest(IdWorkorderRequest)
+
       }
 
 
@@ -341,23 +355,25 @@ const WorkorderModal = () => {
   };
   const handleUpdateWorkOrder = async (product, index) => {
     try {
-      
-        let product_list = await handleCreateWorkOrder();
+      if (workorder.id==='')  {
+        dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
+       dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null});
+      }
+      let product_list = await handleCreateWorkOrder(false, true);
+      dataMaterial = await getMaterialDaily(product_list[index].id);
+      dispatch({
+        type: MATERIAL_CHANGE,
+        workorderDetail: {
+          ...product_list[index],
+          part_list: [...product_list[index].part_list],
+          work_order_id: workorder.id,
+          order_date: productionDailyRequestList[indexDate].work_order_date,
+          daily_work_order_id: productionDailyRequestList[indexDate].id,
+          supplierList: [...dataMaterial],
+        },
+      });
+      popupWindow(`/dashboard/workorder/material`, `Vật tư`, 400);
 
-        dataMaterial = await getMaterialDaily(product_list[index].id);
-        dispatch({
-          type: MATERIAL_CHANGE,
-          workorderDetail: {
-            ...product_list[index],
-            part_list: [...product_list[index].part_list],
-            work_order_id: workorder.id,
-            order_date: productionDailyRequestList[indexDate].work_order_date,
-            daily_work_order_id: productionDailyRequestList[indexDate].id,
-            supplierList: [...dataMaterial],
-          },
-        });
-        popupWindow(`/dashboard/workorder/material`, `Vật tư`, 400);
-      
     } catch { }
   };
   const handleChangeStatus = (e) => {
@@ -369,38 +385,39 @@ const WorkorderModal = () => {
   };
 
   const handleChange = (e) => {
-    setCheckChangeData({ ...checkChangeData, changeWorkOrder: true })
     const value = e.target.value;
     let from_date = workorder.from_date;
     let to_date = workorder.to_date;
-    setWorkorder(pre => ({
-      ...pre,
-      [e.target.name]: value,
-    }));
-    updateDataDailyRequest(productList);
     if (e.target.name === 'to_date') {
       if (workorder.from_date < value) {
-        handleSetDate(workorder.from_date, e.target.value);
-      } else {
+        setCheckChangeData({ ...checkChangeData, changeWorkOrder: true })
         setWorkorder({
           ...workorder,
-          to_date: to_date,
+          to_date: value,
           from_date: from_date,
         });
       }
     } else if (e.target.name === 'from_date') {
       if (value < workorder.to_date) {
-        handleSetDate(e.target.value, workorder.to_date);
-      } else {
+        setCheckChangeData({ ...checkChangeData, changeWorkOrder: true })
         setWorkorder({
           ...workorder,
           to_date: to_date,
-          from_date: from_date,
+          from_date: value,
         });
       }
+    } else {
+      setCheckChangeData({ ...checkChangeData, changeWorkOrder: true })
+      setWorkorder(pre => ({
+        ...pre,
+        [e.target.name]: value,
+      }));
     }
+    updateDataDailyRequest(productList);
+
   };
   const handleChangeHours = (e) => {
+
     const value = e.target.value;
     setCheckChangeData({ ...checkChangeData, changeWorkOrderRequest: true })
     if (e.target.name == 'number_of_worker') {
@@ -408,7 +425,7 @@ const WorkorderModal = () => {
     } else {
       workorderRequest.number_of_working_hour = value;
     }
-    setProductionDailyRequest([...productionDailyRequestList]);
+
   };
   const handleChangeNumber = (e, index) => {
     setCheckChangeData({ ...checkChangeData, changeWorkOrderDaily: true })
@@ -416,7 +433,7 @@ const WorkorderModal = () => {
     console.log(value)
     try {
       let orderDetail = order?.orderDetail;
-      orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_produced +=value - productList[index].quantity_in_box;
+      orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_produced += value - productList[index].quantity_in_box;
 
       dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
     } catch { }
@@ -457,72 +474,38 @@ const WorkorderModal = () => {
   };
 
   const handleGetWorkOrderRequest = async (id) => {
-    let productListApi=id;
-    if (!id){
+    let productListApi = id;
+    if (id === '') {
       setProductList([]);
-        setWorkorderRequest({...workorderRequest,
-          id: '',
-          number_of_worker: 0,
-          number_of_working_hour: 0,
-        });
-        setCheckChangeData({...checkChangeData,changeWorkOrderRequest:true})
-    }else {
+      setWorkorderRequest({
+        ...workorderRequest,
+        id: '',
+        number_of_worker: 0,
+        number_of_working_hour: 0,
+      });
+      setCheckChangeData({ ...checkChangeData, changeWorkOrderRequest: true })
+    } else {
       productListApi = await getWorkOrderRequest(id);
       setProductList(productListApi.work_order_detail);
       setWorkorderRequest({ ...productListApi.work_order_request });
-      if (productListApi.work_order_detail[0]?.customer_order_id !='')
-        if(productListApi.work_order_detail.length>0)
-        dispatch({
-          type: ORDER_CHANGE,
-          order: {  id: productListApi.work_order_detail[0]?.customer_order_id, change: true, work_order_id: workorder.id, workorderDetail: orderRedux.workorderDetail,}
-        });
-     
-      
+      if (productListApi.work_order_detail[0]?.customer_order_id != '')
+        if (productListApi.work_order_detail.length > 0)
+          dispatch({
+            type: ORDER_CHANGE,
+            order: { id: productListApi.work_order_detail[0]?.customer_order_id, change: true, work_order_id: workorder.id, workorderDetail: orderRedux.workorderDetail, }
+          });
+
+
     }
     return productListApi.work_order_detail
   }
 
   const handleChangeDate = async (date, index) => {
+    handleCreateWorkOrder(false, false)
     productionDailyRequestList[indexDate].percent = calculateTotalPercentList(productList, workorderRequest.number_of_worker, workorderRequest.number_of_working_hour)
     setCurrentDate(date);
     setIndexDate(index);
-    let IdWorkorderRequest = !!productionDailyRequestList[indexDate].id ? productionDailyRequestList[indexDate].id : '';
-    if (checkChangeData.changeWorkOrderRequest && productList.length>0){
-      IdWorkorderRequest = await createWorkOrderRequest({
-        number_of_worker: workorderRequest.number_of_worker,
-        number_of_working_hour: workorderRequest.number_of_working_hour,
-        status: workorder.status_code,
-        work_order_id: workorder.id,
-        order_code: workorder.order_code,
-        order_title: workorder.title,
-        work_order_date: currentDate,
-        id: workorderRequest.id,
-      })
-      productionDailyRequestList[indexDate].id=IdWorkorderRequest
-     
-    }
-      
-    if (checkChangeData.changeWorkOrderDaily){
-      let productListFilter = productList.filter(x=>x.product_id!='')
-      if(productListFilter.length>0)
-          await createWorkOrderDetailList({
-            product_list: productListFilter,
-            status_code: workorder.status_code,
-            work_order_id: workorder.id,
-            daily_work_order_id: IdWorkorderRequest,
-          });
-    }
-      
-    setCheckChangeData({ changeWorkOrder: false, changeWorkOrderDaily: false, changeWorkOrderRequest: false })
-    if (!productionDailyRequestList[index].id) {
-      setCheckChangeData({ ...checkChangeData, changeWorkOrderRequest: true })
-      setProductList([])
-      setWorkorderRequest({ ...workorderRequest, work_order_date: productionDailyRequestList[index].work_order_date, id: '' })
-    } else {
-      handleGetWorkOrderRequest(productionDailyRequestList[index].id)
-
-    }
-
+    handleGetWorkOrderRequest(productionDailyRequestList[index].id)
   };
 
   const updateDataDailyRequest = (product_List) => {
@@ -533,12 +516,17 @@ const WorkorderModal = () => {
     setIndexDate(0);
     setCurrentWeek(0);
     setWorkorder({ title: '', status: '', order_id: '', to_date: '', from_date: '' });
+    setWorkorderRequest({})
     setProductList([]);
     setProductionDailyRequest([]);
     setTabIndex(0);
   };
 
   const popupWindow = (url, title) => {
+    if (workorder.id===''){
+      dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
+      dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null});
+    }
     var width = window.outerWidth ? window.outerWidth : document.documentElement.clientWidth;
     var height = window.outerHeight ? window.outerHeight : document.documentElement.clientHeight;
     var w = width * 0.9;
@@ -614,7 +602,7 @@ const WorkorderModal = () => {
       } else {
         to_date = date.getFullYear() + '-' + month[date.getMonth()] + '-' + date.getDate();
       }
-      status_code = productionStatus[0]?.id|| '';
+      status_code = productionStatus[0]?.id || '';
     } else {
       to_date = selectedDocument.to_date;
       from_date = selectedDocument.from_date;
@@ -633,7 +621,7 @@ const WorkorderModal = () => {
     });
     var date = [];
     if (to_date !== '' && from_date !== '') {
-    
+
       for (var d = new Date(from_date); d <= new Date(to_date); d.setDate(d.getDate() + 1)) {
         const day = d.getFullYear() + '-' + month[d.getMonth()] + '-' + d.getDate();
         if (!selectedDocument) {
@@ -647,8 +635,8 @@ const WorkorderModal = () => {
           ];
         } else {
           let percent = 0;
-          let index = selectedDocument.production_daily_request.findIndex(obj => toJSONLocal(new Date(obj.work_order_date))=== toJSONLocal(new Date(day)))
-          console.log(index)
+          let index = selectedDocument.production_daily_request.findIndex(obj => toJSONLocal(new Date(obj.work_order_date)) === toJSONLocal(new Date(day)))
+
           try {
             percent = calculateTotalPercentList(
               selectedDocument.production_daily_request[index].product_list,
@@ -658,7 +646,7 @@ const WorkorderModal = () => {
           } catch {
 
           }
-          if (index>-1){
+          if (index > -1) {
             date = [
               ...date,
               {
@@ -678,14 +666,14 @@ const WorkorderModal = () => {
               },
             ];
           }
-        
-         
+
+
         }
       }
       setProductionDailyRequest(date);
       setStart(0);
       setCurrentDate(date[0].work_order_date);
-     
+
       if (date.length > 7) {
         setEnd(7);
       } else if (date.length > 0) {
@@ -701,14 +689,14 @@ const WorkorderModal = () => {
         }
         setDateListNull(datenull);
       }
-   
-        handleGetWorkOrderRequest(date[0].id)
-      
-     
+      handleGetWorkOrderRequest(date[0].id)
+
+
     }
   };
 
-  const handleSetDate =async (from_date, to_date) => {
+  const handleSetDate = async (from_date, to_date) => {
+    handleCreateWorkOrder(true, true)
     let date = [];
     if (to_date !== '' && from_date !== '') {
       for (var d = new Date(from_date); d <= new Date(to_date); d.setDate(d.getDate() + 1)) {
@@ -749,7 +737,7 @@ const WorkorderModal = () => {
       setStart(0);
       setCurrentDate(date[0].work_order_date);
       setProductionDailyRequest([...date]);
-      setWorkorderRequest({...workorderRequest,work_order_date:date[0].work_order_date })
+      setWorkorderRequest({ ...workorderRequest, work_order_date: date[0].work_order_date })
       if (date.length > 7) {
         setEnd(7);
       } else if (date.length > 0) {
@@ -765,35 +753,6 @@ const WorkorderModal = () => {
         }
         setDateListNull(datenull);
       }
-      let WorkOrderID = workorder.id;
-      console.log("id",workorder.id)
-       if (!WorkOrderID) {
-        WorkOrderID= await createWorkorOrder({
-          workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
-          id: '',
-          to_date: to_date,
-          from_date: from_date,
-          title: workorder.title,
-          order_code: workorder.order_code,
-          status_code: workorder.status_code,
-        });
-
-        setWorkorder({...workorder, id: WorkOrderID})
-       }
-       
-        else {
-         
-          updateWorkorOrder({
-            workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
-            id: WorkOrderID,
-            to_date: to_date,
-            from_date: from_date,
-            title: workorder.title,
-            order_code: workorder.order_code,
-            status_code: workorder.status_code,
-          });
-        }
-    
     }
   };
   const handleRenderTableRow = (item, index) => {
@@ -870,9 +829,9 @@ const WorkorderModal = () => {
     fetchStatus();
   }, []);
   useEffect(() => {
-    
+
     if (orderReduxWork?.workorderDetail?.data === 1) {
-     
+
       handleGetWorkOrderRequest(productionDailyRequestList[indexDate].id)
     }
   }, [orderReduxWork.workorderDetail]);
@@ -880,7 +839,10 @@ const WorkorderModal = () => {
   useEffect(() => {
     handleSetProduct();
   }, [selectedDocument]);
-
+  useEffect(() => {
+    if (checkChangeData.changeWorkOrder)
+      handleSetDate(workorder.from_date, workorder.to_date);
+  }, [workorder.from_date, workorder.to_date]);
   return (
     <React.Fragment>
       {snackbarStatus.isOpen && (
@@ -1246,7 +1208,7 @@ const WorkorderModal = () => {
                       <Button
                         variant="contained"
                         style={{ background: 'rgb(97, 42, 255)' }}
-                        onClick={() => handleCreateWorkOrder()}
+                        onClick={() => handleCreateWorkOrder(true, true, true)}
                       >
                         {'Tạo mới'}
                       </Button>
@@ -1263,7 +1225,7 @@ const WorkorderModal = () => {
                         <Button
                           variant="contained"
                           style={{ background: 'rgb(97, 42, 255)' }}
-                          onClick={() => handleCreateWorkOrder()}
+                          onClick={() => handleCreateWorkOrder(true, true, true)}
                         >
                           Lưu
                         </Button>

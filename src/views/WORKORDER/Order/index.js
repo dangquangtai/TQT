@@ -23,7 +23,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import useStyles from './../../../utils/classes';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import { ORDER_CHANGE } from './../../../store/actions';
+import { ORDER_CHANGE, ORDER_DETAIL_CHANGE } from './../../../store/actions';
 import { getOrderCompletedList, getOrderProductDetail, getDetailOrderByWorkOrder } from '../../../services/api/Order/index.js';
 import { testAPI } from '../../../services/api/Workorder';
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -108,6 +108,7 @@ const OrderModal = () => {
 
   const handleClose = () => {
     dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
+    dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null});
     window.opener = null;
     window.open('', '_self');
     window.close();
@@ -125,7 +126,13 @@ const OrderModal = () => {
       }
       
     };
+      
     fetchData();
+    // window.addEventListener("beforeunload", function (e) {
+    //   dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
+    //   dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null});
+    //   return undefined;
+    // });
   }, []);
   useEffect(() => {
     if (!orderList || orderList.length===0) return;
