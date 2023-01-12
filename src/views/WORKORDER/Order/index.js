@@ -24,7 +24,11 @@ import { Autocomplete } from '@material-ui/lab';
 import useStyles from './../../../utils/classes';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { ORDER_CHANGE, ORDER_DETAIL_CHANGE } from './../../../store/actions';
-import { getOrderCompletedList, getOrderProductDetail, getDetailOrderByWorkOrder } from '../../../services/api/Order/index.js';
+import {
+  getOrderCompletedList,
+  getOrderProductDetail,
+  getDetailOrderByWorkOrder,
+} from '../../../services/api/Order/index.js';
 import { testAPI } from '../../../services/api/Workorder';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="bottom" ref={ref} {...props} />;
@@ -34,7 +38,7 @@ const OrderModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { order: orderRedux } = useSelector((state) => state.order);
- 
+
   const [order, setOrder] = useState({
     id: '',
     value: '',
@@ -51,15 +55,15 @@ const OrderModal = () => {
     const orderDetail = await getOrderProductDetail(value.id);
     setOrderSelected(value);
     if (value) {
-      setOrder({ ...value, order_code: orderDetail.order_code, ...orderDetail });
+      setOrder({ ...value, order_code: orderDetail?.order_code, ...orderDetail });
       dispatch({
         type: ORDER_CHANGE,
-        order: { ...value, order_code: orderDetail.order_code, change: false },
+        order: { ...value, order_code: orderDetail?.order_code, change: false },
         orderDetail: orderDetail.order_detail,
       });
       setOrderDetail(orderDetail.order_detail);
     } else {
-      dispatch({ type: ORDER_CHANGE, order: null, orderDetail: orderDetail});
+      dispatch({ type: ORDER_CHANGE, order: null, orderDetail: orderDetail });
       setOrder({
         id: '',
         title: '',
@@ -69,27 +73,31 @@ const OrderModal = () => {
       });
       setOrderDetail(orderDetail);
     }
-   
   };
-  const handleOrderChangeSelected = async ( value) => {
-    var orderDetailList={};
-    if (orderRedux?.work_order_id!=''){
-       orderDetailList = await getDetailOrderByWorkOrder(value.id, orderRedux.work_order_id);
+  const handleOrderChangeSelected = async (value) => {
+    var orderDetailList = {};
+    if (orderRedux?.work_order_id != '') {
+      orderDetailList = await getDetailOrderByWorkOrder(value.id, orderRedux.work_order_id);
     } else {
-       orderDetailList = await getOrderProductDetail(value.id);
+      orderDetailList = await getOrderProductDetail(value.id);
     }
     setOrderSelected(value);
     if (value) {
-      setOrder({ ...value, order_code: orderDetailList.order_code, ...orderDetailList });
+      setOrder({ ...value, order_code: orderDetailList?.order_code, ...orderDetailList });
       dispatch({
         type: ORDER_CHANGE,
-        order: { ...value, order_code: orderDetailList.order_code, change: false , work_order_id: ''},
-        orderDetail: orderDetailList.order_detail,
-        workorderDetail: orderRedux.workorderDetail
+        order: { ...value, order_code: orderDetailList?.order_code, change: false, work_order_id: '' },
+        orderDetail: orderDetailList?.order_detail,
+        workorderDetail: orderRedux.workorderDetail,
       });
-      setOrderDetail(orderDetailList.order_detail);
+      setOrderDetail(orderDetailList?.order_detail);
     } else {
-      dispatch({ type: ORDER_CHANGE, order: null, orderDetail: orderDetailList, workorderDetail: orderRedux.workorderDetail });
+      dispatch({
+        type: ORDER_CHANGE,
+        order: null,
+        orderDetail: orderDetailList,
+        workorderDetail: orderRedux.workorderDetail,
+      });
       setOrder({
         id: '',
         title: '',
@@ -108,7 +116,7 @@ const OrderModal = () => {
 
   const handleClose = () => {
     dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
-    dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null});
+    dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null });
     window.opener = null;
     window.open('', '_self');
     window.close();
@@ -119,14 +127,12 @@ const OrderModal = () => {
       try {
         let data = await getOrderCompletedList();
         setOrderList(data);
-      
       } catch (error) {
         let data = await getOrderCompletedList();
         setOrderList(data);
       }
-      
     };
-      
+
     fetchData();
     // window.addEventListener("beforeunload", function (e) {
     //   dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
@@ -135,23 +141,23 @@ const OrderModal = () => {
     // });
   }, []);
   useEffect(() => {
-    if (!orderList || orderList.length===0) return;
+    if (!orderList || orderList.length === 0) return;
     if (!orderRedux) return;
     if (!orderRedux.id) return;
-        let value = orderList.find(x=>x.id === orderRedux.id)
-        handleOrderChangeSelected({...value,work_order_id:''})
+    let value = orderList.find((x) => x.id === orderRedux.id);
+    handleOrderChangeSelected({ ...value, work_order_id: '' });
   }, [orderList]);
   useEffect(() => {
-    if (!orderRedux.orderDetail){
+    if (!orderRedux.orderDetail) {
       if (orderRedux?.change) {
-        var orderInList = orderList.find((x) => x.id === orderRedux.id)
-        if (!orderInList) return
-        handleOrderChangeSelected(orderInList)  }
-        return;
-    } 
-      setOrderDetail(orderRedux.orderDetail)
+        var orderInList = orderList.find((x) => x.id === orderRedux.id);
+        if (!orderInList) return;
+        handleOrderChangeSelected(orderInList);
+      }
+      return;
+    }
+    setOrderDetail(orderRedux.orderDetail);
   }, [orderRedux]);
-
 
   return (
     <React.Fragment>
@@ -286,7 +292,7 @@ const OrderModal = () => {
                                     </TableRow>
                                   </TableHead>
                                   <TableBody>
-                                    {orderDetail.map((item, index) => (
+                                    {orderDetail?.map((item, index) => (
                                       <TableRow key={index}>
                                         <TableCell align="left">{index + 1}</TableCell>
                                         <TableCell align="left">{item.product_code}</TableCell>
