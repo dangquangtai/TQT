@@ -156,6 +156,7 @@ export default function AlertDialogSlide() {
     fetchData(index)
   };
   const handleCheck = (item) => {
+    console.log(item,'check')
     if (item.Quantity_In_Piece === 0 || item.Is_Enough)
       return <Typography style={{ backgroundColor: 'rgb(48, 188, 65)' }}>
         {item.Quantity_In_Piece 
@@ -179,7 +180,6 @@ export default function AlertDialogSlide() {
     const detailData=[]
     orderRedux.workorderDetail.part_list.forEach(element=>{
       detailData.push({...element,check:0});
- 
     })
     setSupplierList([])
     var newSupplierList = [];
@@ -210,6 +210,7 @@ export default function AlertDialogSlide() {
    
     setSupplierListAll([...newSupplierList])
     setDetail({...orderRedux.workorderDetail, part_list: [...detailData]});
+   
   }, [orderRedux.workorderDetail])
   
 
@@ -246,14 +247,18 @@ export default function AlertDialogSlide() {
                   <Table size="small">
                     <TableHead >
                       <TableRow>
-                        <TableCell>Mã TP</TableCell>
                         <TableCell>Mã TP của TQT</TableCell>
+                        <TableCell>Mã TP của KH</TableCell>
+                        <TableCell>Tên TP</TableCell>
                         <TableCell>Số lượng</TableCell>
                         <TableCell>Đơn vị</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableCell  >
+                          {detail.product_code}
+                        </TableCell>
                         <TableCell  >
                           {detail.product_customer_code}
                         </TableCell>
@@ -287,7 +292,7 @@ export default function AlertDialogSlide() {
                   <Table size="small">
                     <TableHead >
                       <TableRow>
-                        <TableCell>Mã </TableCell>
+                        <TableCell>Mã vật tư</TableCell>
                         <TableCell>Tên </TableCell>
                         <TableCell>Nhóm </TableCell>
                         <TableCell>Số lượng</TableCell>

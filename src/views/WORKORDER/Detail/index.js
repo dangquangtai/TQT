@@ -102,8 +102,8 @@ const WorkorderModal = () => {
   const [workorderRequest, setWorkorderRequest] = useState({
     id: '',
     work_order_date: '',
-    number_of_worker: 0,
-    number_of_working_hour: 0,
+    number_of_worker: 20,
+    number_of_working_hour: 8,
   });
   const [workorder, setWorkorder] = useState({
     status_code: '',
@@ -294,30 +294,33 @@ const WorkorderModal = () => {
         }
 
         let IdWorkorderRequest = workorderRequest.id;
-
-        if (checkChangeData.changeWorkOrderRequest || workorder.id === '' || (IdWorkorderRequest === '' && productList.length > 0)) {
-          IdWorkorderRequest = await createWorkOrderRequest({
-            number_of_worker: workorderRequest.number_of_worker,
-            number_of_working_hour: workorderRequest.number_of_working_hour,
-            status: workorder.status_code,
-            work_order_id: WorkOrderID,
-            order_code: workorder.order_code,
-            order_title: workorder.title,
-            work_order_date: currentDate,
-            id: workorderRequest.id,
-          })
-          productionDailyRequestList[indexDate].id = IdWorkorderRequest
-        }
-        if (checkChangeData.changeWorkOrderDaily) {
-          let productListFilter = productList.filter(x => x.product_id != '')
-          if (productListFilter.length > 0)
-            await createWorkOrderDetailList({
-              product_list: productListFilter,
-              status_code: workorder.status_code,
+        if((new Date(currentDate)>= new Date(workorder.from_date)) && (new Date(currentDate)<= new Date(workorder.to_date)))
+        {
+          if (checkChangeData.changeWorkOrderRequest || workorder.id === '' || (IdWorkorderRequest === '' && productList.length > 0)) {
+            IdWorkorderRequest = await createWorkOrderRequest({
+              number_of_worker: workorderRequest?.number_of_worker||20,
+              number_of_working_hour: workorderRequest?.number_of_working_hour||8,
+              status: workorder.status_code,
               work_order_id: WorkOrderID,
-              daily_work_order_id: IdWorkorderRequest,
-            });
+              order_code: workorder.order_code,
+              order_title: workorder.title,
+              work_order_date: currentDate,
+              id: workorderRequest.id,
+            })
+            productionDailyRequestList[indexDate].id = IdWorkorderRequest
+          }
+          if (checkChangeData.changeWorkOrderDaily) {
+            let productListFilter = productList.filter(x => x.product_id != '')
+            if (productListFilter.length > 0)
+              await createWorkOrderDetailList({
+                product_list: productListFilter,
+                status_code: workorder.status_code,
+                work_order_id: WorkOrderID,
+                daily_work_order_id: IdWorkorderRequest,
+              });
+          }
         }
+       
 
 
         setCheckChangeData({ changeWorkOrder: false, changeWorkOrderDaily: false, changeWorkOrderRequest: false })
@@ -372,7 +375,7 @@ const WorkorderModal = () => {
           supplierList: [...dataMaterial],
         },
       });
-      popupWindow(`/dashboard/workorder/material`, `Vật tư`, 400);
+      popupWindowFull(`/dashboard/workorder/material`, `Vật tư`, 400);
 
     } catch { }
   };
@@ -479,13 +482,12 @@ const WorkorderModal = () => {
       setProductList([]);
       setWorkorderRequest({
         ...workorderRequest,
-        id: '',
-        number_of_worker: 0,
-        number_of_working_hour: 0,
+        id: ''
       });
       setCheckChangeData({ ...checkChangeData, changeWorkOrderRequest: true })
     } else {
       productListApi = await getWorkOrderRequest(id);
+      console.log(productListApi, "check")
       setProductList(productListApi.work_order_detail);
       setWorkorderRequest({ ...productListApi.work_order_request });
       if (productListApi.work_order_detail[0]?.customer_order_id != '')
@@ -515,6 +517,7 @@ const WorkorderModal = () => {
   const setDocumentToDefault = async () => {
     setIndexDate(0);
     setCurrentWeek(0);
+    setCheckChangeData({changeWorkOrder:false, changeWorkOrderDaily: false, changeWorkOrderRequest: false})
     setWorkorder({ title: '', status: '', order_id: '', to_date: '', from_date: '' });
     setWorkorderRequest({})
     setProductList([]);
@@ -530,6 +533,28 @@ const WorkorderModal = () => {
     var width = window.outerWidth ? window.outerWidth : document.documentElement.clientWidth;
     var height = window.outerHeight ? window.outerHeight : document.documentElement.clientHeight;
     var w = width * 0.9;
+    var h = height * 0.7;
+    var left = width / 2 - w / 2;
+    var top = height / 2 - h / 2;
+    var newWindow = window.open(
+      url,
+      title,
+      'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left
+    );
+    // Puts focus on the newWindow
+    if (window.focus) {
+      newWindow.focus();
+    }
+  };
+
+  const popupWindowFull = (url, title) => {
+    if (workorder.id===''){
+      dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
+      dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null});
+    }
+    var width = window.outerWidth ? window.outerWidth : document.documentElement.clientWidth;
+    var height = window.outerHeight ? window.outerHeight : document.documentElement.clientHeight;
+    var w = width * 1;
     var h = height * 0.7;
     var left = width / 2 - w / 2;
     var top = height / 2 - h / 2;
@@ -610,6 +635,7 @@ const WorkorderModal = () => {
       status_code = selectedDocument.status;
       order_code = selectedDocument.order_code;
     }
+    workorder.id =selectedDocument?.id || ''
     setWorkorder({
       ...workorder,
       to_date: to_date,
@@ -759,7 +785,7 @@ const WorkorderModal = () => {
     return (
       <>
         {' '}
-        <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} hover>
+        <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} hover style={{minWidth: 10, maxWidth:10}}>
           <TableCell align="left">{index + 1}</TableCell>
           <TableCell align="left" style={{ maxWidth: 50, overflow: 'hidden', textOverflow: 'ellipsis' }}>
             <Tooltip title={item.customer_order_code}>
@@ -1039,6 +1065,23 @@ const WorkorderModal = () => {
                                             <TableCell align="center">{''}</TableCell>
                                           ))}
                                         </TableRow>
+                                        <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                          {productionDailyRequestList?.slice(start, end).map((item) => (
+                                            <TableCell component="th" scope="row" align="center">
+                                              <Typography
+                                                style={{backgroundColor: 'yellow' }
+                                                  
+                                                    
+                                                }
+                                              >
+                                                {'Thiếu'}
+                                              </Typography>
+                                            </TableCell>
+                                          ))}
+                                          {dateListNull.map((item) => (
+                                            <TableCell align="center">{''}</TableCell>
+                                          ))}
+                                        </TableRow>
                                       </TableBody>
                                     </Table>
                                   </TableContainer>
@@ -1143,7 +1186,7 @@ const WorkorderModal = () => {
                                   <Table size="small" stickyHeader aria-label="sticky table">
                                     <TableHead>
                                       <TableRow>
-                                        <TableCell>STT</TableCell>
+                                        <TableCell align="left" style={{minWidth: 10, maxWidth:10}}>STT</TableCell>
                                         <TableCell align="left">Mã ĐH</TableCell>
                                         <TableCell align="left">Mã TP của TQT</TableCell>
                                         <TableCell align="left">Mã TP của KH</TableCell>

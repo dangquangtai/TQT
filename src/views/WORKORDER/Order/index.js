@@ -117,6 +117,7 @@ const OrderModal = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        
         let data = await getOrderCompletedList();
         setOrderList(data);
       
@@ -124,6 +125,7 @@ const OrderModal = () => {
         let data = await getOrderCompletedList();
         setOrderList(data);
       }
+      
       
     };
       
@@ -139,14 +141,15 @@ const OrderModal = () => {
     if (!orderRedux) return;
     if (!orderRedux.id) return;
         let value = orderList.find(x=>x.id === orderRedux.id)
-        handleOrderChangeSelected({...value,work_order_id:''})
+        handleOrderChangeSelected(value)
   }, [orderList]);
   useEffect(() => {
     if (!orderRedux.orderDetail){
       if (orderRedux?.change) {
         var orderInList = orderList.find((x) => x.id === orderRedux.id)
         if (!orderInList) return
-        handleOrderChangeSelected(orderInList)  }
+        handleOrderChangeSelected(orderInList)  
+      }
         return;
     } 
       setOrderDetail(orderRedux.orderDetail)
@@ -281,6 +284,7 @@ const OrderModal = () => {
                                       <TableCell align="left">Tên sản phẩm</TableCell>
                                       <TableCell align="left">Số lượng cần SX</TableCell>
                                       <TableCell align="left">Đơn vị</TableCell>
+                                      <TableCell align="left">Số lượng đã lập KH</TableCell>
                                       <TableCell align="left">Số lượng đã SX</TableCell>
                                       <TableCell align="left">Số lượng còn lại</TableCell>
                                     </TableRow>
@@ -292,8 +296,10 @@ const OrderModal = () => {
                                         <TableCell align="left">{item.product_code}</TableCell>
                                         <TableCell align="left">{item.product_customer_code}</TableCell>
                                         <TableCell align="left">{item.product_name}</TableCell>
+                                       
                                         <TableCell align="left">{item.quantity_in_box.toLocaleString()}</TableCell>
                                         <TableCell align="left">{item.unit_name}</TableCell>
+                                        <TableCell align="left">{item.quantity_in_box.toLocaleString()}</TableCell>
                                         <TableCell align="left">{item.quantity_produced.toLocaleString()}</TableCell>
                                         <TableCell align="center">
                                           {calculateQuantity(item.quantity_in_box, item.quantity_produced)}
