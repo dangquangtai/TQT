@@ -299,7 +299,7 @@ const OrderModal = () => {
                                        
                                         <TableCell align="left">{item.quantity_in_box.toLocaleString()}</TableCell>
                                         <TableCell align="left">{item.unit_name}</TableCell>
-                                        <TableCell align="left">{item.quantity_in_box.toLocaleString()}</TableCell>
+                                        <TableCell align="left">{item.quantity_in_workorder.toLocaleString()}</TableCell>
                                         <TableCell align="left">{item.quantity_produced.toLocaleString()}</TableCell>
                                         <TableCell align="center">
                                           {calculateQuantity(item.quantity_in_box, item.quantity_produced)}
