@@ -25,6 +25,7 @@ import {
   warehouseCategoryActions,
   materialInventoryActions,
   materialInventoryCheckActions,
+  purchaseMaterialActions,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
 import { Redirect } from 'react-router-dom';
@@ -43,6 +44,7 @@ import SupplierWrapper from './../../Supplier/index';
 import WarehouseCategoryWrapper from './../../Setting/WarehouseCategory/index';
 import MaterialInventoryWrapper from './../../Material/Inventory/index';
 import MaterialInventoryCheckWrapper from './../../Material/InventoryCheck/index';
+import PurchaseMaterialWrapper from './../../Material/Purchase/index';
 
 const Default = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
@@ -69,6 +71,7 @@ const Default = () => {
   const availableWarehouseCategoryEndpoint = Object.values(warehouseCategoryActions);
   const availableMaterialInventoryEndpoint = Object.values(materialInventoryActions);
   const availableMaterialInventoryCheckEndpoint = Object.values(materialInventoryCheckActions);
+  const availablePurchaseMaterialEndpoint = Object.values(purchaseMaterialActions);
 
   if (!selectedApp?.id) {
     return <Redirect to="/dashboard/app" />;
@@ -102,6 +105,7 @@ const Default = () => {
           {availableMaterialInventoryCheckEndpoint.includes(selectedFolder?.action) && (
             <MaterialInventoryCheckWrapper />
           )}
+          {availablePurchaseMaterialEndpoint.includes(selectedFolder?.action) && <PurchaseMaterialWrapper />}
         </Grid>
       )}
     </Grid>

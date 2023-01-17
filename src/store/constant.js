@@ -174,6 +174,18 @@ export const apiEndpoints = {
   import_material_inventory_check: '/Primary/?FlowAlias=bs_api_factory_import_material_inventory_check&action=api',
   apply_material_inventory_check: '/Primary/?FlowAlias=bs_api_factory_apply_material_inventory_check&action=api',
   remove_material_inventory_check: '/Primary/?FlowAlias=bs_api_factory_remove_material_inventory_check&action=api',
+
+  // Purchase Material
+  get_purchase_material_list: '/Primary/?FlowAlias=bs_api_factory_get_purchase_material_list&action=api',
+  get_purchase_material_detail: '/Primary/?FlowAlias=bs_api_factory_get_purchase_material_detail&action=api',
+  create_purchase_material: '/Primary/?FlowAlias=bs_api_factory_create_purchase_material&action=api',
+  update_purchase_material: '/Primary/?FlowAlias=bs_api_factory_update_purchase_material&action=api',
+
+  // Received Material
+  get_received_material_list: '/Primary/?FlowAlias=bs_api_factory_get_received_material_list&action=api',
+  get_received_material_detail: '/Primary/?FlowAlias=bs_api_factory_get_received_material_detail&action=api',
+  create_received_material: '/Primary/?FlowAlias=bs_api_factory_create_received_material&action=api',
+  update_received_material: '/Primary/?FlowAlias=bs_api_factory_update_received_material&action=api',
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
@@ -236,6 +248,12 @@ export const materialInventoryActions = {
 };
 export const materialInventoryCheckActions = {
   list_material_inventory_check: 'TQT_MATERIAL_DEFAULT_OPEN_MATERIAL_INVENTORY_CHECK',
+};
+export const purchaseMaterialActions = {
+  list_purchase_material: 'TQT_MATERIAL_DEFAULT_OPEN_REQUISITION_REQUEST_LIST',
+};
+export const receivedMaterialActions = {
+  list_receive_material: 'TQT_MATERIAL_DEFAULT_OPEN_RECEIVE_REQUEST_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -380,6 +398,22 @@ export const view = {
       import: 'TQT_MATERIAL_DEFAULT_INVENTORY_CHECK_IMPORT_FORM_BUTTON',
       apply: 'TQT_MATERIAL_DEFAULT_INVENTORY_CHECK_APPLY_FORM_BUTTON',
       remove: 'TQT_MATERIAL_DEFAULT_INVENTORY_CHECK_REMOVE_FORM_BUTTON',
+    },
+  },
+  purchaseMaterial: {
+    list: {
+      create: 'TQT_MATERIAL_DEFAULT_REQUISITION_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_MATERIAL_DEFAULT_REQUISITION_SAVE_FORM_BUTTON',
+    },
+  },
+  receivedMaterial: {
+    list: {
+      create: 'TQT_MATERIAL_DEFAULT_RECEIVED_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_MATERIAL_DEFAULT_RECEIVED_SAVE_FORM_BUTTON',
     },
   },
 };
