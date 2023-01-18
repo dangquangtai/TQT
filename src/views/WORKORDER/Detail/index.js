@@ -380,6 +380,7 @@ const WorkorderModal = () => {
     } catch { }
   };
   const handleChangeStatus = (e) => {
+    setCheckChangeData({...checkChangeData, changeWorkOrder: true})
     const value = e.target.value;
     setWorkorder({
       ...workorder,
