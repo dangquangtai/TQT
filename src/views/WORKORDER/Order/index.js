@@ -74,10 +74,12 @@ const OrderModal = () => {
       setOrderDetail(orderDetail);
     }
   };
-  const handleOrderChangeSelected = async (value) => {
-    var orderDetailList = {};
-    if (orderRedux?.work_order_id != '') {
-      orderDetailList = await getDetailOrderByWorkOrder(value.id, orderRedux.work_order_id);
+
+  const handleOrderChangeSelected = async ( value) => {
+    var orderDetailList={};
+    if (orderRedux?.work_order_id!=''){
+     
+       orderDetailList = await getDetailOrderByWorkOrder(value.id, orderRedux.work_order_id);
     } else {
       orderDetailList = await getOrderProductDetail(value.id);
     }
@@ -86,9 +88,10 @@ const OrderModal = () => {
       setOrder({ ...value, order_code: orderDetailList?.order_code, ...orderDetailList });
       dispatch({
         type: ORDER_CHANGE,
-        order: { ...value, order_code: orderDetailList?.order_code, change: false, work_order_id: '' },
-        orderDetail: orderDetailList?.order_detail,
-        workorderDetail: orderRedux.workorderDetail,
+        order: { ...value, order_code: orderDetailList.order_code, change: false, work_order_id: orderRedux.work_order_id},
+        orderDetail: orderDetailList.order_detail,
+        workorderDetail: orderRedux.workorderDetail
+
       });
       setOrderDetail(orderDetailList?.order_detail);
     } else {
@@ -110,7 +113,7 @@ const OrderModal = () => {
   };
   const calculateQuantity = (quantityInBox, quantityProduced) => {
     const quantity = quantityInBox - quantityProduced;
-    const color = quantity > 0 ? 'yellow' : 'green';
+    const color = quantity > 0 ? 'yellow' : 'rgb(48, 188, 65)';
     return <Typography style={{ backgroundColor: color }}>{quantity.toLocaleString()}</Typography>;
   };
 
@@ -125,12 +128,14 @@ const OrderModal = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        
         let data = await getOrderCompletedList();
         setOrderList(data);
       } catch (error) {
         let data = await getOrderCompletedList();
         setOrderList(data);
       }
+
     };
 
     fetchData();
@@ -144,19 +149,23 @@ const OrderModal = () => {
     if (!orderList || orderList.length === 0) return;
     if (!orderRedux) return;
     if (!orderRedux.id) return;
-    let value = orderList.find((x) => x.id === orderRedux.id);
-    handleOrderChangeSelected({ ...value, work_order_id: '' });
+        let value = orderList.find(x=>x.id === orderRedux.id)
+        handleOrderChangeSelected(value)
   }, [orderList]);
   useEffect(() => {
     if (!orderRedux.orderDetail) {
       if (orderRedux?.change) {
-        var orderInList = orderList.find((x) => x.id === orderRedux.id);
-        if (!orderInList) return;
-        handleOrderChangeSelected(orderInList);
+
+        var orderInList = orderList.find((x) => x.id === orderRedux.id)
+        if (!orderInList) return
+      
+        handleOrderChangeSelected(orderInList)  
       }
-      return;
-    }
-    setOrderDetail(orderRedux.orderDetail);
+        return;
+    } 
+      setOrderDetail(orderRedux.orderDetail)
+
+   
   }, [orderRedux]);
 
   return (
@@ -287,6 +296,7 @@ const OrderModal = () => {
                                       <TableCell align="left">Tên sản phẩm</TableCell>
                                       <TableCell align="left">Số lượng cần SX</TableCell>
                                       <TableCell align="left">Đơn vị</TableCell>
+                                      <TableCell align="left">Số lượng đã lập KH</TableCell>
                                       <TableCell align="left">Số lượng đã SX</TableCell>
                                       <TableCell align="left">Số lượng còn lại</TableCell>
                                     </TableRow>
@@ -298,11 +308,13 @@ const OrderModal = () => {
                                         <TableCell align="left">{item.product_code}</TableCell>
                                         <TableCell align="left">{item.product_customer_code}</TableCell>
                                         <TableCell align="left">{item.product_name}</TableCell>
+                                       
                                         <TableCell align="left">{item.quantity_in_box.toLocaleString()}</TableCell>
                                         <TableCell align="left">{item.unit_name}</TableCell>
+                                        <TableCell align="left">{item.quantity_in_workorder.toLocaleString()}</TableCell>
                                         <TableCell align="left">{item.quantity_produced.toLocaleString()}</TableCell>
                                         <TableCell align="center">
-                                          {calculateQuantity(item.quantity_in_box, item.quantity_produced)}
+                                          {calculateQuantity(item.quantity_in_box, item.quantity_in_workorder)}
                                         </TableCell>
                                       </TableRow>
                                     ))}
