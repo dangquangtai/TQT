@@ -490,6 +490,8 @@ const useStyles = makeStyles((theme) => ({
   },
   gridItemInfoButtonWrap: {
     marginTop: '16px',
+    display: 'flex',
+    gap: '8px',
   },
   gridItemInfoButton: {
     color: '#FFF',
@@ -549,6 +551,9 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '200px',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+  },
+  tabItemDownload: {
+    textAlign: 'center',
   },
 }));
 

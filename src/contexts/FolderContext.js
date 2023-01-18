@@ -29,9 +29,9 @@ export const FolderProvider = ({ children }) => {
             folder: folders,
           });
 
-          let selectedItem = folders.children.find((item) => item.action !== '');
-          if (folders.children.children?.length > 0) {
-            selectedItem = folders.children.children.find((item) => item.action !== '');
+          let selectedItem = folders?.children?.find((item) => item.action !== '');
+          if (folders?.children?.children?.length > 0) {
+            selectedItem = folders?.children?.children.find((item) => item.action !== '');
           }
 
           dispatch({ type: MENU_OPEN, isOpen: selectedItem?.id });

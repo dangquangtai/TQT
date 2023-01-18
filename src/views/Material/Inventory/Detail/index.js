@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Switch,
-  Snackbar,
   Box,
   Button,
   Dialog,
@@ -21,20 +19,14 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Tooltip,
-  IconButton,
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { view } from '../../../../store/constant';
 import useView from '../../../../hooks/useView';
 import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../../store/actions';
-import Alert from '../../../../component/Alert';
-import { History, DescriptionOutlined as DescriptionOutlinedIcon, AddCircleOutline, Delete } from '@material-ui/icons';
+import { History, DescriptionOutlined as DescriptionOutlinedIcon } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
-import FirebaseUpload from '../../../FloatingMenu/FirebaseUpload/index.js';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import { updateProduct } from '../../../../services/api/Product/Product.js';
 import { SNACKBAR_OPEN } from './../../../../store/actions';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -69,24 +61,21 @@ function a11yProps(index) {
   };
 }
 
-const ProductModal = () => {
+const InventoryModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
   const { form_buttons: formButtons } = useView();
-  const buttonSave = formButtons.find((button) => button.name === view.product.detail.save);
-  const { productDocument: openDialog } = useSelector((state) => state.floatingMenu);
+  // const buttonSave = formButtons.find((button) => button.name === view.inventory.detail.save);
+  const { materialInventoryDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
   const [tabIndex, setTabIndex] = React.useState(0);
-  const [openDialogUploadImage, setOpenDiaLogUploadImage] = React.useState(false);
 
-  const [productData, setProductData] = useState({});
-  const [partList, setPartList] = useState([]);
-  const { materials } = useSelector((state) => state.metadata);
+  const [inventoryData, setInventoryData] = useState({});
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
-    dispatch({ type: FLOATING_MENU_CHANGE, productDocument: false });
+    dispatch({ type: FLOATING_MENU_CHANGE, materialInventoryDocument: false });
   };
 
   const handleChangeTab = (event, newValue) => {
@@ -104,78 +93,24 @@ const ProductModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setProductData({});
+    setInventoryData({});
     setTabIndex(0);
-  };
-  const setURL = (image) => {
-    setProductData({ ...productData, image_url: image });
-  };
-
-  const handleCloseDiaLog = () => {
-    setOpenDiaLogUploadImage(false);
   };
 
   const handleChanges = (e) => {
     const { name, value } = e.target;
-    setProductData({ ...productData, [name]: value });
-  };
-
-  const handleAddPart = () => {
-    setPartList([
-      ...partList,
-      {
-        part_id: '',
-        part_name: '',
-        part_code: '',
-        quantity_in_piece: 0,
-        unit_id: '',
-        unit_name: '',
-        category_id: '',
-        category_name: '',
-        product_id: productData?.id || '',
-      },
-    ]);
-  };
-
-  const handleDeletePart = (index) => {
-    const newParts = partList?.filter((item, i) => i !== index);
-    setPartList(newParts);
-  };
-
-  const handleChangePart = (index, newValue) => {
-    const newPartList = [...partList];
-    const newParts = {
-      part_id: newValue?.id || '',
-      part_name: newValue?.title || '',
-      part_code: newValue?.part_code || '',
-      quantity_in_piece: 0,
-      unit_id: newValue?.unit_id || '',
-      unit_name: newValue?.unit_name || '',
-      category_id: newValue?.category_id || '',
-      category_name: newValue?.category_name || '',
-    };
-    newPartList[index] = { ...newPartList[index], ...newParts };
-    setPartList(newPartList);
-  };
-
-  const handleChangeQuantity = (index, newValue) => {
-    const newPartList = [...partList];
-    newPartList[index] = { ...newPartList[index], quantity_in_piece: newValue };
-    setPartList(newPartList);
+    setInventoryData({ ...inventoryData, [name]: value });
   };
 
   const handleSubmit = async () => {
     try {
-      const update = await updateProduct({
-        ...productData,
-        part_list: partList,
-      });
+      const update = true;
       if (update) {
         handleOpenSnackbar('success', 'Cập nhật Thành phẩm thành công!');
       } else {
         handleOpenSnackbar('error', 'Cập nhật Thành phẩm thất bại!');
       }
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'product' });
+      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'Inventory' });
       handleCloseDialog();
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
@@ -184,22 +119,14 @@ const ProductModal = () => {
 
   useEffect(() => {
     if (!selectedDocument) return;
-    setProductData({
-      ...productData,
+    setInventoryData({
+      ...inventoryData,
       ...selectedDocument,
     });
-    setPartList(selectedDocument?.part_list || []);
   }, [selectedDocument]);
 
   return (
     <React.Fragment>
-      <FirebaseUpload
-        open={openDialogUploadImage}
-        onSuccess={setURL}
-        onClose={handleCloseDiaLog}
-        type="image"
-        folder="Podcast"
-      />
       <Grid container>
         <Dialog
           open={openDialog || false}
@@ -210,7 +137,7 @@ const ProductModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              Thành phẩm
+              Kho vậ tư
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -240,7 +167,7 @@ const ProductModal = () => {
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
                         <History className={`${tabIndex === 1 ? classes.tabActiveIcon : ''}`} />
-                        Product Part
+                        Chi tiết hỏng
                       </Typography>
                     }
                     value={1}
@@ -262,14 +189,14 @@ const ProductModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tên thành phẩm:</span>
+                              <span className={classes.tabItemLabelField}>Vật tư:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
                                 variant="outlined"
-                                name="title"
-                                value={productData.title}
+                                name="part_name"
+                                value={inventoryData.part_name}
                                 type="text"
                                 size="small"
                                 onChange={handleChanges}
@@ -278,30 +205,30 @@ const ProductModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã thành phẩm:</span>
+                              <span className={classes.tabItemLabelField}>Danh mục:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
                                 variant="outlined"
-                                name="product_code"
+                                name="category_name"
                                 size="small"
                                 type="text"
-                                value={productData.product_code}
+                                value={inventoryData.category_name}
                                 onChange={handleChanges}
                               />
                             </Grid>
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã khách hàng:</span>
+                              <span className={classes.tabItemLabelField}>Nhà cung cấp:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
                                 variant="outlined"
-                                name="product_customer_code"
-                                value={productData.product_customer_code}
+                                name="supplier_name"
+                                value={inventoryData.supplier_name}
                                 size="small"
                                 type="text"
                                 onChange={handleChanges}
@@ -315,21 +242,35 @@ const ProductModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>
-                            {/* <RadioOutlinedIcon /> */}
                             <span>Thông tin thêm</span>
                           </div>
                         </div>
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Số lượng thành phẩm/thùng:</span>
+                              <span className={classes.tabItemLabelField}>Kho:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
                                 variant="outlined"
-                                name="no_piece_per_box"
-                                value={productData.no_piece_per_box}
+                                name="warehouse_name"
+                                value={inventoryData?.warehouse_name}
+                                size="small"
+                                onChange={handleChanges}
+                              />
+                            </Grid>
+                          </Grid>
+                          <Grid container className={classes.gridItem} alignItems="center">
+                            <Grid item lg={4} md={4} xs={4}>
+                              <span className={classes.tabItemLabelField}>Số lượng:</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={8}>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="quantity_in_piece"
+                                value={inventoryData.quantity_in_piece}
                                 size="small"
                                 type="number"
                                 onChange={handleChanges}
@@ -338,30 +279,32 @@ const ProductModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Năng suất 1 công nhân trong 8h:</span>
+                              <span className={classes.tabItemLabelField}>Số lượng hỏng:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
                                 variant="outlined"
-                                name="productivity_per_worker"
-                                value={productData.productivity_per_worker}
+                                name="broken_quantity_in_piece"
+                                value={inventoryData.broken_quantity_in_piece}
                                 size="small"
                                 type="number"
                                 onChange={handleChanges}
                               />
                             </Grid>
                           </Grid>
-                          <Grid container className={classes.gridItemInfo} alignItems="center">
+                          <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Hoạt động:</span>
+                              <span className={classes.tabItemLabelField}>Ghi chú:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
-                              <Switch
-                                checked={productData.is_active || false}
-                                onChange={(e) => setProductData({ ...productData, is_active: e.target.checked })}
-                                color="primary"
-                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="notes"
+                                value={inventoryData.notes}
+                                size="small"
+                                onChange={handleChanges}
                               />
                             </Grid>
                           </Grid>
@@ -376,70 +319,23 @@ const ProductModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>
-                            <span>Thành phần</span>
+                            <span>Chi tiết hỏng</span>
                           </div>
-                          <Tooltip title="Thêm sản phẩm">
-                            <IconButton onClick={handleAddPart}>
-                              <AddCircleOutline />
-                            </IconButton>
-                          </Tooltip>
                         </div>
                         <div className={classes.tabItemBody}>
                           <TableContainer style={{ maxHeight: '65vh' }} component={Paper}>
                             <Table stickyHeader aria-label="simple table">
                               <TableHead>
                                 <TableRow>
-                                  <TableCell align="left">Mã thành phần</TableCell>
-                                  <TableCell align="left">Tên thành phần</TableCell>
+                                  <TableCell align="left">Hỏng</TableCell>
                                   <TableCell align="left">Số lượng</TableCell>
-                                  <TableCell align="left">Đơn vị</TableCell>
-                                  <TableCell align="left"></TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {partList?.map((row, index) => (
+                                {inventoryData?.broken_list?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" component="th" scope="row" style={{ width: '25%' }}>
-                                      <Autocomplete
-                                        size="small"
-                                        options={materials}
-                                        fullWidth
-                                        getOptionLabel={(option) => option.part_code}
-                                        value={partList[index] || null}
-                                        getOptionSelected={(option, value) => option.id === value.part_id}
-                                        onChange={(event, newValue) => handleChangePart(index, newValue)}
-                                        renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                      />
-                                    </TableCell>
-                                    <TableCell
-                                      align="left"
-                                      style={{ width: '40%', overflow: 'hidden', textOverflow: 'ellipsis' }}
-                                    >
-                                      <Tooltip title={row?.part_name || ''}>
-                                        <span>{row?.part_name || ''}</span>
-                                      </Tooltip>
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '15%' }}>
-                                      <TextField
-                                        InputProps={{
-                                          inputProps: { min: 0 },
-                                        }}
-                                        fullWidth
-                                        variant="outlined"
-                                        type="number"
-                                        size="small"
-                                        value={row?.quantity_in_piece || ''}
-                                        onChange={(e) => handleChangeQuantity(index, e.target.value)}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left">{row.unit_name}</TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
-                                      <Tooltip title="Xóa">
-                                        <IconButton onClick={() => handleDeletePart(index)}>
-                                          <Delete />
-                                        </IconButton>
-                                      </Tooltip>
-                                    </TableCell>
+                                    <TableCell align="left">{row.Broken_Type_Code}</TableCell>
+                                    <TableCell align="left">{row.Quantity_In_Piece}</TableCell>
                                   </TableRow>
                                 ))}
                               </TableBody>
@@ -465,11 +361,11 @@ const ProductModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
-                {selectedDocument?.id && buttonSave && (
+                {/* {selectedDocument?.id && buttonSave && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmit}>
                     {buttonSave.text}
                   </Button>
-                )}
+                )} */}
               </Grid>
             </Grid>
           </DialogActions>
@@ -479,4 +375,4 @@ const ProductModal = () => {
   );
 };
 
-export default ProductModal;
+export default InventoryModal;

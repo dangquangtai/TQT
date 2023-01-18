@@ -16,6 +16,8 @@ import {
   customerActions,
   supplierActions,
   warehouseCategoryActions,
+  materialInventoryActions,
+  materialInventoryCheckActions,
 } from '../store/constant.js';
 
 export function getUrlByAction(selectedFolder) {
@@ -73,6 +75,12 @@ export function getUrlByAction(selectedFolder) {
     }
     case warehouseCategoryActions.list_warehouse_category: {
       return apiEndpoints.get_warehouse_category_list;
+    }
+    case materialInventoryActions.list_material_inventory: {
+      return apiEndpoints.get_material_inventory_list;
+    }
+    case materialInventoryCheckActions.list_material_inventory_check: {
+      return apiEndpoints.get_material_inventory_check_list;
     }
     default: {
       return '';
