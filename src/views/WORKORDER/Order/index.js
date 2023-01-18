@@ -74,6 +74,7 @@ const OrderModal = () => {
   const handleOrderChangeSelected = async ( value) => {
     var orderDetailList={};
     if (orderRedux?.work_order_id!=''){
+     
        orderDetailList = await getDetailOrderByWorkOrder(value.id, orderRedux.work_order_id);
     } else {
        orderDetailList = await getOrderProductDetail(value.id);
@@ -83,7 +84,7 @@ const OrderModal = () => {
       setOrder({ ...value, order_code: orderDetailList.order_code, ...orderDetailList });
       dispatch({
         type: ORDER_CHANGE,
-        order: { ...value, order_code: orderDetailList.order_code, change: false , work_order_id: ''},
+        order: { ...value, order_code: orderDetailList.order_code, change: false, work_order_id: orderRedux.work_order_id},
         orderDetail: orderDetailList.order_detail,
         workorderDetail: orderRedux.workorderDetail
       });
@@ -102,7 +103,7 @@ const OrderModal = () => {
   };
   const calculateQuantity = (quantityInBox, quantityProduced) => {
     const quantity = quantityInBox - quantityProduced;
-    const color = quantity > 0 ? 'yellow' : 'green';
+    const color = quantity > 0 ? 'yellow' : 'rgb(48, 188, 65)';
     return <Typography style={{ backgroundColor: color }}>{quantity.toLocaleString()}</Typography>;
   };
 
@@ -141,6 +142,7 @@ const OrderModal = () => {
     if (!orderRedux) return;
     if (!orderRedux.id) return;
         let value = orderList.find(x=>x.id === orderRedux.id)
+        console.log("zxczx",orderRedux)
         handleOrderChangeSelected(value)
   }, [orderList]);
   useEffect(() => {
@@ -148,6 +150,7 @@ const OrderModal = () => {
       if (orderRedux?.change) {
         var orderInList = orderList.find((x) => x.id === orderRedux.id)
         if (!orderInList) return
+      
         handleOrderChangeSelected(orderInList)  
       }
         return;
@@ -302,7 +305,7 @@ const OrderModal = () => {
                                         <TableCell align="left">{item.quantity_in_workorder.toLocaleString()}</TableCell>
                                         <TableCell align="left">{item.quantity_produced.toLocaleString()}</TableCell>
                                         <TableCell align="center">
-                                          {calculateQuantity(item.quantity_in_box, item.quantity_produced)}
+                                          {calculateQuantity(item.quantity_in_box, item.quantity_in_workorder)}
                                         </TableCell>
                                       </TableRow>
                                     ))}

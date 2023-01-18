@@ -126,7 +126,7 @@ const WorkorderModal = () => {
     handleUpdateWorkOrder(product, index)
   };
   const calculateQuantity = (product, index) => {
-    const color = product.is_enough ? 'rgb(48, 188, 65)' : 'yellow';
+    const color = product.color_check;
 
     return (
       <>
@@ -436,7 +436,7 @@ const WorkorderModal = () => {
     console.log(value)
     try {
       let orderDetail = order?.orderDetail;
-      orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_produced += value - productList[index].quantity_in_box;
+      orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder += value - productList[index].quantity_in_box;
 
       dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
     } catch { }
@@ -487,7 +487,9 @@ const WorkorderModal = () => {
       setCheckChangeData({ ...checkChangeData, changeWorkOrderRequest: true })
     } else {
       productListApi = await getWorkOrderRequest(id);
-      console.log(productListApi, "check")
+      console.log(productListApi, "check",workorder.id)
+      productionDailyRequestList[indexDate].color_check=productListApi.work_order_request.color_check
+      productionDailyRequestList[indexDate].is_enough=productListApi.work_order_request.is_enough
       setProductList(productListApi.work_order_detail);
       setWorkorderRequest({ ...productListApi.work_order_request });
       if (productListApi.work_order_detail[0]?.customer_order_id != '')
@@ -657,6 +659,8 @@ const WorkorderModal = () => {
               id: '',
               work_order_date: day,
               percent: 0,
+              is_enough: false,
+              color_check: ''
             },
           ];
         } else {
@@ -679,6 +683,8 @@ const WorkorderModal = () => {
                 work_order_date: day,
                 id: selectedDocument.production_daily_request[index]?.id || "",
                 percent: percent,
+                is_enough: selectedDocument.production_daily_request[index]?.is_enough,
+                color_check: selectedDocument.production_daily_request[index]?.color_check
               },
             ];
           }
@@ -689,6 +695,8 @@ const WorkorderModal = () => {
                 work_order_date: day,
                 id: "",
                 percent: percent,
+                is_enough: false,
+                color_check: ''
               },
             ];
           }
@@ -1069,12 +1077,10 @@ const WorkorderModal = () => {
                                           {productionDailyRequestList?.slice(start, end).map((item) => (
                                             <TableCell component="th" scope="row" align="center">
                                               <Typography
-                                                style={{backgroundColor: 'yellow' }
-                                                  
-                                                    
+                                                style={{backgroundColor: item.color_check } 
                                                 }
                                               >
-                                                {'Thiếu'}
+                                                {item.is_enough?'Đủ':'Thiếu'}
                                               </Typography>
                                             </TableCell>
                                           ))}

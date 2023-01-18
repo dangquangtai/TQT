@@ -46,6 +46,7 @@ export default function AlertDialogSlide() {
 
   ]);
   const dispatch = useDispatch();
+  const [detailPartList, setDetailPartList] = useState([])
   const [supplierListAll, setSupplierListAll] = useState([
 
   ]);
@@ -69,7 +70,7 @@ export default function AlertDialogSlide() {
         daily_work_order_id: detail.daily_work_order_id,
         quantity_in_wh: row.quantity_in_piece,
         is_enough: true,
-        quantity: row.quantity_in_piece
+        quantity: orderRedux.workorderDetail.part_list[indexColor].Quantity_In_Piece
       };
       newProductList[index] = { ...newProductList[index], ...newProduct };
       let totalCa = total - newProductList[index].quantity_in_wh;
@@ -156,7 +157,7 @@ export default function AlertDialogSlide() {
     fetchData(index)
   };
   const handleCheck = (item) => {
-    console.log(item,'check')
+  
     if (item.Quantity_In_Piece === 0 || item.Is_Enough)
       return <Typography style={{ backgroundColor: 'rgb(48, 188, 65)' }}>
         {item.Quantity_In_Piece 
@@ -181,6 +182,7 @@ export default function AlertDialogSlide() {
     orderRedux.workorderDetail.part_list.forEach(element=>{
       detailData.push({...element,check:0});
     })
+    setDetailPartList([...orderRedux.workorderDetail.part_list])
     setSupplierList([])
     var newSupplierList = [];
    
@@ -316,8 +318,8 @@ export default function AlertDialogSlide() {
                             {item.Category_Name}
                           </TableCell>
 
-                          <TableCell component="th" scope="row" >
-                            {handleCheck(item)}
+                          <TableCell component="th" scope="row" align='center' >
+                            {handleCheck(detailPartList[index])}
                           </TableCell>
 
                         </TableRow>
@@ -370,7 +372,7 @@ export default function AlertDialogSlide() {
                           <TableCell >
                             { (item.quantity?.toLocaleString() || 0)}
                           </TableCell>
-                          <TableCell  >
+                          <TableCell  align='center'>
                             <Typography style={{ backgroundColor: item.is_enough ? 'rgb(48, 188, 65)' : 'yellow' }}>
                               { item.is_enough ? 'Đủ' : 'Thiếu'}
                             </Typography>
