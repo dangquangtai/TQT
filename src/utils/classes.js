@@ -555,6 +555,14 @@ const useStyles = makeStyles((theme) => ({
   tabItemDownload: {
     textAlign: 'center',
   },
+  tableSmall: {
+    '& .MuiTableCell-root': {
+      padding: '16px 10px 16px 10px',
+    },
+    '& .MuiTableCell-root:first-child': {
+      paddingLeft: '20px',
+    },
+  },
 }));
 
 export default useStyles;

@@ -34,3 +34,54 @@ export const updatePurchaseMaterial = (data) => {
     return false;
   });
 };
+
+export const getPurchaseMaterialStatus = () => {
+  return axiosServices
+    .post(apiEndpoints.get_purchase_material_status, {})
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return response.data.list;
+      }
+      return [];
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+export const getPurchaseMaterialList = (supplier_id) => {
+  return axiosServices
+    .post(apiEndpoints.get_purchase_material_by_status, { supplier_id })
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return response.data.list;
+      }
+      return [];
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+export const getPurchaseMaterialByOrder = (material_order_id) => {
+  return axiosServices
+    .post(apiEndpoints.get_purchase_material_detail_by_order_id, { material_order_id })
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return response.data.list;
+      }
+      return [];
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+export const deletePurchaseMaterialDetail = (id) => {
+  return axiosServices.post(apiEndpoints.delete_purchase_material, { id }).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return true;
+    }
+    return false;
+  });
+};

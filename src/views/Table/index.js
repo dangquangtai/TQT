@@ -48,6 +48,7 @@ import { getDetailWarehouseCategory } from './../../services/api/Setting/WHSCate
 import { getDetailInventory } from './../../services/api/Material/Inventory';
 import { getDetailInventoryCheck } from './../../services/api/Material/InventoryCheck';
 import { getDetailPurchaseMaterial } from './../../services/api/Material/Purchase';
+import { getDetailReceivedMaterial } from './../../services/api/Material/Received';
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance
     .post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured })
@@ -165,6 +166,7 @@ export default function GeneralTable(props) {
     (button) => button.name === view.materialInventoryCheck.list.create
   );
   const buttonCreatePurchaseMaterial = menuButtons.find((button) => button.name === view.purchaseMaterial.list.create);
+  const buttonCreateReceivedMaterial = menuButtons.find((button) => button.name === view.receivedMaterial.list.create);
 
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -265,7 +267,7 @@ export default function GeneralTable(props) {
   }, []);
 
   useEffect(() => {
-    if (selectedDocument === null && documents.length > 0) {
+    if (selectedDocument === null && documents?.length > 0) {
       reloadCurrentDocuments(page);
     }
     if (changeDeptReload === 0) {
@@ -450,6 +452,11 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, purchaseMaterialDocument: true });
         break;
+      case 'receivedMaterial':
+        detailDocument = await getDetailReceivedMaterial(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, receivedMaterialDocument: true });
+        break;
       default:
         break;
     }
@@ -491,6 +498,9 @@ export default function GeneralTable(props) {
         break;
       case 'purchaseMaterial':
         dispatch({ type: FLOATING_MENU_CHANGE, purchaseMaterialDocument: true });
+        break;
+      case 'receivedMaterial':
+        dispatch({ type: FLOATING_MENU_CHANGE, receivedMaterialDocument: true });
         break;
       default:
         break;
@@ -763,6 +773,7 @@ export default function GeneralTable(props) {
                 buttonCreateWarehouseCategory={buttonCreateWarehouseCategory}
                 buttonCreateInventoryCheck={buttonCreateInventoryCheck}
                 buttonCreatePurchaseMaterial={buttonCreatePurchaseMaterial}
+                buttonCreateReceivedMaterial={buttonCreateReceivedMaterial}
               />
               <Grid container spacing={gridSpacing}>
                 {(documentType === 'department' || documentType === 'processrole') && (

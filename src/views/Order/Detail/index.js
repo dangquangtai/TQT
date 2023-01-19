@@ -87,7 +87,6 @@ const OrderModal = () => {
 
   const [orderData, setOrderData] = useState({ order_date: new Date() });
   const [customer, setCustomer] = useState([]);
-  const [selectedCustomer, setSelectedCustomer] = useState({});
   const [statusList, setStatusList] = useState([]);
   const [tabIndex, setTabIndex] = React.useState(0);
   const [dialogUpload, setDialogUpload] = useState({
@@ -119,7 +118,6 @@ const OrderModal = () => {
   const setDocumentToDefault = async () => {
     setOrderData({ order_date: new Date() });
     setProductList([]);
-    setSelectedCustomer({});
     setTabIndex(0);
   };
   const setURL = (image) => {
@@ -240,7 +238,6 @@ const OrderModal = () => {
       ...selectedDocument,
     });
     setProductList(selectedDocument?.order_detail);
-    setSelectedCustomer(customer.find((item) => item.id === selectedDocument.customer_id));
   }, [selectedDocument]);
 
   useEffect(() => {
@@ -348,9 +345,8 @@ const OrderModal = () => {
                                     getOptionLabel={(option) => option.value || ''}
                                     fullWidth
                                     size="small"
-                                    value={selectedCustomer || null}
+                                    value={customer?.find((item) => item.id === selectedDocument?.customer_id) || null}
                                     onChange={(event, newValue) => {
-                                      setSelectedCustomer(newValue);
                                       setOrderData({ ...orderData, customer_id: newValue?.id });
                                     }}
                                     renderInput={(params) => <TextField {...params} variant="outlined" />}

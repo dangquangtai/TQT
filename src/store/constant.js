@@ -180,12 +180,19 @@ export const apiEndpoints = {
   get_purchase_material_detail: '/Primary/?FlowAlias=bs_api_factory_get_purchase_material_detail&action=api',
   create_purchase_material: '/Primary/?FlowAlias=bs_api_factory_create_purchase_material&action=api',
   update_purchase_material: '/Primary/?FlowAlias=bs_api_factory_update_purchase_material&action=api',
+  get_purchase_material_status: '/Primary/?FlowAlias=bs_api_factory_get_purchase_material_status&action=api',
+  get_purchase_material_by_status: '/Primary/?FlowAlias=bs_api_factory_get_purchase_material_by_status&action=api',
+  get_purchase_material_detail_by_order_id:
+    '/Primary/?FlowAlias=bs_api_factory_get_purchase_material_by_order_id&action=api',
+  delete_purchase_material: '/Primary/?FlowAlias=bs_api_factory_delete_purchase_material&action=api',
 
   // Received Material
   get_received_material_list: '/Primary/?FlowAlias=bs_api_factory_get_received_material_list&action=api',
   get_received_material_detail: '/Primary/?FlowAlias=bs_api_factory_get_received_material_detail&action=api',
   create_received_material: '/Primary/?FlowAlias=bs_api_factory_create_received_material&action=api',
   update_received_material: '/Primary/?FlowAlias=bs_api_factory_update_received_material&action=api',
+  get_received_material_status: '/Primary/?FlowAlias=bs_api_factory_get_received_material_status&action=api',
+  delete_received_material: '/Primary/?FlowAlias=bs_api_factory_delete_received_material&action=api',
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'

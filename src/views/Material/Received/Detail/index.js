@@ -1,5 +1,4 @@
 import {
-  Snackbar,
   Box,
   Button,
   Dialog,
@@ -37,18 +36,18 @@ import { view } from './../../../../store/constant';
 import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CONFIRM_CHANGE } from './../../../../store/actions';
 import FirebaseUpload from './../../../FloatingMenu/FirebaseUpload/index';
 import DatePicker from './../../../../component/DatePicker/index';
-import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
 import {
-  createPurchaseMaterial,
-  deletePurchaseMaterialDetail,
-  getPurchaseMaterialStatus,
-  updatePurchaseMaterial,
-} from './../../../../services/api/Material/Purchase';
+  createReceivedMaterial,
+  deleteReceivedMaterialDetail,
+  getReceivedMaterialStatus,
+  updateReceivedMaterial,
+} from './../../../../services/api/Material/Received';
+import { getPurchaseMaterialByOrder, getPurchaseMaterialList } from '../../../../services/api/Material/Purchase.js';
+import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -63,7 +62,6 @@ TabPanel.propTypes = {
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
 };
-
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -71,36 +69,41 @@ function a11yProps(index) {
   };
 }
 
-const PurchaseMaterialModal = () => {
+const ReceivedMaterialModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { form_buttons: formButtons } = useView();
   const { setConfirmPopup } = useConfirmPopup();
   const { materials } = useSelector((state) => state.metadata);
-  const saveButton = formButtons.find((button) => button.name === view.purchaseMaterial.detail.save);
-  const { purchaseMaterialDocument: openDialog } = useSelector((state) => state.floatingMenu);
+  const saveButton = formButtons.find((button) => button.name === view.receivedMaterial.detail.save);
+  const { receivedMaterialDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
 
-  const [purchaseMaterialData, setPurchaseMaterialData] = useState({
-    order_date: new Date(),
-    delivery_date: new Date(),
+  const [receivedMaterialData, setReceivedMaterialData] = useState({
+    received_date: new Date(),
+    received_by: '',
+    handled_by: '',
   });
-  const [supplier, setSupplier] = useState([]);
+  const [materialOrderList, setMaterialOrderList] = useState([]);
+  const [materialOrderDetailList, setMaterialOrderDetailList] = useState([]);
+  const [receivedDetailList, setReceivedDetailList] = useState([]);
   const [statusList, setStatusList] = useState([]);
+  const [supplierList, setSupplierList] = useState([]);
+  const [warehouseList, setWarehouseList] = useState([]);
+
   const [tabIndex, setTabIndex] = React.useState(0);
   const [dialogUpload, setDialogUpload] = useState({
     open: false,
     type: '',
   });
 
-  const [materialList, setMaterialList] = useState([]);
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
-    dispatch({ type: FLOATING_MENU_CHANGE, purchaseMaterialDocument: false });
+    dispatch({ type: FLOATING_MENU_CHANGE, receivedMaterialDocument: false });
   };
 
   const handleOpenSnackbar = (type, text) => {
@@ -114,15 +117,16 @@ const PurchaseMaterialModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setPurchaseMaterialData({ order_date: new Date(), delivery_date: new Date() });
-    setMaterialList([]);
+    setReceivedMaterialData({ received_date: new Date() });
+    setReceivedDetailList([]);
+    setMaterialOrderDetailList([]);
     setTabIndex(0);
   };
   const setURL = (image) => {
     if (dialogUpload.type === 'image') {
-      setPurchaseMaterialData({ ...purchaseMaterialData, image_url: image });
+      setReceivedMaterialData({ ...receivedMaterialData, image_url: image });
     } else if (dialogUpload.type === 'banner') {
-      setPurchaseMaterialData({ ...purchaseMaterialData, banner_url: image });
+      setReceivedMaterialData({ ...receivedMaterialData, banner_url: image });
     }
   };
 
@@ -132,6 +136,7 @@ const PurchaseMaterialModal = () => {
       type: type,
     });
   };
+
   const handleCloseDiaLog = () => {
     setDialogUpload({
       open: false,
@@ -142,13 +147,13 @@ const PurchaseMaterialModal = () => {
   const handleSubmitForm = async () => {
     try {
       if (selectedDocument?.id) {
-        await updatePurchaseMaterial({ ...purchaseMaterialData, order_detail: materialList });
-        handleOpenSnackbar('success', 'Cập nhật Đơn hàng thành công!');
+        await updateReceivedMaterial({ ...receivedMaterialData, received_detail: receivedDetailList });
+        handleOpenSnackbar('success', 'Cập nhật Phiếu nhập vật tư thành công!');
       } else {
-        await createPurchaseMaterial({ ...purchaseMaterialData, order_detail: materialList });
-        handleOpenSnackbar('success', 'Tạo mới Đơn hàng thành công!');
+        await createReceivedMaterial({ ...receivedMaterialData, received_detail: receivedDetailList });
+        handleOpenSnackbar('success', 'Tạo mới Phiếu nhập vật tư thành công!');
       }
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'purchaseMaterial' });
+      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'receivedMaterial' });
       handleCloseDialog();
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
@@ -161,56 +166,83 @@ const PurchaseMaterialModal = () => {
 
   const handleChanges = (e) => {
     const { name, value } = e.target;
-    setPurchaseMaterialData({ ...purchaseMaterialData, [name]: value });
+    setReceivedMaterialData({ ...receivedMaterialData, [name]: value });
   };
 
-  const handleAddMaterial = () => {
-    if (!purchaseMaterialData.supplier_id) {
+  const handleAddReceivedDetail = () => {
+    if (!receivedMaterialData.supplier_id) {
       handleOpenSnackbar('error', 'Vui lòng chọn nhà cung cấp!');
       return;
     }
-    setMaterialList([
-      ...materialList,
+    setReceivedDetailList([
       {
-        requisition_id: selectedDocument?.id || '',
+        received_id: selectedDocument?.id || '',
+        material_order_id: '',
         id: '',
         part_id: '',
         part_name: '',
         part_code: '',
-        supplier_id: '',
-        supplier_name: '',
         category_id: '',
         category_name: '',
-        status: '',
         unit_id: '',
         unit_name: '',
         quantity_in_piece: 0,
+        supplier_id: '',
+        supplier_name: '',
       },
+      ...receivedDetailList,
     ]);
+    setMaterialOrderDetailList([[], ...materialOrderDetailList]);
+  };
+
+  const handleChangeOrder = async (index, newOrder) => {
+    const newReceivedDetailList = [...receivedDetailList];
+    newReceivedDetailList[index] = {
+      ...newReceivedDetailList[index],
+      material_order_id: newOrder?.id,
+      supplier_id: receivedMaterialData?.supplier_id,
+      supplier_name: receivedMaterialData?.supplier_name,
+    };
+    setReceivedDetailList(newReceivedDetailList);
+    const newOrderPartList = [...materialOrderDetailList];
+    if (receivedDetailList.filter((item) => item.material_order_id === newOrder?.id).length >= 1) {
+      const indexMaterial = receivedDetailList.findIndex((item) => item.material_order_id === newOrder?.id);
+      newOrderPartList[index] = materialOrderDetailList[indexMaterial];
+      setMaterialOrderDetailList(newOrderPartList);
+    } else {
+      const partList = await getPartListByOrder(newOrder?.id);
+      newOrderPartList[index] = partList;
+      setMaterialOrderDetailList(newOrderPartList);
+    }
   };
 
   const handleChangeMaterialCode = (index, newItem) => {
-    const newMaterialList = [...materialList];
+    const newMaterialList = [...receivedDetailList];
     const newMaterial = {
-      part_id: newItem?.id || '',
+      part_id: newItem?.part_id || '',
       part_code: newItem?.part_code || '',
-      part_name: newItem?.title || '',
+      part_name: newItem?.part_name || '',
       category_id: newItem?.category_id || '',
       category_name: newItem?.category_name || '',
-      supplier_id: purchaseMaterialData?.supplier_id || '',
-      supplier_name: purchaseMaterialData?.supplier_name || '',
       unit_id: newItem?.unit_id || '',
       unit_name: newItem?.unit_name || '',
     };
     newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
-    setMaterialList(newMaterialList);
+    if (
+      receivedDetailList?.some((item) => item.material_order_id === newItem?.requisition_id) &&
+      receivedDetailList?.some((item) => item.part_id === newItem?.part_id)
+    ) {
+      handleOpenSnackbar('error', 'Vật tư đã tồn tại!');
+      return;
+    }
+    setReceivedDetailList(newMaterialList);
   };
 
   const handleChangeMaterial = (index, e) => {
     const { name, value } = e.target;
-    const newMaterialList = [...materialList];
-    newMaterialList[index] = { ...newMaterialList[index], [name]: value };
-    setMaterialList(newMaterialList);
+    const newReceivedDetailList = [...receivedDetailList];
+    newReceivedDetailList[index] = { ...newReceivedDetailList[index], [name]: value };
+    setReceivedDetailList(newReceivedDetailList);
   };
 
   const handleDeleteMaterial = (index, id) => {
@@ -218,43 +250,77 @@ const PurchaseMaterialModal = () => {
       showConfirmPopup({
         title: 'Xóa vật tư',
         message: 'Bạn có chắc chắn muốn xóa vật tư này?',
-        action: deletePurchaseMaterialDetail,
+        action: deleteReceivedMaterialDetail,
         payload: id,
         onSuccess: () => {
-          const newMaterialList = [...materialList];
-          newMaterialList.splice(index, 1);
-          setMaterialList(newMaterialList);
+          spliceMaterial(index);
         },
       });
     } else {
-      const newMaterialList = [...materialList];
-      newMaterialList.splice(index, 1);
-      setMaterialList(newMaterialList);
+      spliceMaterial(index);
     }
   };
 
+  const spliceMaterial = (index) => {
+    const newReceivedDetailList = [...receivedDetailList];
+    newReceivedDetailList.splice(index, 1);
+    setReceivedDetailList(newReceivedDetailList);
+    const newMaterialOrderDetailList = [...materialOrderDetailList];
+    newMaterialOrderDetailList.splice(index, 1);
+    setMaterialOrderDetailList(newMaterialOrderDetailList);
+  };
+
+  const getPartListByOrder = async (id) => {
+    const parts = await getPurchaseMaterialByOrder(id);
+    return parts;
+  };
+
+  const getPartListByReceivedDetail = async (receivedDetail) => {
+    const newMaterialOrderDetailList = [];
+    for (const [index, item] of receivedDetail.entries()) {
+      const checkReceivedDetail = [...receivedDetail].slice(0, index);
+      let parts = [];
+      if (checkReceivedDetail?.some((check) => check.material_order_id === item?.material_order_id)) {
+        const indexPartList = checkReceivedDetail?.findIndex((check) => check.material_order_id === item?.material_order_id);
+        parts = newMaterialOrderDetailList[indexPartList];
+      } else parts = await getPurchaseMaterialByOrder(item?.material_order_id);
+      newMaterialOrderDetailList.push(parts);
+    }
+    setMaterialOrderDetailList(newMaterialOrderDetailList);
+  };
   useEffect(() => {
     if (!selectedDocument) return;
-    setPurchaseMaterialData({
-      ...purchaseMaterialData,
+    setReceivedMaterialData({
+      ...receivedMaterialData,
       ...selectedDocument,
     });
-    setMaterialList(selectedDocument?.order_detail);
+    const receivedDetail = selectedDocument?.received_detail;
+    setReceivedDetailList(receivedDetail);
+    getPartListByReceivedDetail(receivedDetail);
   }, [selectedDocument]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const supplier = await getAllSupplier();
-      setSupplier(supplier);
-      const status = await getPurchaseMaterialStatus();
+      const orders = await getPurchaseMaterialList(receivedMaterialData.supplier_id);
+      setMaterialOrderList(orders);
+    };
+    if (receivedMaterialData.supplier_id) fetchData();
+  }, [receivedMaterialData.supplier_id]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { status, warehouses } = await getReceivedMaterialStatus();
       setStatusList(status);
+      setWarehouseList(warehouses);
+      const suppliers = await getAllSupplier();
+      setSupplierList(suppliers);
     };
     fetchData();
   }, []);
 
   return (
     <React.Fragment>
-      <FirebaseUpload open={dialogUpload.open || false} onSuccess={setURL} onClose={handleCloseDiaLog} type="image" folder="PurchaseMaterial" />
+      <FirebaseUpload open={dialogUpload.open || false} onSuccess={setURL} onClose={handleCloseDiaLog} type="image" folder="receivedMaterial" />
       <Grid container>
         <Dialog
           open={openDialog || false}
@@ -270,7 +336,7 @@ const PurchaseMaterialModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              {selectedDocument?.id ? 'Cập nhật đơn hàng' : 'Tạo mới đơn hàng'}
+              {selectedDocument?.id ? 'Cập nhật Phiếu nhập vật tư' : 'Tạo mới Phiếu nhập vật tư'}
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -289,7 +355,7 @@ const PurchaseMaterialModal = () => {
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
                         <AccountCircleOutlinedIcon className={`${tabIndex === 0 ? classes.tabActiveIcon : ''}`} />
-                        Chi tiết Đơn hàng
+                        Chi tiết
                       </Typography>
                     }
                     value={0}
@@ -325,66 +391,99 @@ const PurchaseMaterialModal = () => {
                     <Grid item lg={12} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>Mua vật tư</div>
+                          <div className={classes.tabItemLabel}>Nhập vật tư</div>
                         </div>
                         <div className={classes.tabItemBody}>
-                          <Grid container spacing={3} className={classes.gridItemInfo}>
+                          <Grid container spacing={2} className={classes.gridItemInfo}>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Mã đơn hàng:</span>
+                              <span className={classes.tabItemLabelField}>Mã phiếu:</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
-                                name="order_code"
+                                name="received_code"
                                 type="text"
                                 size="small"
-                                value={purchaseMaterialData.order_code || ''}
+                                value={receivedMaterialData.received_code || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên đơn hàng:</span>
+                              <span className={classes.tabItemLabelField}>Tên phiếu nhập:</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
                                 name="title"
                                 type="text"
                                 size="small"
-                                value={purchaseMaterialData.title || ''}
+                                value={receivedMaterialData.title || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày lập đơn hàng:</span>
+                              <span className={classes.tabItemLabelField}>Ngày nhận hàng:</span>
                               <DatePicker
-                                date={purchaseMaterialData.order_date}
-                                onChange={(date) => setPurchaseMaterialData({ ...purchaseMaterialData, order_date: date })}
+                                date={receivedMaterialData.received_date}
+                                onChange={(date) => setReceivedMaterialData({ ...receivedMaterialData, received_date: date })}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày giao hàng:</span>
-                              <DatePicker
-                                date={purchaseMaterialData.delivery_date}
-                                onChange={(date) => setPurchaseMaterialData({ ...purchaseMaterialData, delivery_date: date })}
+                              <span className={classes.tabItemLabelField}>Người nhận hàng:</span>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="received_by"
+                                type="text"
+                                size="small"
+                                value={receivedMaterialData.received_by || ''}
+                                onChange={handleChanges}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
                               <span className={classes.tabItemLabelField}>Nhà cung cấp:</span>
                               <Autocomplete
-                                id="combo-box-demo"
-                                options={supplier}
-                                getOptionLabel={(option) => option.title || ''}
-                                fullWidth
+                                options={supplierList}
                                 size="small"
-                                value={supplier?.find((item) => item.id === purchaseMaterialData.supplier_id) || null}
+                                getOptionLabel={(option) => option.title}
                                 onChange={(event, newValue) => {
-                                  setPurchaseMaterialData({
-                                    ...purchaseMaterialData,
-                                    supplier_id: newValue?.id,
-                                    supplier_name: newValue?.title,
+                                  setReceivedMaterialData({
+                                    ...receivedMaterialData,
+                                    supplier_id: newValue?.id || '',
+                                    supplier_name: newValue?.title || '',
                                   });
                                 }}
+                                value={supplierList?.find((item) => item.id === receivedMaterialData.supplier_id) || null}
                                 renderInput={(params) => <TextField {...params} variant="outlined" />}
                               />
+                            </Grid>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Người giao hàng:</span>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="handled_by"
+                                type="text"
+                                size="small"
+                                value={receivedMaterialData.handled_by || ''}
+                                onChange={handleChanges}
+                              />
+                            </Grid>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Nhà kho:</span>
+                              <TextField
+                                fullWidth
+                                name="warehouse_id"
+                                variant="outlined"
+                                select
+                                size="small"
+                                value={receivedMaterialData.warehouse_id || ''}
+                                onChange={handleChanges}
+                              >
+                                {warehouseList?.map((option) => (
+                                  <MenuItem key={option.id} value={option.id}>
+                                    {option.value}
+                                  </MenuItem>
+                                ))}
+                              </TextField>
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
                               <span className={classes.tabItemLabelField}>Trạng thái:</span>
@@ -394,7 +493,7 @@ const PurchaseMaterialModal = () => {
                                 variant="outlined"
                                 select
                                 size="small"
-                                value={purchaseMaterialData.status || ''}
+                                value={receivedMaterialData.status || ''}
                                 onChange={handleChanges}
                               >
                                 {statusList?.map((option) => (
@@ -414,7 +513,7 @@ const PurchaseMaterialModal = () => {
                                 name="notes"
                                 type="text"
                                 size="small"
-                                value={purchaseMaterialData.notes || ''}
+                                value={receivedMaterialData.notes || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
@@ -422,60 +521,60 @@ const PurchaseMaterialModal = () => {
                         </div>
                       </div>
                     </Grid>
-                    <Grid item lg={5} md={12} xs={12}>
-                      <div className={classes.tabItem}>
-                        <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>Vật tư thiếu</div>
-                        </div>
-                        <div className={classes.tabItemBody}>
-                          <Grid container spacing={1}></Grid>
-                        </div>
-                      </div>
-                    </Grid>
-                    <Grid item lg={7} md={12} xs={12}>
+                    <Grid item lg={12} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>Danh sách vật tư</div>
                           <Tooltip title="Thêm vật tư">
-                            <IconButton onClick={handleAddMaterial}>
+                            <IconButton onClick={handleAddReceivedDetail}>
                               <AddCircleOutline />
                             </IconButton>
                           </Tooltip>
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
-                            <Table className={classes.tableSmall} aria-label="simple table">
+                            <Table aria-label="simple table">
                               <TableHead>
                                 <TableRow>
+                                  <TableCell align="left">Mã đơn hàng</TableCell>
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
-                                  <TableCell align="left">SL cần</TableCell>
+                                  <TableCell align="left">SL nhập</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
-                                  {/* {selectedDocument?.id && <TableCell align="left">Trạng thái</TableCell>} */}
-                                  <TableCell align="left">Ghi chú</TableCell>
                                   <TableCell align="center">Xoá</TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {materialList?.map((row, index) => (
+                                {receivedDetailList?.map((row, index) => (
                                   <TableRow key={index}>
+                                    <TableCell align="left" style={{ width: '20%' }}>
+                                      <Autocomplete
+                                        options={materialOrderList}
+                                        getOptionLabel={(option) => option.order_code || ''}
+                                        fullWidth
+                                        size="small"
+                                        value={materialOrderList?.find((item) => item.id === row.material_order_id) || null}
+                                        onChange={(event, newValue) => handleChangeOrder(index, newValue)}
+                                        renderInput={(params) => <TextField {...params} variant="outlined" />}
+                                      />
+                                    </TableCell>
                                     <TableCell align="left" style={{ width: '25%' }}>
                                       <Autocomplete
-                                        options={materials}
+                                        options={materialOrderDetailList[index] || []}
                                         getOptionLabel={(option) => option.part_code || ''}
                                         fullWidth
                                         size="small"
-                                        value={materials.find((item) => item.part_code === row.part_code) || null}
+                                        value={materialOrderDetailList[index]?.find((item) => item.part_code === row.part_code) || null}
                                         onChange={(event, newValue) => handleChangeMaterialCode(index, newValue)}
                                         renderInput={(params) => <TextField {...params} variant="outlined" />}
                                       />
                                     </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '25%' }}>
+                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '35%' }}>
                                       <Tooltip title={row?.part_name}>
                                         <span>{row?.part_name}</span>
                                       </Tooltip>
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '15%' }}>
+                                    <TableCell align="left" style={{ width: '10%' }}>
                                       <TextField
                                         InputProps={{
                                           inputProps: { min: 0 },
@@ -489,23 +588,10 @@ const PurchaseMaterialModal = () => {
                                         onChange={(e) => handleChangeMaterial(index, e)}
                                       />
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
+                                    <TableCell align="left" style={{ width: '5%' }}>
                                       {row.unit_name}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '15%' }}>
-                                      <TextField
-                                        multiline
-                                        minRows={1}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="notes"
-                                        type="text"
-                                        size="small"
-                                        value={row.notes || ''}
-                                        onChange={(e) => handleChangeMaterial(index, e)}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="center" style={{ width: '10%' }}>
+                                    <TableCell align="center" style={{ width: '5%' }}>
                                       <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>
                                         <Delete />
                                       </IconButton>
@@ -560,4 +646,4 @@ const PurchaseMaterialModal = () => {
   );
 };
 
-export default PurchaseMaterialModal;
+export default ReceivedMaterialModal;
