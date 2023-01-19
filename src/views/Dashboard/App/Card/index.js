@@ -53,7 +53,6 @@ const AppCard = ({ app }) => {
         selected: item.id === project.id ? true : false,
       };
     });
-    console.log('newProjectList', newProjectList);
     dispatch({ type: PROJECT_CHANGE, projects: newProjectList });
   };
 

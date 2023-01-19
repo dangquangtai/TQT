@@ -47,6 +47,8 @@ import { getDetailSupplier } from './../../services/api/Partner/Supplier';
 import { getDetailWarehouseCategory } from './../../services/api/Setting/WHSCategory';
 import { getDetailInventory } from './../../services/api/Material/Inventory';
 import { getDetailInventoryCheck } from './../../services/api/Material/InventoryCheck';
+import { getDetailPurchaseMaterial } from './../../services/api/Material/Purchase';
+import { getDetailReceivedMaterial } from './../../services/api/Material/Received';
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance
     .post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured })
@@ -121,6 +123,9 @@ export default function GeneralTable(props) {
       quantity_in_box: tableColumns.includes('quantity_in_box'),
       inventory_check_code: tableColumns.includes('inventory_check_code'),
       inventory_check_date: tableColumns.includes('inventory_check_date'),
+      order_code: tableColumns.includes('order_code'),
+      received_code: tableColumns.includes('received_code'),
+      received_date: tableColumns.includes('received_date'),
     };
     setDisplayOptions(initOptions);
   }, [tableColumns, selectedFolder]);
@@ -160,6 +165,8 @@ export default function GeneralTable(props) {
   const buttonCreateInventoryCheck = menuButtons.find(
     (button) => button.name === view.materialInventoryCheck.list.create
   );
+  const buttonCreatePurchaseMaterial = menuButtons.find((button) => button.name === view.purchaseMaterial.list.create);
+  const buttonCreateReceivedMaterial = menuButtons.find((button) => button.name === view.receivedMaterial.list.create);
 
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -260,7 +267,7 @@ export default function GeneralTable(props) {
   }, []);
 
   useEffect(() => {
-    if (selectedDocument === null && documents.length > 0) {
+    if (selectedDocument === null && documents?.length > 0) {
       reloadCurrentDocuments(page);
     }
     if (changeDeptReload === 0) {
@@ -440,6 +447,16 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, materialInventoryCheckDocument: true });
         break;
+      case 'purchaseMaterial':
+        detailDocument = await getDetailPurchaseMaterial(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, purchaseMaterialDocument: true });
+        break;
+      case 'receivedMaterial':
+        detailDocument = await getDetailReceivedMaterial(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, receivedMaterialDocument: true });
+        break;
       default:
         break;
     }
@@ -478,6 +495,12 @@ export default function GeneralTable(props) {
         break;
       case 'materialInventoryCheck':
         dispatch({ type: FLOATING_MENU_CHANGE, materialInventoryCheckDocument: true });
+        break;
+      case 'purchaseMaterial':
+        dispatch({ type: FLOATING_MENU_CHANGE, purchaseMaterialDocument: true });
+        break;
+      case 'receivedMaterial':
+        dispatch({ type: FLOATING_MENU_CHANGE, receivedMaterialDocument: true });
         break;
       default:
         break;
@@ -749,6 +772,8 @@ export default function GeneralTable(props) {
                 buttonCreateSupplier={buttonCreateSupplier}
                 buttonCreateWarehouseCategory={buttonCreateWarehouseCategory}
                 buttonCreateInventoryCheck={buttonCreateInventoryCheck}
+                buttonCreatePurchaseMaterial={buttonCreatePurchaseMaterial}
+                buttonCreateReceivedMaterial={buttonCreateReceivedMaterial}
               />
               <Grid container spacing={gridSpacing}>
                 {(documentType === 'department' || documentType === 'processrole') && (
@@ -828,6 +853,24 @@ export default function GeneralTable(props) {
                               {displayOptions.fullname && (
                                 <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
                                   {row.fullname}
+                                </TableCell>
+                              )}
+                              {displayOptions.received_code && (
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.received_code}
+                                </TableCell>
+                              )}
+                              {displayOptions.order_code && (
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.order_code}
                                 </TableCell>
                               )}
                               {displayOptions.part_code && (
@@ -960,6 +1003,11 @@ export default function GeneralTable(props) {
                                   {row.expected_deliver_date
                                     ? formatDate(new Date(row.expected_deliver_date), 'dd/MM/yyyy')
                                     : ''}
+                                </TableCell>
+                              )}
+                              {displayOptions.received_date && (
+                                <TableCell align="left">
+                                  {row.received_date ? formatDate(new Date(row.received_date), 'dd/MM/yyyy') : ''}
                                 </TableCell>
                               )}
                               {displayOptions.account_id && (
