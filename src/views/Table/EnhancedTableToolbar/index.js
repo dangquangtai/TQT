@@ -77,6 +77,7 @@ const EnhancedTableToolbar = (props) => {
     buttonCreateInventoryCheck,
     buttonCreatePurchaseMaterial,
     buttonCreateReceivedMaterial,
+    buttonCreateMaterialWarehouse,
   } = props;
 
   const filterRef = useRef(null);
@@ -183,9 +184,7 @@ const EnhancedTableToolbar = (props) => {
     }
     setColumnNames(
       headCells.reduce((pre, { id, label }) => {
-        return id !== 'menuButtons' && displayOptions[id]
-          ? [...pre, { id, label, isSelected: displayOptions[id] }]
-          : pre;
+        return id !== 'menuButtons' && displayOptions[id] ? [...pre, { id, label, isSelected: displayOptions[id] }] : pre;
       }, [])
     );
   }, [displayOptions, data]);
@@ -363,6 +362,13 @@ const EnhancedTableToolbar = (props) => {
                     </Button>
                   </Grid>
                 )}
+                {buttonCreateMaterialWarehouse && (
+                  <Grid item>
+                    <Button variant="contained" color={'primary'} onClick={handleCreate}>
+                      {buttonCreateMaterialWarehouse.text}
+                    </Button>
+                  </Grid>
+                )}
               </Grid>
             </Grid>
             <Grid item xs={8}>
@@ -460,12 +466,7 @@ const EnhancedTableToolbar = (props) => {
                 <>
                   <div className={classes.toolSearchWrap}>
                     <SearchIcon />
-                    <input
-                      className={classes.toolSearchInput}
-                      value={filter.search_text}
-                      onChange={handleChangeSearch}
-                      onKeyUp={handleEnterSearch}
-                    />
+                    <input className={classes.toolSearchInput} value={filter.search_text} onChange={handleChangeSearch} onKeyUp={handleEnterSearch} />
                     <Button className={classes.toolButtonSearch} onClick={handleCloseInput}>
                       <ClearIcon className={classes.toolButtonIcon} />
                     </Button>
@@ -516,10 +517,7 @@ const EnhancedTableToolbar = (props) => {
                         <div className={`${classes.toolColumnTitle} ${classes.toolFilterTitle}`}>
                           <div className={classes.toolFilterTitleBlock}>
                             <div>Filters</div>
-                            <Button
-                              className={`${classes.toolButtonSearch} ${classes.toolResetButton}`}
-                              onClick={handleResetFilter}
-                            >
+                            <Button className={`${classes.toolButtonSearch} ${classes.toolResetButton}`} onClick={handleResetFilter}>
                               Reset
                             </Button>
                           </div>
@@ -558,10 +556,7 @@ const EnhancedTableToolbar = (props) => {
                     )}
                   </div>
                   <Tooltip title="Refresh">
-                    <Button
-                      className={`${classes.toolButton} ${isOpenSearch ? classes.toolButtonActive : ''}`}
-                      onClick={handleRefresh}
-                    >
+                    <Button className={`${classes.toolButton} ${isOpenSearch ? classes.toolButtonActive : ''}`} onClick={handleRefresh}>
                       <CachedIcon className={classes.toolButtonIcon} />
                     </Button>
                   </Tooltip>

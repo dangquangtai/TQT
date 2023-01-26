@@ -15,8 +15,7 @@ export const apiEndpoints = {
   get_account_detail: '/Primary/?FlowAlias=bs_api_user_get_account_by_id&action=api',
   create_account: '/Primary/?FlowAlias=bs_api_user_create_account_by_host&action=api',
   update_account: '/Primary/?FlowAlias=bs_api_user_update_account_by_id&action=api',
-  get_all_account_by_department_and_role_template:
-    '/Primary/?FlowAlias=bs_api_user_get_all_acount_by_departmentand_role_template&action=api',
+  get_all_account_by_department_and_role_template: '/Primary/?FlowAlias=bs_api_user_get_all_acount_by_departmentand_role_template&action=api',
   assign_account_to_dept: '/Primary/?FlowAlias=bs_api_user_api_assign_account_to_department&action=api',
   remove_account_from_dept: '/Primary/?FlowAlias=bs_api_user_api_remove_account_from_department&action=api',
   active_account: '/Primary/?FlowAlias=bs_api_user_active_account&action=api',
@@ -27,17 +26,14 @@ export const apiEndpoints = {
   get_all_account_list: '/Primary/?FlowAlias=bs_api_booking_user_get_all_account&action=api',
 
   //Role template
-  get_all_active_role_template:
-    '/Primary/?FlowAlias=bs_api_role_template_get_all_active_role_template_by_page&action=api',
+  get_all_active_role_template: '/Primary/?FlowAlias=bs_api_role_template_get_all_active_role_template_by_page&action=api',
   active_role_template: '/Primary/?FlowAlias=bs_api_role_template_active_role_template&action=api',
   get_detail_role_template: '/Primary/?FlowAlias=bs_api_role_template_get_detail_role_template&action=api',
-  get_all_inactive_role_template:
-    '/Primary/?FlowAlias=bs_api_role_template_get_all_inactive_role_template_by_page&action=api',
+  get_all_inactive_role_template: '/Primary/?FlowAlias=bs_api_role_template_get_all_inactive_role_template_by_page&action=api',
   create_role_template: '/Primary/?FlowAlias=bs_api_role_template_create_role_template&action=api',
   update_role_template: '/Primary/?FlowAlias=bs_api_role_template_create_role_template&action=api',
   get_role_tree_data: '/Primary/?FlowAlias=bs_api_process_role_get_tree_data_role&action=api',
-  get_all_role_template_by_department_code:
-    '/Primary/?FlowAlias=bs_api_dept_get_role_template_by_department_code&action=api',
+  get_all_role_template_by_department_code: '/Primary/?FlowAlias=bs_api_dept_get_role_template_by_department_code&action=api',
   get_option_role_template: '/Primary/?FlowAlias=bs_api_role_template_get_optinal_role&action=api',
   add_account_to_group: '/Primary/?FlowAlias=bs_api_user_add_acount_to_group&action=api',
   remove_account_to_group: '/Primary/?FlowAlias=bs_api_user_remove_account_from_group&action=api',
@@ -122,13 +118,10 @@ export const apiEndpoints = {
   create_work_order: '/Primary/?FlowAlias=bs_api_factory_create_production_request&action=api',
   get_work_order_detail: '/Primary/?FlowAlias=bs_api_factory_get_production_request&action=api',
   update_work_order: '/Primary/?FlowAlias=bs_api_factory_update_production_daily_request&action=api',
-  check_daily_workorder_material_avaiability:
-    '/Primary/?FlowAlias=bs_api_factory_check_daily_workorder_material_avaiability&action=api',
+  check_daily_workorder_material_avaiability: '/Primary/?FlowAlias=bs_api_factory_check_daily_workorder_material_avaiability&action=api',
   get_material_inventory: '/Primary/?FlowAlias=bs_api_factory_get_material_inventory&action=api',
-  create_material_requisition_request_daily:
-    '/Primary/?FlowAlias=bs_api_factory_create_daily_request_requisition&action=api',
-  get_material_requisition_daily_detail:
-    '/Primary/?FlowAlias=bs_api_factory_get_material_daily_requisition_detail&action=api',
+  create_material_requisition_request_daily: '/Primary/?FlowAlias=bs_api_factory_create_daily_request_requisition&action=api',
+  get_material_requisition_daily_detail: '/Primary/?FlowAlias=bs_api_factory_get_material_daily_requisition_detail&action=api',
   get_part_list: '/Primary/?FlowAlias=bs_api_factory_get_part_list&action=api',
   get_link_download_workorder: '/Primary/?FlowAlias=bs_api_factory_get_link_export_workorder_daily&action=api',
 
@@ -166,8 +159,7 @@ export const apiEndpoints = {
 
   // Material Inventory Check
   get_material_inventory_check_list: '/Primary/?FlowAlias=bs_api_factory_get_material_inventory_check_list&action=api',
-  get_material_inventory_check_detail:
-    '/Primary/?FlowAlias=bs_api_factory_get_material_inventory_check_detail&action=api',
+  get_material_inventory_check_detail: '/Primary/?FlowAlias=bs_api_factory_get_material_inventory_check_detail&action=api',
   create_material_inventory_check: '/Primary/?FlowAlias=bs_api_factory_create_material_inventory_check&action=api',
   update_material_inventory_check: '/Primary/?FlowAlias=bs_api_factory_update_material_inventory_check&action=api',
   get_more_inventory_check: '/Primary/?FlowAlias=bs_api_factory_get_inventory_check_more&action=api',
@@ -182,8 +174,7 @@ export const apiEndpoints = {
   update_purchase_material: '/Primary/?FlowAlias=bs_api_factory_update_purchase_material&action=api',
   get_purchase_material_status: '/Primary/?FlowAlias=bs_api_factory_get_purchase_material_status&action=api',
   get_purchase_material_by_status: '/Primary/?FlowAlias=bs_api_factory_get_purchase_material_by_status&action=api',
-  get_purchase_material_detail_by_order_id:
-    '/Primary/?FlowAlias=bs_api_factory_get_purchase_material_by_order_id&action=api',
+  get_purchase_material_detail_by_order_id: '/Primary/?FlowAlias=bs_api_factory_get_purchase_material_by_order_id&action=api',
   delete_purchase_material: '/Primary/?FlowAlias=bs_api_factory_delete_purchase_material&action=api',
 
   // Received Material
@@ -193,6 +184,13 @@ export const apiEndpoints = {
   update_received_material: '/Primary/?FlowAlias=bs_api_factory_update_received_material&action=api',
   get_received_material_status: '/Primary/?FlowAlias=bs_api_factory_get_received_material_status&action=api',
   delete_received_material: '/Primary/?FlowAlias=bs_api_factory_delete_received_material&action=api',
+
+  // Material Warehouse
+  get_material_warehouse_list: '/Primary/?FlowAlias=bs_api_factory_get_material_warehouse_list&action=api',
+  get_material_warehouse_detail: '/Primary/?FlowAlias=bs_api_factory_get_material_warehouse_detail&action=api',
+  create_material_warehouse: '/Primary/?FlowAlias=bs_api_factory_create_material_warehouse&action=api',
+  update_material_warehouse: '/Primary/?FlowAlias=bs_api_factory_update_material_warehouse&action=api',
+  active_material_warehouse: '/Primary/?FlowAlias=bs_api_factory_active_material_warehouse&action=api',
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
@@ -247,7 +245,7 @@ export const supplierActions = {
 export const warehouseCategoryActions = {
   list_warehouse_category: 'TQT_MATERIAL_DEFAULT_OPEN_WAREHOUSE_CATEGORY_LIST',
 };
-export const warehouseActions = {
+export const materialWarehouseActions = {
   list_warehouse: 'TQT_SETTING_DEFAULT_OPEN_MATERIALWHS_LIST',
 };
 export const materialInventoryActions = {
