@@ -210,8 +210,7 @@ export const useStyles = makeStyles((theme) => ({
     minWidth: '34px',
     borderRadius: '50%',
     background: '#36f',
-    boxShadow:
-      '0px 3px 5px -1px rgb(0 0 0 / 20%), 0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)',
+    boxShadow: '0px 3px 5px -1px rgb(0 0 0 / 20%), 0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)',
     '&:hover': {
       background: '#0043a9',
     },
@@ -309,5 +308,13 @@ export const useStyles = makeStyles((theme) => ({
   },
   styleStatus15: {
     background: '#24a9bf !important',
+  },
+  textOverflow450: {
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    maxWidth: '450px',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
 }));

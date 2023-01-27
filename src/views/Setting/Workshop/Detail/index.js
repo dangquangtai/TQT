@@ -23,7 +23,7 @@ import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../../store/actions
 import { DescriptionOutlined as DescriptionOutlinedIcon } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import { SNACKBAR_OPEN } from './../../../../store/actions';
-import { createMaterialWarehouse, updateMaterialWarehouse } from './../../../../services/api/Material/Warehouse';
+import { createWorkshop, updateWorkshop } from './../../../../services/api/Setting/Workshop';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -51,22 +51,22 @@ function a11yProps(index) {
   };
 }
 
-const MaterialWarehouseModal = () => {
+const WorkshopModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
   const { form_buttons: formButtons } = useView();
-  const buttonSave = formButtons.find((button) => button.name === view.warehouse.detail.save);
-  const { materialWarehouseDocument: openDialog } = useSelector((state) => state.floatingMenu);
+  const buttonSave = formButtons.find((button) => button.name === view.workshop.detail.save);
+  const { workshopDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
   const [tabIndex, setTabIndex] = React.useState(0);
 
-  const [materialWarehouseData, setMaterialWarehouseData] = useState({});
+  const [workshopData, setWorkshopData] = useState({});
   const { provinces } = useSelector((state) => state.metadata);
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
-    dispatch({ type: FLOATING_MENU_CHANGE, materialMaterialWarehouseDocument: false });
+    dispatch({ type: FLOATING_MENU_CHANGE, materialWorkshopDocument: false });
   };
 
   const handleChangeTab = (event, newValue) => {
@@ -84,25 +84,25 @@ const MaterialWarehouseModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setMaterialWarehouseData({});
+    setWorkshopData({});
     setTabIndex(0);
   };
 
   const handleChanges = (e) => {
     const { name, value } = e.target;
-    setMaterialWarehouseData({ ...materialWarehouseData, [name]: value });
+    setWorkshopData({ ...workshopData, [name]: value });
   };
 
   const handleSubmit = async () => {
     try {
       if (selectedDocument) {
-        await updateMaterialWarehouse(materialWarehouseData);
-        handleOpenSnackbar('success', 'Cập nhật kho vật tư thành công!');
+        await updateWorkshop(workshopData);
+        handleOpenSnackbar('success', 'Cập nhật xưởng sản xuất thành công!');
       } else {
-        await createMaterialWarehouse(materialWarehouseData);
-        handleOpenSnackbar('success', 'Tạo mới kho vật tư thành công!');
+        await createWorkshop(workshopData);
+        handleOpenSnackbar('success', 'Tạo mới xưởng sản xuất thành công!');
       }
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'materialWarehouse' });
+      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'Workshop' });
       handleCloseDialog();
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
@@ -111,8 +111,8 @@ const MaterialWarehouseModal = () => {
 
   useEffect(() => {
     if (!selectedDocument) return;
-    setMaterialWarehouseData({
-      ...materialWarehouseData,
+    setWorkshopData({
+      ...workshopData,
       ...selectedDocument,
     });
   }, [selectedDocument]);
@@ -123,7 +123,7 @@ const MaterialWarehouseModal = () => {
         <Dialog open={openDialog || false} TransitionComponent={Transition} keepMounted onClose={handleCloseDialog} className={classes.partnerdialog}>
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              Kho vật tư
+              Xưởng sản xuất
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -163,16 +163,65 @@ const MaterialWarehouseModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tên kho:</span>
+                              <span className={classes.tabItemLabelField}>Mã xưởng:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
                                 variant="outlined"
-                                name="warehouse_name"
+                                name="workshop_code"
                                 size="small"
                                 type="text"
-                                value={materialWarehouseData.warehouse_name}
+                                value={workshopData.workshop_code}
+                                onChange={handleChanges}
+                              />
+                            </Grid>
+                          </Grid>
+                          <Grid container className={classes.gridItem} alignItems="center">
+                            <Grid item lg={4} md={4} xs={4}>
+                              <span className={classes.tabItemLabelField}>Tên xưởng:</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={8}>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="workshop_name"
+                                size="small"
+                                type="text"
+                                value={workshopData.workshop_name}
+                                onChange={handleChanges}
+                              />
+                            </Grid>
+                          </Grid>
+                          <Grid container className={classes.gridItem} alignItems="center">
+                            <Grid item lg={4} md={4} xs={4}>
+                              <span className={classes.tabItemLabelField}>Số người làm:</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={8}>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="default_no_worker"
+                                size="small"
+                                type="number"
+                                value={workshopData.default_no_worker}
+                                onChange={handleChanges}
+                              />
+                            </Grid>
+                          </Grid>
+
+                          <Grid container className={classes.gridItem} alignItems="center">
+                            <Grid item lg={4} md={4} xs={4}>
+                              <span className={classes.tabItemLabelField}>Số giờ làm:</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={8}>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="default_no_working_hour"
+                                size="small"
+                                type="number"
+                                value={workshopData.default_no_working_hour}
                                 onChange={handleChanges}
                               />
                             </Grid>
@@ -188,7 +237,7 @@ const MaterialWarehouseModal = () => {
                                 minRows={2}
                                 variant="outlined"
                                 name="address"
-                                value={materialWarehouseData.address}
+                                value={workshopData.address}
                                 size="small"
                                 type="text"
                                 onChange={handleChanges}
@@ -205,7 +254,7 @@ const MaterialWarehouseModal = () => {
                                 fullWidth
                                 variant="outlined"
                                 name="province_id"
-                                value={materialWarehouseData?.province_id || ''}
+                                value={workshopData?.province_id || ''}
                                 size="small"
                                 onChange={handleChanges}
                               >
@@ -223,8 +272,8 @@ const MaterialWarehouseModal = () => {
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <Switch
-                                checked={materialWarehouseData.is_active || true}
-                                onChange={(e) => setMaterialWarehouseData({ ...materialWarehouseData, is_active: e.target.checked })}
+                                checked={workshopData.is_active || true}
+                                onChange={(e) => setWorkshopData({ ...workshopData, is_active: e.target.checked })}
                                 color="primary"
                               />
                             </Grid>
@@ -259,4 +308,4 @@ const MaterialWarehouseModal = () => {
   );
 };
 
-export default MaterialWarehouseModal;
+export default WorkshopModal;

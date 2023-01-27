@@ -29,6 +29,7 @@ import InventoryCheckModal from './../../views/Material/InventoryCheck/Detail/in
 import PurchaseMaterialModal from './../../views/Material/Purchase/Detail/index';
 import ReceivedMaterialModal from './../../views/Material/Received/Detail/index';
 import MaterialWarehouseModal from './../../views/Material/Warehouse/Detail/index';
+import WorkshopModal from './../../views/Setting/Workshop/Detail/index';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -128,6 +129,8 @@ const MainLayout = ({ children }) => {
         return <ReceivedMaterialModal />;
       case 'materialWarehouse':
         return <MaterialWarehouseModal />;
+      case 'workshop':
+        return <WorkshopModal />;
       default:
         return null;
     }
