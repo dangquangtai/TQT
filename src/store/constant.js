@@ -198,6 +198,13 @@ export const apiEndpoints = {
   create_workshop: '/Primary/?FlowAlias=bs_api_factory_create_workshop&action=api',
   update_workshop: '/Primary/?FlowAlias=bs_api_factory_update_workshop&action=api',
   active_workshop: '/Primary/?FlowAlias=bs_api_factory_active_workshop&action=api',
+
+  // Product Warehouse
+  get_product_warehouse_list: '/Primary/?FlowAlias=bs_api_factory_get_product_warehouse_list&action=api',
+  get_product_warehouse_detail: '/Primary/?FlowAlias=bs_api_factory_get_product_warehouse_detail&action=api',
+  create_product_warehouse: '/Primary/?FlowAlias=bs_api_factory_create_product_warehouse&action=api',
+  update_product_warehouse: '/Primary/?FlowAlias=bs_api_factory_update_product_warehouse&action=api',
+  active_product_warehouse: '/Primary/?FlowAlias=bs_api_factory_active_product_warehouse&action=api',
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
@@ -269,6 +276,9 @@ export const receivedMaterialActions = {
 };
 export const workshopActions = {
   list_workshop: 'TQT_SETTING_DEFAULT_OPEN_WORKSHOP_LIST',
+};
+export const productWarehouseActions = {
+  list_product_warehouse: 'TQT_SETTING_DEFAULT_OPEN_PRODUCT_WAREHOUSE_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -437,6 +447,14 @@ export const view = {
     },
     detail: {
       save: 'TQT_SETTING_DEFAULT_WORKSHOP_SAVE_FORM_BUTTON',
+    },
+  },
+  productWarehouse: {
+    list: {
+      create: 'TQT_SETTING_DEFAULT_PRODUCT_WAREHOUSE_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_SETTING_DEFAULT_PRODUCT_WAREHOUSE_SAVE_FORM_BUTTON',
     },
   },
 };
