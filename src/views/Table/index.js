@@ -49,22 +49,22 @@ import { getDetailInventory } from './../../services/api/Material/Inventory';
 import { getDetailInventoryCheck } from './../../services/api/Material/InventoryCheck';
 import { getDetailPurchaseMaterial } from './../../services/api/Material/Purchase';
 import { getDetailReceivedMaterial } from './../../services/api/Material/Received';
+import { getDetailMaterialWarehouse } from './../../services/api/Material/Warehouse';
+import { getDetailWorkshop } from './../../services/api/Setting/Workshop';
+import { getDetailProductWarehouse } from './../../services/api/Product/Warehouse';
+
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
-  return await axiosInstance
-    .post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured })
-    .then((response) => {
-      if (response.status === 200 && response.data.return === 200) return true;
-      else return false;
-    });
+  return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
+    if (response.status === 200 && response.data.return === 200) return true;
+    else return false;
+  });
 }
 
 async function setActive(setActiveUrl, documentId, isActive) {
-  return await axiosInstance
-    .post(setActiveUrl, { outputtype: 'RawJson', id: documentId, value: isActive })
-    .then((response) => {
-      if (response.status === 200 && response.data.return === 200) return true;
-      else return false;
-    });
+  return await axiosInstance.post(setActiveUrl, { outputtype: 'RawJson', id: documentId, value: isActive }).then((response) => {
+    if (response.status === 200 && response.data.return === 200) return true;
+    else return false;
+  });
 }
 
 export default function GeneralTable(props) {
@@ -126,6 +126,9 @@ export default function GeneralTable(props) {
       order_code: tableColumns.includes('order_code'),
       received_code: tableColumns.includes('received_code'),
       received_date: tableColumns.includes('received_date'),
+      warehouse_name: tableColumns.includes('warehouse_name'),
+      province_name: tableColumns.includes('province_name'),
+      workshop_name: tableColumns.includes('workshop_name'),
     };
     setDisplayOptions(initOptions);
   }, [tableColumns, selectedFolder]);
@@ -154,19 +157,19 @@ export default function GeneralTable(props) {
   const buttonCreateSupplierCategory = menuButtons.find((button) => button.name === view.supplierCategory.list.create);
   const buttonCreateProductCategory = menuButtons.find((button) => button.name === view.productCategory.list.create);
   const buttonCreateCustomerCategory = menuButtons.find((button) => button.name === view.customerCategory.list.create);
-  const buttonCreateWarehouseCategory = menuButtons.find(
-    (button) => button.name === view.warehouseCategory.list.create
-  );
+  const buttonCreateWarehouseCategory = menuButtons.find((button) => button.name === view.warehouseCategory.list.create);
   const buttonCreateOrder = menuButtons.find((button) => button.name === view.order.list.create);
   const buttonCreateWorkorder = menuButtons.find((button) => button.name === view.workorder.list.create);
 
   const buttonCreateCustomer = menuButtons.find((button) => button.name === view.customer.list.create);
   const buttonCreateSupplier = menuButtons.find((button) => button.name === view.supplier.list.create);
-  const buttonCreateInventoryCheck = menuButtons.find(
-    (button) => button.name === view.materialInventoryCheck.list.create
-  );
+  const buttonCreateInventoryCheck = menuButtons.find((button) => button.name === view.materialInventoryCheck.list.create);
   const buttonCreatePurchaseMaterial = menuButtons.find((button) => button.name === view.purchaseMaterial.list.create);
   const buttonCreateReceivedMaterial = menuButtons.find((button) => button.name === view.receivedMaterial.list.create);
+
+  const buttonCreateMaterialWarehouse = menuButtons.find((button) => button.name === view.warehouse.list.create);
+  const buttonCreateWorkshop = menuButtons.find((button) => button.name === view.workshop.list.create);
+  const buttonCreateProductWarehouse = menuButtons.find((button) => button.name === view.productWarehouse.list.create);
 
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -457,6 +460,21 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, receivedMaterialDocument: true });
         break;
+      case 'materialWarehouse':
+        detailDocument = await getDetailMaterialWarehouse(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, materialWarehouseDocument: true });
+        break;
+      case 'workshop':
+        detailDocument = await getDetailWorkshop(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, workshopDocument: true });
+        break;
+      case 'productWarehouse':
+        detailDocument = await getDetailProductWarehouse(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, productWarehouseDocument: true });
+        break;
       default:
         break;
     }
@@ -502,6 +520,15 @@ export default function GeneralTable(props) {
       case 'receivedMaterial':
         dispatch({ type: FLOATING_MENU_CHANGE, receivedMaterialDocument: true });
         break;
+      case 'materialWarehouse':
+        dispatch({ type: FLOATING_MENU_CHANGE, materialWarehouseDocument: true });
+        break;
+      case 'workshop':
+        dispatch({ type: FLOATING_MENU_CHANGE, workshopDocument: true });
+        break;
+      case 'productWarehouse':
+        dispatch({ type: FLOATING_MENU_CHANGE, productWarehouseDocument: true });
+        break;
       default:
         break;
     }
@@ -544,13 +571,7 @@ export default function GeneralTable(props) {
     fetchDocument({ page: pageCurrent });
   };
 
-  const showConfirmPopup = ({
-    title = 'Thông báo',
-    message = 'Yêu cầu lựa chọn ít nhất một bản ghi',
-    action = null,
-    payload = null,
-    onSuccess = null,
-  }) => {
+  const showConfirmPopup = ({ title = 'Thông báo', message = 'Yêu cầu lựa chọn ít nhất một bản ghi', action = null, payload = null, onSuccess = null }) => {
     setConfirmPopup({ type: CONFIRM_CHANGE, open: true, title, message, action, payload, onSuccess });
   };
 
@@ -707,6 +728,66 @@ export default function GeneralTable(props) {
 
   const clickSuccess = () => {};
 
+  const toolbarProps = {
+    categories,
+    numSelected: selected.length,
+    handleFilterChange,
+    handleShowColumn,
+    displayOptions,
+    data: stableSort(documents || [], getComparator(order, orderBy)),
+    btnCreateNewAccount: buttonAccountCreate,
+    createNewAccount: openDialogCreate,
+    handleSyncRole,
+    handleAssignAccount,
+    btnCreateNewDept: buttonDeptCreate,
+    buttonDeptUpdate,
+    buttondeactiveDepartment,
+    buttonDeptAddUser,
+    roletemplateList,
+    userList,
+    deptList,
+    createNewDept: openDialogCreate,
+    buttonCreateWorkorder,
+    createWorkorder: openDialogCreate,
+    buttonCreateRole,
+    createNewRole: openDialogCreate,
+    getDepartmentList: getDepartmentListGroup,
+    buttonSyncDepartment,
+    handleUpdateDepartment,
+    handleDeactiveDepartment,
+    syncRole,
+    department_code_selected,
+    setSelectedRoleTemplate,
+    buttonCreateProcessRole,
+    createNewProcessRole: handleClickCreateProcessRole,
+    buttonUpdateProcessRole,
+    buttonUpdateDeptRole,
+    setSelectedDepartment,
+    handleClickProcessRoleDetail,
+    handleAddDeptUser,
+    handleClickUpdateUserProcessRole,
+    handleClickUpdateDeptProcessRole,
+    buttonAddDeptRole,
+    buttonAddAccountRole,
+    buttonSyncRole,
+    handleSyncProcessRole,
+    handleCreate: openDialogCreate,
+    buttonCreateMaterialCategory,
+    buttonCreateSupplierCategory,
+    buttonCreateProductCategory,
+    buttonCreateCustomerCategory,
+    buttonCreateOrder,
+    buttonCreateCustomer,
+    buttonCreateSupplier,
+    buttonCreateWarehouseCategory,
+    buttonCreateInventoryCheck,
+    buttonCreatePurchaseMaterial,
+    buttonCreateReceivedMaterial,
+    buttonCreateMaterialWarehouse,
+    buttonCreateWorkshop,
+    buttonCreateProductWarehouse,
+  };
+
   return (
     <React.Fragment>
       <Grid container spacing={gridSpacing}>
@@ -719,62 +800,7 @@ export default function GeneralTable(props) {
         <Grid item xs={12}>
           <Card className={classes.root}>
             <Paper className={classes.paper}>
-              <EnhancedTableToolbar
-                categories={categories}
-                numSelected={selected.length}
-                handleFilterChange={handleFilterChange}
-                handleShowColumn={handleShowColumn}
-                displayOptions={displayOptions}
-                data={stableSort(documents || [], getComparator(order, orderBy))}
-                btnCreateNewAccount={buttonAccountCreate}
-                createNewAccount={openDialogCreate}
-                handleSyncRole={handleSyncRole}
-                handleAssignAccount={handleAssignAccount}
-                btnCreateNewDept={buttonDeptCreate}
-                buttonDeptUpdate={buttonDeptUpdate}
-                buttondeactiveDepartment={buttondeactiveDepartment}
-                buttonDeptAddUser={buttonDeptAddUser}
-                roletemplateList={roletemplateList}
-                userList={userList}
-                deptList={deptList}
-                createNewDept={openDialogCreate}
-                buttonCreateWorkorder={buttonCreateWorkorder}
-                createWorkorder={openDialogCreate}
-                buttonCreateRole={buttonCreateRole}
-                createNewRole={openDialogCreate}
-                getDepartmentList={getDepartmentListGroup}
-                buttonSyncDepartment={buttonSyncDepartment}
-                handleUpdateDepartment={handleUpdateDepartment}
-                handleDeactiveDepartment={handleDeactiveDepartment}
-                syncRole={syncRole}
-                department_code_selected={department_code_selected}
-                setSelectedRoleTemplate={setSelectedRoleTemplate}
-                buttonCreateProcessRole={buttonCreateProcessRole}
-                createNewProcessRole={handleClickCreateProcessRole}
-                buttonUpdateProcessRole={buttonUpdateProcessRole}
-                buttonUpdateDeptRole={buttonUpdateDeptRole}
-                setSelectedDepartment={setSelectedDepartment}
-                handleClickProcessRoleDetail={handleClickProcessRoleDetail}
-                handleAddDeptUser={handleAddDeptUser}
-                handleClickUpdateUserProcessRole={handleClickUpdateUserProcessRole}
-                handleClickUpdateDeptProcessRole={handleClickUpdateDeptProcessRole}
-                buttonAddDeptRole={buttonAddDeptRole}
-                buttonAddAccountRole={buttonAddAccountRole}
-                buttonSyncRole={buttonSyncRole}
-                handleSyncProcessRole={handleSyncProcessRole}
-                handleCreate={openDialogCreate}
-                buttonCreateMaterialCategory={buttonCreateMaterialCategory}
-                buttonCreateSupplierCategory={buttonCreateSupplierCategory}
-                buttonCreateProductCategory={buttonCreateProductCategory}
-                buttonCreateCustomerCategory={buttonCreateCustomerCategory}
-                buttonCreateOrder={buttonCreateOrder}
-                buttonCreateCustomer={buttonCreateCustomer}
-                buttonCreateSupplier={buttonCreateSupplier}
-                buttonCreateWarehouseCategory={buttonCreateWarehouseCategory}
-                buttonCreateInventoryCheck={buttonCreateInventoryCheck}
-                buttonCreatePurchaseMaterial={buttonCreatePurchaseMaterial}
-                buttonCreateReceivedMaterial={buttonCreateReceivedMaterial}
-              />
+              <EnhancedTableToolbar {...toolbarProps} />
               <Grid container spacing={gridSpacing}>
                 {(documentType === 'department' || documentType === 'processrole') && (
                   <Grid item xs={4}>
@@ -800,13 +826,7 @@ export default function GeneralTable(props) {
                   <TableContainer>
                     <Table
                       stickyHeader
-                      className={
-                        documentType === 'department'
-                          ? classes.table2
-                          : documentType === 'processrole'
-                          ? classes.table3
-                          : classes.table
-                      }
+                      className={documentType === 'department' ? classes.table2 : documentType === 'processrole' ? classes.table3 : classes.table}
                       aria-labelledby="tableTitle"
                       size={'medium'}
                       // aria-label="enhanced table"
@@ -856,191 +876,120 @@ export default function GeneralTable(props) {
                                 </TableCell>
                               )}
                               {displayOptions.received_code && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.tableItemName}>
                                   {row.received_code}
                                 </TableCell>
                               )}
                               {displayOptions.order_code && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.tableItemName}>
                                   {row.order_code}
                                 </TableCell>
                               )}
                               {displayOptions.part_code && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.tableItemName}>
                                   {row.part_code}
                                 </TableCell>
                               )}
                               {displayOptions.product_code && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.tableItemName}>
                                   {row.product_code}
                                 </TableCell>
                               )}
                               {displayOptions.customer_code && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.tableItemName}>
                                   {row.customer_code}
                                 </TableCell>
                               )}
                               {displayOptions.supplier_code && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.tableItemName}>
                                   {row.supplier_code}
                                 </TableCell>
                               )}
                               {displayOptions.inventory_check_code && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.tableItemName}>
                                   {row.inventory_check_code}
                                 </TableCell>
                               )}
                               {displayOptions.title && (
-                                <TableCell
-                                  style={{ maxWidth: 450, overflow: 'hidden', textOverflow: 'ellipsis' }}
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.textOverflow450}>
                                   {row.title}
                                 </TableCell>
                               )}
                               {displayOptions.part_name && (
-                                <TableCell
-                                  style={{ maxWidth: 450, overflow: 'hidden', textOverflow: 'ellipsis' }}
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.textOverflow450}>
                                   {row.part_name || row.title}
                                 </TableCell>
                               )}
                               {displayOptions.product_name && (
-                                <TableCell
-                                  style={{ maxWidth: 450, overflow: 'hidden', textOverflow: 'ellipsis' }}
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.textOverflow450}>
                                   {row.product_name || row.title}
                                 </TableCell>
                               )}
                               {displayOptions.customer_name && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.tableItemName}>
                                   {row.customer_name || row.title}
                                 </TableCell>
                               )}
                               {displayOptions.supplier_name && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.tableItemName}>
                                   {row.supplier_name || row.title}
                                 </TableCell>
                               )}
+                              {displayOptions.warehouse_name && (
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.textOverflow450}>
+                                  {row.warehouse_name}
+                                </TableCell>
+                              )}
+                              {displayOptions.workshop_name && (
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.textOverflow450}>
+                                  {row.workshop_name}
+                                </TableCell>
+                              )}
+                              {displayOptions.province_name && (
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.textOverflow450}>
+                                  {row.province_name}
+                                </TableCell>
+                              )}
                               {displayOptions.category_name && (
-                                <TableCell
-                                  style={{ maxWidth: 450, overflow: 'hidden', textOverflow: 'ellipsis' }}
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.textOverflow450}>
                                   {row.category_name}
                                 </TableCell>
                               )}
                               {/* {displayOptions.customer_name && <TableCell align="left">{row.customer_name}</TableCell>} */}
-                              {displayOptions.product_customer_code && (
-                                <TableCell align="left">{row.product_customer_code}</TableCell>
-                              )}
-                              {displayOptions.no_piece_per_box && (
-                                <TableCell align="left">{row.no_piece_per_box}</TableCell>
-                              )}
-                              {displayOptions.productivity_per_worker && (
-                                <TableCell align="left">{row.productivity_per_worker}</TableCell>
-                              )}
+                              {displayOptions.product_customer_code && <TableCell align="left">{row.product_customer_code}</TableCell>}
+                              {displayOptions.no_piece_per_box && <TableCell align="left">{row.no_piece_per_box}</TableCell>}
+                              {displayOptions.productivity_per_worker && <TableCell align="left">{row.productivity_per_worker}</TableCell>}
                               {displayOptions.order_date && (
-                                <TableCell align="left">
-                                  {row.order_date ? formatDate(new Date(row.order_date), 'dd/MM/yyyy') : ''}
-                                </TableCell>
+                                <TableCell align="left">{row.order_date ? formatDate(new Date(row.order_date), 'dd/MM/yyyy') : ''}</TableCell>
                               )}
                               {displayOptions.inventory_check_date && (
                                 <TableCell align="left">
-                                  {row.inventory_check_date
-                                    ? formatDate(new Date(row.inventory_check_date), 'dd/MM/yyyy')
-                                    : ''}
+                                  {row.inventory_check_date ? formatDate(new Date(row.inventory_check_date), 'dd/MM/yyyy') : ''}
                                 </TableCell>
                               )}
                               {displayOptions.expected_deliver_date && (
                                 <TableCell align="left">
-                                  {row.expected_deliver_date
-                                    ? formatDate(new Date(row.expected_deliver_date), 'dd/MM/yyyy')
-                                    : ''}
+                                  {row.expected_deliver_date ? formatDate(new Date(row.expected_deliver_date), 'dd/MM/yyyy') : ''}
                                 </TableCell>
                               )}
                               {displayOptions.received_date && (
-                                <TableCell align="left">
-                                  {row.received_date ? formatDate(new Date(row.received_date), 'dd/MM/yyyy') : ''}
-                                </TableCell>
+                                <TableCell align="left">{row.received_date ? formatDate(new Date(row.received_date), 'dd/MM/yyyy') : ''}</TableCell>
                               )}
                               {displayOptions.account_id && (
-                                <TableCell
-                                  align="left"
-                                  className={classes.tableItemName}
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                >
+                                <TableCell align="left" className={classes.tableItemName} onClick={(event) => openDetailDocument(event, row)}>
                                   {row.account_id}
                                 </TableCell>
                               )}
-                              {displayOptions.department_name && (
-                                <TableCell align="left">{row.department_name}</TableCell>
-                              )}
-                              {displayOptions.department_parent && (
-                                <TableCell align="left">{row.parent_department_name}</TableCell>
-                              )}
+                              {displayOptions.department_name && <TableCell align="left">{row.department_name}</TableCell>}
+                              {displayOptions.department_parent && <TableCell align="left">{row.parent_department_name}</TableCell>}
                               {displayOptions.number_member && <TableCell align="left">{row.number_member}</TableCell>}
                               {displayOptions.full_name && (
-                                <TableCell
-                                  align="left"
-                                  className={classes.tableItemName}
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                >
+                                <TableCell align="left" className={classes.tableItemName} onClick={(event) => openDetailDocument(event, row)}>
                                   {row.full_name}
                                 </TableCell>
                               )}
-                              {displayOptions.email_address && (
-                                <TableCell align="left">{row.email_address || ''}</TableCell>
-                              )}
-                              {displayOptions.number_phone && (
-                                <TableCell align="left">{row.number_phone || ''}</TableCell>
-                              )}
+                              {displayOptions.email_address && <TableCell align="left">{row.email_address || ''}</TableCell>}
+                              {displayOptions.number_phone && <TableCell align="left">{row.number_phone || ''}</TableCell>}
                               {displayOptions.role_template_name && (
                                 <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
                                   {row.role_template_name}
@@ -1053,45 +1002,29 @@ export default function GeneralTable(props) {
                               {displayOptions.visible_for_selection && (
                                 <TableCell align="left">
                                   <>
-                                    <FormControlLabel
-                                      control={<Switch color="primary" checked={row.is_approval_role} />}
-                                    />
+                                    <FormControlLabel control={<Switch color="primary" checked={row.is_approval_role} />} />
                                   </>
                                 </TableCell>
                               )}
                               {displayOptions.is_part_list_available && (
                                 <TableCell align="left">
-                                  {row.is_part_list_available ? (
-                                    <Chip label="Có" color="primary" />
-                                  ) : (
-                                    <Chip label="Không" color="secondary" />
-                                  )}
+                                  {row.is_part_list_available ? <Chip label="Có" color="primary" /> : <Chip label="Không" color="secondary" />}
                                 </TableCell>
                               )}
                               {displayOptions.approval_role && (
                                 <TableCell align="left">
                                   <>
-                                    <FormControlLabel
-                                      control={<Switch color="primary" checked={row.is_visible_for_selection} />}
-                                    />
+                                    <FormControlLabel control={<Switch color="primary" checked={row.is_visible_for_selection} />} />
                                   </>
                                 </TableCell>
                               )}
                               {displayOptions.amount && <TableCell align="left">{row.amount || ''}</TableCell>}
-                              {displayOptions.quantity_in_piece && (
-                                <TableCell align="left">{row.quantity_in_piece}</TableCell>
-                              )}
-                              {displayOptions.quantity_in_box && (
-                                <TableCell align="left">{row.quantity_in_box}</TableCell>
-                              )}
-                              {displayOptions.broken_quantity_in_piece && (
-                                <TableCell align="left">{row.broken_quantity_in_piece}</TableCell>
-                              )}
+                              {displayOptions.quantity_in_piece && <TableCell align="left">{row.quantity_in_piece}</TableCell>}
+                              {displayOptions.quantity_in_box && <TableCell align="left">{row.quantity_in_box}</TableCell>}
+                              {displayOptions.broken_quantity_in_piece && <TableCell align="left">{row.broken_quantity_in_piece}</TableCell>}
                               {displayOptions.created_by && <TableCell align="left">{row.created_by || ''}</TableCell>}
                               {displayOptions.created_date && (
-                                <TableCell align="left">
-                                  {row.created_date ? formatDate(new Date(row.created_date), 'dd/MM/yyyy') : ''}
-                                </TableCell>
+                                <TableCell align="left">{row.created_date ? formatDate(new Date(row.created_date), 'dd/MM/yyyy') : ''}</TableCell>
                               )}
                               {displayOptions.order__title && (
                                 <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
@@ -1116,24 +1049,14 @@ export default function GeneralTable(props) {
                               {displayOptions.is_active && (
                                 <TableCell align="left">
                                   <FormControlLabel
-                                    control={
-                                      <Switch
-                                        checked={row.is_active}
-                                        onClick={(event) => toggleSetActive(event, row, event.target.checked)}
-                                      />
-                                    }
+                                    control={<Switch checked={row.is_active} onClick={(event) => toggleSetActive(event, row, event.target.checked)} />}
                                   />
                                 </TableCell>
                               )}
                               {displayOptions.is_featured && (
                                 <TableCell align="left">
                                   <FormControlLabel
-                                    control={
-                                      <Switch
-                                        checked={row.is_featured}
-                                        onClick={(event) => toggleSetFeatured(event, row, event.target.checked)}
-                                      />
-                                    }
+                                    control={<Switch checked={row.is_featured} onClick={(event) => toggleSetFeatured(event, row, event.target.checked)} />}
                                   />
                                 </TableCell>
                               )}
@@ -1150,13 +1073,7 @@ export default function GeneralTable(props) {
                                                 <Switch
                                                   color="primary"
                                                   checked={row.is_active}
-                                                  onClick={(event) =>
-                                                    toggleSetActiveAccount(
-                                                      event,
-                                                      row.email_address,
-                                                      event.target.checked
-                                                    )
-                                                  }
+                                                  onClick={(event) => toggleSetActiveAccount(event, row.email_address, event.target.checked)}
                                                 />
                                               }
                                             />
@@ -1168,13 +1085,7 @@ export default function GeneralTable(props) {
                                                 <Switch
                                                   color="primary"
                                                   checked={row.is_active}
-                                                  onClick={(event) =>
-                                                    toggleSetDepartment(
-                                                      event,
-                                                      row.department_code,
-                                                      event.target.checked
-                                                    )
-                                                  }
+                                                  onClick={(event) => toggleSetDepartment(event, row.department_code, event.target.checked)}
                                                 />
                                               }
                                             />
@@ -1186,13 +1097,7 @@ export default function GeneralTable(props) {
                                                 <Switch
                                                   color="primary"
                                                   checked={row.is_active}
-                                                  onClick={(event) =>
-                                                    toggleSetActiveRole(
-                                                      event,
-                                                      row.role_template_id,
-                                                      event.target.checked
-                                                    )
-                                                  }
+                                                  onClick={(event) => toggleSetActiveRole(event, row.role_template_id, event.target.checked)}
                                                 />
                                               }
                                             />
