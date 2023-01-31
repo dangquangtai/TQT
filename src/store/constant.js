@@ -205,6 +205,14 @@ export const apiEndpoints = {
   create_product_warehouse: '/Primary/?FlowAlias=bs_api_factory_create_product_warehouse&action=api',
   update_product_warehouse: '/Primary/?FlowAlias=bs_api_factory_update_product_warehouse&action=api',
   active_product_warehouse: '/Primary/?FlowAlias=bs_api_factory_active_product_warehouse&action=api',
+
+  // Goods Issue
+  get_goods_issue_list: '/Primary/?FlowAlias=bs_api_factory_get_goods_issue_list&action=api',
+  get_goods_issue_detail: '/Primary/?FlowAlias=bs_api_factory_get_goods_issue_detail&action=api',
+  create_goods_issue: '/Primary/?FlowAlias=bs_api_factory_create_goods_issue&action=api',
+  update_goods_issue: '/Primary/?FlowAlias=bs_api_factory_update_goods_issue&action=api',
+  get_goods_issue_data: '/Primary/?FlowAlias=bs_api_factory_get_goods_issue_data&action=api',
+  delete_goods_issue_detail: '/Primary/?FlowAlias=bs_api_factory_delete_goods_issue_detail&action=api',
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
@@ -279,6 +287,9 @@ export const workshopActions = {
 };
 export const productWarehouseActions = {
   list_product_warehouse: 'TQT_SETTING_DEFAULT_OPEN_PRODUCT_WAREHOUSE_LIST',
+};
+export const goodsIssueActions = {
+  list_goods_issue: 'TQT_PRODUCT_DEFAULT_OPEN_GOODS_ISSUE_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -455,6 +466,14 @@ export const view = {
     },
     detail: {
       save: 'TQT_SETTING_DEFAULT_PRODUCT_WAREHOUSE_SAVE_FORM_BUTTON',
+    },
+  },
+  goodsIssue: {
+    list: {
+      create: 'TQT_PRODUCT_DEFAULT_GOODS_ISSUE_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_PRODUCT_DEFAULT_GOODS_ISSUE_SAVE_FORM_BUTTON',
     },
   },
 };

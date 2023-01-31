@@ -23,6 +23,7 @@ import {
   materialWarehouseActions,
   workshopActions,
   productWarehouseActions,
+  goodsIssueActions,
 } from '../store/constant.js';
 
 export function getUrlByAction(selectedFolder) {
@@ -101,6 +102,9 @@ export function getUrlByAction(selectedFolder) {
     }
     case productWarehouseActions.list_product_warehouse: {
       return apiEndpoints.get_product_warehouse_list;
+    }
+    case goodsIssueActions.list_goods_issue: {
+      return apiEndpoints.get_goods_issue_list;
     }
     default: {
       return '';

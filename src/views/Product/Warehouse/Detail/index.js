@@ -112,7 +112,6 @@ const ProductWarehouseModal = () => {
   useEffect(() => {
     if (!selectedDocument) return;
     setProductWarehouseData({
-      ...productWarehouseData,
       ...selectedDocument,
     });
   }, [selectedDocument]);
@@ -120,7 +119,13 @@ const ProductWarehouseModal = () => {
   return (
     <React.Fragment>
       <Grid container>
-        <Dialog open={openDialog || false} TransitionComponent={Transition} keepMounted onClose={handleCloseDialog} className={classes.partnerdialog}>
+        <Dialog
+          open={openDialog || false}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleCloseDialog}
+          className={classes.partnerdialog}
+        >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
               Kho thành phẩm

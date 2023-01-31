@@ -52,6 +52,7 @@ import { getDetailReceivedMaterial } from './../../services/api/Material/Receive
 import { getDetailMaterialWarehouse } from './../../services/api/Material/Warehouse';
 import { getDetailWorkshop } from './../../services/api/Setting/Workshop';
 import { getDetailProductWarehouse } from './../../services/api/Product/Warehouse';
+import { getDetailGoodsIssue } from './../../services/api/Product/GoodsIssue';
 
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
@@ -170,6 +171,8 @@ export default function GeneralTable(props) {
   const buttonCreateMaterialWarehouse = menuButtons.find((button) => button.name === view.warehouse.list.create);
   const buttonCreateWorkshop = menuButtons.find((button) => button.name === view.workshop.list.create);
   const buttonCreateProductWarehouse = menuButtons.find((button) => button.name === view.productWarehouse.list.create);
+
+  const buttonCreateGoodsIssue = menuButtons.find((button) => button.name === view.goodsIssue.list.create);
 
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -475,6 +478,11 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, productWarehouseDocument: true });
         break;
+      case 'goodsIssue':
+        detailDocument = await getDetailGoodsIssue(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, goodsIssueDocument: true });
+        break;
       default:
         break;
     }
@@ -528,6 +536,9 @@ export default function GeneralTable(props) {
         break;
       case 'productWarehouse':
         dispatch({ type: FLOATING_MENU_CHANGE, productWarehouseDocument: true });
+        break;
+      case 'goodsIssue':
+        dispatch({ type: FLOATING_MENU_CHANGE, goodsIssueDocument: true });
         break;
       default:
         break;
@@ -786,6 +797,7 @@ export default function GeneralTable(props) {
     buttonCreateMaterialWarehouse,
     buttonCreateWorkshop,
     buttonCreateProductWarehouse,
+    buttonCreateGoodsIssue,
   };
 
   return (
