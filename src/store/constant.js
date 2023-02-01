@@ -193,6 +193,10 @@ export const apiEndpoints = {
   update_received_material: '/Primary/?FlowAlias=bs_api_factory_update_received_material&action=api',
   get_received_material_status: '/Primary/?FlowAlias=bs_api_factory_get_received_material_status&action=api',
   delete_received_material: '/Primary/?FlowAlias=bs_api_factory_delete_received_material&action=api',
+  
+  get_workshop_list_by_company: '/Primary/?FlowAlias=bs_api_factory_workorder_get_workshop_by_company_code&action=api',
+  get_productwhs_list_by_company : '/Primary/?FlowAlias=bs_api_factory_productwhs_get_productwhs_by_company_code&action=api',
+  get_materialwhs_list_by_company : '/Primary/?FlowAlias=bs_api_factory_materialwhs_get_materialwhs_by_company_code&action=api',
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'

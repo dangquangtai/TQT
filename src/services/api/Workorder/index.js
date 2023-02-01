@@ -175,4 +175,28 @@ export const createWorkOrderRequest= (data) => {
     return '';
   });
 };
+export const getProductWHSList= () => {
+  return axiosServices.post(apiEndpoints.get_productwhs_list_by_company,{}).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data.list ;
+    }
+    return [];
+  });
+};
+export const getMaterialWHSList= () => {
+  return axiosServices.post(apiEndpoints.get_materialwhs_list_by_company,{}).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data.list ;
+    }
+    return [];
+  });
+};
+export const getWorkShopList= () => {
+  return axiosServices.post(apiEndpoints.get_workshop_list_by_company,{}).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data.list ;
+    }
+    return [];
+  });
+};
 

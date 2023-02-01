@@ -47,8 +47,11 @@ import {
   deleteWorkOrderRequest,
   createWorkOrderDetailList,
   createWorkOrderRequest,
+  getWorkShopList,
+  getMaterialWHSList,
+  getProductWHSList
 } from '../../../services/api/Workorder/index.js';
-
+import DatePicker from '../../../component/DatePicker/index.js';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -118,6 +121,15 @@ const WorkorderModal = () => {
       id: '',
       value: '',
     },
+  ]);
+  const [workshopList, setWorkShopList] = useState([
+    
+  ]);
+  const [productWHSList, setProductWHSList] = useState([
+    
+  ]);
+  const [materialWHSList, setMaterialWHSList] = useState([
+   
   ]);
 
   const virtuoso = useRef(null);
@@ -535,7 +547,7 @@ const WorkorderModal = () => {
     }
     var width = window.outerWidth ? window.outerWidth : document.documentElement.clientWidth;
     var height = window.outerHeight ? window.outerHeight : document.documentElement.clientHeight;
-    var w = width * 0.9;
+    var w = width * 1;
     var h = height * 0.7;
     var left = width / 2 - w / 2;
     var top = height / 2 - h / 2;
@@ -605,6 +617,12 @@ const WorkorderModal = () => {
   const fetchStatus = async () => {
     let data = await getStatusList();
     setProductionStatus(data);
+     data = await getWorkShopList();
+    setWorkShopList([...data])
+    data = await getMaterialWHSList();
+    setMaterialWHSList([...data])
+    data = await getProductWHSList();
+    setProductWHSList([...data])
   };
   function toJSONLocal(date) {
     var local = new Date(date);
@@ -919,9 +937,9 @@ const WorkorderModal = () => {
                     <Grid item lg={12} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemBody}>
-                          <Grid container spacing={1}>
+                          <Grid container spacing={1} rowSpacing={1}>
                             <Grid item lg={6} md={6} xs={12}>
-                              <Grid container className={classes.gridItemInfo} alignItems="center">
+                              <Grid container className={classes.gridItemInfo} alignItems="center" spacing={1} >
                                 <Grid item lg={3} md={3} xs={3}>
                                   <span className={classes.tabItemLabelField}>Mã hoạch sản xuất: </span>
                                   <TextField
@@ -934,8 +952,8 @@ const WorkorderModal = () => {
                                     onChange={handleChange}
                                   />
                                 </Grid>
-                                <Grid item lg={1} md={1} xs={1}></Grid>
-                                <Grid item lg={8} md={8} xs={8}>
+                               
+                                <Grid item lg={6} md={6} xs={6}>
                                   <span className={classes.tabItemLabelField}>Tên kế hoạch sản xuất: </span>
                                   <TextField
                                     fullWidth
@@ -947,9 +965,6 @@ const WorkorderModal = () => {
                                     onChange={handleChange}
                                   />
                                 </Grid>
-                              </Grid>
-
-                              <Grid container className={classes.gridItemInfo}>
                                 <Grid item lg={3} md={3} xs={3}>
                                   <span className={classes.tabItemLabelField}>Trạng thái: </span>
                                   <TextField
@@ -969,11 +984,11 @@ const WorkorderModal = () => {
                                       ))}
                                   </TextField>
                                 </Grid>
-                                <Grid item lg={1} md={1} xs={1}>
-                                  {' '}
-                                </Grid>
+                              </Grid>
+
+                             <Grid container className={classes.gridItemInfo} alignItems="center" spacing={1}>
                                 <Grid item lg={3} md={3} xs={3}>
-                                  <span className={classes.tabItemLabelField}>Thời gian lập kế hoạch:</span>
+                                  <span className={classes.tabItemLabelField}>Thời gian bắt đầu:</span>
                                   <TextField
                                     fullWidth
                                     type="date"
@@ -983,11 +998,13 @@ const WorkorderModal = () => {
                                     size="small"
                                     onChange={handleChange}
                                   />
+                                  {/* <DatePicker
+                                    // date={orderData.expected_deliver_date}
+                                    // onChange={(date) => setOrderData({ ...orderData, expected_deliver_date: date })}
+                                  /> */}
                                 </Grid>
 
-                                <Grid item lg={2} md={2} xs={2}>
-                                  {' '}
-                                </Grid>
+                              
                                 <Grid item lg={3} md={3} xs={3}>
                                   <span className={classes.tabItemLabelField}>Thời gian kết thúc:</span>
                                   <TextField
@@ -999,16 +1016,81 @@ const WorkorderModal = () => {
                                     size="small"
                                     onChange={handleChange}
                                   />
+                                  {/* <DatePicker
+                                    // date={orderData.expected_deliver_date}
+                                    // onChange={(date) => setOrderData({ ...orderData, expected_deliver_date: date })}
+                                  /> */}
                                 </Grid>
-                              </Grid>
+                                <Grid item lg={2} md={2} xs={2}>
+                                  <span className={classes.tabItemLabelField}>Xưởng: </span>
+                                  <TextField
+                                    select
+                                    fullWidth
+                                    id="outlined-size-small"
+                                    variant="outlined"
+                                    size="small"
+  
+                                  >
+                                    {workshopList &&
+                                      workshopList.map((item) => (
+                                        <MenuItem key={item.Key} value={item.Key}>
+                                          {item.Value}
+                                        </MenuItem>
+                                      ))}
+                                  </TextField>
+                                </Grid>
+                              
+                                <Grid item lg={2} md={2} xs={2}>
+                                  <span className={classes.tabItemLabelField}>Kho vật tư:</span>
+                                   <TextField
+                                    select
+                                    fullWidth
+                                    id="outlined-size-small"
+                                    variant="outlined"
+                                    size="small"
+                                   
+                                   
+                                  >
+                                    {materialWHSList &&
+                                      materialWHSList.map((item) => (
+                                        <MenuItem key={item.id} value={item.id}>
+                                          {item.value}
+                                        </MenuItem>
+                                      ))}
+                                  </TextField>
+                                </Grid>
+
+                      
+                                <Grid item lg={2} md={2} xs={2}>
+                                  <span className={classes.tabItemLabelField}>Kho thành phẩm:</span>
+                                  <TextField
+                                    select
+                                    fullWidth
+                                    id="outlined-size-small"
+                                    variant="outlined"
+                                    size="small"
+                                
+                                  
+                                  >
+                                    {productWHSList &&
+                                      productWHSList.map((item) => (
+                                        <MenuItem key={item.Key} value={item.Key}>
+                                          {item.Value}
+                                        </MenuItem>
+                                      ))}
+                                  </TextField>
+                                </Grid>
+                                
+                              </Grid> 
                             </Grid>
-                            <Grid item lg={6} md={6} xs={12} style={{ background: 'rgba(224, 224, 224, 1)' }}>
+                            <Grid item lg={6} md={6} xs={12}alignItems="center" justifyContent="center">
                               <Grid
                                 container
                                 className={classes.gridItemInfo}
                                 alignItems="center"
-                                style={{ marginTop: '20px' }}
-                              >
+                                style={{ margin: '0 auto',background: 'rgba(224, 224, 224, 1)'}}
+                                justifyContent="center"
+                                >
                                 <Grid item lg={3} md={3} xs={3} alignItems="center">
                                   <IconButton onClick={handlePreWeek}>
                                     <SkipPrevious />
@@ -1024,8 +1106,11 @@ const WorkorderModal = () => {
                                   </IconButton>
                                 </Grid>
                                 <Grid item lg={9} md={9} xs={9}>
+                              
+
+                                 
                                   <TableContainer component={Paper}>
-                                    <Table size="small" classes={{ root: classes.customTable }}>
+                                    <Table size="small" stickyHeader aria-label="sticky table" classes={{ root: classes.customTable }}>
                                       <TableHead>
                                         <TableRow>
                                           {productionDailyRequestList?.slice(start, end).map((item, index) => (
@@ -1067,16 +1152,8 @@ const WorkorderModal = () => {
                                               >
                                                 {item.percent
                                                   + '%'}
+                                                 
                                               </Typography>
-                                            </TableCell>
-                                          ))}
-                                          {dateListNull.map((item) => (
-                                            <TableCell align="center">{''}</TableCell>
-                                          ))}
-                                        </TableRow>
-                                        <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                          {productionDailyRequestList?.slice(start, end).map((item) => (
-                                            <TableCell component="th" scope="row" align="center">
                                               <Typography
                                                 style={{backgroundColor: item.color_check } 
                                                 }
@@ -1089,9 +1166,11 @@ const WorkorderModal = () => {
                                             <TableCell align="center">{''}</TableCell>
                                           ))}
                                         </TableRow>
+                                      
                                       </TableBody>
                                     </Table>
                                   </TableContainer>
+                            
                                 </Grid>
                               </Grid>
                             </Grid>
@@ -1101,7 +1180,7 @@ const WorkorderModal = () => {
                               className={classes.gridItemInfo}
                               alignItems="center"
                               justifyContent="flex-end"
-                              style={{ marginTop: '20px' }}
+                           
                             >
                               <Grid item lg={1} md={1} xs={1}>
                                 <span className={classes.tabItemLabelField} style={{ marginLeft: '-70px' }}>
@@ -1188,7 +1267,7 @@ const WorkorderModal = () => {
                             </Grid>
                             <Grid container className={classes.gridItem} alignItems="center">
                               <Grid item lg={12} md={12} xs={12}>
-                                <TableContainer style={{ maxHeight: 400 }}>
+                                <TableContainer style={{ maxHeight: 380 }}>
                                   {/* <TableScrollbar height="350px"> */}
                                   <Table size="small" stickyHeader aria-label="sticky table">
                                     <TableHead>
