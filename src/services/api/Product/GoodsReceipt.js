@@ -1,9 +1,9 @@
 import { apiEndpoints } from '../../../store/constant.js';
 import axiosServices from './../../axios';
 
-export const getDetailGoodsIssue = (id, setView) => {
+export const getDetailGoodsReceipt = (id, setView) => {
   return axiosServices
-    .post(apiEndpoints.get_goods_issue_detail, { id })
+    .post(apiEndpoints.get_goods_receipt_detail, { id })
     .then((response) => {
       if (response.status === 200 && response.data.return === 200) {
         const { data, view } = response.data;
@@ -17,8 +17,8 @@ export const getDetailGoodsIssue = (id, setView) => {
     });
 };
 
-export const createGoodsIssue = (data) => {
-  return axiosServices.post(apiEndpoints.create_goods_issue, data).then((response) => {
+export const createGoodsReceipt = (data) => {
+  return axiosServices.post(apiEndpoints.create_goods_receipt, data).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
       return true;
     }
@@ -26,8 +26,8 @@ export const createGoodsIssue = (data) => {
   });
 };
 
-export const updateGoodsIssue = (data) => {
-  return axiosServices.post(apiEndpoints.update_goods_issue, data).then((response) => {
+export const updateGoodsReceipt = (data) => {
+  return axiosServices.post(apiEndpoints.update_goods_receipt, data).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
       return true;
     }
@@ -35,18 +35,18 @@ export const updateGoodsIssue = (data) => {
   });
 };
 
-export const getGoodsIssueData = () => {
-  return axiosServices.post(apiEndpoints.get_goods_issue_data, {}).then((response) => {
+export const getGoodsReceiptData = () => {
+  return axiosServices.post(apiEndpoints.get_goods_receipt_data, {}).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
-      const { status_list: status, warehouse_list: warehouses, customer_list: customers } = response.data;
-      return { status, warehouses, customers };
+      const { status_list: status, warehouse_list: warehouses, work_order_list: workOrders } = response.data;
+      return { status, warehouses, workOrders };
     }
     return [];
   });
 };
 
-export const deleteGoodsIssueDetail = (id) => {
-  return axiosServices.post(apiEndpoints.delete_goods_issue_detail, { id }).then((response) => {
+export const deleteGoodsReceiptDetail = (id) => {
+  return axiosServices.post(apiEndpoints.delete_goods_receipt_detail, { id }).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
       return true;
     }

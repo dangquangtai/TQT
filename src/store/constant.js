@@ -15,7 +15,8 @@ export const apiEndpoints = {
   get_account_detail: '/Primary/?FlowAlias=bs_api_user_get_account_by_id&action=api',
   create_account: '/Primary/?FlowAlias=bs_api_user_create_account_by_host&action=api',
   update_account: '/Primary/?FlowAlias=bs_api_user_update_account_by_id&action=api',
-  get_all_account_by_department_and_role_template: '/Primary/?FlowAlias=bs_api_user_get_all_acount_by_departmentand_role_template&action=api',
+  get_all_account_by_department_and_role_template:
+    '/Primary/?FlowAlias=bs_api_user_get_all_acount_by_departmentand_role_template&action=api',
   assign_account_to_dept: '/Primary/?FlowAlias=bs_api_user_api_assign_account_to_department&action=api',
   remove_account_from_dept: '/Primary/?FlowAlias=bs_api_user_api_remove_account_from_department&action=api',
   active_account: '/Primary/?FlowAlias=bs_api_user_active_account&action=api',
@@ -130,6 +131,7 @@ export const apiEndpoints = {
   remove_work_order_daiy_request: '/Primary/?FlowAlias=bs_api_factory_remove_daily_request_by_id&action=api',
   create_work_order_daiy_detail: '/Primary/?FlowAlias=bs_api_factory_create_daily_detail&action=api',
   create_work_order_daiy_request: '/Primary/?FlowAlias=bs_api_factory_create_daily_request&action=api',
+  get_daily_work_order_list: '/Primary/?FlowAlias=bs_api_factory_get_daily_request_list_by_id&action=api',
 
   // Customer
   get_customer_list: '/Primary/?FlowAlias=bs_api_factory_get_customer_list&action=api',
@@ -213,6 +215,14 @@ export const apiEndpoints = {
   update_goods_issue: '/Primary/?FlowAlias=bs_api_factory_update_goods_issue&action=api',
   get_goods_issue_data: '/Primary/?FlowAlias=bs_api_factory_get_goods_issue_data&action=api',
   delete_goods_issue_detail: '/Primary/?FlowAlias=bs_api_factory_delete_goods_issue_detail&action=api',
+
+  // Goods Receipt
+  get_goods_receipt_list: '/Primary/?FlowAlias=bs_api_factory_get_goods_receipt_list&action=api',
+  get_goods_receipt_detail: '/Primary/?FlowAlias=bs_api_factory_get_goods_receipt_detail&action=api',
+  create_goods_receipt: '/Primary/?FlowAlias=bs_api_factory_create_goods_receipt&action=api',
+  update_goods_receipt: '/Primary/?FlowAlias=bs_api_factory_update_goods_receipt&action=api',
+  get_goods_receipt_data: '/Primary/?FlowAlias=bs_api_factory_get_goods_receipt_data&action=api',
+  delete_goods_receipt_detail: '/Primary/?FlowAlias=bs_api_factory_delete_goods_receipt_detail&action=api',
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
@@ -290,6 +300,9 @@ export const productWarehouseActions = {
 };
 export const goodsIssueActions = {
   list_goods_issue: 'TQT_PRODUCT_DEFAULT_OPEN_GOODS_ISSUE_LIST',
+};
+export const goodsReceiptActions = {
+  list_goods_receipt: 'TQT_PRODUCT_DEFAULT_OPEN_GOODS_RECEIPT_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -474,6 +487,14 @@ export const view = {
     },
     detail: {
       save: 'TQT_PRODUCT_DEFAULT_GOODS_ISSUE_SAVE_FORM_BUTTON',
+    },
+  },
+  goodsReceipt: {
+    list: {
+      create: 'TQT_PRODUCT_DEFAULT_GOODS_RECEIPT_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_PRODUCT_DEFAULT_GOODS_RECEIPT_SAVE_FORM_BUTTON',
     },
   },
 };

@@ -81,6 +81,7 @@ const EnhancedTableToolbar = (props) => {
     buttonCreateWorkshop,
     buttonCreateProductWarehouse,
     buttonCreateGoodsIssue,
+    buttonCreateGoodsReceipt,
   } = props;
 
   const filterRef = useRef(null);
@@ -393,6 +394,13 @@ const EnhancedTableToolbar = (props) => {
                     </Button>
                   </Grid>
                 )}
+                {buttonCreateGoodsReceipt && (
+                  <Grid item>
+                    <Button variant="contained" color={'primary'} onClick={handleCreate}>
+                      {buttonCreateGoodsReceipt.text}
+                    </Button>
+                  </Grid>
+                )}
               </Grid>
             </Grid>
             <Grid item xs={8}>
@@ -490,7 +498,12 @@ const EnhancedTableToolbar = (props) => {
                 <>
                   <div className={classes.toolSearchWrap}>
                     <SearchIcon />
-                    <input className={classes.toolSearchInput} value={filter.search_text} onChange={handleChangeSearch} onKeyUp={handleEnterSearch} />
+                    <input
+                      className={classes.toolSearchInput}
+                      value={filter.search_text}
+                      onChange={handleChangeSearch}
+                      onKeyUp={handleEnterSearch}
+                    />
                     <Button className={classes.toolButtonSearch} onClick={handleCloseInput}>
                       <ClearIcon className={classes.toolButtonIcon} />
                     </Button>
