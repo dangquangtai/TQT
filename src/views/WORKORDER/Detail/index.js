@@ -52,6 +52,7 @@ import {
   getProductWHSList
 } from '../../../services/api/Workorder/index.js';
 import DatePicker from '../../../component/DatePicker/index.js';
+import { delay } from 'lodash';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -231,10 +232,11 @@ const WorkorderModal = () => {
     try {
 
       if (productList[index].id != '') {
-        deleteWorkOrderDetail(id);
         let orderDetail = order?.orderDetail;
-        orderDetail.find((x) => x.id === productList[index].id).quantity_produced -= productList[index].quantity_in_box;
+        orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder -=productList[index].quantity_in_box;
         dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
+        deleteWorkOrderDetail(id);
+        
       }
     } catch { }
 
@@ -444,19 +446,26 @@ const WorkorderModal = () => {
 
   };
   const handleChangeNumber = (e, index) => {
-    setCheckChangeData({ ...checkChangeData, changeWorkOrderDaily: true })
     const value = e.target.value;
-    console.log(value)
-    try {
-      let orderDetail = order?.orderDetail;
-      orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder += value - productList[index].quantity_in_box;
+    let orderDetail = order?.orderDetail;
+    let product =orderDetail.find((x) => x.product_id === productList[index].product_id)
 
-      dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
-    } catch { }
+    if ((parseInt(product.quantity_in_workorder) + parseInt(value) - parseInt(productList[index].quantity_in_box) )<= parseInt(product.quantity_in_box)){
+      
+      setCheckChangeData({ ...checkChangeData, changeWorkOrderDaily: true })
+      try {
+        orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder += value - productList[index].quantity_in_box;
+        dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
+      } catch { }
 
-    productList[index].quantity_in_box = value;
-    setProductList([...productList]);
-    updateDataDailyRequest(productList);
+      productList[index].quantity_in_box = value;
+      setProductList([...productList]);
+      updateDataDailyRequest(productList);
+    } else {
+      handleOpenSnackbar(true, 'error', 'Số lượng vượt quá!');
+ 
+    }
+    
   };
 
   const calculatePercent = (number_of_worker, number_of_working_hour, piece, sl, productivity_per_worker) => {
