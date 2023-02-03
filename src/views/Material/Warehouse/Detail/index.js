@@ -112,7 +112,6 @@ const MaterialWarehouseModal = () => {
   useEffect(() => {
     if (!selectedDocument) return;
     setMaterialWarehouseData({
-      ...materialWarehouseData,
       ...selectedDocument,
     });
   }, [selectedDocument]);
@@ -120,7 +119,13 @@ const MaterialWarehouseModal = () => {
   return (
     <React.Fragment>
       <Grid container>
-        <Dialog open={openDialog || false} TransitionComponent={Transition} keepMounted onClose={handleCloseDialog} className={classes.partnerdialog}>
+        <Dialog
+          open={openDialog || false}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleCloseDialog}
+          className={classes.partnerdialog}
+        >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
               Kho vật tư

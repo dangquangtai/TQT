@@ -52,6 +52,8 @@ import { getDetailReceivedMaterial } from './../../services/api/Material/Receive
 import { getDetailMaterialWarehouse } from './../../services/api/Material/Warehouse';
 import { getDetailWorkshop } from './../../services/api/Setting/Workshop';
 import { getDetailProductWarehouse } from './../../services/api/Product/Warehouse';
+import { getDetailGoodsIssue } from './../../services/api/Product/GoodsIssue';
+import { getDetailGoodsReceipt } from './../../services/api/Product/GoodsReceipt';
 
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
@@ -170,6 +172,9 @@ export default function GeneralTable(props) {
   const buttonCreateMaterialWarehouse = menuButtons.find((button) => button.name === view.warehouse.list.create);
   const buttonCreateWorkshop = menuButtons.find((button) => button.name === view.workshop.list.create);
   const buttonCreateProductWarehouse = menuButtons.find((button) => button.name === view.productWarehouse.list.create);
+
+  const buttonCreateGoodsIssue = menuButtons.find((button) => button.name === view.goodsIssue.list.create);
+  const buttonCreateGoodsReceipt = menuButtons.find((button) => button.name === view.goodsReceipt.list.create);
 
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -475,6 +480,16 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, productWarehouseDocument: true });
         break;
+      case 'goodsIssue':
+        detailDocument = await getDetailGoodsIssue(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, goodsIssueDocument: true });
+        break;
+      case 'goodsReceipt':
+        detailDocument = await getDetailGoodsReceipt(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, goodsReceiptDocument: true });
+        break;
       default:
         break;
     }
@@ -529,6 +544,12 @@ export default function GeneralTable(props) {
       case 'productWarehouse':
         dispatch({ type: FLOATING_MENU_CHANGE, productWarehouseDocument: true });
         break;
+      case 'goodsIssue':
+        dispatch({ type: FLOATING_MENU_CHANGE, goodsIssueDocument: true });
+        break;
+      case 'goodsReceipt':
+        dispatch({ type: FLOATING_MENU_CHANGE, goodsReceiptDocument: true });
+        break;
       default:
         break;
     }
@@ -571,7 +592,13 @@ export default function GeneralTable(props) {
     fetchDocument({ page: pageCurrent });
   };
 
-  const showConfirmPopup = ({ title = 'Thông báo', message = 'Yêu cầu lựa chọn ít nhất một bản ghi', action = null, payload = null, onSuccess = null }) => {
+  const showConfirmPopup = ({
+    title = 'Thông báo',
+    message = 'Yêu cầu lựa chọn ít nhất một bản ghi',
+    action = null,
+    payload = null,
+    onSuccess = null,
+  }) => {
     setConfirmPopup({ type: CONFIRM_CHANGE, open: true, title, message, action, payload, onSuccess });
   };
 
@@ -786,6 +813,8 @@ export default function GeneralTable(props) {
     buttonCreateMaterialWarehouse,
     buttonCreateWorkshop,
     buttonCreateProductWarehouse,
+    buttonCreateGoodsIssue,
+    buttonCreateGoodsReceipt,
   };
 
   return (
@@ -826,7 +855,9 @@ export default function GeneralTable(props) {
                   <TableContainer>
                     <Table
                       stickyHeader
-                      className={documentType === 'department' ? classes.table2 : documentType === 'processrole' ? classes.table3 : classes.table}
+                      className={
+                        documentType === 'department' ? classes.table2 : documentType === 'processrole' ? classes.table3 : classes.table
+                      }
                       aria-labelledby="tableTitle"
                       size={'medium'}
                       // aria-label="enhanced table"
@@ -876,82 +907,146 @@ export default function GeneralTable(props) {
                                 </TableCell>
                               )}
                               {displayOptions.received_code && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.tableItemName}>
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
                                   {row.received_code}
                                 </TableCell>
                               )}
                               {displayOptions.order_code && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.tableItemName}>
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
                                   {row.order_code}
                                 </TableCell>
                               )}
                               {displayOptions.part_code && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.tableItemName}>
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
                                   {row.part_code}
                                 </TableCell>
                               )}
                               {displayOptions.product_code && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.tableItemName}>
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
                                   {row.product_code}
                                 </TableCell>
                               )}
                               {displayOptions.customer_code && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.tableItemName}>
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
                                   {row.customer_code}
                                 </TableCell>
                               )}
                               {displayOptions.supplier_code && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.tableItemName}>
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
                                   {row.supplier_code}
                                 </TableCell>
                               )}
                               {displayOptions.inventory_check_code && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.tableItemName}>
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
                                   {row.inventory_check_code}
                                 </TableCell>
                               )}
                               {displayOptions.title && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.textOverflow450}>
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.textOverflow450}
+                                >
                                   {row.title}
                                 </TableCell>
                               )}
                               {displayOptions.part_name && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.textOverflow450}>
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.textOverflow450}
+                                >
                                   {row.part_name || row.title}
                                 </TableCell>
                               )}
                               {displayOptions.product_name && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.textOverflow450}>
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.textOverflow450}
+                                >
                                   {row.product_name || row.title}
                                 </TableCell>
                               )}
                               {displayOptions.customer_name && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.tableItemName}>
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
                                   {row.customer_name || row.title}
                                 </TableCell>
                               )}
                               {displayOptions.supplier_name && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.tableItemName}>
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
                                   {row.supplier_name || row.title}
                                 </TableCell>
                               )}
                               {displayOptions.warehouse_name && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.textOverflow450}>
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.textOverflow450}
+                                >
                                   {row.warehouse_name}
                                 </TableCell>
                               )}
                               {displayOptions.workshop_name && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.textOverflow450}>
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.textOverflow450}
+                                >
                                   {row.workshop_name}
                                 </TableCell>
                               )}
                               {displayOptions.province_name && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.textOverflow450}>
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.textOverflow450}
+                                >
                                   {row.province_name}
                                 </TableCell>
                               )}
                               {displayOptions.category_name && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)} className={classes.textOverflow450}>
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.textOverflow450}
+                                >
                                   {row.category_name}
                                 </TableCell>
                               )}
@@ -960,7 +1055,9 @@ export default function GeneralTable(props) {
                               {displayOptions.no_piece_per_box && <TableCell align="left">{row.no_piece_per_box}</TableCell>}
                               {displayOptions.productivity_per_worker && <TableCell align="left">{row.productivity_per_worker}</TableCell>}
                               {displayOptions.order_date && (
-                                <TableCell align="left">{row.order_date ? formatDate(new Date(row.order_date), 'dd/MM/yyyy') : ''}</TableCell>
+                                <TableCell align="left">
+                                  {row.order_date ? formatDate(new Date(row.order_date), 'dd/MM/yyyy') : ''}
+                                </TableCell>
                               )}
                               {displayOptions.inventory_check_date && (
                                 <TableCell align="left">
@@ -973,10 +1070,16 @@ export default function GeneralTable(props) {
                                 </TableCell>
                               )}
                               {displayOptions.received_date && (
-                                <TableCell align="left">{row.received_date ? formatDate(new Date(row.received_date), 'dd/MM/yyyy') : ''}</TableCell>
+                                <TableCell align="left">
+                                  {row.received_date ? formatDate(new Date(row.received_date), 'dd/MM/yyyy') : ''}
+                                </TableCell>
                               )}
                               {displayOptions.account_id && (
-                                <TableCell align="left" className={classes.tableItemName} onClick={(event) => openDetailDocument(event, row)}>
+                                <TableCell
+                                  align="left"
+                                  className={classes.tableItemName}
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                >
                                   {row.account_id}
                                 </TableCell>
                               )}
@@ -984,7 +1087,11 @@ export default function GeneralTable(props) {
                               {displayOptions.department_parent && <TableCell align="left">{row.parent_department_name}</TableCell>}
                               {displayOptions.number_member && <TableCell align="left">{row.number_member}</TableCell>}
                               {displayOptions.full_name && (
-                                <TableCell align="left" className={classes.tableItemName} onClick={(event) => openDetailDocument(event, row)}>
+                                <TableCell
+                                  align="left"
+                                  className={classes.tableItemName}
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                >
                                   {row.full_name}
                                 </TableCell>
                               )}
@@ -1008,7 +1115,11 @@ export default function GeneralTable(props) {
                               )}
                               {displayOptions.is_part_list_available && (
                                 <TableCell align="left">
-                                  {row.is_part_list_available ? <Chip label="Có" color="primary" /> : <Chip label="Không" color="secondary" />}
+                                  {row.is_part_list_available ? (
+                                    <Chip label="Có" color="primary" />
+                                  ) : (
+                                    <Chip label="Không" color="secondary" />
+                                  )}
                                 </TableCell>
                               )}
                               {displayOptions.approval_role && (
@@ -1021,10 +1132,14 @@ export default function GeneralTable(props) {
                               {displayOptions.amount && <TableCell align="left">{row.amount || ''}</TableCell>}
                               {displayOptions.quantity_in_piece && <TableCell align="left">{row.quantity_in_piece}</TableCell>}
                               {displayOptions.quantity_in_box && <TableCell align="left">{row.quantity_in_box}</TableCell>}
-                              {displayOptions.broken_quantity_in_piece && <TableCell align="left">{row.broken_quantity_in_piece}</TableCell>}
+                              {displayOptions.broken_quantity_in_piece && (
+                                <TableCell align="left">{row.broken_quantity_in_piece}</TableCell>
+                              )}
                               {displayOptions.created_by && <TableCell align="left">{row.created_by || ''}</TableCell>}
                               {displayOptions.created_date && (
-                                <TableCell align="left">{row.created_date ? formatDate(new Date(row.created_date), 'dd/MM/yyyy') : ''}</TableCell>
+                                <TableCell align="left">
+                                  {row.created_date ? formatDate(new Date(row.created_date), 'dd/MM/yyyy') : ''}
+                                </TableCell>
                               )}
                               {displayOptions.order__title && (
                                 <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
@@ -1049,14 +1164,24 @@ export default function GeneralTable(props) {
                               {displayOptions.is_active && (
                                 <TableCell align="left">
                                   <FormControlLabel
-                                    control={<Switch checked={row.is_active} onClick={(event) => toggleSetActive(event, row, event.target.checked)} />}
+                                    control={
+                                      <Switch
+                                        checked={row.is_active}
+                                        onClick={(event) => toggleSetActive(event, row, event.target.checked)}
+                                      />
+                                    }
                                   />
                                 </TableCell>
                               )}
                               {displayOptions.is_featured && (
                                 <TableCell align="left">
                                   <FormControlLabel
-                                    control={<Switch checked={row.is_featured} onClick={(event) => toggleSetFeatured(event, row, event.target.checked)} />}
+                                    control={
+                                      <Switch
+                                        checked={row.is_featured}
+                                        onClick={(event) => toggleSetFeatured(event, row, event.target.checked)}
+                                      />
+                                    }
                                   />
                                 </TableCell>
                               )}
@@ -1073,7 +1198,9 @@ export default function GeneralTable(props) {
                                                 <Switch
                                                   color="primary"
                                                   checked={row.is_active}
-                                                  onClick={(event) => toggleSetActiveAccount(event, row.email_address, event.target.checked)}
+                                                  onClick={(event) =>
+                                                    toggleSetActiveAccount(event, row.email_address, event.target.checked)
+                                                  }
                                                 />
                                               }
                                             />
@@ -1097,7 +1224,9 @@ export default function GeneralTable(props) {
                                                 <Switch
                                                   color="primary"
                                                   checked={row.is_active}
-                                                  onClick={(event) => toggleSetActiveRole(event, row.role_template_id, event.target.checked)}
+                                                  onClick={(event) =>
+                                                    toggleSetActiveRole(event, row.role_template_id, event.target.checked)
+                                                  }
                                                 />
                                               }
                                             />

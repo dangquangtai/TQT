@@ -7,7 +7,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import { headCells } from '../data';
-import { isFunction } from 'lodash';
 
 EnhancedTableHead.propTypes = {
   classes: PropTypes.object.isRequired,
