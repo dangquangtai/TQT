@@ -223,6 +223,10 @@ export const apiEndpoints = {
   update_goods_receipt: '/Primary/?FlowAlias=bs_api_factory_update_goods_receipt&action=api',
   get_goods_receipt_data: '/Primary/?FlowAlias=bs_api_factory_get_goods_receipt_data&action=api',
   delete_goods_receipt_detail: '/Primary/?FlowAlias=bs_api_factory_delete_goods_receipt_detail&action=api',
+
+  // Product Inventory
+  get_product_inventory_list: '/Primary/?FlowAlias=bs_api_factory_get_product_inventory_list&action=api',
+  get_product_inventory_detail: '/Primary/?FlowAlias=bs_api_factory_get_product_inventory_detail&action=api',
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
@@ -303,6 +307,9 @@ export const goodsIssueActions = {
 };
 export const goodsReceiptActions = {
   list_goods_receipt: 'TQT_PRODUCT_DEFAULT_OPEN_GOODS_RECEIPT_LIST',
+};
+export const productInventoryActions = {
+  list_product_inventory: 'TQT_PRODUCT_DEFAULT_OPEN_INVENTORY_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
