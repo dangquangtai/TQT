@@ -27,6 +27,11 @@ import {
   materialInventoryCheckActions,
   purchaseMaterialActions,
   receivedMaterialActions,
+  materialWarehouseActions,
+  workshopActions,
+  productWarehouseActions,
+  goodsIssueActions,
+  goodsReceiptActions,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
 import { Redirect } from 'react-router-dom';
@@ -47,6 +52,11 @@ import MaterialInventoryWrapper from './../../Material/Inventory/index';
 import MaterialInventoryCheckWrapper from './../../Material/InventoryCheck/index';
 import PurchaseMaterialWrapper from './../../Material/Purchase/index';
 import ReceivedMaterialWrapper from './../../Material/Received/index';
+import MaterialWarehouseWrapper from './../../Material/Warehouse/index';
+import WorkshopWrapper from './../../Setting/Workshop/index';
+import ProductWarehouseWrapper from './../../Product/Warehouse/index';
+import GoodsIssueWrapper from './../../Product/GoodsIssue/index';
+import GoodsReceiptWrapper from './../../Product/GoodsReceipt/index';
 
 const Default = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
@@ -75,6 +85,13 @@ const Default = () => {
   const availableMaterialInventoryCheckEndpoint = Object.values(materialInventoryCheckActions);
   const availablePurchaseMaterialEndpoint = Object.values(purchaseMaterialActions);
   const availableReceivedMaterialEndpoint = Object.values(receivedMaterialActions);
+
+  const availableWarehouseEndpoint = Object.values(materialWarehouseActions);
+  const availableWorkshopEndpoint = Object.values(workshopActions);
+  const availableProductWarehouseEndpoint = Object.values(productWarehouseActions);
+
+  const availableGoodsIssueEndpoint = Object.values(goodsIssueActions);
+  const availableGoodsReceiptEndpoint = Object.values(goodsReceiptActions);
 
   if (!selectedApp?.id) {
     return <Redirect to="/dashboard/app" />;
@@ -105,11 +122,15 @@ const Default = () => {
           {availableCustomerEndpoint.includes(selectedFolder?.action) && <CustomerWrapper />}
           {availableSupplierEndpoint.includes(selectedFolder?.action) && <SupplierWrapper />}
           {availableMaterialInventoryEndpoint.includes(selectedFolder?.action) && <MaterialInventoryWrapper />}
-          {availableMaterialInventoryCheckEndpoint.includes(selectedFolder?.action) && (
-            <MaterialInventoryCheckWrapper />
-          )}
+          {availableMaterialInventoryCheckEndpoint.includes(selectedFolder?.action) && <MaterialInventoryCheckWrapper />}
           {availablePurchaseMaterialEndpoint.includes(selectedFolder?.action) && <PurchaseMaterialWrapper />}
           {availableReceivedMaterialEndpoint.includes(selectedFolder?.action) && <ReceivedMaterialWrapper />}
+          {availableWarehouseEndpoint.includes(selectedFolder?.action) && <MaterialWarehouseWrapper />}
+          {availableWorkshopEndpoint.includes(selectedFolder?.action) && <WorkshopWrapper />}
+          {availableProductWarehouseEndpoint.includes(selectedFolder?.action) && <ProductWarehouseWrapper />}
+
+          {availableGoodsIssueEndpoint.includes(selectedFolder?.action) && <GoodsIssueWrapper />}
+          {availableGoodsReceiptEndpoint.includes(selectedFolder?.action) && <GoodsReceiptWrapper />}
         </Grid>
       )}
     </Grid>

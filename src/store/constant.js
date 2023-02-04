@@ -27,17 +27,14 @@ export const apiEndpoints = {
   get_all_account_list: '/Primary/?FlowAlias=bs_api_booking_user_get_all_account&action=api',
 
   //Role template
-  get_all_active_role_template:
-    '/Primary/?FlowAlias=bs_api_role_template_get_all_active_role_template_by_page&action=api',
+  get_all_active_role_template: '/Primary/?FlowAlias=bs_api_role_template_get_all_active_role_template_by_page&action=api',
   active_role_template: '/Primary/?FlowAlias=bs_api_role_template_active_role_template&action=api',
   get_detail_role_template: '/Primary/?FlowAlias=bs_api_role_template_get_detail_role_template&action=api',
-  get_all_inactive_role_template:
-    '/Primary/?FlowAlias=bs_api_role_template_get_all_inactive_role_template_by_page&action=api',
+  get_all_inactive_role_template: '/Primary/?FlowAlias=bs_api_role_template_get_all_inactive_role_template_by_page&action=api',
   create_role_template: '/Primary/?FlowAlias=bs_api_role_template_create_role_template&action=api',
   update_role_template: '/Primary/?FlowAlias=bs_api_role_template_create_role_template&action=api',
   get_role_tree_data: '/Primary/?FlowAlias=bs_api_process_role_get_tree_data_role&action=api',
-  get_all_role_template_by_department_code:
-    '/Primary/?FlowAlias=bs_api_dept_get_role_template_by_department_code&action=api',
+  get_all_role_template_by_department_code: '/Primary/?FlowAlias=bs_api_dept_get_role_template_by_department_code&action=api',
   get_option_role_template: '/Primary/?FlowAlias=bs_api_role_template_get_optinal_role&action=api',
   add_account_to_group: '/Primary/?FlowAlias=bs_api_user_add_acount_to_group&action=api',
   remove_account_to_group: '/Primary/?FlowAlias=bs_api_user_remove_account_from_group&action=api',
@@ -122,13 +119,10 @@ export const apiEndpoints = {
   create_work_order: '/Primary/?FlowAlias=bs_api_factory_create_production_request&action=api',
   get_work_order_detail: '/Primary/?FlowAlias=bs_api_factory_get_production_request&action=api',
   update_work_order: '/Primary/?FlowAlias=bs_api_factory_update_production_daily_request&action=api',
-  check_daily_workorder_material_avaiability:
-    '/Primary/?FlowAlias=bs_api_factory_check_daily_workorder_material_avaiability&action=api',
+  check_daily_workorder_material_avaiability: '/Primary/?FlowAlias=bs_api_factory_check_daily_workorder_material_avaiability&action=api',
   get_material_inventory: '/Primary/?FlowAlias=bs_api_factory_get_material_inventory&action=api',
-  create_material_requisition_request_daily:
-    '/Primary/?FlowAlias=bs_api_factory_create_daily_request_requisition&action=api',
-  get_material_requisition_daily_detail:
-    '/Primary/?FlowAlias=bs_api_factory_get_material_daily_requisition_detail&action=api',
+  create_material_requisition_request_daily: '/Primary/?FlowAlias=bs_api_factory_create_daily_request_requisition&action=api',
+  get_material_requisition_daily_detail: '/Primary/?FlowAlias=bs_api_factory_get_material_daily_requisition_detail&action=api',
   get_part_list: '/Primary/?FlowAlias=bs_api_factory_get_part_list&action=api',
   get_link_download_workorder: '/Primary/?FlowAlias=bs_api_factory_get_link_export_workorder_daily&action=api',
 
@@ -137,6 +131,7 @@ export const apiEndpoints = {
   remove_work_order_daiy_request: '/Primary/?FlowAlias=bs_api_factory_remove_daily_request_by_id&action=api',
   create_work_order_daiy_detail: '/Primary/?FlowAlias=bs_api_factory_create_daily_detail&action=api',
   create_work_order_daiy_request: '/Primary/?FlowAlias=bs_api_factory_create_daily_request&action=api',
+  get_daily_work_order_list: '/Primary/?FlowAlias=bs_api_factory_get_daily_request_list_by_id&action=api',
 
   // Customer
   get_customer_list: '/Primary/?FlowAlias=bs_api_factory_get_customer_list&action=api',
@@ -166,8 +161,7 @@ export const apiEndpoints = {
 
   // Material Inventory Check
   get_material_inventory_check_list: '/Primary/?FlowAlias=bs_api_factory_get_material_inventory_check_list&action=api',
-  get_material_inventory_check_detail:
-    '/Primary/?FlowAlias=bs_api_factory_get_material_inventory_check_detail&action=api',
+  get_material_inventory_check_detail: '/Primary/?FlowAlias=bs_api_factory_get_material_inventory_check_detail&action=api',
   create_material_inventory_check: '/Primary/?FlowAlias=bs_api_factory_create_material_inventory_check&action=api',
   update_material_inventory_check: '/Primary/?FlowAlias=bs_api_factory_update_material_inventory_check&action=api',
   get_more_inventory_check: '/Primary/?FlowAlias=bs_api_factory_get_inventory_check_more&action=api',
@@ -182,8 +176,7 @@ export const apiEndpoints = {
   update_purchase_material: '/Primary/?FlowAlias=bs_api_factory_update_purchase_material&action=api',
   get_purchase_material_status: '/Primary/?FlowAlias=bs_api_factory_get_purchase_material_status&action=api',
   get_purchase_material_by_status: '/Primary/?FlowAlias=bs_api_factory_get_purchase_material_by_status&action=api',
-  get_purchase_material_detail_by_order_id:
-    '/Primary/?FlowAlias=bs_api_factory_get_purchase_material_by_order_id&action=api',
+  get_purchase_material_detail_by_order_id: '/Primary/?FlowAlias=bs_api_factory_get_purchase_material_by_order_id&action=api',
   delete_purchase_material: '/Primary/?FlowAlias=bs_api_factory_delete_purchase_material&action=api',
 
   // Received Material
@@ -193,10 +186,50 @@ export const apiEndpoints = {
   update_received_material: '/Primary/?FlowAlias=bs_api_factory_update_received_material&action=api',
   get_received_material_status: '/Primary/?FlowAlias=bs_api_factory_get_received_material_status&action=api',
   delete_received_material: '/Primary/?FlowAlias=bs_api_factory_delete_received_material&action=api',
+
   
   get_workshop_list_by_company: '/Primary/?FlowAlias=bs_api_factory_workorder_get_workshop_by_company_code&action=api',
   get_productwhs_list_by_company : '/Primary/?FlowAlias=bs_api_factory_productwhs_get_productwhs_by_company_code&action=api',
   get_materialwhs_list_by_company : '/Primary/?FlowAlias=bs_api_factory_materialwhs_get_materialwhs_by_company_code&action=api',
+
+
+  // Material Warehouse
+  get_material_warehouse_list: '/Primary/?FlowAlias=bs_api_factory_get_material_warehouse_list&action=api',
+  get_material_warehouse_detail: '/Primary/?FlowAlias=bs_api_factory_get_material_warehouse_detail&action=api',
+  create_material_warehouse: '/Primary/?FlowAlias=bs_api_factory_create_material_warehouse&action=api',
+  update_material_warehouse: '/Primary/?FlowAlias=bs_api_factory_update_material_warehouse&action=api',
+  active_material_warehouse: '/Primary/?FlowAlias=bs_api_factory_active_material_warehouse&action=api',
+
+  // Workshop
+  get_workshop_list: '/Primary/?FlowAlias=bs_api_factory_get_workshop_list&action=api',
+  get_workshop_detail: '/Primary/?FlowAlias=bs_api_factory_get_workshop_detail&action=api',
+  create_workshop: '/Primary/?FlowAlias=bs_api_factory_create_workshop&action=api',
+  update_workshop: '/Primary/?FlowAlias=bs_api_factory_update_workshop&action=api',
+  active_workshop: '/Primary/?FlowAlias=bs_api_factory_active_workshop&action=api',
+
+  // Product Warehouse
+  get_product_warehouse_list: '/Primary/?FlowAlias=bs_api_factory_get_product_warehouse_list&action=api',
+  get_product_warehouse_detail: '/Primary/?FlowAlias=bs_api_factory_get_product_warehouse_detail&action=api',
+  create_product_warehouse: '/Primary/?FlowAlias=bs_api_factory_create_product_warehouse&action=api',
+  update_product_warehouse: '/Primary/?FlowAlias=bs_api_factory_update_product_warehouse&action=api',
+  active_product_warehouse: '/Primary/?FlowAlias=bs_api_factory_active_product_warehouse&action=api',
+
+  // Goods Issue
+  get_goods_issue_list: '/Primary/?FlowAlias=bs_api_factory_get_goods_issue_list&action=api',
+  get_goods_issue_detail: '/Primary/?FlowAlias=bs_api_factory_get_goods_issue_detail&action=api',
+  create_goods_issue: '/Primary/?FlowAlias=bs_api_factory_create_goods_issue&action=api',
+  update_goods_issue: '/Primary/?FlowAlias=bs_api_factory_update_goods_issue&action=api',
+  get_goods_issue_data: '/Primary/?FlowAlias=bs_api_factory_get_goods_issue_data&action=api',
+  delete_goods_issue_detail: '/Primary/?FlowAlias=bs_api_factory_delete_goods_issue_detail&action=api',
+
+  // Goods Receipt
+  get_goods_receipt_list: '/Primary/?FlowAlias=bs_api_factory_get_goods_receipt_list&action=api',
+  get_goods_receipt_detail: '/Primary/?FlowAlias=bs_api_factory_get_goods_receipt_detail&action=api',
+  create_goods_receipt: '/Primary/?FlowAlias=bs_api_factory_create_goods_receipt&action=api',
+  update_goods_receipt: '/Primary/?FlowAlias=bs_api_factory_update_goods_receipt&action=api',
+  get_goods_receipt_data: '/Primary/?FlowAlias=bs_api_factory_get_goods_receipt_data&action=api',
+  delete_goods_receipt_detail: '/Primary/?FlowAlias=bs_api_factory_delete_goods_receipt_detail&action=api',
+
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
@@ -251,7 +284,7 @@ export const supplierActions = {
 export const warehouseCategoryActions = {
   list_warehouse_category: 'TQT_MATERIAL_DEFAULT_OPEN_WAREHOUSE_CATEGORY_LIST',
 };
-export const warehouseActions = {
+export const materialWarehouseActions = {
   list_warehouse: 'TQT_SETTING_DEFAULT_OPEN_MATERIALWHS_LIST',
 };
 export const materialInventoryActions = {
@@ -265,6 +298,18 @@ export const purchaseMaterialActions = {
 };
 export const receivedMaterialActions = {
   list_receive_material: 'TQT_MATERIAL_DEFAULT_OPEN_RECEIVE_REQUEST_LIST',
+};
+export const workshopActions = {
+  list_workshop: 'TQT_SETTING_DEFAULT_OPEN_WORKSHOP_LIST',
+};
+export const productWarehouseActions = {
+  list_product_warehouse: 'TQT_SETTING_DEFAULT_OPEN_PRODUCT_WAREHOUSE_LIST',
+};
+export const goodsIssueActions = {
+  list_goods_issue: 'TQT_PRODUCT_DEFAULT_OPEN_GOODS_ISSUE_LIST',
+};
+export const goodsReceiptActions = {
+  list_goods_receipt: 'TQT_PRODUCT_DEFAULT_OPEN_GOODS_RECEIPT_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -425,6 +470,38 @@ export const view = {
     },
     detail: {
       save: 'TQT_MATERIAL_DEFAULT_RECEIVED_SAVE_FORM_BUTTON',
+    },
+  },
+  workshop: {
+    list: {
+      create: 'TQT_SETTING_DEFAULT_WORKSHOP_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_SETTING_DEFAULT_WORKSHOP_SAVE_FORM_BUTTON',
+    },
+  },
+  productWarehouse: {
+    list: {
+      create: 'TQT_SETTING_DEFAULT_PRODUCT_WAREHOUSE_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_SETTING_DEFAULT_PRODUCT_WAREHOUSE_SAVE_FORM_BUTTON',
+    },
+  },
+  goodsIssue: {
+    list: {
+      create: 'TQT_PRODUCT_DEFAULT_GOODS_ISSUE_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_PRODUCT_DEFAULT_GOODS_ISSUE_SAVE_FORM_BUTTON',
+    },
+  },
+  goodsReceipt: {
+    list: {
+      create: 'TQT_PRODUCT_DEFAULT_GOODS_RECEIPT_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_PRODUCT_DEFAULT_GOODS_RECEIPT_SAVE_FORM_BUTTON',
     },
   },
 };

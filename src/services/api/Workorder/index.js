@@ -109,7 +109,7 @@ export const createMaterialRequisition = (data) => {
 export const createWorkorOrder = (data) => {
   return axiosServices.post(apiEndpoints.create_work_order, data).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
-      return response.data.data
+      return response.data.data;
     }
     return false;
   });
@@ -136,41 +136,41 @@ export const checkMaterial = (data) => {
   });
 };
 export const getWorkOrderRequest = (id) => {
-  return axiosServices.post(apiEndpoints.get_work_order_daiy_request, {id: id}).then((response) => {
+  return axiosServices.post(apiEndpoints.get_work_order_daiy_request, { id: id }).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
-      return {work_order_request: response.data.data, work_order_detail:response.data.list} ;
+      return { work_order_request: response.data.data, work_order_detail: response.data.list };
     }
-    return {work_order_request: response.data.data, work_order_detail:[]};
+    return { work_order_request: response.data.data, work_order_detail: [] };
   });
 };
 export const deleteWorkOrderDetail = (id) => {
-  return axiosServices.post(apiEndpoints.remove_work_order_daiy_detail, {id: id}).then((response) => {
+  return axiosServices.post(apiEndpoints.remove_work_order_daiy_detail, { id: id }).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
-      return {work_order_request: response.data.data, work_order_detail:response.data.list} ;
+      return { work_order_request: response.data.data, work_order_detail: response.data.list };
     }
     return {};
   });
 };
 export const deleteWorkOrderRequest = (id) => {
-  return axiosServices.post(apiEndpoints.remove_work_order_daiy_request, {id: id}).then((response) => {
+  return axiosServices.post(apiEndpoints.remove_work_order_daiy_request, { id: id }).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
-      return {work_order_request: response.data.data, work_order_detail:response.data.list} ;
+      return { work_order_request: response.data.data, work_order_detail: response.data.list };
     }
     return {};
   });
 };
 export const createWorkOrderDetailList = (data) => {
-  return axiosServices.post(apiEndpoints.create_work_order_daiy_detail, {...data}).then((response) => {
+  return axiosServices.post(apiEndpoints.create_work_order_daiy_detail, { ...data }).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
-      return {work_order_request: response.data.data, work_order_detail:response.data.list} ;
+      return { work_order_request: response.data.data, work_order_detail: response.data.list };
     }
     return {};
   });
 };
-export const createWorkOrderRequest= (data) => {
-  return axiosServices.post(apiEndpoints.create_work_order_daiy_request, {...data}).then((response) => {
+export const createWorkOrderRequest = (data) => {
+  return axiosServices.post(apiEndpoints.create_work_order_daiy_request, { ...data }).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
-      return response.data.data ;
+      return response.data.data;
     }
     return '';
   });
@@ -200,3 +200,11 @@ export const getWorkShopList= () => {
   });
 };
 
+export const getDailyWorkOrderList = (id) => {
+  return axiosServices.post(apiEndpoints.get_daily_work_order_list, { id }).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data.list;
+    }
+    return [];
+  });
+};
