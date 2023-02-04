@@ -26,6 +26,7 @@ import {
   goodsIssueActions,
   goodsReceiptActions,
   productInventoryActions,
+  productionDailyMaterialReceivedActions,
 } from '../store/constant.js';
 
 export function getUrlByAction(selectedFolder) {
@@ -113,6 +114,9 @@ export function getUrlByAction(selectedFolder) {
     }
     case productInventoryActions.list_product_inventory: {
       return apiEndpoints.get_product_inventory_list;
+    }
+    case productionDailyMaterialReceivedActions.list_production_daily_material_received: {
+      return apiEndpoints.get_production_daily_material_received_list;
     }
     default: {
       return '';
