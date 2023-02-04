@@ -54,7 +54,7 @@ import { getDetailWorkshop } from './../../services/api/Setting/Workshop';
 import { getDetailProductWarehouse } from './../../services/api/Product/Warehouse';
 import { getDetailGoodsIssue } from './../../services/api/Product/GoodsIssue';
 import { getDetailGoodsReceipt } from './../../services/api/Product/GoodsReceipt';
-
+import { getDetailWorkorOrderRequest } from './../../services/api/Production/index';
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
     if (response.status === 200 && response.data.return === 200) return true;
@@ -131,6 +131,10 @@ export default function GeneralTable(props) {
       warehouse_name: tableColumns.includes('warehouse_name'),
       province_name: tableColumns.includes('province_name'),
       workshop_name: tableColumns.includes('workshop_name'),
+      order_title: tableColumns.includes('order_title'),
+      number_of_worker: tableColumns.includes('number_of_worker'),
+      number_of_working_hour: tableColumns.includes('number_of_working_hour'),
+      work_order_date_string: tableColumns.includes('work_order_date_string'),
     };
     setDisplayOptions(initOptions);
   }, [tableColumns, selectedFolder]);
@@ -489,6 +493,11 @@ export default function GeneralTable(props) {
         detailDocument = await getDetailGoodsReceipt(selectedDocument.id, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, goodsReceiptDocument: true });
+        break;
+      case 'production':
+        detailDocument = await getDetailWorkorOrderRequest(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
         break;
       default:
         break;
@@ -1159,6 +1168,26 @@ export default function GeneralTable(props) {
                               {displayOptions.status__display && (
                                 <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
                                   {row.status_display}
+                                </TableCell>
+                              )}
+                              {displayOptions.order_title && (
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                  {row.order_title}
+                                </TableCell>
+                              )}
+                              {displayOptions.number_of_worker && (
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                  {row.number_of_worker}
+                                </TableCell>
+                              )}
+                              {displayOptions.number_of_working_hour && (
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                  {row.number_of_working_hour}
+                                </TableCell>
+                              )}
+                              {displayOptions.work_order_date_string && (
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                  {row.work_order_date_string}
                                 </TableCell>
                               )}
                               {displayOptions.is_active && (

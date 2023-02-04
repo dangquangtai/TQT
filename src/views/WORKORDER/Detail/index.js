@@ -115,6 +115,9 @@ const WorkorderModal = () => {
     title: '',
     to_date: '',
     from_date: '',
+    workshop_id: '',
+    materialwh_id: '',
+    productwh_id: '',
   });
 
   const [productionStatus, setProductionStatus] = useState([
@@ -273,13 +276,15 @@ const WorkorderModal = () => {
         let WorkOrderID = workorder.id;
         if ((workorder.id === '')) {
           WorkOrderID = await createWorkorOrder({
-            workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
+            workshop_id: workorder.workshop_id,
             id: '',
             to_date: workorder.to_date,
             from_date: workorder.from_date,
             title: workorder.title,
             order_code: workorder.order_code,
             status_code: workorder.status_code,
+            productwh_id: workorder.productwh_id,
+            materialwh_id: workorder.materialwh_id,
           });
           setWorkorder({ ...workorder, id: WorkOrderID })
 
@@ -287,13 +292,15 @@ const WorkorderModal = () => {
         else if (checkChangeData.changeWorkOrder) {
 
           updateWorkorOrder({
-            workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
+            workshop_id: workorder.workshop_id,
             id: WorkOrderID,
             to_date: workorder.to_date,
             from_date: workorder.from_date,
             title: workorder.title,
             order_code: workorder.order_code,
             status_code: workorder.status_code,
+            productwh_id: workorder.productwh_id,
+            materialwh_id: workorder.materialwh_id,
           });
 
         }
@@ -1043,7 +1050,8 @@ const WorkorderModal = () => {
                                     id="outlined-size-small"
                                     variant="outlined"
                                     size="small"
-  
+                                    value={workorder?.workshop_id}
+                                    onChange={(event) => setWorkorder({...workorder, workshop_id: event.target.value})}
                                   >
                                     {workshopList &&
                                       workshopList.map((item) => (
@@ -1062,8 +1070,8 @@ const WorkorderModal = () => {
                                     id="outlined-size-small"
                                     variant="outlined"
                                     size="small"
-                                   
-                                   
+                                    value={workorder?.materialwh_id}
+                                    onChange={(event) => setWorkorder({...workorder, materialwh_id: event.target.value})}
                                   >
                                     {materialWHSList &&
                                       materialWHSList.map((item) => (
@@ -1083,8 +1091,8 @@ const WorkorderModal = () => {
                                     id="outlined-size-small"
                                     variant="outlined"
                                     size="small"
-                                
-                                  
+                                    value={workorder?.productwh_id}
+                                    onChange={(event) => setWorkorder({...workorder, productwh_id: event.target.value})}
                                   >
                                     {productWHSList &&
                                       productWHSList.map((item) => (

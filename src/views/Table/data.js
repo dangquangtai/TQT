@@ -56,6 +56,13 @@ export const headCells = [
   { id: 'from__date', numeric: false, disablePadding: false, label: 'Ngày bắt đầu', maxWidth: 150 },
   { id: 'to__date', numeric: false, disablePadding: false, label: 'Ngày kết thúc', maxWidth: 150 },
   { id: 'status__display', numeric: false, disablePadding: false, label: 'Trạng thái', maxWidth: 150 },
+  { id: 'order_title', numeric: false, disablePadding: false, label: 'Tên kế hoạch', maxWidth: 150 },
+  { id: 'number_of_worker', numeric: false, disablePadding: false, label: 'Số người làm', maxWidth: 150 },
+  { id: 'number_of_working_hour', numeric: false, disablePadding: false, label: 'Số giờ làm', maxWidth: 150 },
+  { id: 'work_order_date_string', numeric: false, disablePadding: false, label: 'Ngày', maxWidth: 150 },
+  
+
+
 
   { id: 'menuButtons', numeric: false, disablePadding: false, label: '', maxWidth: 150 },
 ];

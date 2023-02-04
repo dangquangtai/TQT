@@ -25,6 +25,7 @@ import {
   productWarehouseActions,
   goodsIssueActions,
   goodsReceiptActions,
+  productionActions,
 } from '../store/constant.js';
 
 export function getUrlByAction(selectedFolder) {
@@ -68,11 +69,15 @@ export function getUrlByAction(selectedFolder) {
     case productActions.list_product: {
       return apiEndpoints.get_product_list;
     }
+    
     case orderActions.list_pending_order: {
       return apiEndpoints.get_order_list;
     }
     case productrequestActions.list_product: {
-      return apiEndpoints.get_product_requesr_list;
+      return apiEndpoints.get_work_order_list;
+    }
+    case productrequestActions.list_draft: {
+      return apiEndpoints.get_work_order_draft_list;
     }
     case customerActions.list_customer: {
       return apiEndpoints.get_customer_list;
@@ -109,6 +114,9 @@ export function getUrlByAction(selectedFolder) {
     }
     case goodsReceiptActions.list_goods_receipt: {
       return apiEndpoints.get_goods_receipt_list;
+    }
+    case productionActions.list_production_daily_request: {
+      return apiEndpoints.get_production_daily_request_list;
     }
     default: {
       return '';

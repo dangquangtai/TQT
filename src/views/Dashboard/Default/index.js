@@ -32,6 +32,7 @@ import {
   productWarehouseActions,
   goodsIssueActions,
   goodsReceiptActions,
+  productionActions,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
 import { Redirect } from 'react-router-dom';
@@ -57,7 +58,7 @@ import WorkshopWrapper from './../../Setting/Workshop/index';
 import ProductWarehouseWrapper from './../../Product/Warehouse/index';
 import GoodsIssueWrapper from './../../Product/GoodsIssue/index';
 import GoodsReceiptWrapper from './../../Product/GoodsReceipt/index';
-
+import ProductionWrapper from './../../Production/index'
 const Default = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
   const { selectedApp } = useSelector((state) => state.app);
@@ -92,6 +93,7 @@ const Default = () => {
 
   const availableGoodsIssueEndpoint = Object.values(goodsIssueActions);
   const availableGoodsReceiptEndpoint = Object.values(goodsReceiptActions);
+  const availableProductionEndpoint = Object.values(productionActions);
 
   if (!selectedApp?.id) {
     return <Redirect to="/dashboard/app" />;
@@ -107,18 +109,15 @@ const Default = () => {
           {availableRoleEndpoint.includes(selectedFolder?.action) && <RoleWrapper />}
           {avaiableProcessRoleEndpoint.includes(selectedFolder?.action) && <ProcessRoleWrapper />}
           {availableDepartmentDeactiveEndpoint.includes(selectedFolder?.action) && <DepartmentListWrapper />}
-
           {availableMaterialCategoryEndpoint.includes(selectedFolder?.action) && <MaterialCategoryWrapper />}
           {availableSupplierCategoryEndpoint.includes(selectedFolder?.action) && <SupplierCategoryWrapper />}
           {availableProductCategoryEndpoint.includes(selectedFolder?.action) && <ProductCategoryWrapper />}
           {availableCustomerCategoryEndpoint.includes(selectedFolder?.action) && <CustomerCategoryWrapper />}
           {availableWarehouseCategoryEndpoint.includes(selectedFolder?.action) && <WarehouseCategoryWrapper />}
-
           {availableMaterialPartEndpoint.includes(selectedFolder?.action) && <MaterialPartWrapper />}
           {availableProductEndpoint.includes(selectedFolder?.action) && <ProductWrapper />}
           {availableOrderEndpoint.includes(selectedFolder?.action) && <OrderWrapper />}
           {availableProductRequestEndpoint.includes(selectedFolder?.action) && <WorkorderWrapper />}
-
           {availableCustomerEndpoint.includes(selectedFolder?.action) && <CustomerWrapper />}
           {availableSupplierEndpoint.includes(selectedFolder?.action) && <SupplierWrapper />}
           {availableMaterialInventoryEndpoint.includes(selectedFolder?.action) && <MaterialInventoryWrapper />}
@@ -128,9 +127,9 @@ const Default = () => {
           {availableWarehouseEndpoint.includes(selectedFolder?.action) && <MaterialWarehouseWrapper />}
           {availableWorkshopEndpoint.includes(selectedFolder?.action) && <WorkshopWrapper />}
           {availableProductWarehouseEndpoint.includes(selectedFolder?.action) && <ProductWarehouseWrapper />}
-
           {availableGoodsIssueEndpoint.includes(selectedFolder?.action) && <GoodsIssueWrapper />}
           {availableGoodsReceiptEndpoint.includes(selectedFolder?.action) && <GoodsReceiptWrapper />}
+          {availableProductionEndpoint.includes(selectedFolder?.action) && <ProductionWrapper/>}
         </Grid>
       )}
     </Grid>
