@@ -340,7 +340,7 @@ const WorkorderModal = () => {
         setCheckChangeData({ changeWorkOrder: false, changeWorkOrderDaily: false, changeWorkOrderRequest: false })
 
         if (getdate)
-          return handleGetWorkOrderRequest(IdWorkorderRequest)
+          return handleGetWorkOrderRequest(IdWorkorderRequest,-1)
 
       }
 
@@ -449,9 +449,7 @@ const WorkorderModal = () => {
     const value = e.target.value;
     let orderDetail = order?.orderDetail;
     let product =orderDetail.find((x) => x.product_id === productList[index].product_id)
-
     if ((parseInt(product.quantity_in_workorder) + parseInt(value) - parseInt(productList[index].quantity_in_box) )<= parseInt(product.quantity_in_box)){
-      
       setCheckChangeData({ ...checkChangeData, changeWorkOrderDaily: true })
       try {
         orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder += value - productList[index].quantity_in_box;
@@ -498,7 +496,7 @@ const WorkorderModal = () => {
     }
   };
 
-  const handleGetWorkOrderRequest = async (id) => {
+  const handleGetWorkOrderRequest = async (id,index) => {
     let productListApi = id;
     if (id === '') {
       setProductList([]);
@@ -509,9 +507,14 @@ const WorkorderModal = () => {
       setCheckChangeData({ ...checkChangeData, changeWorkOrderRequest: true })
     } else {
       productListApi = await getWorkOrderRequest(id);
-      console.log(productListApi, "check",workorder.id)
-      productionDailyRequestList[indexDate].color_check=productListApi.work_order_request.color_check
+      if (index>=0){
+        productionDailyRequestList[index].color_check=productListApi.work_order_request.color_check
+      productionDailyRequestList[index].is_enough=productListApi.work_order_request.is_enough
+      } else {
+        productionDailyRequestList[indexDate].color_check=productListApi.work_order_request.color_check
       productionDailyRequestList[indexDate].is_enough=productListApi.work_order_request.is_enough
+      }
+      
       setProductList(productListApi.work_order_detail);
       setWorkorderRequest({ ...productListApi.work_order_request });
       if (productListApi.work_order_detail[0]?.customer_order_id != '')
@@ -531,7 +534,7 @@ const WorkorderModal = () => {
     productionDailyRequestList[indexDate].percent = calculateTotalPercentList(productList, workorderRequest.number_of_worker, workorderRequest.number_of_working_hour)
     setCurrentDate(date);
     setIndexDate(index);
-    handleGetWorkOrderRequest(productionDailyRequestList[index].id)
+    handleGetWorkOrderRequest(productionDailyRequestList[index].id,index)
   };
 
   const updateDataDailyRequest = (product_List) => {
@@ -751,7 +754,7 @@ const WorkorderModal = () => {
         }
         setDateListNull(datenull);
       }
-      handleGetWorkOrderRequest(date[0].id)
+      handleGetWorkOrderRequest(date[0].id,-1)
 
 
     }
@@ -893,14 +896,16 @@ const WorkorderModal = () => {
   useEffect(() => {
 
     if (orderReduxWork?.workorderDetail?.data === 1) {
-
-      handleGetWorkOrderRequest(productionDailyRequestList[indexDate].id)
+      handleGetWorkOrderRequest(productionDailyRequestList[indexDate].id,-1)
     }
   }, [orderReduxWork.workorderDetail]);
 
   useEffect(() => {
     handleSetProduct();
+    if (!selectedDocument) return
+    popupWindow(`/dashboard/workorder/order-list`, `Mục tiêu sản xuất`)
   }, [selectedDocument]);
+
   useEffect(() => {
     if (checkChangeData.changeWorkOrder)
       handleSetDate(workorder.from_date, workorder.to_date);
