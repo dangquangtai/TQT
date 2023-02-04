@@ -32,6 +32,8 @@ import {
   productWarehouseActions,
   goodsIssueActions,
   goodsReceiptActions,
+  productInventoryActions,
+  productionDailyMaterialReceivedActions,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
 import { Redirect } from 'react-router-dom';
@@ -57,6 +59,8 @@ import WorkshopWrapper from './../../Setting/Workshop/index';
 import ProductWarehouseWrapper from './../../Product/Warehouse/index';
 import GoodsIssueWrapper from './../../Product/GoodsIssue/index';
 import GoodsReceiptWrapper from './../../Product/GoodsReceipt/index';
+import ProductInventoryWrapper from './../../Product/Inventory/index';
+import DailyMaterialReceivedWrapper from './../../Production/DailyMaterialReceived/index';
 
 const Default = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
@@ -92,6 +96,8 @@ const Default = () => {
 
   const availableGoodsIssueEndpoint = Object.values(goodsIssueActions);
   const availableGoodsReceiptEndpoint = Object.values(goodsReceiptActions);
+  const availableProductInventoryEndpoint = Object.values(productInventoryActions);
+  const availableProductionDailyMaterialReceivedEndpoint = Object.values(productionDailyMaterialReceivedActions);
 
   if (!selectedApp?.id) {
     return <Redirect to="/dashboard/app" />;
@@ -131,6 +137,8 @@ const Default = () => {
 
           {availableGoodsIssueEndpoint.includes(selectedFolder?.action) && <GoodsIssueWrapper />}
           {availableGoodsReceiptEndpoint.includes(selectedFolder?.action) && <GoodsReceiptWrapper />}
+          {availableProductInventoryEndpoint.includes(selectedFolder?.action) && <ProductInventoryWrapper />}
+          {availableProductionDailyMaterialReceivedEndpoint.includes(selectedFolder?.action) && <DailyMaterialReceivedWrapper />}
         </Grid>
       )}
     </Grid>
