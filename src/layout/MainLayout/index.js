@@ -34,6 +34,8 @@ import ProductWarehouseModal from './../../views/Product/Warehouse/Detail/index'
 import GoodsIssueModal from './../../views/Product/GoodsIssue/Detail/index';
 import GoodsReceiptModal from './../../views/Product/GoodsReceipt/Detail/index';
 import DeliveryMaterialModal from '../../views/Material/DailyMaterialRequisition/Detail';
+import DailyMaterialReceivedModal from './../../views/Production/DailyMaterialReceived/Detail/index';
+import DailyMaterialRequisitionModal from './../../views/Production/DailyMaterialRequisition/Detail/index';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -143,6 +145,10 @@ const MainLayout = ({ children }) => {
         return <GoodsReceiptModal />;
       case 'deliveryMaterial':
         return <DeliveryMaterialModal />;
+      case 'dailyMaterialReceived':
+        return <DailyMaterialReceivedModal />;
+      case 'dailyMaterialRequisition':
+        return <DailyMaterialRequisitionModal />;
       default:
         return null;
     }
