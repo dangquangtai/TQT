@@ -348,7 +348,7 @@ export const goodsReceiptActions = {
 
 export const productionActions = {
   list_production_daily_request: 'TQT_PRODUCTION_DEFAULT_OPEN_PRODUCTION_DAILY_REQUEST_LIST',
-
+};
 export const dailyDeliveryMateialActions = {
   list_daily_Material: 'TQT_MATERIAL_DEFAULT_OPEN_MATERIAL_DAILY_REQUISITION_LIST',
 };

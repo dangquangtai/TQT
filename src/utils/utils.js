@@ -125,7 +125,7 @@ export function getUrlByAction(selectedFolder) {
 
     case productionActions.list_production_daily_request: {
       return apiEndpoints.get_production_daily_request_list;
-
+    }
     case dailyDeliveryMateialActions.list_daily_Material: {
       return apiEndpoints.get_delivery_material_list;
     }

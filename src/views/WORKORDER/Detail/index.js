@@ -1152,9 +1152,11 @@ const WorkorderModal = () => {
                                             <TableCell
                                               align="center"
                                               style={
-                                                currentDate === item.work_order_date
-                                                  ? { background: 'rgb(97, 42, 255)', color: 'white' }
-                                                  : (item.work_order_date === dayCurrent ? {background: 'rgb(97, 42, 210)'} : {})
+                                                (item.work_order_date === dayCurrent ? {background: 'rgb(97, 42, 210)', color: 'white'} :
+                                                ( currentDate === item.work_order_date
+                                                  ? { background: 'rgb(97, 42, 255)', color: 'white' }: {}) )
+                                               
+                                                  
                                               }
                                               onClick={() =>
                                                 handleChangeDate(item.work_order_date, index + currentWeek * 7)
