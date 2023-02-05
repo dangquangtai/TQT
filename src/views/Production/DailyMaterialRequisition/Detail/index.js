@@ -32,6 +32,7 @@ import { view } from './../../../../store/constant';
 import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CONFIRM_CHANGE } from './../../../../store/actions';
 import DatePicker from './../../../../component/DatePicker/index';
 import { updateDailyMaterialRequisition } from '../../../../services/api/Production/MaterialRequisition.js';
+import { getDeliveryMaterialData } from '../../../../services/api/Material/DailyRequisitionMaterial.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -128,14 +129,14 @@ const DailyMaterialRequisitionModal = () => {
     setRequisitionDetailList(selectedDocument?.detail_list || []);
   }, [selectedDocument]);
 
-  //   useEffect(() => {
-  //     const fetchData = async () => {
-  //       const { status, warehouses } = await getDailyMaterialRequisitionData();
-  //       setStatusList(status);
-  //       setWarehouseList(warehouses);
-  //     };
-  //     fetchData();
-  //   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      const { status, warehouses } = await getDeliveryMaterialData();
+      setStatusList(status);
+      setWarehouseList(warehouses);
+    };
+    fetchData();
+  }, []);
 
   return (
     <React.Fragment>

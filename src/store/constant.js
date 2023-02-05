@@ -256,7 +256,6 @@ export const apiEndpoints = {
   get_production_daily_material_received_data: '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_data&action=api',
 };
 
-
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
 
@@ -339,6 +338,7 @@ export const goodsReceiptActions = {
 };
 export const dailyDeliveryMateialActions = {
   list_daily_Material: 'TQT_MATERIAL_DEFAULT_OPEN_MATERIAL_DAILY_REQUISITION_LIST',
+};
 export const productInventoryActions = {
   list_product_inventory: 'TQT_PRODUCT_DEFAULT_OPEN_INVENTORY_LIST',
 };
@@ -547,6 +547,8 @@ export const view = {
     },
     detail: {
       save: 'TQT_MATERIAL_DEFAULT_DAILY_REQUISITION_SAVE_FORM_BUTTON',
+    },
+  },
   productionDailyMaterialRequisition: {
     detail: {
       save: 'TQT_PRODUCTION_DEFAULT_DAILY_MATERIAL_REQUISITION_SAVE_FORM_BUTTON',

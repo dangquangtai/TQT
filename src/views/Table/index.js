@@ -499,6 +499,7 @@ export default function GeneralTable(props) {
         detailDocument = await getDetailDeliveryMaterial(selectedDocument.id, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, dailyMaterialRequitisionDocument: true });
+        break;
       case 'dailyMaterialReceived':
         detailDocument = await getDetailDailyMaterialReceived(selectedDocument.id, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
@@ -571,7 +572,7 @@ export default function GeneralTable(props) {
         break;
       case 'deliveryMaterial':
         dispatch({ type: FLOATING_MENU_CHANGE, dailyMaterialRequitisionDocument: true });
-        break
+        break;
       default:
         break;
     }
@@ -775,7 +776,7 @@ export default function GeneralTable(props) {
     });
   };
 
-  const clickSuccess = () => { };
+  const clickSuccess = () => {};
 
   const toolbarProps = {
     categories,
@@ -883,7 +884,7 @@ export default function GeneralTable(props) {
                       }
                       aria-labelledby="tableTitle"
                       size={'medium'}
-                    // aria-label="enhanced table"
+                      // aria-label="enhanced table"
                     >
                       <EnhancedTableHead
                         classes={classes}

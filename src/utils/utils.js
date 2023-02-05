@@ -25,7 +25,7 @@ import {
   productWarehouseActions,
   goodsIssueActions,
   goodsReceiptActions,
-  dailyDeliveryMateialActions
+  dailyDeliveryMateialActions,
   productInventoryActions,
   productionDailyMaterialReceivedActions,
   productionDailyMaterialRequisitionActions,
@@ -116,6 +116,7 @@ export function getUrlByAction(selectedFolder) {
     }
     case dailyDeliveryMateialActions.list_daily_Material: {
       return apiEndpoints.get_delivery_material_list;
+    }
     case productInventoryActions.list_product_inventory: {
       return apiEndpoints.get_product_inventory_list;
     }
