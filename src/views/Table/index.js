@@ -54,6 +54,7 @@ import { getDetailWorkshop } from './../../services/api/Setting/Workshop';
 import { getDetailProductWarehouse } from './../../services/api/Product/Warehouse';
 import { getDetailGoodsIssue } from './../../services/api/Product/GoodsIssue';
 import { getDetailGoodsReceipt } from './../../services/api/Product/GoodsReceipt';
+import { getDetailDeliveryMaterial } from '../../services/api/Material/DailyRequisitionMaterial';
 
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
@@ -175,6 +176,8 @@ export default function GeneralTable(props) {
 
   const buttonCreateGoodsIssue = menuButtons.find((button) => button.name === view.goodsIssue.list.create);
   const buttonCreateGoodsReceipt = menuButtons.find((button) => button.name === view.goodsReceipt.list.create);
+
+  const buttonCreateDailyMaterial = menuButtons.find((button) => button.name === view.dailyDeliveryMateial.list.create);
 
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -490,6 +493,11 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, goodsReceiptDocument: true });
         break;
+      case 'deliveryMaterial':
+        detailDocument = await getDetailDeliveryMaterial(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, dailyMaterialRequitisionDocument: true });
+        break;
       default:
         break;
     }
@@ -550,6 +558,9 @@ export default function GeneralTable(props) {
       case 'goodsReceipt':
         dispatch({ type: FLOATING_MENU_CHANGE, goodsReceiptDocument: true });
         break;
+      case 'deliveryMaterial':
+        dispatch({ type: FLOATING_MENU_CHANGE, dailyMaterialRequitisionDocument: true });
+        break
       default:
         break;
     }
@@ -753,7 +764,7 @@ export default function GeneralTable(props) {
     });
   };
 
-  const clickSuccess = () => {};
+  const clickSuccess = () => { };
 
   const toolbarProps = {
     categories,
@@ -815,6 +826,7 @@ export default function GeneralTable(props) {
     buttonCreateProductWarehouse,
     buttonCreateGoodsIssue,
     buttonCreateGoodsReceipt,
+    buttonCreateDailyMaterial,
   };
 
   return (
@@ -860,7 +872,7 @@ export default function GeneralTable(props) {
                       }
                       aria-labelledby="tableTitle"
                       size={'medium'}
-                      // aria-label="enhanced table"
+                    // aria-label="enhanced table"
                     >
                       <EnhancedTableHead
                         classes={classes}

@@ -33,6 +33,7 @@ import WorkshopModal from './../../views/Setting/Workshop/Detail/index';
 import ProductWarehouseModal from './../../views/Product/Warehouse/Detail/index';
 import GoodsIssueModal from './../../views/Product/GoodsIssue/Detail/index';
 import GoodsReceiptModal from './../../views/Product/GoodsReceipt/Detail/index';
+import DeliveryMaterialModal from '../../views/Material/DailyMaterialRequisition/Detail';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -140,6 +141,8 @@ const MainLayout = ({ children }) => {
         return <GoodsIssueModal />;
       case 'goodsReceipt':
         return <GoodsReceiptModal />;
+      case 'deliveryMaterial':
+        return <DeliveryMaterialModal />;
       default:
         return null;
     }

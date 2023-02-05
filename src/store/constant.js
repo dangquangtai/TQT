@@ -223,7 +223,19 @@ export const apiEndpoints = {
   update_goods_receipt: '/Primary/?FlowAlias=bs_api_factory_update_goods_receipt&action=api',
   get_goods_receipt_data: '/Primary/?FlowAlias=bs_api_factory_get_goods_receipt_data&action=api',
   delete_goods_receipt_detail: '/Primary/?FlowAlias=bs_api_factory_delete_goods_receipt_detail&action=api',
+
+  // daily delivery material
+  get_delivery_material_list: '/Primary/?FlowAlias=bs_api_factory_get_list_daily_delivery_material&action=api',
+  create_delivery_material: '/Primary/?FlowAlias=bs_api_factory_create_daily_delivery_material&action=api',
+  update_delivery_material: '/Primary/?FlowAlias=bs_api_factory_update_daily_delivery_material&action=api',
+  delete_delivery_material_detail: '/Primary/?FlowAlias=bs_api_factory_delete_material_daily_requisition_detail&action=api',
+  get_detail_delivery_material: '/Primary/?FlowAlias=bs_api_factory_get_detail_material_daily_requisition&action=api',
+  get_delivery_material_data: '/Primary/?FlowAlias=bs_api_factory_get_delivery_material_data&action=api',
+  get_material_inventory_by_supplier: '/Primary/?FlowAlias=bs_api_factory_get_inventory_by_supplier&action=api',
+
 };
+
+
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
 
@@ -303,6 +315,9 @@ export const goodsIssueActions = {
 };
 export const goodsReceiptActions = {
   list_goods_receipt: 'TQT_PRODUCT_DEFAULT_OPEN_GOODS_RECEIPT_LIST',
+};
+export const dailyDeliveryMateialActions = {
+  list_daily_Material: 'TQT_MATERIAL_DEFAULT_OPEN_MATERIAL_DAILY_REQUISITION_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -495,6 +510,14 @@ export const view = {
     },
     detail: {
       save: 'TQT_PRODUCT_DEFAULT_GOODS_RECEIPT_SAVE_FORM_BUTTON',
+    },
+  },
+  dailyDeliveryMateial: {
+    list: {
+      create: 'TQT_MATERIAL_DEFAULT_DAILY_REQUISITION_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_MATERIAL_DEFAULT_DAILY_REQUISITION_SAVE_FORM_BUTTON',
     },
   },
 };
