@@ -32,6 +32,7 @@ import {
   productWarehouseActions,
   goodsIssueActions,
   goodsReceiptActions,
+  dailyDeliveryMateialActions,
   productInventoryActions,
   productionDailyMaterialReceivedActions,
 } from './../../../store/constant';
@@ -59,6 +60,7 @@ import WorkshopWrapper from './../../Setting/Workshop/index';
 import ProductWarehouseWrapper from './../../Product/Warehouse/index';
 import GoodsIssueWrapper from './../../Product/GoodsIssue/index';
 import GoodsReceiptWrapper from './../../Product/GoodsReceipt/index';
+import DeliveryMaterialWrapper from '../../Material/DailyMaterialRequisition';
 import ProductInventoryWrapper from './../../Product/Inventory/index';
 import DailyMaterialReceivedWrapper from './../../Production/DailyMaterialReceived/index';
 
@@ -99,6 +101,9 @@ const Default = () => {
   const availableProductInventoryEndpoint = Object.values(productInventoryActions);
   const availableProductionDailyMaterialReceivedEndpoint = Object.values(productionDailyMaterialReceivedActions);
 
+  const availableDeliveryMaterialEndpoint = Object.values(dailyDeliveryMateialActions);
+
+
   if (!selectedApp?.id) {
     return <Redirect to="/dashboard/app" />;
   }
@@ -137,8 +142,11 @@ const Default = () => {
 
           {availableGoodsIssueEndpoint.includes(selectedFolder?.action) && <GoodsIssueWrapper />}
           {availableGoodsReceiptEndpoint.includes(selectedFolder?.action) && <GoodsReceiptWrapper />}
+
+          {availableDeliveryMaterialEndpoint.includes(selectedFolder?.action) && <DeliveryMaterialWrapper />}
           {availableProductInventoryEndpoint.includes(selectedFolder?.action) && <ProductInventoryWrapper />}
           {availableProductionDailyMaterialReceivedEndpoint.includes(selectedFolder?.action) && <DailyMaterialReceivedWrapper />}
+
         </Grid>
       )}
     </Grid>
