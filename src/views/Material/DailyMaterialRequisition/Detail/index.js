@@ -43,7 +43,7 @@ import {
 } from './../../../../services/api/Material/Received';
 import { getPurchaseMaterialByOrder, getPurchaseMaterialList } from '../../../../services/api/Material/Purchase.js';
 import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
-import { createDeliveryMaterial, getDeliveryMaterialData, getInventoryBySupplier, updateDeliveryMaterial } from '../../../../services/api/Material/DailyRequisitionMaterial';
+import { createDeliveryMaterial, deleteDeliveryMaterialDetail, getDeliveryMaterialData, getInventoryBySupplier, updateDeliveryMaterial } from '../../../../services/api/Material/DailyRequisitionMaterial';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
@@ -279,7 +279,7 @@ const DeliveryMaterialModal = () => {
             showConfirmPopup({
                 title: 'Xóa vật tư',
                 message: 'Bạn có chắc chắn muốn xóa vật tư này?',
-                action: deleteReceivedMaterialDetail,
+                action: deleteDeliveryMaterialDetail,
                 payload: id,
                 onSuccess: () => {
                     spliceMaterial(index);
