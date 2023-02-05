@@ -31,8 +31,7 @@ import useConfirmPopup from './../../../../hooks/useConfirmPopup';
 import { view } from './../../../../store/constant';
 import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CONFIRM_CHANGE } from './../../../../store/actions';
 import DatePicker from './../../../../component/DatePicker/index';
-import { updateDailyMaterialReceived, getDailyMaterialReceivedData } from '../../../../services/api/Production/MaterialReceived.js';
-import BrokenModal from './../../../Dialog/Broken/index';
+import { updateDailyMaterialRequisition } from '../../../../services/api/Production/MaterialRequisition.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -58,29 +57,20 @@ function a11yProps(index) {
   };
 }
 
-const DailyMaterialReceivedModal = () => {
+const DailyMaterialRequisitionModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { form_buttons: formButtons } = useView();
   const { setConfirmPopup } = useConfirmPopup();
-  const saveButton = formButtons.find((button) => button.name === view.productionDailyMaterialReceived.detail.save);
-  const { dailyMaterialReceivedDocument: openDialog } = useSelector((state) => state.floatingMenu);
+  const saveButton = formButtons.find((button) => button.name === view.productionDailyMaterialRequisition.detail.save);
+  const { dailyWMaterialRequisitionDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
 
-  const [dailyMaterialReceivedData, setDailyMaterialReceivedData] = useState({
-    order_date: new Date(),
-    notes: '',
-  });
+  const [dailyMaterialRequisitionData, setDailyMaterialRequisitionData] = useState({});
 
-  const [receivedDetailList, setReceivedDetailList] = useState([]);
+  const [RequisitionDetailList, setRequisitionDetailList] = useState([]);
   const [statusList, setStatusList] = useState([]);
   const [warehouseList, setWarehouseList] = useState([]);
-
-  const [openBrokenModal, setOpenBrokenModal] = useState(false);
-  const [brokenDetail, setBrokenDetail] = useState({
-    index: null,
-    list: [],
-  });
 
   const [tabIndex, setTabIndex] = React.useState(0);
 
@@ -90,7 +80,7 @@ const DailyMaterialReceivedModal = () => {
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
-    dispatch({ type: FLOATING_MENU_CHANGE, dailyMaterialReceivedDocument: false });
+    dispatch({ type: FLOATING_MENU_CHANGE, dailyWMaterialRequisitionDocument: false });
   };
 
   const handleOpenSnackbar = (type, text) => {
@@ -104,16 +94,16 @@ const DailyMaterialReceivedModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setDailyMaterialReceivedData({ order_date: new Date() });
-    setReceivedDetailList([]);
+    setDailyMaterialRequisitionData({});
+    setRequisitionDetailList([]);
     setTabIndex(0);
   };
 
   const handleSubmitForm = async () => {
     try {
-      await updateDailyMaterialReceived({ ...dailyMaterialReceivedData, detail_list: receivedDetailList });
-      handleOpenSnackbar('success', 'Cập nhật Phiếu nhập vật tư thành công!');
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'dailyMaterialReceived' });
+      await updateDailyMaterialRequisition(dailyMaterialRequisitionData);
+      handleOpenSnackbar('success', 'Cập nhật Phiếu xuất vật tư thành công!');
+      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'dailyMaterialRequisition' });
       handleCloseDialog();
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
@@ -126,68 +116,29 @@ const DailyMaterialReceivedModal = () => {
 
   const handleChanges = (e) => {
     const { name, value } = e.target;
-    setDailyMaterialReceivedData({ ...dailyMaterialReceivedData, [name]: value });
-  };
-
-  const handleChangeProduct = (index, e) => {
-    const newreceivedDetailList = [...receivedDetailList];
-    const { name, value } = e.target;
-    if (name === 'total_return_quantity_in_piece' && value > newreceivedDetailList[index].quantity_in_piece) {
-      handleOpenSnackbar('error', 'Số lượng không được lớn hơn số lượng trong kế hoạch!');
-      return;
-    }
-    newreceivedDetailList[index] = { ...newreceivedDetailList[index], [name]: value };
-    setReceivedDetailList(newreceivedDetailList);
-  };
-
-  const handleCloseBrokenModal = () => {
-    setOpenBrokenModal(false);
-    setBrokenDetail({ index: null, list: [] });
-  };
-
-  const handleOpenBrokenModal = (item, index) => {
-    setOpenBrokenModal(true);
-    setBrokenDetail({ index, list: item.broken_list || [] });
-  };
-
-  const handleSubmitBroken = (brokens, totalBroken) => {
-    const newreceivedDetailList = [...receivedDetailList];
-    newreceivedDetailList[brokenDetail.index] = {
-      ...newreceivedDetailList[brokenDetail.index],
-      broken_list: brokens,
-      total_broken_quantity_in_piece: totalBroken,
-    };
-    setReceivedDetailList(newreceivedDetailList);
-    handleCloseBrokenModal();
+    setDailyMaterialRequisitionData({ ...dailyMaterialRequisitionData, [name]: value });
   };
 
   useEffect(() => {
     if (!selectedDocument) return;
-    setDailyMaterialReceivedData({
-      ...dailyMaterialReceivedData,
+    setDailyMaterialRequisitionData({
+      ...dailyMaterialRequisitionData,
       ...selectedDocument,
     });
-    setReceivedDetailList(selectedDocument?.detail_list || []);
+    setRequisitionDetailList(selectedDocument?.detail_list || []);
   }, [selectedDocument]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const { status, warehouses } = await getDailyMaterialReceivedData();
-      setStatusList(status);
-      setWarehouseList(warehouses);
-    };
-    fetchData();
-  }, []);
+  //   useEffect(() => {
+  //     const fetchData = async () => {
+  //       const { status, warehouses } = await getDailyMaterialRequisitionData();
+  //       setStatusList(status);
+  //       setWarehouseList(warehouses);
+  //     };
+  //     fetchData();
+  //   }, []);
 
   return (
     <React.Fragment>
-      <BrokenModal
-        isOpen={openBrokenModal}
-        handleClose={handleCloseBrokenModal}
-        handleSubmit={handleSubmitBroken}
-        handleOpenSnackbar={handleOpenSnackbar}
-        list={brokenDetail?.list || []}
-      />
       <Grid container>
         <Dialog
           open={openDialog || false}
@@ -203,7 +154,7 @@ const DailyMaterialReceivedModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              {selectedDocument?.id ? 'Cập nhật Phiếu nhập vật tư' : 'Tạo mới Phiếu nhập vật tư'}
+              Phiếu xuất vật tư
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -258,7 +209,7 @@ const DailyMaterialReceivedModal = () => {
                     <Grid item lg={12} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>nhập vật tư</div>
+                          <div className={classes.tabItemLabel}>Xuất vật tư</div>
                         </div>
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={2} className={classes.gridItemInfo}>
@@ -270,7 +221,7 @@ const DailyMaterialReceivedModal = () => {
                                 name="order_code"
                                 type="text"
                                 size="small"
-                                value={dailyMaterialReceivedData.order_code || ''}
+                                value={dailyMaterialRequisitionData.order_code || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
@@ -282,15 +233,15 @@ const DailyMaterialReceivedModal = () => {
                                 name="title"
                                 type="text"
                                 size="small"
-                                value={dailyMaterialReceivedData.title || ''}
+                                value={dailyMaterialRequisitionData.title || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
                               <span className={classes.tabItemLabelField}>Ngày nhập kho:</span>
                               <DatePicker
-                                date={dailyMaterialReceivedData.order_date}
-                                onChange={(date) => setDailyMaterialReceivedData({ ...dailyMaterialReceivedData, order_date: date })}
+                                date={dailyMaterialRequisitionData.order_date}
+                                onChange={(date) => setDailyMaterialRequisitionData({ ...dailyMaterialRequisitionData, order_date: date })}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
@@ -301,7 +252,7 @@ const DailyMaterialReceivedModal = () => {
                                 variant="outlined"
                                 select
                                 size="small"
-                                value={dailyMaterialReceivedData.warehouse_id || ''}
+                                value={dailyMaterialRequisitionData.warehouse_id || ''}
                                 onChange={handleChanges}
                               >
                                 {warehouseList?.map((option) => (
@@ -319,7 +270,7 @@ const DailyMaterialReceivedModal = () => {
                                 variant="outlined"
                                 select
                                 size="small"
-                                value={dailyMaterialReceivedData.status || ''}
+                                value={dailyMaterialRequisitionData.status || ''}
                                 onChange={handleChanges}
                               >
                                 {statusList?.map((option) => (
@@ -339,7 +290,7 @@ const DailyMaterialReceivedModal = () => {
                                 name="notes"
                                 type="text"
                                 size="small"
-                                value={dailyMaterialReceivedData.notes || ''}
+                                value={dailyMaterialRequisitionData.notes || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
@@ -361,22 +312,18 @@ const DailyMaterialReceivedModal = () => {
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">Nhà cung cấp</TableCell>
                                   <TableCell align="left">Số lượng xuất</TableCell>
-                                  <TableCell align="left">Số lượng nhập</TableCell>
-                                  <TableCell align="left">Số lượng hỏng</TableCell>
-                                  <TableCell align="left">Chênh lệch</TableCell>
-                                  <TableCell align="left">Chi tiết hỏng</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {receivedDetailList?.map((row, index) => (
+                                {RequisitionDetailList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '20%' }}>
+                                    <TableCell align="left" style={{ width: '30%' }}>
                                       <Tooltip title={row?.part_code}>
                                         <span>{row?.part_code}</span>
                                       </Tooltip>
                                     </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '30%' }}>
+                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '40%' }}>
                                       <Tooltip title={row?.part_name}>
                                         <span>{row?.part_name}</span>
                                       </Tooltip>
@@ -384,45 +331,10 @@ const DailyMaterialReceivedModal = () => {
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       {row.supplier_name}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '5%' }}>
+                                    <TableCell align="left" style={{ width: '10%' }}>
                                       {row.quantity_in_piece}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
-                                      <TextField
-                                        InputProps={{
-                                          inputProps: { min: 0 },
-                                        }}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="total_return_quantity_in_piece"
-                                        type="number"
-                                        size="small"
-                                        value={row?.total_return_quantity_in_piece || ''}
-                                        onChange={(e) => handleChangeProduct(index, e)}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
-                                      <TextField
-                                        InputProps={{
-                                          inputProps: { min: 0 },
-                                        }}
-                                        fullWidth
-                                        disabled
-                                        variant="outlined"
-                                        name="total_broken_quantity_in_piece"
-                                        type="number"
-                                        size="small"
-                                        value={row?.total_broken_quantity_in_piece || ''}
-                                        onChange={(e) => handleChangeProduct(index, e)}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '5%' }}>
-                                      {row.quantity_in_piece - row.total_return_quantity_in_piece - row.total_broken_quantity_in_piece}
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '5%' }} onClick={() => handleOpenBrokenModal(row, index)}>
-                                      Chi tiết
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '5%' }}>
                                       {row.unit_name}
                                     </TableCell>
                                   </TableRow>
@@ -461,11 +373,6 @@ const DailyMaterialReceivedModal = () => {
                     {saveButton.text}
                   </Button>
                 )}
-                {!selectedDocument?.id && (
-                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
-                    Tạo mới
-                  </Button>
-                )}
               </Grid>
             </Grid>
           </DialogActions>
@@ -475,4 +382,4 @@ const DailyMaterialReceivedModal = () => {
   );
 };
 
-export default DailyMaterialReceivedModal;
+export default DailyMaterialRequisitionModal;

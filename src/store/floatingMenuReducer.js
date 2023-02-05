@@ -49,6 +49,7 @@ const floatingMenuReducer = (state = initialState, action) => {
         goodsIssueDocument: action.goodsIssueDocument,
         goodsReceiptDocument: action.goodsReceiptDocument,
         dailyMaterialReceivedDocument: action.dailyMaterialReceivedDocument,
+        dailyWMaterialRequisitionDocument: action.dailyWMaterialRequisitionDocument,
       };
     default:
       return state;

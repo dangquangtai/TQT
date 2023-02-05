@@ -15,10 +15,12 @@ import {
   TableRow,
   Paper,
   IconButton,
+  Tooltip,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
 import DeleteIcon from '@material-ui/icons/Delete';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 const style = {
   box: {
@@ -44,7 +46,7 @@ const style = {
   },
   form: {
     width: '100%',
-    marginBottom: '20px',
+    marginBottom: '10px',
   },
   BrokenContainer: {
     display: 'flex',
@@ -93,35 +95,73 @@ const style = {
 const StyledTableCell = withStyles((theme) => ({
   root: {
     '&:not(:first-child)': {
-      padding: '10px 2px',
+      padding: '10px 5px',
     },
     '&:first-child': {
-      padding: '10px 2px 10px 20px',
+      padding: '10px 5px 10px 20px',
     },
   },
 }))(TableCell);
 
 export default function BrokenModal(props) {
-  const { isOpen, handleClose, handleSubmit, handleDeleteBroken, brokenList } = props;
+  const { isOpen, handleClose, handleSubmit, handleOpenSnackbar, list } = props;
   const { brokens } = useSelector((state) => state.metadata);
-  const [brokenData, setBrokenData] = React.useState({});
+  const [brokenList, setBrokenList] = React.useState([]);
+  const [totalBroken, setTotalBroken] = React.useState(0);
 
-  const handleChange = (e) => {
+  const handleChange = (e, index) => {
     const { name, value } = e.target;
-    setBrokenData({ ...brokenData, [name]: value });
+    const list = [...brokenList];
+    if (name === 'Broken_Type_Code') {
+      const check = brokenList.some((item, i) => item.Broken_Type_Code === value && i !== index);
+      if (check) {
+        handleOpenSnackbar('error', 'Loại hỏng đã tồn tại');
+        brokenList[index].Broken_Type_Code = '';
+        brokenList[index].Quantity_In_Piece = 0;
+        return;
+      }
+      const broken = brokens?.find((item) => item.Broken_Type_Code === value);
+      list[index].Broken_Type_Name = broken?.value;
+    }
+    list[index][name] = value;
+    setTotalBroken(list.reduce((a, b) => a + Number(b.Quantity_In_Piece), 0));
+    setBrokenList(list);
+  };
+
+  const handleSubmited = () => {
+    handleSubmit(
+      brokenList.filter((item) => item.Broken_Type_Code !== '' && item.Quantity_In_Piece !== 0),
+      totalBroken
+    );
   };
 
   const handleAddBroken = () => {
-    handleSubmit({
-      ...brokenData,
-      Broken_Type_Name: brokens.find((broken) => broken.id === brokenData.Broken_Type_Code).value,
-    });
-    setBrokenData({});
+    setBrokenList([
+      ...brokenList,
+      {
+        Broken_Type_Code: '',
+        Broken_Type_Name: '',
+        Quantity_In_Piece: 0,
+      },
+    ]);
+  };
+
+  const handleDelete = (index) => {
+    const list = [...brokenList];
+    list.splice(index, 1);
+    setBrokenList(list);
   };
 
   const handleCloseModal = () => {
     handleClose();
   };
+
+  React.useEffect(() => {
+    if (list) {
+      setBrokenList(list);
+      setTotalBroken(list.reduce((a, b) => a + Number(b.Quantity_In_Piece), 0));
+    }
+  }, [list]);
 
   return (
     <div>
@@ -132,26 +172,18 @@ export default function BrokenModal(props) {
           </div>
           <div id="modal-modal-description" style={style.body}>
             <FormControl style={style.form}>
-              <Grid container spacing={2}>
+              <Grid container spacing={2} alignItems="center">
                 <Grid item xs={6}>
-                  <div style={style.BrokenLabel}>Hỏng:</div>
+                  <div style={style.BrokenLabel}>Tổng số hỏng: {totalBroken}</div>
                 </Grid>
                 <Grid item xs={6}>
-                  <div style={style.BrokenLabel}>Số lượng:</div>
-                </Grid>
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <TextField fullWidth size="small" select variant="outlined" name="Broken_Type_Code" onChange={handleChange}>
-                    {brokens.map((broken) => (
-                      <MenuItem key={broken.id} value={broken.id}>
-                        {broken.value}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField fullWidth size="small" variant="outlined" type="number" name="Quantity_In_Piece" onChange={handleChange} />
+                  <Box display="flex" justifyContent="flex-end">
+                    <Tooltip title="Thêm loại hỏng">
+                      <IconButton onClick={handleAddBroken}>
+                        <AddCircleOutlineIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
                 </Grid>
               </Grid>
             </FormControl>
@@ -167,10 +199,36 @@ export default function BrokenModal(props) {
                 <TableBody>
                   {brokenList?.map((broken, index) => (
                     <TableRow key={index}>
-                      <StyledTableCell>{broken.Broken_Type_Name}</StyledTableCell>
-                      <StyledTableCell align="left">{broken.Quantity_In_Piece}</StyledTableCell>
-                      <StyledTableCell align="left">
-                        <IconButton aria-label="delete" size="small" onClick={() => handleDeleteBroken(index)}>
+                      <StyledTableCell style={{ width: '50%' }}>
+                        <TextField
+                          fullWidth
+                          size="small"
+                          select
+                          variant="outlined"
+                          name="Broken_Type_Code"
+                          value={broken.Broken_Type_Code || ''}
+                          onChange={(e) => handleChange(e, index)}
+                        >
+                          {brokens.map((broken) => (
+                            <MenuItem key={broken.id} value={broken.id}>
+                              {broken.value}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </StyledTableCell>
+                      <StyledTableCell align="left" style={{ width: '40%' }}>
+                        <TextField
+                          fullWidth
+                          size="small"
+                          variant="outlined"
+                          type="number"
+                          name="Quantity_In_Piece"
+                          value={broken.Quantity_In_Piece}
+                          onChange={(e) => handleChange(e, index)}
+                        />
+                      </StyledTableCell>
+                      <StyledTableCell align="left" style={{ width: '10%' }}>
+                        <IconButton aria-label="delete" size="small" onClick={() => handleDelete(index)}>
                           <DeleteIcon fontSize="inherit" />
                         </IconButton>
                       </StyledTableCell>
@@ -183,7 +241,7 @@ export default function BrokenModal(props) {
               <Button type="button" variant="contained" style={style.closeButton} onClick={handleCloseModal}>
                 Đóng
               </Button>
-              <Button type="submit" variant="contained" style={style.submitButton} onClick={handleAddBroken}>
+              <Button type="submit" variant="contained" style={style.submitButton} onClick={handleSubmited}>
                 Lưu
               </Button>
             </div>

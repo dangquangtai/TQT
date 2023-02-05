@@ -187,11 +187,9 @@ export const apiEndpoints = {
   get_received_material_status: '/Primary/?FlowAlias=bs_api_factory_get_received_material_status&action=api',
   delete_received_material: '/Primary/?FlowAlias=bs_api_factory_delete_received_material&action=api',
 
-  
   get_workshop_list_by_company: '/Primary/?FlowAlias=bs_api_factory_workorder_get_workshop_by_company_code&action=api',
-  get_productwhs_list_by_company : '/Primary/?FlowAlias=bs_api_factory_productwhs_get_productwhs_by_company_code&action=api',
-  get_materialwhs_list_by_company : '/Primary/?FlowAlias=bs_api_factory_materialwhs_get_materialwhs_by_company_code&action=api',
-
+  get_productwhs_list_by_company: '/Primary/?FlowAlias=bs_api_factory_productwhs_get_productwhs_by_company_code&action=api',
+  get_materialwhs_list_by_company: '/Primary/?FlowAlias=bs_api_factory_materialwhs_get_materialwhs_by_company_code&action=api',
 
   // Material Warehouse
   get_material_warehouse_list: '/Primary/?FlowAlias=bs_api_factory_get_material_warehouse_list&action=api',
@@ -239,8 +237,7 @@ export const apiEndpoints = {
     '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_requisition_list&action=api',
   get_production_daily_material_requisition_detail:
     '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_requisition_detail&action=api',
-  update_production_daily_material_requisition:
-    '/Primary/?FlowAlias=bs_api_factory_update_production_daily_material_requisition&action=api',
+  update_production_daily_material_requisiton: '/Primary/?FlowAlias=bs_api_factory_update_production_daily_material_requisition&action=api',
 
   // Production Daily Material Received
   get_production_daily_material_received_list: '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_list&action=api',
@@ -248,7 +245,6 @@ export const apiEndpoints = {
     '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_detail&action=api',
   update_production_daily_material_received: '/Primary/?FlowAlias=bs_api_factory_update_production_daily_material_received&action=api',
   get_production_daily_material_received_data: '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_data&action=api',
-
 };
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
