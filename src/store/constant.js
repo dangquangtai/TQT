@@ -116,6 +116,7 @@ export const apiEndpoints = {
   //Work Order
   get_work_order_status_list: '/Primary/?FlowAlias=bs_api_factory_get_work_order_status_list&action=api',
   get_work_order_list: '/Primary/?FlowAlias=bs_api_factory_workorder_get_list_by_page&action=api',
+  get_work_order_draft_list: '/Primary/?FlowAlias=bs_api_factory_workorder_get_draft_list_by_page&action=api',
   create_work_order: '/Primary/?FlowAlias=bs_api_factory_create_production_request&action=api',
   get_work_order_detail: '/Primary/?FlowAlias=bs_api_factory_get_production_request&action=api',
   update_work_order: '/Primary/?FlowAlias=bs_api_factory_update_production_daily_request&action=api',
@@ -132,6 +133,7 @@ export const apiEndpoints = {
   create_work_order_daiy_detail: '/Primary/?FlowAlias=bs_api_factory_create_daily_detail&action=api',
   create_work_order_daiy_request: '/Primary/?FlowAlias=bs_api_factory_create_daily_request&action=api',
   get_daily_work_order_list: '/Primary/?FlowAlias=bs_api_factory_get_daily_request_list_by_id&action=api',
+  remove_requistion_daily_detail: '/Primary/?FlowAlias=bs_api_factory_workorder_delete_requisition_daily_detail_by_id&action=api',
 
   // Customer
   get_customer_list: '/Primary/?FlowAlias=bs_api_factory_get_customer_list&action=api',
@@ -228,6 +230,11 @@ export const apiEndpoints = {
   get_goods_receipt_data: '/Primary/?FlowAlias=bs_api_factory_get_goods_receipt_data&action=api',
   delete_goods_receipt_detail: '/Primary/?FlowAlias=bs_api_factory_delete_goods_receipt_detail&action=api',
 
+
+  //Production
+  get_production_daily_request_list: '/Primary/?FlowAlias=bs_api_workorder_get_production_daily_request_list&action=api',
+  get_production_daily_reuqest_detial: '/Primary/?FlowAlias=bs_api_workorder_get_production_daily_request_detail_id&action=api',
+
   // daily delivery material
   get_delivery_material_list: '/Primary/?FlowAlias=bs_api_factory_get_list_daily_delivery_material&action=api',
   create_delivery_material: '/Primary/?FlowAlias=bs_api_factory_create_daily_delivery_material&action=api',
@@ -254,6 +261,7 @@ export const apiEndpoints = {
     '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_detail&action=api',
   update_production_daily_material_received: '/Primary/?FlowAlias=bs_api_factory_update_production_daily_material_received&action=api',
   get_production_daily_material_received_data: '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_data&action=api',
+
 };
 
 export const apiDomain = 'https://upload.truebpm.vn';
@@ -299,6 +307,7 @@ export const orderActions = {
 };
 export const productrequestActions = {
   list_product: 'TQT_WORKORDER_DEFAULT_OPEN_WORKORDER_LIST',
+  list_draft: 'TQT_WORKORDER_DEFAULT_OPEN_WORKORDER_DRAFT_LIST',
 };
 export const customerActions = {
   list_customer: 'TQT_PARTNER_DEFAULT_OPEN_CUSTOMER_LIST',
@@ -336,6 +345,10 @@ export const goodsIssueActions = {
 export const goodsReceiptActions = {
   list_goods_receipt: 'TQT_PRODUCT_DEFAULT_OPEN_GOODS_RECEIPT_LIST',
 };
+
+export const productionActions = {
+  list_production_daily_request: 'TQT_PRODUCTION_DEFAULT_OPEN_PRODUCTION_DAILY_REQUEST_LIST',
+
 export const dailyDeliveryMateialActions = {
   list_daily_Material: 'TQT_MATERIAL_DEFAULT_OPEN_MATERIAL_DAILY_REQUISITION_LIST',
 };
@@ -347,6 +360,7 @@ export const productionDailyMaterialRequisitionActions = {
 };
 export const productionDailyMaterialReceivedActions = {
   list_production_daily_material_received: 'TQT_PRODUCTION_DEFAULT_OPEN_DAILY_MATERIAL_RECEIVED_LIST',
+
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';

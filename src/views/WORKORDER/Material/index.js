@@ -27,7 +27,7 @@ import { Autocomplete } from '@material-ui/lab';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { getMaterialInventoryList, createMaterialRequisition } from '../../../services/api/Workorder';
+import { getMaterialInventoryList, createMaterialRequisition, removeRequisitionDaily } from '../../../services/api/Workorder';
 import useStyles from '../Detail/classes';
 import { FLOATING_MENU_CHANGE, ORDER_DETAIL_CHANGE, DOCUMENT_CHANGE, MATERIAL_CHANGE } from '../../../store/actions.js';
 
@@ -70,7 +70,8 @@ export default function AlertDialogSlide() {
         daily_work_order_id: detail.daily_work_order_id,
         quantity_in_wh: row.quantity_in_piece,
         is_enough: true,
-        quantity: orderRedux.workorderDetail.part_list[indexColor].Quantity_In_Piece
+        quantity: orderRedux.workorderDetail.part_list[indexColor].Quantity_In_Piece,
+        line: indexColor,
       };
       newProductList[index] = { ...newProductList[index], ...newProduct };
       let totalCa = total - newProductList[index].quantity_in_wh;
@@ -104,9 +105,8 @@ export default function AlertDialogSlide() {
 
   };
   const handleSubmit = async () => {
-    let data = supplierList.filter((x) => x.part_id !== '')
-    let data2 = supplierListAll.filter((x) => x.part_id !== '')
-   
+    let data = supplierList.filter((x) => (x.part_id !== ''&& !x.id))
+    let data2 = supplierListAll.filter((x) => (x.part_id !== '' && !x.id))
     await createMaterialRequisition({
       order_date: detail.order_date,
       daily_requisition_detail_list: [...data2, ...data],
@@ -169,8 +169,10 @@ export default function AlertDialogSlide() {
 
 
   };
-  const handleDeleteRow = (index) => {
-    
+  const handleDeleteRow =async (index) => {
+    if(!!supplierList[index].id && supplierList[index]?.id != ''){
+      await removeRequisitionDaily(supplierList[index].id)
+    }
     supplierList.splice(index, 1);
     handleChangeTotal()
     setSupplierList([...supplierList])

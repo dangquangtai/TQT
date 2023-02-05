@@ -52,7 +52,7 @@ import {
   getProductWHSList
 } from '../../../services/api/Workorder/index.js';
 import DatePicker from '../../../component/DatePicker/index.js';
-import { delay } from 'lodash';
+import { delay, set } from 'lodash';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -84,6 +84,7 @@ const WorkorderModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [tabIndex, setTabIndex] = useState(0);
+  const [disableComponent, setDisable] = useState(false);
   const { selectedDocument } = useSelector((state) => state.document);
   const { detailDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { order } = useSelector((state) => state.order);
@@ -93,6 +94,7 @@ const WorkorderModal = () => {
     changeWorkOrderRequest: false,
     changeWorkOrderDaily: false,
   })
+  const [dayCurrent, setDateCurrent] = useState('');
   const [productionDailyRequestList, setProductionDailyRequest] = useState([]);
   const [end, setEnd] = useState(0);
   const [start, setStart] = useState(0);
@@ -115,6 +117,9 @@ const WorkorderModal = () => {
     title: '',
     to_date: '',
     from_date: '',
+    workshop_id: '',
+    materialwh_id: '',
+    productwh_id: '',
   });
 
   const [productionStatus, setProductionStatus] = useState([
@@ -273,13 +278,15 @@ const WorkorderModal = () => {
         let WorkOrderID = workorder.id;
         if ((workorder.id === '')) {
           WorkOrderID = await createWorkorOrder({
-            workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
+            workshop_id: workorder.workshop_id,
             id: '',
             to_date: workorder.to_date,
             from_date: workorder.from_date,
             title: workorder.title,
             order_code: workorder.order_code,
             status_code: workorder.status_code,
+            productwh_id: workorder.productwh_id,
+            materialwh_id: workorder.materialwh_id,
           });
           setWorkorder({ ...workorder, id: WorkOrderID })
 
@@ -287,13 +294,15 @@ const WorkorderModal = () => {
         else if (checkChangeData.changeWorkOrder) {
 
           updateWorkorOrder({
-            workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
+            workshop_id: workorder.workshop_id,
             id: WorkOrderID,
             to_date: workorder.to_date,
             from_date: workorder.from_date,
             title: workorder.title,
             order_code: workorder.order_code,
             status_code: workorder.status_code,
+            productwh_id: workorder.productwh_id,
+            materialwh_id: workorder.materialwh_id,
           });
 
         }
@@ -460,7 +469,9 @@ const WorkorderModal = () => {
       setProductList([...productList]);
       updateDataDailyRequest(productList);
     } else {
-      handleOpenSnackbar(true, 'error', 'Số lượng vượt quá!');
+      setSnackbarStatus({isOpen: true,
+        type: 'error',
+        text: 'Số lượng đạt yêu cầu!',})
  
     }
     
@@ -505,16 +516,17 @@ const WorkorderModal = () => {
         id: ''
       });
       setCheckChangeData({ ...checkChangeData, changeWorkOrderRequest: true })
+      setDisable(false);
     } else {
       productListApi = await getWorkOrderRequest(id);
       if (index>=0){
         productionDailyRequestList[index].color_check=productListApi.work_order_request.color_check
-      productionDailyRequestList[index].is_enough=productListApi.work_order_request.is_enough
+        productionDailyRequestList[index].is_enough=productListApi.work_order_request.is_enough
       } else {
         productionDailyRequestList[indexDate].color_check=productListApi.work_order_request.color_check
-      productionDailyRequestList[indexDate].is_enough=productListApi.work_order_request.is_enough
+        productionDailyRequestList[indexDate].is_enough=productListApi.work_order_request.is_enough
       }
-      
+      setDisable(productListApi.work_order_request.is_disable)
       setProductList(productListApi.work_order_detail);
       setWorkorderRequest({ ...productListApi.work_order_request });
       if (productListApi.work_order_detail[0]?.customer_order_id != '')
@@ -642,6 +654,7 @@ const WorkorderModal = () => {
     return local.toJSON().slice(0, 10);
   }
   const handleSetProduct = async () => {
+    
     let to_date = '';
     let from_date = '';
     let title = '';
@@ -649,7 +662,9 @@ const WorkorderModal = () => {
     let order_code = '';
     if (!selectedDocument) {
       let date = new Date();
+    
       if (date.getDate() < 10) {
+
         from_date = date.getFullYear() + '-' + month[date.getMonth()] + '-0' + date.getDate();
       } else {
         from_date = date.getFullYear() + '-' + month[date.getMonth()] + '-' + date.getDate();
@@ -668,6 +683,9 @@ const WorkorderModal = () => {
       status_code = selectedDocument.status;
       order_code = selectedDocument.order_code;
     }
+    let day = new Date();
+    setDateCurrent(day.getFullYear() + '-' + month[day.getMonth()] + '-' + day.getDate())
+   
     workorder.id =selectedDocument?.id || ''
     setWorkorder({
       ...workorder,
@@ -837,6 +855,7 @@ const WorkorderModal = () => {
               size="small"
               disableClearable
               options={dropdownData}
+              disabled={disableComponent}
               fullWidth
               onChange={(e, u) => handleChangeRow(u, index)}
               getOptionLabel={(option) => option.product_code}
@@ -857,6 +876,7 @@ const WorkorderModal = () => {
               type="number"
               style={{ minWidth: 80, maxWidth: 80 }}
               variant="outlined"
+              disabled={disableComponent}
               InputProps={{ inputProps: { min: 1, max: item.maxValue } }}
               value={item.quantity_in_box}
               size="small"
@@ -878,7 +898,7 @@ const WorkorderModal = () => {
           </TableCell>
           <TableCell align="center"> {calculateQuantity(item, index)}</TableCell>
           <TableCell align="right">
-            <IconButton onClick={() => handleDeleteRow(index, item.id)}>
+            <IconButton onClick={() => handleDeleteRow(index, item.id)}  disabled={disableComponent}>
               <Delete />
             </IconButton>
           </TableCell>
@@ -1043,7 +1063,8 @@ const WorkorderModal = () => {
                                     id="outlined-size-small"
                                     variant="outlined"
                                     size="small"
-  
+                                    value={workorder?.workshop_id}
+                                    onChange={(event) => setWorkorder({...workorder, workshop_id: event.target.value})}
                                   >
                                     {workshopList &&
                                       workshopList.map((item) => (
@@ -1062,8 +1083,8 @@ const WorkorderModal = () => {
                                     id="outlined-size-small"
                                     variant="outlined"
                                     size="small"
-                                   
-                                   
+                                    value={workorder?.materialwh_id}
+                                    onChange={(event) => setWorkorder({...workorder, materialwh_id: event.target.value})}
                                   >
                                     {materialWHSList &&
                                       materialWHSList.map((item) => (
@@ -1083,8 +1104,8 @@ const WorkorderModal = () => {
                                     id="outlined-size-small"
                                     variant="outlined"
                                     size="small"
-                                
-                                  
+                                    value={workorder?.productwh_id}
+                                    onChange={(event) => setWorkorder({...workorder, productwh_id: event.target.value})}
                                   >
                                     {productWHSList &&
                                       productWHSList.map((item) => (
@@ -1133,7 +1154,7 @@ const WorkorderModal = () => {
                                               style={
                                                 currentDate === item.work_order_date
                                                   ? { background: 'rgb(97, 42, 255)', color: 'white' }
-                                                  : {}
+                                                  : (item.work_order_date === dayCurrent ? {background: 'rgb(97, 42, 210)'} : {})
                                               }
                                               onClick={() =>
                                                 handleChangeDate(item.work_order_date, index + currentWeek * 7)
@@ -1215,6 +1236,7 @@ const WorkorderModal = () => {
                                         <TextField
                                           style={{ marginLeft: '10px' }}
                                           type="number"
+                                          disabled={disableComponent}
                                           variant="outlined"
                                           name="number_of_worker"
                                           InputProps={{ inputProps: { min: 1 } }}
@@ -1233,6 +1255,7 @@ const WorkorderModal = () => {
                                         <TextField
                                           type="number"
                                           variant="outlined"
+                                          disabled={disableComponent}
                                           name="number_of_working_hour"
                                           InputProps={{ inputProps: { min: 1 } }}
                                           value={workorderRequest?.number_of_working_hour}

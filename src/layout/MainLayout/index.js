@@ -13,7 +13,6 @@ import ConfirmPopup from '../../views/ConfirmPopup';
 import AccountModal from '../../views/Account/Detail';
 import RoleModal from '../../views/Role/Detail';
 import DepartmentModal from '../../views/Department/Detail';
-
 import ProcessRoleModal from '../../views/ProcessRole/Detail';
 import ProcessRoleUserModal from '../../views/ProcessRole/User';
 import ProcessRoleDeptModal from '../../views/ProcessRole/Department';
@@ -33,9 +32,13 @@ import WorkshopModal from './../../views/Setting/Workshop/Detail/index';
 import ProductWarehouseModal from './../../views/Product/Warehouse/Detail/index';
 import GoodsIssueModal from './../../views/Product/GoodsIssue/Detail/index';
 import GoodsReceiptModal from './../../views/Product/GoodsReceipt/Detail/index';
+
+import ProductionRequestModal from '../../views/Production/Detail';
+
 import DeliveryMaterialModal from '../../views/Material/DailyMaterialRequisition/Detail';
 import DailyMaterialReceivedModal from './../../views/Production/DailyMaterialReceived/Detail/index';
 import DailyMaterialRequisitionModal from './../../views/Production/DailyMaterialRequisition/Detail/index';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -94,7 +97,6 @@ const MainLayout = ({ children }) => {
     switch (documentType) {
       case 'account':
         return <AccountModal />;
-
       case 'department':
         return <DepartmentModal />;
       case 'role':
@@ -143,12 +145,17 @@ const MainLayout = ({ children }) => {
         return <GoodsIssueModal />;
       case 'goodsReceipt':
         return <GoodsReceiptModal />;
+
+      case 'production':
+        return <ProductionRequestModal />;
+
       case 'deliveryMaterial':
         return <DeliveryMaterialModal />;
       case 'dailyMaterialReceived':
         return <DailyMaterialReceivedModal />;
       case 'dailyMaterialRequisition':
         return <DailyMaterialRequisitionModal />;
+
       default:
         return null;
     }
