@@ -38,9 +38,9 @@ import FirebaseUpload from './../../../FloatingMenu/FirebaseUpload/index';
 import DatePicker from './../../../../component/DatePicker/index';
 import { deleteReceivedMaterialDetail } from './../../../../services/api/Material/Received';
 import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
-import { createDeliveryMaterial, deleteDeliveryMaterialDetail, getDeliveryMaterialData, getInventoryBySupplier, updateDeliveryMaterial } from '../../../../services/api/Material/DailyRequisitionMaterial';
 import {
   createDeliveryMaterial,
+  deleteDeliveryMaterialDetail,
   getDeliveryMaterialData,
   getInventoryBySupplier,
   updateDeliveryMaterial,
@@ -186,6 +186,7 @@ const DeliveryMaterialModal = () => {
     ]);
     setMaterialOrderDetailList([[], ...materialOrderDetailList]);
   };
+
   const handleChangeSupplier = async (index, newSupplier) => {
     const newReceivedDetailList = [...deliveryDetailList];
     newReceivedDetailList[index] = {
@@ -194,11 +195,11 @@ const DeliveryMaterialModal = () => {
       supplier_id: newSupplier?.id,
       supplier_name: newSupplier?.title,
     };
-    console.log(newReceivedDetailList, newSupplier);
     setDeliveryDetailList(newReceivedDetailList);
+
     const newOrderPartList = [...materialOrderDetailList];
-    if (deliveryDetailList.filter((item) => item.material_order_id === newSupplier?.id).length >= 1) {
-      const indexMaterial = deliveryDetailList.findIndex((item) => item.material_order_id === newSupplier?.id);
+    if (deliveryDetailList.filter((item) => item.supplier_id === newSupplier?.id).length >= 1) {
+      const indexMaterial = deliveryDetailList.findIndex((item) => item.supplier_id === newSupplier?.id);
       newOrderPartList[index] = materialOrderDetailList[indexMaterial];
       setMaterialOrderDetailList(newOrderPartList);
     } else {
@@ -224,7 +225,7 @@ const DeliveryMaterialModal = () => {
     };
     newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
     if (
-      deliveryDetailList?.some((item) => item.material_order_id === newItem?.requisition_id) &&
+      deliveryDetailList?.some((item) => item.supplier_id === newItem?.supplier_id) &&
       deliveryDetailList?.some((item) => item.part_id === newItem?.part_id)
     ) {
       handleOpenSnackbar('error', 'Vật tư đã tồn tại!');
@@ -232,25 +233,21 @@ const DeliveryMaterialModal = () => {
     }
     setDeliveryDetailList(newMaterialList);
   };
-  const getPartListByReceivedDetail = async (detail_list) => {
+
+  const getPartListByDeliveryDetail = async (detail_list) => {
     const newMaterialOrderDetailList = [];
     for (const [index, item] of detail_list.entries()) {
-      const checkReceivedDetail = [...detail_list].slice(0, index);
+      const checkDeliveryDetail = [...detail_list].slice(0, index);
       let parts = [];
-      if (checkReceivedDetail?.some((check) => check.supplier_id === item?.supplier_id)) {
-        const indexPartList = checkReceivedDetail?.findIndex((check) => check.supplier_id === item?.supplier_id);
+      if (checkDeliveryDetail?.some((check) => check.supplier_id === item?.supplier_id)) {
+        const indexPartList = checkDeliveryDetail?.findIndex((check) => check.supplier_id === item?.supplier_id);
         parts = newMaterialOrderDetailList[indexPartList];
       } else parts = await getInventoryBySupplier(item?.supplier_id);
       newMaterialOrderDetailList.push(parts);
     }
     setMaterialOrderDetailList(newMaterialOrderDetailList);
   };
-  const handleChangeMaterial = (index, e) => {
-    const { name, value } = e.target;
-    const newdeliveryDetailList = [...deliveryDetailList];
-    newdeliveryDetailList[index] = { ...newdeliveryDetailList[index], [name]: value };
-    setDeliveryDetailList(newdeliveryDetailList);
-  };
+
   const handleChangeQuantityDelivery = (index, e) => {
     const { name, value } = e.target;
     const newdeliveryDetailList = [...deliveryDetailList];
@@ -271,28 +268,12 @@ const DeliveryMaterialModal = () => {
     }
   };
 
-    const handleDeleteMaterial = (index, id) => {
-        if (id) {
-            showConfirmPopup({
-                title: 'Xóa vật tư',
-                message: 'Bạn có chắc chắn muốn xóa vật tư này?',
-                action: deleteDeliveryMaterialDetail,
-                payload: id,
-                onSuccess: () => {
-                    spliceMaterial(index);
-                },
-            });
-        } else {
-            spliceMaterial(index);
-        }
-    };
-
   const handleDeleteMaterial = (index, id) => {
     if (id) {
       showConfirmPopup({
         title: 'Xóa vật tư',
         message: 'Bạn có chắc chắn muốn xóa vật tư này?',
-        action: deleteReceivedMaterialDetail,
+        action: deleteDeliveryMaterialDetail,
         payload: id,
         onSuccess: () => {
           spliceMaterial(index);
@@ -319,7 +300,7 @@ const DeliveryMaterialModal = () => {
       ...selectedDocument,
     });
     setDeliveryDetailList(selectedDocument?.detail_list);
-    getPartListByReceivedDetail(selectedDocument?.detail_list);
+    getPartListByDeliveryDetail(selectedDocument?.detail_list);
   }, [selectedDocument]);
 
   useEffect(() => {
@@ -492,7 +473,7 @@ const DeliveryMaterialModal = () => {
                               </TextField>
                             </Grid>
 
-                            <Grid item lg={6} md={6} xs={6}>
+                            <Grid item lg={9} md={9} xs={9}>
                               <span className={classes.tabItemLabelField}>Ghi chú:</span>
                               <TextField
                                 fullWidth
@@ -548,23 +529,6 @@ const DeliveryMaterialModal = () => {
                                         renderInput={(params) => <TextField {...params} variant="outlined" />}
                                       />
                                     </TableCell>
-                                    {/* <Grid item lg={3} md={3} xs={3}>
-                                                            <span className={classes.tabItemLabelField}>Nhà cung cấp:</span>
-                                                            <Autocomplete
-                                                                options={supplierList}
-                                                                size="small"
-                                                                getOptionLabel={(option) => option.title}
-                                                                onChange={(event, newValue) => {
-                                                                    setDeliveryMaterialData({
-                                                                        ...deliveryMaterialData,
-                                                                        supplier_id: newValue?.id || '',
-                                                                        supplier_name: newValue?.title || '',
-                                                                    });
-                                                                }}
-                                                                value={supplierList?.find((item) => item.id === deliveryMaterialData.supplier_id) || null}
-                                                                renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                                            />
-                                                        </Grid> */}
                                     <TableCell align="left" style={{ width: '25%' }}>
                                       <Autocomplete
                                         options={materialOrderDetailList[index] || []}
