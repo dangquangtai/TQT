@@ -55,6 +55,7 @@ import { getDetailProductWarehouse } from './../../services/api/Product/Warehous
 import { getDetailGoodsIssue } from './../../services/api/Product/GoodsIssue';
 import { getDetailGoodsReceipt } from './../../services/api/Product/GoodsReceipt';
 import { getDetailDeliveryMaterial } from '../../services/api/Material/DailyRequisitionMaterial';
+import { getDetailDailyMaterialReceived } from './../../services/api/Production/MaterialReceived';
 
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
@@ -497,6 +498,10 @@ export default function GeneralTable(props) {
         detailDocument = await getDetailDeliveryMaterial(selectedDocument.id, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, dailyMaterialRequitisionDocument: true });
+      case 'dailyMaterialReceived':
+        detailDocument = await getDetailDailyMaterialReceived(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, dailyMaterialReceivedDocument: true });
         break;
       default:
         break;

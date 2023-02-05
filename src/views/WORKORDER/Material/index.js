@@ -85,8 +85,8 @@ export default function AlertDialogSlide() {
     let total = orderRedux.workorderDetail.part_list[indexColor].Quantity_In_Piece;
         const newProductList = [...supplierList];
         newProductList.forEach((element,indexf) => {
-        let totalCa=total- element.quantity_in_wh;
-        newProductList[indexf]={...element, quantity: totalCa>=0?totalCa: 0, is_enough: total < element.quantity_in_wh? true : false }
+        let totalCa=total- element.quantity_in_piece;
+        newProductList[indexf]={...element, quantity: totalCa>=0?totalCa: 0, is_enough: element.is_enough ||false }
         total=totalCa;
       });
       detail.part_list[indexColor].Quantity_In_Piece= total;
@@ -212,9 +212,12 @@ export default function AlertDialogSlide() {
    
     setSupplierListAll([...newSupplierList])
     setDetail({...orderRedux.workorderDetail, part_list: [...detailData]});
-   
   }, [orderRedux.workorderDetail])
-  
+  useEffect(()=>{
+
+    if (indexColor<0) return
+    handleChangeTotal()
+  },[indexColor])
 
   return (
     <div>
@@ -373,8 +376,8 @@ export default function AlertDialogSlide() {
                             { (item.quantity?.toLocaleString() || 0)}
                           </TableCell>
                           <TableCell  align='center'>
-                            <Typography style={{ backgroundColor: item.is_enough ? 'rgb(48, 188, 65)' : 'yellow' }}>
-                              { item.is_enough ? 'Đủ' : 'Thiếu'}
+                            <Typography style={{ backgroundColor: item.is_enough ? 'rgb(48, 188, 65)' : 'rgb(255,165,0)' }}>
+                              { item.is_enough ? 'Đủ' : 'Đặt mua'}
                             </Typography>
                           </TableCell>
                           <TableCell align="left">

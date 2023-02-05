@@ -187,6 +187,12 @@ export const apiEndpoints = {
   get_received_material_status: '/Primary/?FlowAlias=bs_api_factory_get_received_material_status&action=api',
   delete_received_material: '/Primary/?FlowAlias=bs_api_factory_delete_received_material&action=api',
 
+  
+  get_workshop_list_by_company: '/Primary/?FlowAlias=bs_api_factory_workorder_get_workshop_by_company_code&action=api',
+  get_productwhs_list_by_company : '/Primary/?FlowAlias=bs_api_factory_productwhs_get_productwhs_by_company_code&action=api',
+  get_materialwhs_list_by_company : '/Primary/?FlowAlias=bs_api_factory_materialwhs_get_materialwhs_by_company_code&action=api',
+
+
   // Material Warehouse
   get_material_warehouse_list: '/Primary/?FlowAlias=bs_api_factory_get_material_warehouse_list&action=api',
   get_material_warehouse_detail: '/Primary/?FlowAlias=bs_api_factory_get_material_warehouse_detail&action=api',
@@ -232,6 +238,25 @@ export const apiEndpoints = {
   get_detail_delivery_material: '/Primary/?FlowAlias=bs_api_factory_get_detail_material_daily_requisition&action=api',
   get_delivery_material_data: '/Primary/?FlowAlias=bs_api_factory_get_delivery_material_data&action=api',
   get_material_inventory_by_supplier: '/Primary/?FlowAlias=bs_api_factory_get_inventory_by_supplier&action=api',
+
+  // Product Inventory
+  get_product_inventory_list: '/Primary/?FlowAlias=bs_api_factory_get_product_inventory_list&action=api',
+  get_product_inventory_detail: '/Primary/?FlowAlias=bs_api_factory_get_product_inventory_detail&action=api',
+
+  // Production Daily Material Requisition
+  get_production_daily_material_requisition_list:
+    '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_requisition_list&action=api',
+  get_production_daily_material_requisition_detail:
+    '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_requisition_detail&action=api',
+  update_production_daily_material_requisition:
+    '/Primary/?FlowAlias=bs_api_factory_update_production_daily_material_requisition&action=api',
+
+  // Production Daily Material Received
+  get_production_daily_material_received_list: '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_list&action=api',
+  get_production_daily_material_received_detail:
+    '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_detail&action=api',
+  update_production_daily_material_received: '/Primary/?FlowAlias=bs_api_factory_update_production_daily_material_received&action=api',
+  get_production_daily_material_received_data: '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_data&action=api',
 
 };
 
@@ -318,6 +343,14 @@ export const goodsReceiptActions = {
 };
 export const dailyDeliveryMateialActions = {
   list_daily_Material: 'TQT_MATERIAL_DEFAULT_OPEN_MATERIAL_DAILY_REQUISITION_LIST',
+export const productInventoryActions = {
+  list_product_inventory: 'TQT_PRODUCT_DEFAULT_OPEN_INVENTORY_LIST',
+};
+export const productionDailyMaterialRequisitionActions = {
+  list_production_daily_material_requisition: 'TQT_PRODUCTION_DEFAULT_OPEN_DAILY_MATERIAL_REQUISITION_LIST',
+};
+export const productionDailyMaterialReceivedActions = {
+  list_production_daily_material_received: 'TQT_PRODUCTION_DEFAULT_OPEN_DAILY_MATERIAL_RECEIVED_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -518,6 +551,14 @@ export const view = {
     },
     detail: {
       save: 'TQT_MATERIAL_DEFAULT_DAILY_REQUISITION_SAVE_FORM_BUTTON',
+  productionDailyMaterialRequisition: {
+    detail: {
+      save: 'TQT_PRODUCTION_DEFAULT_DAILY_MATERIAL_REQUISITION_SAVE_FORM_BUTTON',
+    },
+  },
+  productionDailyMaterialReceived: {
+    detail: {
+      save: 'TQT_PRODUCTION_DEFAULT_DAILY_MATERIAL_RECEIVED_SAVE_FORM_BUTTON',
     },
   },
 };
