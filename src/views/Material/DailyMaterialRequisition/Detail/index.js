@@ -38,6 +38,7 @@ import FirebaseUpload from './../../../FloatingMenu/FirebaseUpload/index';
 import DatePicker from './../../../../component/DatePicker/index';
 import { deleteReceivedMaterialDetail } from './../../../../services/api/Material/Received';
 import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
+import { createDeliveryMaterial, deleteDeliveryMaterialDetail, getDeliveryMaterialData, getInventoryBySupplier, updateDeliveryMaterial } from '../../../../services/api/Material/DailyRequisitionMaterial';
 import {
   createDeliveryMaterial,
   getDeliveryMaterialData,
@@ -269,6 +270,22 @@ const DeliveryMaterialModal = () => {
       return;
     }
   };
+
+    const handleDeleteMaterial = (index, id) => {
+        if (id) {
+            showConfirmPopup({
+                title: 'Xóa vật tư',
+                message: 'Bạn có chắc chắn muốn xóa vật tư này?',
+                action: deleteDeliveryMaterialDetail,
+                payload: id,
+                onSuccess: () => {
+                    spliceMaterial(index);
+                },
+            });
+        } else {
+            spliceMaterial(index);
+        }
+    };
 
   const handleDeleteMaterial = (index, id) => {
     if (id) {
