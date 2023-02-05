@@ -228,6 +228,15 @@ export const apiEndpoints = {
   get_goods_receipt_data: '/Primary/?FlowAlias=bs_api_factory_get_goods_receipt_data&action=api',
   delete_goods_receipt_detail: '/Primary/?FlowAlias=bs_api_factory_delete_goods_receipt_detail&action=api',
 
+  // daily delivery material
+  get_delivery_material_list: '/Primary/?FlowAlias=bs_api_factory_get_list_daily_delivery_material&action=api',
+  create_delivery_material: '/Primary/?FlowAlias=bs_api_factory_create_daily_delivery_material&action=api',
+  update_delivery_material: '/Primary/?FlowAlias=bs_api_factory_update_daily_delivery_material&action=api',
+  delete_delivery_material_detail: '/Primary/?FlowAlias=bs_api_factory_delete_material_daily_requisition_detail&action=api',
+  get_detail_delivery_material: '/Primary/?FlowAlias=bs_api_factory_get_detail_material_daily_requisition&action=api',
+  get_delivery_material_data: '/Primary/?FlowAlias=bs_api_factory_get_delivery_material_data&action=api',
+  get_material_inventory_by_supplier: '/Primary/?FlowAlias=bs_api_factory_get_inventory_by_supplier&action=api',
+
   // Product Inventory
   get_product_inventory_list: '/Primary/?FlowAlias=bs_api_factory_get_product_inventory_list&action=api',
   get_product_inventory_detail: '/Primary/?FlowAlias=bs_api_factory_get_product_inventory_detail&action=api',
@@ -246,6 +255,8 @@ export const apiEndpoints = {
   update_production_daily_material_received: '/Primary/?FlowAlias=bs_api_factory_update_production_daily_material_received&action=api',
   get_production_daily_material_received_data: '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_data&action=api',
 };
+
+
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
 
@@ -326,6 +337,8 @@ export const goodsIssueActions = {
 export const goodsReceiptActions = {
   list_goods_receipt: 'TQT_PRODUCT_DEFAULT_OPEN_GOODS_RECEIPT_LIST',
 };
+export const dailyDeliveryMateialActions = {
+  list_daily_Material: 'TQT_MATERIAL_DEFAULT_OPEN_MATERIAL_DAILY_REQUISITION_LIST',
 export const productInventoryActions = {
   list_product_inventory: 'TQT_PRODUCT_DEFAULT_OPEN_INVENTORY_LIST',
 };
@@ -528,6 +541,12 @@ export const view = {
       save: 'TQT_PRODUCT_DEFAULT_GOODS_RECEIPT_SAVE_FORM_BUTTON',
     },
   },
+  dailyDeliveryMateial: {
+    list: {
+      create: 'TQT_MATERIAL_DEFAULT_DAILY_REQUISITION_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_MATERIAL_DEFAULT_DAILY_REQUISITION_SAVE_FORM_BUTTON',
   productionDailyMaterialRequisition: {
     detail: {
       save: 'TQT_PRODUCTION_DEFAULT_DAILY_MATERIAL_REQUISITION_SAVE_FORM_BUTTON',
