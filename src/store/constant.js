@@ -133,6 +133,7 @@ export const apiEndpoints = {
   create_work_order_daiy_detail: '/Primary/?FlowAlias=bs_api_factory_create_daily_detail&action=api',
   create_work_order_daiy_request: '/Primary/?FlowAlias=bs_api_factory_create_daily_request&action=api',
   get_daily_work_order_list: '/Primary/?FlowAlias=bs_api_factory_get_daily_request_list_by_id&action=api',
+  remove_requistion_daily_detail: '/Primary/?FlowAlias=bs_api_factory_workorder_delete_requisition_daily_detail_by_id&action=api',
 
   // Customer
   get_customer_list: '/Primary/?FlowAlias=bs_api_factory_get_customer_list&action=api',

@@ -208,3 +208,11 @@ export const getDailyWorkOrderList = (id) => {
     return [];
   });
 };
+export const removeRequisitionDaily = (id) => {
+  return axiosServices.post(apiEndpoints.remove_requistion_daily_detail, { id }).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return true;
+    }
+    return false;
+  });
+};
