@@ -25,7 +25,14 @@ import {
   productWarehouseActions,
   goodsIssueActions,
   goodsReceiptActions,
+
   productionActions,
+
+  dailyDeliveryMateialActions,
+  productInventoryActions,
+  productionDailyMaterialReceivedActions,
+  productionDailyMaterialRequisitionActions,
+
 } from '../store/constant.js';
 
 export function getUrlByAction(selectedFolder) {
@@ -115,8 +122,22 @@ export function getUrlByAction(selectedFolder) {
     case goodsReceiptActions.list_goods_receipt: {
       return apiEndpoints.get_goods_receipt_list;
     }
+
     case productionActions.list_production_daily_request: {
       return apiEndpoints.get_production_daily_request_list;
+
+    case dailyDeliveryMateialActions.list_daily_Material: {
+      return apiEndpoints.get_delivery_material_list;
+    }
+    case productInventoryActions.list_product_inventory: {
+      return apiEndpoints.get_product_inventory_list;
+    }
+    case productionDailyMaterialReceivedActions.list_production_daily_material_received: {
+      return apiEndpoints.get_production_daily_material_received_list;
+    }
+    case productionDailyMaterialRequisitionActions.list_production_daily_material_requisition: {
+      return apiEndpoints.get_production_daily_material_requisition_list;
+
     }
     default: {
       return '';

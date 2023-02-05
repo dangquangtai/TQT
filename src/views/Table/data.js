@@ -10,7 +10,7 @@ export const headCells = [
   { id: 'inventory_check_code', numeric: false, disablePadding: false, label: 'Mã kiểm kho', maxWidth: 150 },
   { id: 'title', numeric: false, disablePadding: false, label: 'Tiêu đề', maxWidth: 150 },
   { id: 'part_name', numeric: false, disablePadding: false, label: 'Tên phụ tùng', maxWidth: 150 },
-  { id: 'product_name', numeric: false, disablePadding: false, label: 'Tên sản phẩm ', maxWidth: 150 },
+  { id: 'product_name', numeric: false, disablePadding: false, label: 'Tên thành phẩm ', maxWidth: 150 },
   { id: 'customer_name', numeric: false, disablePadding: false, label: 'Tên khách hàng', maxWidth: 150 },
   { id: 'supplier_name', numeric: false, disablePadding: false, label: 'Tên nhà cung cấp', maxWidth: 150 },
   { id: 'category_name', numeric: false, disablePadding: false, label: 'Danh mục', maxWidth: 150 },

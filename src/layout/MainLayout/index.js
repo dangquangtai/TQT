@@ -32,7 +32,14 @@ import WorkshopModal from './../../views/Setting/Workshop/Detail/index';
 import ProductWarehouseModal from './../../views/Product/Warehouse/Detail/index';
 import GoodsIssueModal from './../../views/Product/GoodsIssue/Detail/index';
 import GoodsReceiptModal from './../../views/Product/GoodsReceipt/Detail/index';
+
 import ProductionRequestModal from '../../views/Production/Detail';
+
+import DeliveryMaterialModal from '../../views/Material/DailyMaterialRequisition/Detail';
+import DailyMaterialReceivedModal from './../../views/Production/DailyMaterialReceived/Detail/index';
+import DailyMaterialRequisitionModal from './../../views/Production/DailyMaterialRequisition/Detail/index';
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -138,8 +145,17 @@ const MainLayout = ({ children }) => {
         return <GoodsIssueModal />;
       case 'goodsReceipt':
         return <GoodsReceiptModal />;
+
       case 'production':
         return <ProductionRequestModal />;
+
+      case 'deliveryMaterial':
+        return <DeliveryMaterialModal />;
+      case 'dailyMaterialReceived':
+        return <DailyMaterialReceivedModal />;
+      case 'dailyMaterialRequisition':
+        return <DailyMaterialRequisitionModal />;
+
       default:
         return null;
     }

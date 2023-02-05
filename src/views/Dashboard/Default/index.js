@@ -33,6 +33,11 @@ import {
   goodsIssueActions,
   goodsReceiptActions,
   productionActions,
+  dailyDeliveryMateialActions,
+  productInventoryActions,
+  productionDailyMaterialReceivedActions,
+  productionDailyMaterialRequisitionActions,
+
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
 import { Redirect } from 'react-router-dom';
@@ -59,6 +64,12 @@ import ProductWarehouseWrapper from './../../Product/Warehouse/index';
 import GoodsIssueWrapper from './../../Product/GoodsIssue/index';
 import GoodsReceiptWrapper from './../../Product/GoodsReceipt/index';
 import ProductionWrapper from './../../Production/index'
+import DeliveryMaterialWrapper from '../../Material/DailyMaterialRequisition';
+import ProductInventoryWrapper from './../../Product/Inventory/index';
+import DailyMaterialReceivedWrapper from './../../Production/DailyMaterialReceived/index';
+import DailyMaterialRequisitionWrapper from './../../Production/DailyMaterialRequisition/index';
+
+
 const Default = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
   const { selectedApp } = useSelector((state) => state.app);
@@ -68,17 +79,14 @@ const Default = () => {
   const availableRoleEndpoint = Object.values(roleActions);
   const avaiableProcessRoleEndpoint = Object.values(processroleActions);
   const availableDepartmentDeactiveEndpoint = Object.values(departmentDeactiveActions);
-
   const availableMaterialCategoryEndpoint = Object.values(materialCategoryActions);
   const availableSupplierCategoryEndpoint = Object.values(supplierCategoryActions);
   const availableProductCategoryEndpoint = Object.values(productCategoryActions);
   const availableCustomerCategoryEndpoint = Object.values(customerCategoryActions);
-
   const availableMaterialPartEndpoint = Object.values(materialPartActions);
   const availableProductEndpoint = Object.values(productActions);
   const availableOrderEndpoint = Object.values(orderActions);
   const availableProductRequestEndpoint = Object.values(productrequestActions);
-
   const availableCustomerEndpoint = Object.values(customerActions);
   const availableSupplierEndpoint = Object.values(supplierActions);
   const availableWarehouseCategoryEndpoint = Object.values(warehouseCategoryActions);
@@ -86,14 +94,18 @@ const Default = () => {
   const availableMaterialInventoryCheckEndpoint = Object.values(materialInventoryCheckActions);
   const availablePurchaseMaterialEndpoint = Object.values(purchaseMaterialActions);
   const availableReceivedMaterialEndpoint = Object.values(receivedMaterialActions);
-
   const availableWarehouseEndpoint = Object.values(materialWarehouseActions);
   const availableWorkshopEndpoint = Object.values(workshopActions);
   const availableProductWarehouseEndpoint = Object.values(productWarehouseActions);
-
   const availableGoodsIssueEndpoint = Object.values(goodsIssueActions);
   const availableGoodsReceiptEndpoint = Object.values(goodsReceiptActions);
   const availableProductionEndpoint = Object.values(productionActions);
+  const availableProductInventoryEndpoint = Object.values(productInventoryActions);
+  const availableProductionDailyMaterialReceivedEndpoint = Object.values(productionDailyMaterialReceivedActions);
+  const availableProductionDailyMaterialRequisitionEndpoint = Object.values(productionDailyMaterialRequisitionActions);
+  const availableDeliveryMaterialEndpoint = Object.values(dailyDeliveryMateialActions);
+
+
 
   if (!selectedApp?.id) {
     return <Redirect to="/dashboard/app" />;
@@ -130,6 +142,11 @@ const Default = () => {
           {availableGoodsIssueEndpoint.includes(selectedFolder?.action) && <GoodsIssueWrapper />}
           {availableGoodsReceiptEndpoint.includes(selectedFolder?.action) && <GoodsReceiptWrapper />}
           {availableProductionEndpoint.includes(selectedFolder?.action) && <ProductionWrapper/>}
+          {availableDeliveryMaterialEndpoint.includes(selectedFolder?.action) && <DeliveryMaterialWrapper />}
+          {availableProductInventoryEndpoint.includes(selectedFolder?.action) && <ProductInventoryWrapper />}
+          {availableProductionDailyMaterialReceivedEndpoint.includes(selectedFolder?.action) && <DailyMaterialReceivedWrapper />}
+          {availableProductionDailyMaterialRequisitionEndpoint.includes(selectedFolder?.action) && <DailyMaterialRequisitionWrapper />}
+
         </Grid>
       )}
     </Grid>

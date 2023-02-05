@@ -55,6 +55,9 @@ import { getDetailProductWarehouse } from './../../services/api/Product/Warehous
 import { getDetailGoodsIssue } from './../../services/api/Product/GoodsIssue';
 import { getDetailGoodsReceipt } from './../../services/api/Product/GoodsReceipt';
 import { getDetailWorkorOrderRequest } from './../../services/api/Production/index';
+import { getDetailDeliveryMaterial } from '../../services/api/Material/DailyRequisitionMaterial';
+import { getDetailDailyMaterialReceived } from './../../services/api/Production/MaterialReceived';
+import { getDetailDailyMaterialRequisition } from './../../services/api/Production/MaterialRequisition';
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
     if (response.status === 200 && response.data.return === 200) return true;
@@ -179,6 +182,8 @@ export default function GeneralTable(props) {
 
   const buttonCreateGoodsIssue = menuButtons.find((button) => button.name === view.goodsIssue.list.create);
   const buttonCreateGoodsReceipt = menuButtons.find((button) => button.name === view.goodsReceipt.list.create);
+
+  const buttonCreateDailyMaterial = menuButtons.find((button) => button.name === view.dailyDeliveryMateial.list.create);
 
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -498,6 +503,20 @@ export default function GeneralTable(props) {
         detailDocument = await getDetailWorkorOrderRequest(selectedDocument.id, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
+      case 'deliveryMaterial':
+        detailDocument = await getDetailDeliveryMaterial(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, dailyMaterialRequitisionDocument: true });
+        break;
+      case 'dailyMaterialReceived':
+        detailDocument = await getDetailDailyMaterialReceived(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, dailyMaterialReceivedDocument: true });
+        break;
+      case 'dailyMaterialRequisition':
+        detailDocument = await getDetailDailyMaterialRequisition(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, dailyWMaterialRequisitionDocument: true });
         break;
       default:
         break;
@@ -558,6 +577,9 @@ export default function GeneralTable(props) {
         break;
       case 'goodsReceipt':
         dispatch({ type: FLOATING_MENU_CHANGE, goodsReceiptDocument: true });
+        break;
+      case 'deliveryMaterial':
+        dispatch({ type: FLOATING_MENU_CHANGE, dailyMaterialRequitisionDocument: true });
         break;
       default:
         break;
@@ -824,6 +846,7 @@ export default function GeneralTable(props) {
     buttonCreateProductWarehouse,
     buttonCreateGoodsIssue,
     buttonCreateGoodsReceipt,
+    buttonCreateDailyMaterial,
   };
 
   return (
