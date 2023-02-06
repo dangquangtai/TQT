@@ -62,4 +62,14 @@ export const getInventoryBySupplier = (id) => {
         return [];
     });
 };
+export const getInventoryByPartID = (id) => {
+    return axiosServices.post(apiEndpoints.get_material_inventory_by_part_id, { id }).then((response) => {
+        if (response.status === 200 && response.data.return === 200) {
+            const { data } = response.data;
+            return data;
+        }
+        return [];
+    });
+};
+
 

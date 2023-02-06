@@ -261,7 +261,7 @@ export const apiEndpoints = {
     '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_detail&action=api',
   update_production_daily_material_received: '/Primary/?FlowAlias=bs_api_factory_update_production_daily_material_received&action=api',
   get_production_daily_material_received_data: '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_data&action=api',
-
+  get_material_inventory_by_part_id: '/Primary/?FlowAlias=bs_api_factory_get_inventory_by_part_id&action=api',
 };
 
 export const apiDomain = 'https://upload.truebpm.vn';
