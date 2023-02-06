@@ -189,6 +189,7 @@ const DeliveryMaterialModal = () => {
         setMaterialOrderDetailList([[], ...materialOrderDetailList]);
     };
     const handleChangePartCode = async (index, newPartCode) => {
+        document.getElementById('autoSupplier').value = ''
         const newReceivedDetailList = [...deliveryDetailList];
         newReceivedDetailList[index] = {
             ...newReceivedDetailList[index],
@@ -200,6 +201,9 @@ const DeliveryMaterialModal = () => {
             unit_name: newPartCode?.unit_name,
             category_id: newPartCode?.category_id,
             category_name: newPartCode?.category_name,
+            warehouse_quantity_in_piece: 0,
+            supplier_id: '',
+            supplier_name: '',
         };
         setDeliveryDetailList(newReceivedDetailList);
         const newOrderPartList = [...materialOrderDetailList];
@@ -215,7 +219,7 @@ const DeliveryMaterialModal = () => {
         }
     };
 
-    const handleChangeMaterialCode = (index, newItem) => {
+    const handleChangeSupplierCode = (index, newItem) => {
         const newMaterialList = [...deliveryDetailList];
         const newMaterial = {
             warehouse_quantity_in_piece: newItem?.quantity_in_piece || 0,
@@ -240,7 +244,7 @@ const DeliveryMaterialModal = () => {
             if (checkReceivedDetail?.some((check) => check.supplier_id === item?.supplier_id)) {
                 const indexPartList = checkReceivedDetail?.findIndex((check) => check.supplier_id === item?.supplier_id);
                 parts = newMaterialOrderDetailList[indexPartList];
-            } else parts = await getInventoryBySupplier(item?.supplier_id);
+            } else parts = await getInventoryByPartID(item?.part_id);
             newMaterialOrderDetailList.push(parts);
         }
         setMaterialOrderDetailList(newMaterialOrderDetailList);
@@ -558,9 +562,11 @@ const DeliveryMaterialModal = () => {
                                                                                 options={materialOrderDetailList[index] || []}
                                                                                 getOptionLabel={(option) => option.supplier_name || ''}
                                                                                 fullWidth
+                                                                                id='autoSupplier'
+                                                                                blurOnSelect={true}
                                                                                 size="small"
                                                                                 value={materialOrderDetailList[index]?.find((item) => item.supplier_id === row.supplier_id) || null}
-                                                                                onChange={(event, newValue) => handleChangeMaterialCode(index, newValue)}
+                                                                                onChange={(event, newValue) => handleChangeSupplierCode(index, newValue)}
                                                                                 renderInput={(params) => <TextField {...params} variant="outlined" />}
                                                                             />
                                                                         </TableCell>
