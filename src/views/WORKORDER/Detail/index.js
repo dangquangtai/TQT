@@ -708,16 +708,14 @@ const WorkorderModal = () => {
             {
               id: '',
               work_order_date: day,
-              percent: 0,
+              percent: 0/1,
               is_enough: false,
-              color_check: ''
+              color_check: 'yellow'
             },
           ];
         } else {
-          let percent = 0;
-          
+          let percent = (0/1).toFixed(2);
           let index = selectedDocument.production_daily_request.findIndex(obj => toJSONLocal(new Date(obj.work_order_date)) === toJSONLocal(new Date(day)))
-        
           try {
             percent = calculateTotalPercentList(
               selectedDocument.production_daily_request[index].product_list,
@@ -747,7 +745,7 @@ const WorkorderModal = () => {
                 id: "",
                 percent: percent,
                 is_enough: false,
-                color_check: ''
+                color_check: 'yellow'
               },
             ];
           }
@@ -802,7 +800,8 @@ const WorkorderModal = () => {
             {
               work_order_date: day,
               id: '',
-              percent: 0,
+              percent: 0/1,
+              color_check:'yellow'
             },
           ];
         } else {
@@ -812,6 +811,7 @@ const WorkorderModal = () => {
               work_order_date: day,
               id: data.id,
               percent: data.percent,
+              color_check: data.color_check
             },
           ];
         }
@@ -1204,10 +1204,10 @@ const WorkorderModal = () => {
                                                  
                                               </Typography>
                                               <Typography
-                                                style={{backgroundColor: !item.color_check? 'yellow': item.color_check } 
+                                                style={{backgroundColor: item.color_check} 
                                                 }
                                               >
-                                                 {!item.is_enough?'...': item.is_enough?'Đủ':'Thiếu'}
+                                                 {item.is_enough?'Đủ':'Thiếu'}
                                               </Typography>
                                             </TableCell>
                                           ))}
