@@ -472,7 +472,7 @@ const WorkorderModal = () => {
         isOpen: true,
         type: 'error',
         text: 'Số lượng đạt yêu cầu!',
-      })
+      }) 
 
     }
 
@@ -480,7 +480,7 @@ const WorkorderModal = () => {
 
   const calculatePercent = (number_of_worker, number_of_working_hour, piece, sl, productivity_per_worker) => {
     return parseFloat(
-      (((sl * piece) / (number_of_worker * (number_of_working_hour / 8) * productivity_per_worker)) * 100).toFixed(2)
+      (((sl * piece) / (number_of_worker * (number_of_working_hour / 8) * productivity_per_worker)) * 100).toFixed(1)
     );
   };
   const [dateListNull, setDateListNull] = useState([]);
@@ -628,7 +628,7 @@ const WorkorderModal = () => {
       });
     } catch { }
 
-    return total.toFixed(2);
+    return total.toFixed(1);
   };
   const calculateTotalPercentList = (product_List, number_of_worker, number_of_working_hour) => {
     let total = 0;
@@ -642,7 +642,7 @@ const WorkorderModal = () => {
         element.productivity_per_worker
       );
     });
-    return total.toFixed(2);
+    return total.toFixed(1);
   };
   const fetchStatus = async () => {
     let data = await getStatusList();
@@ -718,7 +718,7 @@ const WorkorderModal = () => {
             },
           ];
         } else {
-          let percent = (0 / 1).toFixed(2);
+          let percent = (0 / 1).toFixed(1);
           let index = selectedDocument.production_daily_request.findIndex(obj => toJSONLocal(new Date(obj.work_order_date)) === toJSONLocal(new Date(day)))
           try {
             percent = calculateTotalPercentList(
@@ -1070,7 +1070,7 @@ const WorkorderModal = () => {
                                     // onChange={(date) => setOrderData({ ...orderData, expected_deliver_date: date })}
                                   /> */}
                                 </Grid>
-                                <Grid item lg={2} md={2} xs={2}>
+                                <Grid item lg={3} md={3} xs={3}>
                                   <span className={classes.tabItemLabelField}>Xưởng: </span>
                                   <TextField
                                     select
@@ -1090,7 +1090,7 @@ const WorkorderModal = () => {
                                   </TextField>
                                 </Grid>
 
-                                <Grid item lg={3} md={3} xs={3}>
+                                <Grid item lg={2} md={2} xs={2}>
                                   <span className={classes.tabItemLabelField}>Kho vật tư:</span>
                                   <TextField
                                     select
@@ -1142,12 +1142,12 @@ const WorkorderModal = () => {
                                 justifyContent="center"
                               >
                                 <Grid item lg={2} md={2} xs={2}>
-                               <center>
-                               {'Tuần ' +
+                                  <center>
+                                    {'Tuần ' +
                                       (currentWeek + 1) +
                                       '/' +
                                       Math.ceil(productionDailyRequestList.length / 7)}
-                               </center>
+                                  </center>
                                   <IconButton onClick={handlePreWeek}>
                                     <SkipPrevious />
                                   </IconButton>
@@ -1157,19 +1157,16 @@ const WorkorderModal = () => {
                                 </Grid>
                                 <Grid item lg={10} md={10} xs={10}>
                                   <TableContainer component={Paper}>
-                                    <Table size="small" stickyHeader aria-label="sticky table" classes={{ root: classes.customTable }}>
+                                    <Table size="small" stickyHeader aria-label="sticky table" classes={{ root: classes.customTable }} >
                                       <TableHead>
                                         <TableRow>
                                           {productionDailyRequestList?.slice(start, end).map((item, index) => (
                                             <TableCell
                                               align="center"
                                               style={
-
                                                 (currentDate === item.work_order_date
                                                   ? { background: 'rgb(97, 42, 255)', color: 'white' } :
                                                   item.work_order_date === dayCurrent ? { background: 'rgb(30 144 255)', color: 'white' } : {})
-
-
                                               }
                                               onClick={() =>
                                                 handleChangeDate(item.work_order_date, index + currentWeek * 7)
@@ -1192,11 +1189,11 @@ const WorkorderModal = () => {
                                       <TableBody>
                                         <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                           {productionDailyRequestList?.slice(start, end).map((item) => (
-                                            <TableCell component="th" scope="row" align="center">
+                                            <TableCell  align="center">
                                               <Typography
                                                 style={
                                                   item.percent >= 100
-                                                    ? { backgroundColor: 'rgb(48, 188, 65)' }
+                                                    ? { backgroundColor: 'rgb(48, 188, 65)'}
                                                     : { backgroundColor: 'yellow' }
                                                 }
                                               >

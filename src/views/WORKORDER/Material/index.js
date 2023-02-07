@@ -27,7 +27,7 @@ import { Autocomplete } from '@material-ui/lab';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { getMaterialInventoryList, createMaterialRequisition, removeRequisitionDaily } from '../../../services/api/Workorder';
+import { getMaterialInventoryList, createMaterialRequisition, removeRequisitionDaily, getSupplierList } from '../../../services/api/Workorder';
 import useStyles from '../Detail/classes';
 import { FLOATING_MENU_CHANGE, ORDER_DETAIL_CHANGE, DOCUMENT_CHANGE, MATERIAL_CHANGE } from '../../../store/actions.js';
 
@@ -54,24 +54,26 @@ export default function AlertDialogSlide() {
 
 
   ]);
-  const handleChangeRow = (row, index) => {
+  const handleChangeRow = async (row, index) => {
+    let data = await getMaterialInventoryList(detail.work_order_id, detail.part_list[indexColor].Part_Code, row.id)
     let total = totalPart.total;
     if (!!row) {
       const newProductList = [...supplierList];
       const newProduct = {
-        supplier_name: row.supplier_name,
+        supplier_name: data.Supplier_Name,
         quantity_in_piece: detail.part_list[indexColor].Quantity_In_Piece,
-        supplier_id: row.supplier_id,
-        part_code: row.part_code,
-        part_id: row.part_id,
-        part_name: row.part_name,
+        supplier_id: data.Supplier_ID,
+        part_code: data.Part_Code,
+        part_id: data.Part_ID,
+        part_name: data.Part_Name,
         daily_work_order_detail_id: detail.id,
         work_order_id: detail.work_order_id,
         daily_work_order_id: detail.daily_work_order_id,
-        quantity_in_wh: row.quantity_in_piece,
+        quantity_in_wh: data.Quantity_In_Piece,
         is_enough: true,
         quantity: orderRedux.workorderDetail.part_list[indexColor].Quantity_In_Piece,
         line: indexColor,
+        is_disable: false,
       };
       newProductList[index] = { ...newProductList[index], ...newProduct };
       let totalCa = total - newProductList[index].quantity_in_wh;
@@ -87,14 +89,13 @@ export default function AlertDialogSlide() {
         const newProductList = [...supplierList];
         newProductList.forEach((element,indexf) => {
         let totalCa=total- element.quantity_in_piece;
-        newProductList[indexf]={...element, quantity: totalCa>=0?totalCa: 0, is_enough: element.is_enough ||false }
+        newProductList[indexf]={...element, quantity: totalCa >= 0 ? totalCa: 0, is_enough: element.is_enough ||false }
         total=totalCa;
       });
       detail.part_list[indexColor].Quantity_In_Piece= total;
       setSupplierList([...newProductList]);
       setTotal({total:total})
   }
-  
   const handleAddRow = () => {
     const newProduct = {
       part_id: '',
@@ -105,8 +106,9 @@ export default function AlertDialogSlide() {
 
   };
   const handleSubmit = async () => {
-    let data = supplierList.filter((x) => (x.part_id !== ''&& !x.id))
-    let data2 = supplierListAll.filter((x) => (x.part_id !== '' && !x.id))
+    let data = supplierList.filter((x) => (x.part_id !== ''&& !x.id && x.quantity_in_piece!=0))
+    let data2 = supplierListAll.filter((x) => (x.part_id !== '' && !x.id && x.quantity_in_piece!=0))
+    if (data.length >0 || data2.length >0)
     await createMaterialRequisition({
       order_date: detail.order_date,
       daily_requisition_detail_list: [...data2, ...data],
@@ -130,21 +132,10 @@ export default function AlertDialogSlide() {
     setSupplierDropList([]);
     setOpen(false);
   };
-  const fetchData = async (index) => {
-    let data = await getMaterialInventoryList(detail.work_order_id, detail.part_list[index].Part_Code)
-    let data2 = []
-    data.forEach(element => {
-      data2 = [...data2, {
-        supplier_name: element.Supplier_Name,
-        supplier_id: element.Supplier_ID,
-        part_code: element.Part_Code,
-        part_id: element.Part_ID,
-        part_name: element.Part_Name,
-        quantity_in_wh: element.Quantity_In_Piece,
-        quantity_in_piece: element.Quantity_In_Piece,
-      }]
-    });
-    setSupplierDropList(data2)
+  
+  const fetchDataDropList = async () => {
+    let data = await getSupplierList()
+    setSupplierDropList(data)
   }
 
   const handleGetsupllier = (index) => {
@@ -154,7 +145,7 @@ export default function AlertDialogSlide() {
     let data2 = supplierListAll.filter((x) => x.part_code !== orderRedux.workorderDetail.part_list[index].Part_Code)
     setSupplierListAll([...data2, ...supplierList])
     setSupplierList([...data])
-    fetchData(index)
+    fetchDataDropList()
   };
   const handleCheck = (item) => {
   
@@ -187,12 +178,12 @@ export default function AlertDialogSlide() {
     setDetailPartList([...orderRedux.workorderDetail.part_list])
     setSupplierList([])
     var newSupplierList = [];
-   
       orderRedux.workorderDetail.supplierList.forEach((row)=>{
         if(row.is_enough){
           newSupplierList=[...newSupplierList,{...row,
             is_enough: true,
-            quantity: 0
+            quantity: 0,
+            is_disable: true,
           }]
           let date2 =  orderRedux.workorderDetail.part_list.findIndex((x) => x.Part_Code === row.part_code)
             detailData[date2] = {...detailData[date2],...orderRedux.workorderDetail.part_list[date2],
@@ -201,11 +192,18 @@ export default function AlertDialogSlide() {
         }
         else {
           newSupplierList=[...newSupplierList,{...row,
-            is_enough: row.quantity_in_piece-row.quantity_in_wh>0?false:true,
-            quantity: row.quantity_in_piece-row.quantity_in_wh>0?row.quantity_in_piece-row.quantity_in_wh:row.quantity_in_wh-row.quantity_in_piece
+            is_enough: row.quantity_in_piece-row.quantity_in_wh > 0 ? false : true,
+            quantity: row.quantity_in_piece - row.quantity_in_wh > 0 ? 
+            row.quantity_in_piece - row.quantity_in_wh : row.quantity_in_wh - row.quantity_in_piece,
+            is_disable: true,
           }]
           let date2 =  orderRedux.workorderDetail.part_list.findIndex((x) => x.Part_Code === row.part_code)
-            detailData[date2] = {...detailData[date2],...orderRedux.workorderDetail.part_list[date2],Quantity_In_Piece: orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece-row.quantity_in_wh>0?orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece-row.quantity_in_wh:0}
+          if (date2>=0){
+              detailData[date2] = {...detailData[date2],...orderRedux.workorderDetail.part_list[date2],
+              Quantity_In_Piece: orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece-row.quantity_in_wh > 0 
+              ? orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece - row.quantity_in_wh : 0}
+          }
+           
         }
        
          
@@ -216,7 +214,6 @@ export default function AlertDialogSlide() {
     setDetail({...orderRedux.workorderDetail, part_list: [...detailData]});
   }, [orderRedux.workorderDetail])
   useEffect(()=>{
-
     if (indexColor<0) return
     handleChangeTotal()
   },[indexColor])
@@ -357,14 +354,14 @@ export default function AlertDialogSlide() {
                         <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                           <TableCell component="th" scope="row" style={{ minWidth: 250, maxWidth: 250 }}>
                             <Autocomplete
-                              value={item}
+                              value={{id: item.supplier_id, value: item.supplier_name}}
                               size="small"
+                              disabled={item.is_disable}
                               disableClearable
                               options={supplierListDrop}
-
                               fullWidth
                               onChange={(e, u) => handleChangeRow(u, index)}
-                              getOptionLabel={(option) => option.supplier_name}
+                              getOptionLabel={(option) => option.value}
                               renderInput={(params) => <TextField {...params} variant="outlined" />}
                             />
                           </TableCell>
@@ -375,11 +372,13 @@ export default function AlertDialogSlide() {
                             {item.quantity_in_piece?.toLocaleString()}
                           </TableCell>
                           <TableCell >
-                            { (item.quantity?.toLocaleString() || 0)}
+                            { (item.quantity?.toLocaleString())}
                           </TableCell>
                           <TableCell  align='center'>
-                            <Typography style={{ backgroundColor: item.is_enough ? 'rgb(48, 188, 65)' : 'rgb(255,165,0)' }}>
-                              { item.is_enough ? 'Đủ' : 'Đặt mua'}
+                            <Typography style={{ backgroundColor: item.status==='WORKORDER_MATERIAL_DAILY_REQUISTION_STATUS_COMPLETED' ? 'rgb(255,165,0)' 
+                                                                : item.status==='WORKORDER_MATERIAL_DAILY_REQUISTION_STATUS_INPROGRESS' ? 'rgb(250,128,114)'
+                                                                : item.is_enough ? 'rgb(48, 188, 65)': 'yellow' }}>
+                              { item.status==='WORKORDER_MATERIAL_DAILY_REQUISTION_STATUS_AUTO_COMPLETED'? item.is_enough? item.status_display: 'Thiếu': item.status_display}
                             </Typography>
                           </TableCell>
                           <TableCell align="left">
