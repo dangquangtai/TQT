@@ -94,7 +94,7 @@ const WorkorderModal = () => {
     changeWorkOrderRequest: false,
     changeWorkOrderDaily: false,
   })
-
+  const [dayCurrent, setDateCurrent] = useState('');
   const [productionDailyRequestList, setProductionDailyRequest] = useState([]);
   const [end, setEnd] = useState(0);
   const [start, setStart] = useState(0);
@@ -117,7 +117,7 @@ const WorkorderModal = () => {
     title: '',
     to_date: '',
     from_date: '',
-   workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
+    workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
     materialwh_id: '207b6a56-73e1-11ed-b860-005056a3c175',
     productwh_id: 'a45934f4-73bb-11ed-b860-005056a3c175',
   });
@@ -275,7 +275,6 @@ const WorkorderModal = () => {
       if (productionDailyRequestList.length < 2) {
         handleOpenSnackbar(true, 'fail', 'Số ngày kế hoạch không ther < 2 !');
       } else {
-       
         let WorkOrderID = workorder.id;
         if ((workorder.id === '')) {
           WorkOrderID = await createWorkorOrder({
@@ -318,6 +317,7 @@ const WorkorderModal = () => {
         }
 
         let IdWorkorderRequest = workorderRequest.id;
+     
           if (checkChangeData.changeWorkOrderRequest || workorder.id === '' || (IdWorkorderRequest === '' && productList.length > 0)) {
             IdWorkorderRequest = await createWorkOrderRequest({
               number_of_worker: workorderRequest?.number_of_worker||20,
@@ -556,7 +556,8 @@ const WorkorderModal = () => {
     setIndexDate(0);
     setCurrentWeek(0);
     setCheckChangeData({changeWorkOrder:false, changeWorkOrderDaily: false, changeWorkOrderRequest: false})
-    setWorkorder({ title: '', status: '', order_id: '', to_date: '', from_date: '',workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
+    setWorkorder({ title: '', status: '', order_id: '', to_date: '', from_date: '', 
+    workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
     materialwh_id: '207b6a56-73e1-11ed-b860-005056a3c175',
     productwh_id: 'a45934f4-73bb-11ed-b860-005056a3c175', });
     setWorkorderRequest({})
@@ -684,7 +685,7 @@ const WorkorderModal = () => {
       status_code = selectedDocument.status;
       order_code = selectedDocument.order_code;
     }
-  
+    
    
     workorder.id =selectedDocument?.id || ''
     setWorkorder({
@@ -698,7 +699,7 @@ const WorkorderModal = () => {
     });
     var date = [];
     if (to_date !== '' && from_date !== '') {
-
+    
       for (var d = new Date(from_date); d <= new Date(to_date); d.setDate(d.getDate() + 1)) {
         const day = d.getFullYear() + '-' + month[d.getMonth()] + '-' + d.getDate();
         if (!selectedDocument) {
@@ -714,8 +715,9 @@ const WorkorderModal = () => {
           ];
         } else {
           let percent = 0;
+          
           let index = selectedDocument.production_daily_request.findIndex(obj => toJSONLocal(new Date(obj.work_order_date)) === toJSONLocal(new Date(day)))
-
+        
           try {
             percent = calculateTotalPercentList(
               selectedDocument.production_daily_request[index].product_list,
@@ -749,21 +751,30 @@ const WorkorderModal = () => {
               },
             ];
           }
-
-
         }
+
+      }
+      let daycurrent = new Date();
+      setDateCurrent(daycurrent.getFullYear() + '-' + month[daycurrent.getMonth()] + '-' + daycurrent.getDate())
+      let indexCurrentDate= date.findIndex((x) => x.work_order_date ===daycurrent.getFullYear() + '-' + month[daycurrent.getMonth()] + '-' + daycurrent.getDate())
+      if (indexCurrentDate===-1) indexCurrentDate=0
+      let week =0;
+      if(Math.ceil(indexCurrentDate/7)-1>0) {
+       week=Math.ceil(indexCurrentDate/7)-1
       }
       setProductionDailyRequest(date);
-      setStart(0);
-      setCurrentDate(date[0].work_order_date);
-
+      setStart((week)*7);
+      setCurrentDate(date[indexCurrentDate].work_order_date);
       if (date.length > 7) {
-        setEnd(7);
+        setEnd((week)*7+7);
       } else if (date.length > 0) {
         setEnd(date.length);
       }
-      setIndexDate(pre => 0);
-      setCurrentWeek(0);
+      setIndexDate(pre => indexCurrentDate);
+     
+      setCurrentWeek(week);
+    
+      
       setDateListNull([]);
       if (date.length < 7) {
         let datenull = [];
@@ -772,7 +783,7 @@ const WorkorderModal = () => {
         }
         setDateListNull(datenull);
       }
-      handleGetWorkOrderRequest(date[0].id,-1)
+      handleGetWorkOrderRequest(date[indexCurrentDate].id,-1)
 
 
     }
@@ -1152,9 +1163,10 @@ const WorkorderModal = () => {
                                             <TableCell
                                               align="center"
                                               style={
-                                                
-                                                 currentDate === item.work_order_date
-                                                  ? { background: 'rgb(97, 42, 255)', color: 'white' }: {}
+                                               
+                                                ( currentDate === item.work_order_date
+                                                  ? { background: 'rgb(97, 42, 255)', color: 'white' } :  
+                                                  item.work_order_date === dayCurrent ? {background: 'rgb(30 144 255)', color: 'white'} :{}) 
                                                
                                                   
                                               }
@@ -1187,15 +1199,15 @@ const WorkorderModal = () => {
                                                     : { backgroundColor: 'yellow' }
                                                 }
                                               >
-                                                {item.percent
+                                                {item.percent.toLocaleString()
                                                   + '%'}
                                                  
                                               </Typography>
                                               <Typography
-                                                style={{backgroundColor: item.color_check } 
+                                                style={{backgroundColor: !item.color_check? 'yellow': item.color_check } 
                                                 }
                                               >
-                                                {item.is_enough?'Đủ':'Thiếu'}
+                                                 {!item.is_enough?'...': item.is_enough?'Đủ':'Thiếu'}
                                               </Typography>
                                             </TableCell>
                                           ))}
