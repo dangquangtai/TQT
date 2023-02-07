@@ -129,13 +129,13 @@ const WorkorderModal = () => {
     },
   ]);
   const [workshopList, setWorkShopList] = useState([
-    
+
   ]);
   const [productWHSList, setProductWHSList] = useState([
-    
+
   ]);
   const [materialWHSList, setMaterialWHSList] = useState([
-   
+
   ]);
 
   const virtuoso = useRef(null);
@@ -238,10 +238,10 @@ const WorkorderModal = () => {
 
       if (productList[index].id != '') {
         let orderDetail = order?.orderDetail;
-        orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder -=productList[index].quantity_in_box;
+        orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder -= productList[index].quantity_in_box;
         dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
         deleteWorkOrderDetail(id);
-        
+
       }
     } catch { }
 
@@ -253,7 +253,7 @@ const WorkorderModal = () => {
   const handleCloseDialog = () => {
     setDocumentToDefault();
     dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
-    dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null});
+    dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null });
     dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'workorder' });
     dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: false, documentType: 'workorder' });
   };
@@ -317,38 +317,38 @@ const WorkorderModal = () => {
         }
 
         let IdWorkorderRequest = workorderRequest.id;
-     
-          if (checkChangeData.changeWorkOrderRequest || workorder.id === '' || (IdWorkorderRequest === '' && productList.length > 0)) {
-            IdWorkorderRequest = await createWorkOrderRequest({
-              number_of_worker: workorderRequest?.number_of_worker||20,
-              number_of_working_hour: workorderRequest?.number_of_working_hour||8,
-              status: workorder.status_code,
+
+        if (checkChangeData.changeWorkOrderRequest || workorder.id === '' || (IdWorkorderRequest === '' && productList.length > 0)) {
+          IdWorkorderRequest = await createWorkOrderRequest({
+            number_of_worker: workorderRequest?.number_of_worker || 20,
+            number_of_working_hour: workorderRequest?.number_of_working_hour || 8,
+            status: workorder.status_code,
+            work_order_id: WorkOrderID,
+            order_code: workorder.order_code,
+            order_title: workorder.title,
+            work_order_date: currentDate,
+            id: workorderRequest.id,
+          })
+          productionDailyRequestList[indexDate].id = IdWorkorderRequest
+        }
+        if (checkChangeData.changeWorkOrderDaily) {
+          let productListFilter = productList.filter(x => x.product_id != '')
+          if (productListFilter.length > 0)
+            await createWorkOrderDetailList({
+              product_list: productListFilter,
+              status_code: workorder.status_code,
               work_order_id: WorkOrderID,
-              order_code: workorder.order_code,
-              order_title: workorder.title,
-              work_order_date: currentDate,
-              id: workorderRequest.id,
-            })
-            productionDailyRequestList[indexDate].id = IdWorkorderRequest
-          }
-          if (checkChangeData.changeWorkOrderDaily) {
-            let productListFilter = productList.filter(x => x.product_id != '')
-            if (productListFilter.length > 0)
-              await createWorkOrderDetailList({
-                product_list: productListFilter,
-                status_code: workorder.status_code,
-                work_order_id: WorkOrderID,
-                daily_work_order_id: IdWorkorderRequest,
-              });
-          }
-        
-       
+              daily_work_order_id: IdWorkorderRequest,
+            });
+        }
+
+
 
 
         setCheckChangeData({ changeWorkOrder: false, changeWorkOrderDaily: false, changeWorkOrderRequest: false })
 
         if (getdate)
-          return handleGetWorkOrderRequest(IdWorkorderRequest,-1)
+          return handleGetWorkOrderRequest(IdWorkorderRequest, -1)
 
       }
 
@@ -380,9 +380,9 @@ const WorkorderModal = () => {
   };
   const handleUpdateWorkOrder = async (product, index) => {
     try {
-      if (workorder.id==='')  {
+      if (workorder.id === '') {
         dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
-       dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null});
+        dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null });
       }
       let product_list = await handleCreateWorkOrder(false, true);
       dataMaterial = await getMaterialDaily(product_list[index].id);
@@ -402,7 +402,7 @@ const WorkorderModal = () => {
     } catch { }
   };
   const handleChangeStatus = (e) => {
-    setCheckChangeData({...checkChangeData, changeWorkOrder: true})
+    setCheckChangeData({ ...checkChangeData, changeWorkOrder: true })
     const value = e.target.value;
     setWorkorder({
       ...workorder,
@@ -456,8 +456,8 @@ const WorkorderModal = () => {
   const handleChangeNumber = (e, index) => {
     const value = e.target.value;
     let orderDetail = order?.orderDetail;
-    let product =orderDetail.find((x) => x.product_id === productList[index].product_id)
-    if ((parseInt(product.quantity_in_workorder) + parseInt(value) - parseInt(productList[index].quantity_in_box) )<= parseInt(product.quantity_in_box)){
+    let product = orderDetail.find((x) => x.product_id === productList[index].product_id)
+    if ((parseInt(product.quantity_in_workorder) + parseInt(value) - parseInt(productList[index].quantity_in_box)) <= parseInt(product.quantity_in_box)) {
       setCheckChangeData({ ...checkChangeData, changeWorkOrderDaily: true })
       try {
         orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder += value - productList[index].quantity_in_box;
@@ -468,12 +468,14 @@ const WorkorderModal = () => {
       setProductList([...productList]);
       updateDataDailyRequest(productList);
     } else {
-      setSnackbarStatus({isOpen: true,
+      setSnackbarStatus({
+        isOpen: true,
         type: 'error',
-        text: 'Số lượng đạt yêu cầu!',})
- 
+        text: 'Số lượng đạt yêu cầu!',
+      })
+
     }
-    
+
   };
 
   const calculatePercent = (number_of_worker, number_of_working_hour, piece, sl, productivity_per_worker) => {
@@ -506,7 +508,7 @@ const WorkorderModal = () => {
     }
   };
 
-  const handleGetWorkOrderRequest = async (id,index) => {
+  const handleGetWorkOrderRequest = async (id, index) => {
     let productListApi = id;
     if (id === '') {
       setProductList([]);
@@ -518,12 +520,12 @@ const WorkorderModal = () => {
       setDisable(false);
     } else {
       productListApi = await getWorkOrderRequest(id);
-      if (index>=0){
-        productionDailyRequestList[index].color_check=productListApi.work_order_request.color_check
-        productionDailyRequestList[index].is_enough=productListApi.work_order_request.is_enough
+      if (index >= 0) {
+        productionDailyRequestList[index].color_check = productListApi.work_order_request.color_check
+        productionDailyRequestList[index].is_enough = productListApi.work_order_request.is_enough
       } else {
-        productionDailyRequestList[indexDate].color_check=productListApi.work_order_request.color_check
-        productionDailyRequestList[indexDate].is_enough=productListApi.work_order_request.is_enough
+        productionDailyRequestList[indexDate].color_check = productListApi.work_order_request.color_check
+        productionDailyRequestList[indexDate].is_enough = productListApi.work_order_request.is_enough
       }
       setDisable(productListApi.work_order_request.is_disable)
       setProductList(productListApi.work_order_detail);
@@ -545,7 +547,7 @@ const WorkorderModal = () => {
     productionDailyRequestList[indexDate].percent = calculateTotalPercentList(productList, workorderRequest.number_of_worker, workorderRequest.number_of_working_hour)
     setCurrentDate(date);
     setIndexDate(index);
-    handleGetWorkOrderRequest(productionDailyRequestList[index].id,index)
+    handleGetWorkOrderRequest(productionDailyRequestList[index].id, index)
   };
 
   const updateDataDailyRequest = (product_List) => {
@@ -555,11 +557,13 @@ const WorkorderModal = () => {
   const setDocumentToDefault = async () => {
     setIndexDate(0);
     setCurrentWeek(0);
-    setCheckChangeData({changeWorkOrder:false, changeWorkOrderDaily: false, changeWorkOrderRequest: false})
-    setWorkorder({ title: '', status: '', order_id: '', to_date: '', from_date: '', 
-    workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
-    materialwh_id: '207b6a56-73e1-11ed-b860-005056a3c175',
-    productwh_id: 'a45934f4-73bb-11ed-b860-005056a3c175', });
+    setCheckChangeData({ changeWorkOrder: false, changeWorkOrderDaily: false, changeWorkOrderRequest: false })
+    setWorkorder({
+      title: '', status: '', order_id: '', to_date: '', from_date: '',
+      workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
+      materialwh_id: '207b6a56-73e1-11ed-b860-005056a3c175',
+      productwh_id: 'a45934f4-73bb-11ed-b860-005056a3c175',
+    });
     setWorkorderRequest({})
     setProductList([]);
     setProductionDailyRequest([]);
@@ -567,9 +571,9 @@ const WorkorderModal = () => {
   };
 
   const popupWindow = (url, title) => {
-    if (workorder.id===''){
+    if (workorder.id === '') {
       dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
-      dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null});
+      dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null });
     }
     var width = window.outerWidth ? window.outerWidth : document.documentElement.clientWidth;
     var height = window.outerHeight ? window.outerHeight : document.documentElement.clientHeight;
@@ -589,9 +593,9 @@ const WorkorderModal = () => {
   };
 
   const popupWindowFull = (url, title) => {
-    if (workorder.id===''){
+    if (workorder.id === '') {
       dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
-      dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null});
+      dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null });
     }
     var width = window.outerWidth ? window.outerWidth : document.documentElement.clientWidth;
     var height = window.outerHeight ? window.outerHeight : document.documentElement.clientHeight;
@@ -643,7 +647,7 @@ const WorkorderModal = () => {
   const fetchStatus = async () => {
     let data = await getStatusList();
     setProductionStatus(data);
-     data = await getWorkShopList();
+    data = await getWorkShopList();
     setWorkShopList([...data])
     data = await getMaterialWHSList();
     setMaterialWHSList([...data])
@@ -656,7 +660,7 @@ const WorkorderModal = () => {
     return local.toJSON().slice(0, 10);
   }
   const handleSetProduct = async () => {
-    
+
     let to_date = '';
     let from_date = '';
     let title = '';
@@ -664,7 +668,7 @@ const WorkorderModal = () => {
     let order_code = '';
     if (!selectedDocument) {
       let date = new Date();
-    
+
       if (date.getDate() < 10) {
 
         from_date = date.getFullYear() + '-' + month[date.getMonth()] + '-0' + date.getDate();
@@ -685,9 +689,9 @@ const WorkorderModal = () => {
       status_code = selectedDocument.status;
       order_code = selectedDocument.order_code;
     }
-    
-   
-    workorder.id =selectedDocument?.id || ''
+
+
+    workorder.id = selectedDocument?.id || ''
     setWorkorder({
       ...workorder,
       to_date: to_date,
@@ -699,7 +703,7 @@ const WorkorderModal = () => {
     });
     var date = [];
     if (to_date !== '' && from_date !== '') {
-    
+
       for (var d = new Date(from_date); d <= new Date(to_date); d.setDate(d.getDate() + 1)) {
         const day = d.getFullYear() + '-' + month[d.getMonth()] + '-' + d.getDate();
         if (!selectedDocument) {
@@ -708,13 +712,13 @@ const WorkorderModal = () => {
             {
               id: '',
               work_order_date: day,
-              percent: 0/1,
+              percent: 0 / 1,
               is_enough: false,
               color_check: 'yellow'
             },
           ];
         } else {
-          let percent = (0/1).toFixed(2);
+          let percent = (0 / 1).toFixed(2);
           let index = selectedDocument.production_daily_request.findIndex(obj => toJSONLocal(new Date(obj.work_order_date)) === toJSONLocal(new Date(day)))
           try {
             percent = calculateTotalPercentList(
@@ -754,25 +758,25 @@ const WorkorderModal = () => {
       }
       let daycurrent = new Date();
       setDateCurrent(daycurrent.getFullYear() + '-' + month[daycurrent.getMonth()] + '-' + daycurrent.getDate())
-      let indexCurrentDate= date.findIndex((x) => x.work_order_date ===daycurrent.getFullYear() + '-' + month[daycurrent.getMonth()] + '-' + daycurrent.getDate())
-      if (indexCurrentDate===-1) indexCurrentDate=0
-      let week =0;
-      if(Math.ceil(indexCurrentDate/7)-1>0) {
-       week=Math.ceil(indexCurrentDate/7)-1
+      let indexCurrentDate = date.findIndex((x) => x.work_order_date === daycurrent.getFullYear() + '-' + month[daycurrent.getMonth()] + '-' + daycurrent.getDate())
+      if (indexCurrentDate === -1) indexCurrentDate = 0
+      let week = 0;
+      if (Math.ceil(indexCurrentDate / 7) - 1 > 0) {
+        week = Math.ceil(indexCurrentDate / 7) - 1
       }
       setProductionDailyRequest(date);
-      setStart((week)*7);
+      setStart((week) * 7);
       setCurrentDate(date[indexCurrentDate].work_order_date);
       if (date.length > 7) {
-        setEnd((week)*7+7);
+        setEnd((week) * 7 + 7);
       } else if (date.length > 0) {
         setEnd(date.length);
       }
       setIndexDate(pre => indexCurrentDate);
-     
+
       setCurrentWeek(week);
-    
-      
+
+
       setDateListNull([]);
       if (date.length < 7) {
         let datenull = [];
@@ -781,7 +785,7 @@ const WorkorderModal = () => {
         }
         setDateListNull(datenull);
       }
-      handleGetWorkOrderRequest(date[indexCurrentDate].id,-1)
+      handleGetWorkOrderRequest(date[indexCurrentDate].id, -1)
 
 
     }
@@ -800,8 +804,8 @@ const WorkorderModal = () => {
             {
               work_order_date: day,
               id: '',
-              percent: 0/1,
-              color_check:'yellow'
+              percent: 0 / 1,
+              color_check: 'yellow'
             },
           ];
         } else {
@@ -853,7 +857,7 @@ const WorkorderModal = () => {
     return (
       <>
         {' '}
-        <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} hover style={{minWidth: 10, maxWidth:10}}>
+        <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} hover style={{ minWidth: 10, maxWidth: 10 }}>
           <TableCell align="left">{index + 1}</TableCell>
           <TableCell align="left" style={{ maxWidth: 50, overflow: 'hidden', textOverflow: 'ellipsis' }}>
             <Tooltip title={item.customer_order_code}>
@@ -909,7 +913,7 @@ const WorkorderModal = () => {
           </TableCell>
           <TableCell align="center"> {calculateQuantity(item, index)}</TableCell>
           <TableCell align="right">
-            <IconButton onClick={() => handleDeleteRow(index, item.id)}  disabled={disableComponent}>
+            <IconButton onClick={() => handleDeleteRow(index, item.id)} disabled={disableComponent}>
               <Delete />
             </IconButton>
           </TableCell>
@@ -927,7 +931,7 @@ const WorkorderModal = () => {
   useEffect(() => {
 
     if (orderReduxWork?.workorderDetail?.data === 1) {
-      handleGetWorkOrderRequest(productionDailyRequestList[indexDate].id,-1)
+      handleGetWorkOrderRequest(productionDailyRequestList[indexDate].id, -1)
     }
   }, [orderReduxWork.workorderDetail]);
 
@@ -983,7 +987,7 @@ const WorkorderModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={1} rowSpacing={1}>
-                            <Grid item lg={6} md={6} xs={12}>
+                            <Grid item lg={7} md={7} xs={12}>
                               <Grid container className={classes.gridItemInfo} alignItems="center" spacing={1} >
                                 <Grid item lg={3} md={3} xs={3}>
                                   <span className={classes.tabItemLabelField}>Mã hoạch sản xuất: </span>
@@ -997,7 +1001,7 @@ const WorkorderModal = () => {
                                     onChange={handleChange}
                                   />
                                 </Grid>
-                               
+
                                 <Grid item lg={6} md={6} xs={6}>
                                   <span className={classes.tabItemLabelField}>Tên kế hoạch sản xuất: </span>
                                   <TextField
@@ -1031,8 +1035,8 @@ const WorkorderModal = () => {
                                 </Grid>
                               </Grid>
 
-                             <Grid container className={classes.gridItemInfo} alignItems="center" spacing={1}>
-                                <Grid item lg={3} md={3} xs={3}>
+                              <Grid container className={classes.gridItemInfo} alignItems="center" spacing={1}>
+                                <Grid item lg={2} md={2} xs={2}>
                                   <span className={classes.tabItemLabelField}>Thời gian bắt đầu:</span>
                                   <TextField
                                     fullWidth
@@ -1049,8 +1053,8 @@ const WorkorderModal = () => {
                                   /> */}
                                 </Grid>
 
-                              
-                                <Grid item lg={3} md={3} xs={3}>
+
+                                <Grid item lg={2} md={2} xs={2}>
                                   <span className={classes.tabItemLabelField}>Thời gian kết thúc:</span>
                                   <TextField
                                     fullWidth
@@ -1075,7 +1079,7 @@ const WorkorderModal = () => {
                                     variant="outlined"
                                     size="small"
                                     value={workorder?.workshop_id}
-                                    onChange={(event) => setWorkorder({...workorder, workshop_id: event.target.value})}
+                                    onChange={(event) => setWorkorder({ ...workorder, workshop_id: event.target.value })}
                                   >
                                     {workshopList &&
                                       workshopList.map((item) => (
@@ -1085,17 +1089,17 @@ const WorkorderModal = () => {
                                       ))}
                                   </TextField>
                                 </Grid>
-                              
-                                <Grid item lg={2} md={2} xs={2}>
+
+                                <Grid item lg={3} md={3} xs={3}>
                                   <span className={classes.tabItemLabelField}>Kho vật tư:</span>
-                                   <TextField
+                                  <TextField
                                     select
                                     fullWidth
                                     id="outlined-size-small"
                                     variant="outlined"
                                     size="small"
                                     value={workorder?.materialwh_id}
-                                    onChange={(event) => setWorkorder({...workorder, materialwh_id: event.target.value})}
+                                    onChange={(event) => setWorkorder({ ...workorder, materialwh_id: event.target.value })}
                                   >
                                     {materialWHSList &&
                                       materialWHSList.map((item) => (
@@ -1106,8 +1110,8 @@ const WorkorderModal = () => {
                                   </TextField>
                                 </Grid>
 
-                      
-                                <Grid item lg={2} md={2} xs={2}>
+
+                                <Grid item lg={3} md={3} xs={3}>
                                   <span className={classes.tabItemLabelField}>Kho thành phẩm:</span>
                                   <TextField
                                     select
@@ -1116,7 +1120,7 @@ const WorkorderModal = () => {
                                     variant="outlined"
                                     size="small"
                                     value={workorder?.productwh_id}
-                                    onChange={(event) => setWorkorder({...workorder, productwh_id: event.target.value})}
+                                    onChange={(event) => setWorkorder({ ...workorder, productwh_id: event.target.value })}
                                   >
                                     {productWHSList &&
                                       productWHSList.map((item) => (
@@ -1126,35 +1130,32 @@ const WorkorderModal = () => {
                                       ))}
                                   </TextField>
                                 </Grid>
-                                
-                              </Grid> 
+
+                              </Grid>
                             </Grid>
-                            <Grid item lg={6} md={6} xs={12}alignItems="center" justifyContent="center">
+                            <Grid item lg={5} md={5} xs={12} alignItems="center" justifyContent="center">
                               <Grid
                                 container
                                 className={classes.gridItemInfo}
                                 alignItems="center"
-                                style={{ margin: '0 auto',background: 'rgba(224, 224, 224, 1)'}}
+                                style={{ background: 'rgba(224, 224, 224, 1)' }}
                                 justifyContent="center"
-                                >
-                                <Grid item lg={3} md={3} xs={3} alignItems="center">
-                                  <IconButton onClick={handlePreWeek}>
-                                    <SkipPrevious />
-                                  </IconButton>
-                                  <span>
-                                    {'Tuần ' +
+                              >
+                                <Grid item lg={2} md={2} xs={2}>
+                               <center>
+                               {'Tuần ' +
                                       (currentWeek + 1) +
                                       '/' +
                                       Math.ceil(productionDailyRequestList.length / 7)}
-                                  </span>
+                               </center>
+                                  <IconButton onClick={handlePreWeek}>
+                                    <SkipPrevious />
+                                  </IconButton>
                                   <IconButton onClick={handleNextWeek}>
                                     <SkipNext />
                                   </IconButton>
                                 </Grid>
-                                <Grid item lg={9} md={9} xs={9}>
-                              
-
-                                 
+                                <Grid item lg={10} md={10} xs={10}>
                                   <TableContainer component={Paper}>
                                     <Table size="small" stickyHeader aria-label="sticky table" classes={{ root: classes.customTable }}>
                                       <TableHead>
@@ -1163,12 +1164,12 @@ const WorkorderModal = () => {
                                             <TableCell
                                               align="center"
                                               style={
-                                               
-                                                ( currentDate === item.work_order_date
-                                                  ? { background: 'rgb(97, 42, 255)', color: 'white' } :  
-                                                  item.work_order_date === dayCurrent ? {background: 'rgb(30 144 255)', color: 'white'} :{}) 
-                                               
-                                                  
+
+                                                (currentDate === item.work_order_date
+                                                  ? { background: 'rgb(97, 42, 255)', color: 'white' } :
+                                                  item.work_order_date === dayCurrent ? { background: 'rgb(30 144 255)', color: 'white' } : {})
+
+
                                               }
                                               onClick={() =>
                                                 handleChangeDate(item.work_order_date, index + currentWeek * 7)
@@ -1201,13 +1202,13 @@ const WorkorderModal = () => {
                                               >
                                                 {item.percent.toLocaleString()
                                                   + '%'}
-                                                 
+
                                               </Typography>
                                               <Typography
-                                                style={{backgroundColor: item.color_check} 
+                                                style={{ backgroundColor: item.color_check }
                                                 }
                                               >
-                                                 {item.is_enough?'Đủ':'Thiếu'}
+                                                {item.is_enough ? 'Đủ' : 'Thiếu'}
                                               </Typography>
                                             </TableCell>
                                           ))}
@@ -1215,11 +1216,11 @@ const WorkorderModal = () => {
                                             <TableCell align="center">{''}</TableCell>
                                           ))}
                                         </TableRow>
-                                      
+
                                       </TableBody>
                                     </Table>
                                   </TableContainer>
-                            
+
                                 </Grid>
                               </Grid>
                             </Grid>
@@ -1229,7 +1230,7 @@ const WorkorderModal = () => {
                               className={classes.gridItemInfo}
                               alignItems="center"
                               justifyContent="flex-end"
-                           
+
                             >
                               <Grid item lg={1} md={1} xs={1}>
                                 <span className={classes.tabItemLabelField} style={{ marginLeft: '-70px' }}>
@@ -1323,7 +1324,7 @@ const WorkorderModal = () => {
                                   <Table size="small" stickyHeader aria-label="sticky table">
                                     <TableHead>
                                       <TableRow>
-                                        <TableCell align="left" style={{minWidth: 10, maxWidth:10}}>STT</TableCell>
+                                        <TableCell align="left" style={{ minWidth: 10, maxWidth: 10 }}>STT</TableCell>
                                         <TableCell align="left">Mã ĐH</TableCell>
                                         <TableCell align="left">Mã TP của TQT</TableCell>
                                         <TableCell align="left">Mã TP của KH</TableCell>
