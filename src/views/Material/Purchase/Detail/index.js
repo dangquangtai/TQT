@@ -44,6 +44,8 @@ import {
   getPurchaseMaterialStatus,
   updatePurchaseMaterial,
 } from './../../../../services/api/Material/Purchase';
+import { popupWindow } from '../../../../utils/helper.js';
+import { getSupplierListByWorkOrder } from './../../../../services/api/Partner/Supplier';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -77,6 +79,7 @@ const PurchaseMaterialModal = () => {
   const { form_buttons: formButtons } = useView();
   const { setConfirmPopup } = useConfirmPopup();
   const { materials } = useSelector((state) => state.metadata);
+  const { material } = useSelector((state) => state.material);
   const saveButton = formButtons.find((button) => button.name === view.purchaseMaterial.detail.save);
   const { purchaseMaterialDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
@@ -98,9 +101,12 @@ const PurchaseMaterialModal = () => {
     setTabIndex(newValue);
   };
 
+  const newWindow = React.useRef(null);
+
   const handleCloseDialog = () => {
     setDocumentToDefault();
     dispatch({ type: FLOATING_MENU_CHANGE, purchaseMaterialDocument: false });
+    if (newWindow.current) newWindow.current.close();
   };
 
   const handleOpenSnackbar = (type, text) => {
@@ -233,6 +239,14 @@ const PurchaseMaterialModal = () => {
     }
   };
 
+  const handleOpenShortageDialog = () => {
+    if (!purchaseMaterialData.supplier_id) {
+      handleOpenSnackbar('error', 'Vui lòng chọn nhà cung cấp!');
+      return;
+    }
+    newWindow.current = popupWindow(`/dashboard/material/${purchaseMaterialData.supplier_id}`, 'Vật tư thiếu');
+  };
+
   useEffect(() => {
     if (!selectedDocument) return;
     setPurchaseMaterialData({
@@ -244,7 +258,7 @@ const PurchaseMaterialModal = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const supplier = await getAllSupplier();
+      const supplier = await getSupplierListByWorkOrder();
       setSupplier(supplier);
       const status = await getPurchaseMaterialStatus();
       setStatusList(status);
@@ -252,9 +266,32 @@ const PurchaseMaterialModal = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (!material) return;
+    if (materialList.some((item) => item.part_id === material.part_id)) {
+      handleOpenSnackbar('error', 'Vật tư đã tồn tại!');
+      return;
+    }
+    setMaterialList([
+      ...materialList,
+      {
+        ...material,
+        requisition_id: selectedDocument?.id || '',
+        id: '',
+        // quantity_in_piece: 0,
+      },
+    ]);
+  }, [material]);
+
   return (
     <React.Fragment>
-      <FirebaseUpload open={dialogUpload.open || false} onSuccess={setURL} onClose={handleCloseDiaLog} type="image" folder="PurchaseMaterial" />
+      <FirebaseUpload
+        open={dialogUpload.open || false}
+        onSuccess={setURL}
+        onClose={handleCloseDiaLog}
+        type="image"
+        folder="PurchaseMaterial"
+      />
       <Grid container>
         <Dialog
           open={openDialog || false}
@@ -422,25 +459,15 @@ const PurchaseMaterialModal = () => {
                         </div>
                       </div>
                     </Grid>
-                    <Grid item lg={5} md={12} xs={12}>
-                      <div className={classes.tabItem}>
-                        <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>Vật tư thiếu</div>
-                        </div>
-                        <div className={classes.tabItemBody}>
-                          <Grid container spacing={1}></Grid>
-                        </div>
-                      </div>
-                    </Grid>
-                    <Grid item lg={7} md={12} xs={12}>
+                    <Grid item lg={12} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>Danh sách vật tư</div>
-                          <Tooltip title="Thêm vật tư">
+                          {/* <Tooltip title="Thêm vật tư">
                             <IconButton onClick={handleAddMaterial}>
                               <AddCircleOutline />
                             </IconButton>
-                          </Tooltip>
+                          </Tooltip> */}
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
@@ -451,7 +478,6 @@ const PurchaseMaterialModal = () => {
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">SL cần</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
-                                  {/* {selectedDocument?.id && <TableCell align="left">Trạng thái</TableCell>} */}
                                   <TableCell align="left">Ghi chú</TableCell>
                                   <TableCell align="center">Xoá</TableCell>
                                 </TableRow>
@@ -459,23 +485,17 @@ const PurchaseMaterialModal = () => {
                               <TableBody>
                                 {materialList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '25%' }}>
-                                      <Autocomplete
-                                        options={materials}
-                                        getOptionLabel={(option) => option.part_code || ''}
-                                        fullWidth
-                                        size="small"
-                                        value={materials.find((item) => item.part_code === row.part_code) || null}
-                                        onChange={(event, newValue) => handleChangeMaterialCode(index, newValue)}
-                                        renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                      />
+                                    <TableCell align="left" style={{ width: '20%' }}>
+                                      <Tooltip title={row?.part_code}>
+                                        <span>{row?.part_code}</span>
+                                      </Tooltip>
                                     </TableCell>
                                     <TableCell align="left" className={classes.maxWidthCell} style={{ width: '25%' }}>
                                       <Tooltip title={row?.part_name}>
                                         <span>{row?.part_name}</span>
                                       </Tooltip>
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '15%' }}>
+                                    <TableCell align="left" style={{ width: '10%' }}>
                                       <TextField
                                         InputProps={{
                                           inputProps: { min: 0 },
@@ -492,7 +512,7 @@ const PurchaseMaterialModal = () => {
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       {row.unit_name}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '15%' }}>
+                                    <TableCell align="left" style={{ width: '25%' }}>
                                       <TextField
                                         multiline
                                         minRows={1}
@@ -541,6 +561,9 @@ const PurchaseMaterialModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
+                <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleOpenShortageDialog}>
+                  Chi tiết vật tư thiếu
+                </Button>
                 {saveButton && selectedDocument?.id && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
                     {saveButton.text}
