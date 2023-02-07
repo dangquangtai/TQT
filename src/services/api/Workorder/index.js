@@ -56,14 +56,14 @@ export const getPartList = (id) => {
       console.log(error);
     });
 };
-export const getMaterialInventoryList = (word_order_id, part_code) => {
+export const getMaterialInventoryList = (word_order_id, part_code, supplier_id) => {
   return axiosServices
-    .post(apiEndpoints.get_material_inventory, { work_order_id: word_order_id, part_code: part_code })
+    .post(apiEndpoints.get_material_inventory, { work_order_id: word_order_id, part_code: part_code, supplier_id: supplier_id })
     .then((response) => {
       if (response.status === 200 && response.data.return === 200) {
-        return response.data.list;
+        return response.data.data;
       }
-      return [];
+      return {};
     })
     .catch((error) => {
       console.log(error);
@@ -214,5 +214,13 @@ export const removeRequisitionDaily = (id) => {
       return true;
     }
     return false;
+  });
+};
+export const getSupplierList = () => {
+  return axiosServices.post(apiEndpoints.get_active_supplier_list, {  }).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data.list;
+    }
+    return [];
   });
 };
