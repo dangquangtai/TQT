@@ -52,13 +52,7 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && <Box p={0}>{children}</Box>}
     </div>
   );
@@ -257,20 +251,19 @@ const OrderModal = () => {
 
   return (
     <React.Fragment>
-      <FirebaseUpload
-        open={dialogUpload.open || false}
-        onSuccess={setURL}
-        onClose={handleCloseDiaLog}
-        type="image"
-        folder="Order"
-      />
+      <FirebaseUpload open={dialogUpload.open || false} onSuccess={setURL} onClose={handleCloseDiaLog} type="image" folder="Order" />
       <Grid container>
         <Dialog
           open={openDialog || false}
           TransitionComponent={Transition}
           keepMounted
           onClose={handleCloseDialog}
-          className={classes.useradddialog}
+          fullScreen
+          PaperProps={{
+            style: {
+              backgroundColor: '#f1f1f9',
+            },
+          }}
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
@@ -325,132 +318,102 @@ const OrderModal = () => {
               </Grid>
               <Grid item xs={12}>
                 <TabPanel value={tabIndex} index={0}>
-                  <Grid container spacing={1}>
+                  <Grid container spacing={2}>
                     <Grid item lg={12} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>Đơn hàng</div>
                         </div>
                         <div className={classes.tabItemBody}>
-                          <Grid container spacing={1}>
-                            <Grid item lg={6} md={6} xs={12}>
-                              <Grid container className={classes.gridItemInfo} alignItems="center">
-                                <Grid item lg={4} md={4} xs={4}>
-                                  <span className={classes.tabItemLabelField}>Khách hàng:</span>
-                                </Grid>
-                                <Grid item lg={8} md={8} xs={8}>
-                                  <Autocomplete
-                                    id="combo-box-demo"
-                                    options={customer}
-                                    getOptionLabel={(option) => option.value || ''}
-                                    fullWidth
-                                    size="small"
-                                    value={customer?.find((item) => item.id === selectedDocument?.customer_id) || null}
-                                    onChange={(event, newValue) => {
-                                      setOrderData({ ...orderData, customer_id: newValue?.id });
-                                    }}
-                                    renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                  />
-                                </Grid>
-                              </Grid>
-                              <Grid container className={classes.gridItemInfo} alignItems="center">
-                                <Grid item lg={4} md={4} xs={4}>
-                                  <span className={classes.tabItemLabelField}>Tên đơn hàng:</span>
-                                </Grid>
-                                <Grid item lg={8} md={8} xs={8}>
-                                  <TextField
-                                    fullWidth
-                                    variant="outlined"
-                                    name="title"
-                                    type="text"
-                                    size="small"
-                                    value={orderData.title || ''}
-                                    onChange={handleChanges}
-                                  />
-                                </Grid>
-                              </Grid>
-                              <Grid container className={classes.gridItemInfo} alignItems="center">
-                                <Grid item lg={4} md={4} xs={4}>
-                                  <span className={classes.tabItemLabelField}>Mã đơn hàng:</span>
-                                </Grid>
-                                <Grid item lg={8} md={8} xs={8}>
-                                  <TextField
-                                    fullWidth
-                                    variant="outlined"
-                                    name="order_code"
-                                    type="text"
-                                    size="small"
-                                    value={orderData.order_code || ''}
-                                    onChange={handleChanges}
-                                  />
-                                </Grid>
-                              </Grid>
-                              <Grid container className={classes.gridItemInfo} alignItems="center">
-                                <Grid item lg={4} md={4} xs={4}>
-                                  <span className={classes.tabItemLabelField}>Ngày lập đơn hàng:</span>
-                                </Grid>
-                                <Grid item lg={8} md={8} xs={8}>
-                                  <DatePicker
-                                    date={orderData.order_date}
-                                    onChange={(date) => setOrderData({ ...orderData, order_date: date })}
-                                  />
-                                </Grid>
-                              </Grid>
+                          <Grid container spacing={3} className={classes.gridItemInfo}>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Mã đơn hàng:</span>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="order_code"
+                                type="text"
+                                size="small"
+                                value={orderData.order_code || ''}
+                                onChange={handleChanges}
+                              />
                             </Grid>
-                            <Grid item lg={6} md={6} xs={12}>
-                              <Grid container className={classes.gridItemInfo} alignItems="center">
-                                <Grid item lg={4} md={4} xs={4}>
-                                  <span className={classes.tabItemLabelField}>Cảng đến:</span>
-                                </Grid>
-                                <Grid item lg={8} md={8} xs={8}>
-                                  <TextField
-                                    fullWidth
-                                    variant="outlined"
-                                    name="deliver_address"
-                                    type="text"
-                                    size="small"
-                                    value={orderData.deliver_address || ''}
-                                    onChange={handleChanges}
-                                  />
-                                </Grid>
-                              </Grid>
-                              <Grid container className={classes.gridItemInfo} alignItems="center">
-                                <Grid item lg={4} md={4} xs={4}>
-                                  <span className={classes.tabItemLabelField}>Ngày giao hàng:</span>
-                                </Grid>
-                                <Grid item lg={8} md={8} xs={8}>
-                                  <DatePicker
-                                    date={orderData.expected_deliver_date}
-                                    onChange={(date) => setOrderData({ ...orderData, expected_deliver_date: date })}
-                                  />
-                                </Grid>
-                              </Grid>
-                              <Grid container className={classes.gridItemInfo} alignItems="center">
-                                <Grid item lg={4} md={4} xs={4}>
-                                  <span className={classes.tabItemLabelField}>Trạng thái:</span>
-                                </Grid>
-                                <Grid item lg={8} md={8} xs={8}>
-                                  <TextField
-                                    fullWidth
-                                    name="order_status"
-                                    variant="outlined"
-                                    select
-                                    size="small"
-                                    value={orderData.order_status || ''}
-                                    onChange={handleChanges}
-                                  >
-                                    {statusList?.map((option) => (
-                                      <MenuItem key={option.id} value={option.id}>
-                                        {option.value}
-                                      </MenuItem>
-                                    ))}
-                                  </TextField>
-                                </Grid>
-                              </Grid>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Tên đơn hàng:</span>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="title"
+                                type="text"
+                                size="small"
+                                value={orderData.title || ''}
+                                onChange={handleChanges}
+                              />
+                            </Grid>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Ngày lập đơn hàng:</span>
+                              <DatePicker
+                                date={orderData.order_date}
+                                onChange={(date) => setOrderData({ ...orderData, order_date: date })}
+                              />
+                            </Grid>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Cảng đến:</span>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="deliver_address"
+                                type="text"
+                                size="small"
+                                value={orderData.deliver_address || ''}
+                                onChange={handleChanges}
+                              />
+                            </Grid>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Khách hàng:</span>
+                              <Autocomplete
+                                id="combo-box-demo"
+                                options={customer}
+                                getOptionLabel={(option) => option.value || ''}
+                                fullWidth
+                                size="small"
+                                value={customer?.find((item) => item.id === selectedDocument?.customer_id) || null}
+                                onChange={(event, newValue) => {
+                                  setOrderData({ ...orderData, customer_id: newValue?.id });
+                                }}
+                                renderInput={(params) => <TextField {...params} variant="outlined" />}
+                              />
+                            </Grid>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Ngày giao hàng:</span>
+                              <DatePicker
+                                date={orderData.expected_deliver_date}
+                                onChange={(date) => setOrderData({ ...orderData, expected_deliver_date: date })}
+                              />
+                            </Grid>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Trạng thái:</span>
+                              <TextField
+                                fullWidth
+                                name="status"
+                                variant="outlined"
+                                select
+                                size="small"
+                                value={orderData.status || ''}
+                                onChange={handleChanges}
+                              >
+                                {statusList?.map((option) => (
+                                  <MenuItem key={option.id} value={option.id}>
+                                    {option.value}
+                                  </MenuItem>
+                                ))}
+                              </TextField>
                             </Grid>
                           </Grid>
                         </div>
                       </div>
+                    </Grid>
+                    <Grid item lg={12} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>Sản phẩm</div>
@@ -471,14 +434,14 @@ const OrderModal = () => {
                                   <TableCell align="left">SL cần</TableCell>
                                   {selectedDocument?.id && <TableCell align="left">Đã SX</TableCell>}
                                   <TableCell align="left">Đơn vị</TableCell>
-                                  {selectedDocument?.id && <TableCell align="left">Trạng thái</TableCell>}
+                                  {/* {selectedDocument?.id && <TableCell align="left">Trạng thái</TableCell>} */}
                                   <TableCell align="center">Xoá</TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
                                 {productList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ minWidth: '200px' }}>
+                                    <TableCell align="left" style={{ width: '250px' }}>
                                       <Autocomplete
                                         options={products}
                                         getOptionLabel={(option) => option.product_code || ''}
@@ -495,7 +458,7 @@ const OrderModal = () => {
                                         <span>{row?.product_name}</span>
                                       </Tooltip>
                                     </TableCell>
-                                    <TableCell align="left" style={{ minWidth: '130px' }}>
+                                    <TableCell align="left" style={{ width: '150px' }}>
                                       <TextField
                                         InputProps={{
                                           inputProps: { min: 0 },
@@ -515,7 +478,7 @@ const OrderModal = () => {
                                       </TableCell>
                                     )}
                                     <TableCell align="left">{row.unit_name}</TableCell>
-                                    {selectedDocument?.id && <TableCell align="left">{row.status_display}</TableCell>}
+                                    {/* {selectedDocument?.id && <TableCell align="left">{row.status_display}</TableCell>} */}
                                     <TableCell align="center">
                                       <IconButton onClick={() => handleDeleteProduct(index, row.id)}>
                                         <Delete />
@@ -547,11 +510,7 @@ const OrderModal = () => {
           <DialogActions>
             <Grid container justifyContent="space-between">
               <Grid item>
-                <Button
-                  variant="contained"
-                  style={{ background: 'rgb(70, 81, 105)' }}
-                  onClick={() => handleCloseDialog()}
-                >
+                <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }} onClick={() => handleCloseDialog()}>
                   Đóng
                 </Button>
               </Grid>
