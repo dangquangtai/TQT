@@ -94,6 +94,10 @@ export const apiEndpoints = {
   // Material Part
   get_material_part_list: '/Primary/?FlowAlias=bs_api_factory_get_list_material_part&action=api',
   get_material_part_detail: '/Primary/?FlowAlias=bs_api_factory_get_detail_material_part&action=api',
+  get_material_load_data: '/Primary/?FlowAlias=bs_api_factory_get_load_data_material_part&action=api',
+  create_material_part: '/Primary/?FlowAlias=bs_api_factory_create_material_part&action=api',
+  update_material_part: '/Primary/?FlowAlias=bs_api_factory_update_material_part&action=api',
+
 
   // Product
   get_product_list: '/Primary/?FlowAlias=bs_api_factory_get_list_product&action=api',
@@ -573,6 +577,14 @@ export const view = {
   productionDailyMaterialReceived: {
     detail: {
       save: 'TQT_PRODUCTION_DEFAULT_DAILY_MATERIAL_RECEIVED_SAVE_FORM_BUTTON',
+    },
+  },
+  materialPart: {
+    list: {
+      create: 'TQT_SETTING_DEFAULT_MATERIAL_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_SETTING_DEFAULT_MATERIAL_SAVE_FORM_BUTTON',
     },
   },
 };
