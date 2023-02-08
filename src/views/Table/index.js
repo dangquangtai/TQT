@@ -58,6 +58,7 @@ import { getDetailWorkorOrderRequest } from './../../services/api/Production/ind
 import { getDetailDeliveryMaterial } from '../../services/api/Material/DailyRequisitionMaterial';
 import { getDetailDailyMaterialReceived } from './../../services/api/Production/MaterialReceived';
 import { getDetailDailyMaterialRequisition } from './../../services/api/Production/MaterialRequisition';
+import { getDetailMaterialPart } from '../../services/api/Material/MaterialPart';
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
     if (response.status === 200 && response.data.return === 200) return true;
@@ -184,6 +185,8 @@ export default function GeneralTable(props) {
   const buttonCreateGoodsReceipt = menuButtons.find((button) => button.name === view.goodsReceipt.list.create);
 
   const buttonCreateDailyMaterial = menuButtons.find((button) => button.name === view.dailyDeliveryMateial.list.create);
+  const buttonCreateMaterialPart = menuButtons.find((button) => button.name === view.materialPart.list.create);
+
 
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -519,6 +522,11 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, dailyWMaterialRequisitionDocument: true });
         break;
+      case 'materialPart':
+        detailDocument = await getDetailMaterialPart(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, materialPartDocument: true });
+        break;
       default:
         break;
     }
@@ -581,6 +589,9 @@ export default function GeneralTable(props) {
         break;
       case 'deliveryMaterial':
         dispatch({ type: FLOATING_MENU_CHANGE, dailyMaterialRequitisionDocument: true });
+        break;
+      case 'materialPart':
+        dispatch({ type: FLOATING_MENU_CHANGE, materialPartDocument: true });
         break;
       default:
         break;
@@ -785,7 +796,7 @@ export default function GeneralTable(props) {
     });
   };
 
-  const clickSuccess = () => {};
+  const clickSuccess = () => { };
 
   const getColor = (status) => {
     if (status.includes('DRAFT')) return '#425466';
@@ -855,6 +866,7 @@ export default function GeneralTable(props) {
     buttonCreateGoodsIssue,
     buttonCreateGoodsReceipt,
     buttonCreateDailyMaterial,
+    buttonCreateMaterialPart
   };
 
   return (
@@ -900,7 +912,7 @@ export default function GeneralTable(props) {
                       }
                       aria-labelledby="tableTitle"
                       size={'medium'}
-                      // aria-label="enhanced table"
+                    // aria-label="enhanced table"
                     >
                       <EnhancedTableHead
                         classes={classes}
