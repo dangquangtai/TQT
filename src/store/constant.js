@@ -149,7 +149,9 @@ export const apiEndpoints = {
   update_supplier: '/Primary/?FlowAlias=bs_api_factory_update_supplier&action=api',
   active_supplier: '/Primary/?FlowAlias=bs_api_factory_active_supplier&action=api',
   get_order_by_work_order_id: '/Primary/?FlowAlias=bs_api_factory_get_order_detail_by_work_order_id&action=api',
+  get_supplier_list_by_work_order: '/Primary/?FlowAlias=bs_api_factory_get_supplier_list_by_work_order_id&action=api',
   get_active_supplier_list: '/Primary/?FlowAlias=bs_api_factory_workorder_get_supplier_list_by_company_code&action=api',
+
   // Material Warehouse Category
   get_warehouse_category_list: '/Primary/?FlowAlias=bs_api_factory_get_material_warehouse_category_list&action=api',
   get_warehouse_category_detail: '/Primary/?FlowAlias=bs_api_factory_get_material_warehouse_category_detail&action=api',
@@ -230,7 +232,6 @@ export const apiEndpoints = {
   get_goods_receipt_data: '/Primary/?FlowAlias=bs_api_factory_get_goods_receipt_data&action=api',
   delete_goods_receipt_detail: '/Primary/?FlowAlias=bs_api_factory_delete_goods_receipt_detail&action=api',
 
-
   //Production
   get_production_daily_request_list: '/Primary/?FlowAlias=bs_api_workorder_get_production_daily_request_list&action=api',
   get_production_daily_reuqest_detial: '/Primary/?FlowAlias=bs_api_workorder_get_production_daily_request_detail_id&action=api',
@@ -262,6 +263,8 @@ export const apiEndpoints = {
   update_production_daily_material_received: '/Primary/?FlowAlias=bs_api_factory_update_production_daily_material_received&action=api',
   get_production_daily_material_received_data: '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_data&action=api',
   get_material_inventory_by_part_id: '/Primary/?FlowAlias=bs_api_factory_get_inventory_by_part_id&action=api',
+
+  get_material_by_work_order: '/Primary/?FlowAlias=bs_api_factory_get_material_by_work_order&action=api',
 };
 
 export const apiDomain = 'https://upload.truebpm.vn';
@@ -360,7 +363,6 @@ export const productionDailyMaterialRequisitionActions = {
 };
 export const productionDailyMaterialReceivedActions = {
   list_production_daily_material_received: 'TQT_PRODUCTION_DEFAULT_OPEN_DAILY_MATERIAL_RECEIVED_LIST',
-
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';

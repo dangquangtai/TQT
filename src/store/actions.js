@@ -26,3 +26,7 @@ export const ORDER_LIST = '@order/ORDER_LIST';
 export const ORDER_CHANGE = '@order/ORDER_CHANGE';
 export const MATERIAL_CHANGE = '@order/MATERIAL_CHANGE';
 export const ORDER_DETAIL_CHANGE = '@order/ORDER_DETAIL_CHANGE';
+export const ADD_MATERIAL = '@order/ADD_MATERIAL';
+export const REMOVE_MATERIAL = '@order/REMOVE_MATERIAL';
+export const SET_MATERIAL = '@order/SET_MATERIAL';
+export const CLOSE_MODAL_MATERIAL = '@order/CLOSE_MODAL_MATERIAL';

@@ -175,26 +175,26 @@ export const createWorkOrderRequest = (data) => {
     return '';
   });
 };
-export const getProductWHSList= () => {
-  return axiosServices.post(apiEndpoints.get_productwhs_list_by_company,{}).then((response) => {
+export const getProductWHSList = () => {
+  return axiosServices.post(apiEndpoints.get_productwhs_list_by_company, {}).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
-      return response.data.list ;
+      return response.data.list;
     }
     return [];
   });
 };
-export const getMaterialWHSList= () => {
-  return axiosServices.post(apiEndpoints.get_materialwhs_list_by_company,{}).then((response) => {
+export const getMaterialWHSList = () => {
+  return axiosServices.post(apiEndpoints.get_materialwhs_list_by_company, {}).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
-      return response.data.list ;
+      return response.data.list;
     }
     return [];
   });
 };
-export const getWorkShopList= () => {
-  return axiosServices.post(apiEndpoints.get_workshop_list_by_company,{}).then((response) => {
+export const getWorkShopList = () => {
+  return axiosServices.post(apiEndpoints.get_workshop_list_by_company, {}).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
-      return response.data.list ;
+      return response.data.list;
     }
     return [];
   });
@@ -216,6 +216,16 @@ export const removeRequisitionDaily = (id) => {
     return false;
   });
 };
+
+export const getMaterialDailyRequisitionList = (supplier_id) => {
+  return axiosServices.post(apiEndpoints.get_material_by_work_order, { supplier_id }).then((response) => {
+  if (response.status === 200 && response.data.return === 200) {
+      return response.data.list;
+    }
+    return [];
+  });
+};
+
 export const getSupplierList = () => {
   return axiosServices.post(apiEndpoints.get_active_supplier_list, {  }).then((response) => {
     if (response.status === 200 && response.data.return === 200) {

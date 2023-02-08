@@ -503,6 +503,7 @@ export default function GeneralTable(props) {
         detailDocument = await getDetailWorkorOrderRequest(selectedDocument.id, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
+        break;
       case 'deliveryMaterial':
         detailDocument = await getDetailDeliveryMaterial(selectedDocument.id, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
@@ -785,6 +786,13 @@ export default function GeneralTable(props) {
   };
 
   const clickSuccess = () => {};
+
+  const getColor = (status) => {
+    if (status.includes('DRAFT')) return '#425466';
+    if (status.includes('INPROGRESS')) return '#FF9400';
+    if (status.includes('COMPLETED')) return '#0FAD00';
+    return '#425466';
+  };
 
   const toolbarProps = {
     categories,
@@ -1190,7 +1198,8 @@ export default function GeneralTable(props) {
                               )}
                               {displayOptions.status__display && (
                                 <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
-                                  {row.status_display}
+                                  <Chip label={row.status_display} style={{ backgroundColor: getColor(row?.status), color: 'white' }} />
+                                  {/* {row.status_display} */}
                                 </TableCell>
                               )}
                               {displayOptions.order_title && (

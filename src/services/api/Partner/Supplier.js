@@ -48,3 +48,17 @@ export const getAllSupplier = (page = 1, no_item_per_page = 1000, search_text = 
       console.log(error);
     });
 };
+
+export const getSupplierListByWorkOrder = () => {
+  return axiosServices
+    .post(apiEndpoints.get_supplier_list_by_work_order, {})
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return response.data.list;
+      }
+      return [];
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
