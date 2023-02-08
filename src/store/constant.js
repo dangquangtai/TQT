@@ -150,6 +150,7 @@ export const apiEndpoints = {
   active_supplier: '/Primary/?FlowAlias=bs_api_factory_active_supplier&action=api',
   get_order_by_work_order_id: '/Primary/?FlowAlias=bs_api_factory_get_order_detail_by_work_order_id&action=api',
   get_supplier_list_by_work_order: '/Primary/?FlowAlias=bs_api_factory_get_supplier_list_by_work_order_id&action=api',
+  get_active_supplier_list: '/Primary/?FlowAlias=bs_api_factory_workorder_get_supplier_list_by_company_code&action=api',
 
   // Material Warehouse Category
   get_warehouse_category_list: '/Primary/?FlowAlias=bs_api_factory_get_material_warehouse_category_list&action=api',
