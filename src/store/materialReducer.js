@@ -2,7 +2,7 @@ import * as actionTypes from './actions';
 
 export const initialState = {
   material: null,
-  materialList: [],
+  materialBuy: [],
 };
 
 const materialReducer = (state = initialState, action) => {
@@ -11,13 +11,23 @@ const materialReducer = (state = initialState, action) => {
       return {
         ...state,
         material: action.payload,
-        materialList: [...state.materialList, action.payload],
+        materialBuy: [...state.materialBuy, action.payload],
+      };
+    case actionTypes.REMOVE_MATERIAL:
+      return {
+        ...state,
+        materialBuy: state.materialBuy.filter((item) => item.part_id !== action.payload),
+      };
+    case actionTypes.SET_MATERIAL:
+      return {
+        ...state,
+        materialBuy: action.payload,
       };
     case actionTypes.CLOSE_MODAL_MATERIAL:
       return {
         ...state,
         material: null,
-        materialList: [],
+        materialBuy: [],
       };
     default:
       return state;

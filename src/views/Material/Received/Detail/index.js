@@ -226,6 +226,7 @@ const ReceivedMaterialModal = () => {
       category_name: newItem?.category_name || '',
       unit_id: newItem?.unit_id || '',
       unit_name: newItem?.unit_name || '',
+      quantity_in_piece: newItem?.quantity_in_piece || 0,
     };
     newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
     if (
@@ -320,7 +321,13 @@ const ReceivedMaterialModal = () => {
 
   return (
     <React.Fragment>
-      <FirebaseUpload open={dialogUpload.open || false} onSuccess={setURL} onClose={handleCloseDiaLog} type="image" folder="receivedMaterial" />
+      <FirebaseUpload
+        open={dialogUpload.open || false}
+        onSuccess={setURL}
+        onClose={handleCloseDiaLog}
+        type="image"
+        folder="receivedMaterial"
+      />
       <Grid container>
         <Dialog
           open={openDialog || false}
@@ -575,18 +582,7 @@ const ReceivedMaterialModal = () => {
                                       </Tooltip>
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
-                                      <TextField
-                                        InputProps={{
-                                          inputProps: { min: 0 },
-                                        }}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="quantity_in_piece"
-                                        type="number"
-                                        size="small"
-                                        value={row?.quantity_in_piece || ''}
-                                        onChange={(e) => handleChangeMaterial(index, e)}
-                                      />
+                                      {row.quantity_in_piece}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '5%' }}>
                                       {row.unit_name}

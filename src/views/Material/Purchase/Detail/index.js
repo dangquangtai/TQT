@@ -1,5 +1,4 @@
 import {
-  Snackbar,
   Box,
   Button,
   Dialog,
@@ -26,18 +25,22 @@ import {
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { format as formatDate } from 'date-fns';
 import { AccountCircleOutlined as AccountCircleOutlinedIcon, Delete, Today as TodayIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
-import { AddCircleOutline } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import useView from './../../../../hooks/useView';
 import useConfirmPopup from './../../../../hooks/useConfirmPopup';
 import { view } from './../../../../store/constant';
-import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CONFIRM_CHANGE } from './../../../../store/actions';
+import {
+  FLOATING_MENU_CHANGE,
+  SNACKBAR_OPEN,
+  DOCUMENT_CHANGE,
+  CONFIRM_CHANGE,
+  CLOSE_MODAL_MATERIAL,
+  SET_MATERIAL,
+} from './../../../../store/actions';
 import FirebaseUpload from './../../../FloatingMenu/FirebaseUpload/index';
 import DatePicker from './../../../../component/DatePicker/index';
-import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
 import {
   createPurchaseMaterial,
   deletePurchaseMaterialDetail,
@@ -78,8 +81,7 @@ const PurchaseMaterialModal = () => {
   const dispatch = useDispatch();
   const { form_buttons: formButtons } = useView();
   const { setConfirmPopup } = useConfirmPopup();
-  const { materials } = useSelector((state) => state.metadata);
-  const { material } = useSelector((state) => state.material);
+  const { materialBuy } = useSelector((state) => state.material);
   const saveButton = formButtons.find((button) => button.name === view.purchaseMaterial.detail.save);
   const { purchaseMaterialDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
@@ -138,6 +140,7 @@ const PurchaseMaterialModal = () => {
       type: type,
     });
   };
+
   const handleCloseDiaLog = () => {
     setDialogUpload({
       open: false,
@@ -168,48 +171,6 @@ const PurchaseMaterialModal = () => {
   const handleChanges = (e) => {
     const { name, value } = e.target;
     setPurchaseMaterialData({ ...purchaseMaterialData, [name]: value });
-  };
-
-  const handleAddMaterial = () => {
-    if (!purchaseMaterialData.supplier_id) {
-      handleOpenSnackbar('error', 'Vui lòng chọn nhà cung cấp!');
-      return;
-    }
-    setMaterialList([
-      ...materialList,
-      {
-        requisition_id: selectedDocument?.id || '',
-        id: '',
-        part_id: '',
-        part_name: '',
-        part_code: '',
-        supplier_id: '',
-        supplier_name: '',
-        category_id: '',
-        category_name: '',
-        status: '',
-        unit_id: '',
-        unit_name: '',
-        quantity_in_piece: 0,
-      },
-    ]);
-  };
-
-  const handleChangeMaterialCode = (index, newItem) => {
-    const newMaterialList = [...materialList];
-    const newMaterial = {
-      part_id: newItem?.id || '',
-      part_code: newItem?.part_code || '',
-      part_name: newItem?.title || '',
-      category_id: newItem?.category_id || '',
-      category_name: newItem?.category_name || '',
-      supplier_id: purchaseMaterialData?.supplier_id || '',
-      supplier_name: purchaseMaterialData?.supplier_name || '',
-      unit_id: newItem?.unit_id || '',
-      unit_name: newItem?.unit_name || '',
-    };
-    newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
-    setMaterialList(newMaterialList);
   };
 
   const handleChangeMaterial = (index, e) => {
@@ -247,6 +208,11 @@ const PurchaseMaterialModal = () => {
     newWindow.current = popupWindow(`/dashboard/material/${purchaseMaterialData.supplier_id}`, 'Vật tư thiếu');
   };
 
+  const handleChangeSupplier = (e) => {
+    setMaterialList([]);
+    dispatch({ type: CLOSE_MODAL_MATERIAL });
+  };
+
   useEffect(() => {
     if (!selectedDocument) return;
     setPurchaseMaterialData({
@@ -254,6 +220,7 @@ const PurchaseMaterialModal = () => {
       ...selectedDocument,
     });
     setMaterialList(selectedDocument?.order_detail);
+    dispatch({ type: SET_MATERIAL, payload: selectedDocument?.order_detail });
   }, [selectedDocument]);
 
   useEffect(() => {
@@ -267,21 +234,15 @@ const PurchaseMaterialModal = () => {
   }, []);
 
   useEffect(() => {
-    if (!material) return;
-    if (materialList.some((item) => item.part_id === material.part_id)) {
-      handleOpenSnackbar('error', 'Vật tư đã tồn tại!');
-      return;
-    }
-    setMaterialList([
-      ...materialList,
-      {
-        ...material,
+    const newMaterial = materialBuy.map((item) => {
+      return {
+        ...item,
         requisition_id: selectedDocument?.id || '',
         id: '',
-        // quantity_in_piece: 0,
-      },
-    ]);
-  }, [material]);
+      };
+    });
+    setMaterialList(newMaterial);
+  }, [materialBuy]);
 
   return (
     <React.Fragment>
@@ -419,6 +380,7 @@ const PurchaseMaterialModal = () => {
                                     supplier_id: newValue?.id,
                                     supplier_name: newValue?.title,
                                   });
+                                  handleChangeSupplier();
                                 }}
                                 renderInput={(params) => <TextField {...params} variant="outlined" />}
                               />
@@ -496,18 +458,7 @@ const PurchaseMaterialModal = () => {
                                       </Tooltip>
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
-                                      <TextField
-                                        InputProps={{
-                                          inputProps: { min: 0 },
-                                        }}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="quantity_in_piece"
-                                        type="number"
-                                        size="small"
-                                        value={row?.quantity_in_piece || ''}
-                                        onChange={(e) => handleChangeMaterial(index, e)}
-                                      />
+                                      {row.quantity_in_piece}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       {row.unit_name}

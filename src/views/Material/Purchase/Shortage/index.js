@@ -13,20 +13,18 @@ import {
   TableContainer,
   Table,
   Paper,
-  IconButton,
-  Tooltip,
+  Checkbox,
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import useStyles from './../../../../utils/classes';
-import { ADD_MATERIAL, CLOSE_MODAL_MATERIAL } from './../../../../store/actions';
+import { ADD_MATERIAL, CLOSE_MODAL_MATERIAL, REMOVE_MATERIAL } from './../../../../store/actions';
 import { useParams } from 'react-router';
 import { getMaterialDailyRequisitionList } from '../../../../services/api/Workorder/index.js';
-import { AddCircleOutlineOutlined } from '@material-ui/icons';
 
 const ShortageModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { materialList } = useSelector((state) => state.material);
+  const { materialBuy } = useSelector((state) => state.material);
   const { supplierID } = useParams();
   const [materials, setMaterials] = useState([]);
 
@@ -37,8 +35,11 @@ const ShortageModal = () => {
     window.close();
   };
 
-  const handleAddMaterial = (material) => {
-    dispatch({ type: ADD_MATERIAL, payload: material });
+  const handleChangeMaterial = (material, e) => {
+    if (e.target.checked) dispatch({ type: ADD_MATERIAL, payload: material });
+    else {
+      dispatch({ type: REMOVE_MATERIAL, payload: material?.part_id });
+    }
   };
 
   const getMaterial = async (supplierID) => {
@@ -85,29 +86,29 @@ const ShortageModal = () => {
                                 <Table size="small" stickyHeader aria-label="sticky table">
                                   <TableHead>
                                     <TableRow>
+                                      <TableCell align="left">Chọn</TableCell>
                                       <TableCell align="left">Mã vật tư</TableCell>
                                       <TableCell align="left">Tên vật tư</TableCell>
                                       <TableCell align="left">Kho</TableCell>
                                       <TableCell align="left">Số lượng thiếu</TableCell>
                                       <TableCell align="left">Đơn vị</TableCell>
-                                      <TableCell align="left">Mua</TableCell>
                                     </TableRow>
                                   </TableHead>
                                   <TableBody>
                                     {materials?.map((material) => (
                                       <TableRow key={material.id}>
+                                        <TableCell align="left">
+                                          <Checkbox
+                                            checked={materialBuy.some((item) => item.part_id === material.part_id)}
+                                            onChange={(e) => handleChangeMaterial(material, e)}
+                                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                                          />
+                                        </TableCell>
                                         <TableCell align="left">{material.part_code}</TableCell>
                                         <TableCell align="left">{material.part_name}</TableCell>
                                         <TableCell align="left">{material.warehouse_name}</TableCell>
                                         <TableCell align="left">{material.quantity_in_piece}</TableCell>
                                         <TableCell align="left">{material.unit_name}</TableCell>
-                                        <TableCell align="left">
-                                          <Tooltip title="Mua vật tư">
-                                            <IconButton onClick={() => handleAddMaterial(material)}>
-                                              <AddCircleOutlineOutlined />
-                                            </IconButton>
-                                          </Tooltip>
-                                        </TableCell>
                                       </TableRow>
                                     ))}
                                   </TableBody>

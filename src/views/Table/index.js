@@ -788,8 +788,8 @@ export default function GeneralTable(props) {
   const clickSuccess = () => {};
 
   const getColor = (status) => {
-    if (status.includes('DRAFT')) return '#FF9400';
-    if (status.includes('PENDING')) return '#6200A5';
+    if (status.includes('DRAFT')) return '#425466';
+    if (status.includes('INPROGRESS')) return '#FF9400';
     if (status.includes('COMPLETED')) return '#0FAD00';
     return '#425466';
   };
