@@ -19,6 +19,7 @@ export const initialState = {
   materialInventoryCheckDocument: false,
   purchaseMaterialDocument: false,
   dailyMaterialDocument: false,
+  workOrderDocument: false,
 };
 
 const floatingMenuReducer = (state = initialState, action) => {
@@ -53,6 +54,7 @@ const floatingMenuReducer = (state = initialState, action) => {
         dailyMaterialReceivedDocument: action.dailyMaterialReceivedDocument,
         dailyWMaterialRequisitionDocument: action.dailyWMaterialRequisitionDocument,
         materialPartDocument: action.materialPartDocument,
+        workOrderDocument: action.workOrderDocument
       };
     default:
       return state;

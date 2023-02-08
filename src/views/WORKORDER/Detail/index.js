@@ -86,7 +86,7 @@ const WorkorderModal = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [disableComponent, setDisable] = useState(false);
   const { selectedDocument } = useSelector((state) => state.document);
-  const { detailDocument: openDialog } = useSelector((state) => state.floatingMenu);
+  const { workOrderDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { order } = useSelector((state) => state.order);
   const { order: orderRedux } = useSelector((state) => state.order);
   const [checkChangeData, setCheckChangeData] = useState({
@@ -255,7 +255,7 @@ const WorkorderModal = () => {
     dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
     dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null });
     dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'workorder' });
-    dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: false, documentType: 'workorder' });
+    dispatch({ type: FLOATING_MENU_CHANGE, workOrderDocument: false, documentType: 'workorder' });
   };
 
   const [snackbarStatus, setSnackbarStatus] = useState({
@@ -710,18 +710,17 @@ const WorkorderModal = () => {
     });
     var date = [];
     if (to_date !== '' && from_date !== '') {
-
       for (var d = new Date(from_date); d <= new Date(to_date); d.setDate(d.getDate() + 1)) {
-        let Date =  d.getDate();
-        if (Date<10) Date='0'+Date
-        const day = d.getFullYear() + '-' + month[d.getMonth()] + '-' +Date;
+        let dateFormat =  d.getDate();
+        if (dateFormat < 10) dateFormat='0'+dateFormat;
+        const day = d.getFullYear() + '-' + month[d.getMonth()] + '-' +dateFormat;
         if (!selectedDocument) {
           date = [
             ...date,
             {
               id: '',
               work_order_date: day,
-              percent: 0 / 1,
+              percent: (0 / 1).toFixed(1),
               is_enough: false,
               color_check: 'yellow'
             },
@@ -805,10 +804,9 @@ const WorkorderModal = () => {
     let date = [];
     if (to_date !== '' && from_date !== '') {
       for (var d = new Date(from_date); d <= new Date(to_date); d.setDate(d.getDate() + 1)) {
-        let Date =  d.getDate();
-        if (Date<10) Date='0'+Date
-        const day = d.getFullYear() + '-' + month[d.getMonth()] + '-' +Date;
-  
+        let dateFormat =  d.getDate();
+        if (dateFormat<10) dateFormat='0'+dateFormat;
+        const day = d.getFullYear() + '-' + month[d.getMonth()] + '-' +dateFormat;
         let data = productionDailyRequestList.find((x) => x.work_order_date === day);
         if (!data) {
           date = [
@@ -816,7 +814,7 @@ const WorkorderModal = () => {
             {
               work_order_date: day,
               id: '',
-              percent: 0 / 1,
+              percent: (0 / 1).toFixed(1),
               color_check: 'yellow'
             },
           ];
@@ -950,7 +948,8 @@ const WorkorderModal = () => {
   useEffect(() => {
     handleSetProduct();
     if (!selectedDocument) return
-    popupWindow(`/dashboard/workorder/order-list`, `Mục tiêu sản xuất`)
+    if (openDialog===false) return
+        popupWindow(`/dashboard/workorder/order-list`, `Mục tiêu sản xuất`)
   }, [selectedDocument]);
 
   useEffect(() => {
@@ -1206,7 +1205,8 @@ const WorkorderModal = () => {
                                               <span>
                                                 {weekday[new Date(item.work_order_date).getDay()]}
                                                 <br />
-                                                {new Date(item.work_order_date).getDate() +
+                                                {(new Date(item.work_order_date).getDate() >= 10 ? new Date(item.work_order_date).getDate()
+                                                :'0'+ new Date(item.work_order_date).getDate()) +
                                                   '/' +
                                                   month[new Date(item.work_order_date).getMonth()]}
                                               </span>
