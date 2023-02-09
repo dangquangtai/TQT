@@ -38,7 +38,6 @@ const OrderModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { order: orderRedux } = useSelector((state) => state.order);
-
   const [order, setOrder] = useState({
     id: '',
     value: '',
@@ -153,19 +152,19 @@ const OrderModal = () => {
     handleOrderChangeSelected(value)
   }, [orderList]);
   useEffect(() => {
+
+    if (orderRedux?.close) {
+      handleClose()
+    }
     if (!orderRedux.orderDetail) {
       if (orderRedux?.change) {
-
         var orderInList = orderList.find((x) => x.id === orderRedux.id)
         if (!orderInList) return
-
         handleOrderChangeSelected(orderInList)
       }
       return;
     }
     setOrderDetail(orderRedux.orderDetail)
-
-
   }, [orderRedux]);
 
   return (
@@ -308,7 +307,7 @@ const OrderModal = () => {
                                         <TableCell align="left" style={{ maxWidth: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                           <Tooltip title={item.product_name}>
                                             <span>
-                                            {item.product_name}
+                                              {item.product_name}
                                             </span>
                                           </Tooltip>
                                         </TableCell>
