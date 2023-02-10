@@ -74,6 +74,8 @@ export default function AlertDialogSlide() {
         quantity: orderRedux.workorderDetail.part_list[indexColor].Quantity_In_Piece,
         line: indexColor,
         is_disable: false,
+        status_display: data.Quantity_In_Piece===0? 'Đặt mua': 'Đủ',
+        
       };
       newProductList[index] = { ...newProductList[index], ...newProduct };
       let totalCa = total - newProductList[index].quantity_in_wh;
