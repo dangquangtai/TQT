@@ -934,6 +934,7 @@ const WorkorderModal = () => {
   }, [selectedDocument]);
   useEffect(()=>{
       if (openDialog===false) return
+      if (!selectedDocument) return
         popupWindow(`/dashboard/workorder/order-list`, `Mục tiêu sản xuất`)
   },[openDialog])
   useEffect(() => {
