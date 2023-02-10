@@ -37,7 +37,7 @@ import {
   productInventoryActions,
   productionDailyMaterialReceivedActions,
   productionDailyMaterialRequisitionActions,
-
+  materialRequisitionActions,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
 import { Redirect } from 'react-router-dom';
@@ -63,12 +63,12 @@ import WorkshopWrapper from './../../Setting/Workshop/index';
 import ProductWarehouseWrapper from './../../Product/Warehouse/index';
 import GoodsIssueWrapper from './../../Product/GoodsIssue/index';
 import GoodsReceiptWrapper from './../../Product/GoodsReceipt/index';
-import ProductionWrapper from './../../Production/index'
+import ProductionWrapper from './../../Production/index';
 import DeliveryMaterialWrapper from '../../Material/DailyMaterialRequisition';
 import ProductInventoryWrapper from './../../Product/Inventory/index';
 import DailyMaterialReceivedWrapper from './../../Production/DailyMaterialReceived/index';
 import DailyMaterialRequisitionWrapper from './../../Production/DailyMaterialRequisition/index';
-
+import MaterialRequisitionWrapper from './../../Material/Requisition/index';
 
 const Default = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
@@ -104,8 +104,7 @@ const Default = () => {
   const availableProductionDailyMaterialReceivedEndpoint = Object.values(productionDailyMaterialReceivedActions);
   const availableProductionDailyMaterialRequisitionEndpoint = Object.values(productionDailyMaterialRequisitionActions);
   const availableDeliveryMaterialEndpoint = Object.values(dailyDeliveryMateialActions);
-
-
+  const availableMaterialRequisitionEndpoint = Object.values(materialRequisitionActions);
 
   if (!selectedApp?.id) {
     return <Redirect to="/dashboard/app" />;
@@ -141,12 +140,12 @@ const Default = () => {
           {availableProductWarehouseEndpoint.includes(selectedFolder?.action) && <ProductWarehouseWrapper />}
           {availableGoodsIssueEndpoint.includes(selectedFolder?.action) && <GoodsIssueWrapper />}
           {availableGoodsReceiptEndpoint.includes(selectedFolder?.action) && <GoodsReceiptWrapper />}
-          {availableProductionEndpoint.includes(selectedFolder?.action) && <ProductionWrapper/>}
+          {availableProductionEndpoint.includes(selectedFolder?.action) && <ProductionWrapper />}
           {availableDeliveryMaterialEndpoint.includes(selectedFolder?.action) && <DeliveryMaterialWrapper />}
           {availableProductInventoryEndpoint.includes(selectedFolder?.action) && <ProductInventoryWrapper />}
           {availableProductionDailyMaterialReceivedEndpoint.includes(selectedFolder?.action) && <DailyMaterialReceivedWrapper />}
           {availableProductionDailyMaterialRequisitionEndpoint.includes(selectedFolder?.action) && <DailyMaterialRequisitionWrapper />}
-
+          {availableMaterialRequisitionEndpoint.includes(selectedFolder?.action) && <MaterialRequisitionWrapper />}
         </Grid>
       )}
     </Grid>

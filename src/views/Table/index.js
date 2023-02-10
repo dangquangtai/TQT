@@ -144,16 +144,13 @@ export default function GeneralTable(props) {
   }, [tableColumns, selectedFolder]);
 
   const buttonAccountCreate = menuButtons.find((button) => button.name === view.user.list.create);
-
   const buttonDeptCreate = menuButtons.find((button) => button.name === view.department.list.create);
   const buttonDeptUpdate = menuButtons.find((button) => button.name === view.department.list.update);
   const buttonDeptAddUser = menuButtons.find((button) => button.name === view.department.list.adduser);
   const buttonDeptRemoveUser = menuButtons.find((button) => button.name === view.department.list.removeaccount);
   const buttonSyncDepartment = menuButtons.find((button) => button.name === view.department.list.syncDept);
   const buttondeactiveDepartment = menuButtons.find((button) => button.name === view.department.list.deactive);
-
   const buttonCreateRole = menuButtons.find((button) => button.name === view.role.list.create);
-
   const buttonCreateProcessRole = menuButtons.find((button) => button.name === view.processrole.list.create);
   const buttonUpdateProcessRole = menuButtons.find((button) => button.name === view.processrole.list.update);
   const buttonUpdateDeptRole = menuButtons.find((button) => button.name === view.processrole.list.update_dept_role);
@@ -162,7 +159,6 @@ export default function GeneralTable(props) {
   const buttonAddDeptRole = menuButtons.find((button) => button.name === view.processrole.list.adddept);
   const buttonAddAccountRole = menuButtons.find((button) => button.name === view.processrole.list.adduser);
   const buttonSyncRole = menuButtons.find((button) => button.name === view.processrole.list.syncRole);
-
   const buttonCreateMaterialCategory = menuButtons.find((button) => button.name === view.materialCategory.list.create);
   const buttonCreateSupplierCategory = menuButtons.find((button) => button.name === view.supplierCategory.list.create);
   const buttonCreateProductCategory = menuButtons.find((button) => button.name === view.productCategory.list.create);
@@ -170,23 +166,19 @@ export default function GeneralTable(props) {
   const buttonCreateWarehouseCategory = menuButtons.find((button) => button.name === view.warehouseCategory.list.create);
   const buttonCreateOrder = menuButtons.find((button) => button.name === view.order.list.create);
   const buttonCreateWorkorder = menuButtons.find((button) => button.name === view.workorder.list.create);
-
   const buttonCreateCustomer = menuButtons.find((button) => button.name === view.customer.list.create);
   const buttonCreateSupplier = menuButtons.find((button) => button.name === view.supplier.list.create);
   const buttonCreateInventoryCheck = menuButtons.find((button) => button.name === view.materialInventoryCheck.list.create);
   const buttonCreatePurchaseMaterial = menuButtons.find((button) => button.name === view.purchaseMaterial.list.create);
   const buttonCreateReceivedMaterial = menuButtons.find((button) => button.name === view.receivedMaterial.list.create);
-
   const buttonCreateMaterialWarehouse = menuButtons.find((button) => button.name === view.warehouse.list.create);
   const buttonCreateWorkshop = menuButtons.find((button) => button.name === view.workshop.list.create);
   const buttonCreateProductWarehouse = menuButtons.find((button) => button.name === view.productWarehouse.list.create);
-
   const buttonCreateGoodsIssue = menuButtons.find((button) => button.name === view.goodsIssue.list.create);
   const buttonCreateGoodsReceipt = menuButtons.find((button) => button.name === view.goodsReceipt.list.create);
-
   const buttonCreateDailyMaterial = menuButtons.find((button) => button.name === view.dailyDeliveryMateial.list.create);
   const buttonCreateMaterialPart = menuButtons.find((button) => button.name === view.materialPart.list.create);
-
+  const buttonCreateMaterialRequisition = menuButtons.find((button) => button.name === view.materialRequisition.list.create);
 
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -527,6 +519,11 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, materialPartDocument: true });
         break;
+      case 'materialRequisition':
+        detailDocument = await getDetailPurchaseMaterial(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, materialRequisitionDocument: true });
+        break;
       default:
         break;
     }
@@ -592,6 +589,9 @@ export default function GeneralTable(props) {
         break;
       case 'materialPart':
         dispatch({ type: FLOATING_MENU_CHANGE, materialPartDocument: true });
+        break;
+      case 'materialRequisition':
+        dispatch({ type: FLOATING_MENU_CHANGE, materialRequisitionDocument: true });
         break;
       default:
         break;
@@ -796,7 +796,7 @@ export default function GeneralTable(props) {
     });
   };
 
-  const clickSuccess = () => { };
+  const clickSuccess = () => {};
 
   const getColor = (status) => {
     if (status?.includes('DRAFT')) return '#425466';
@@ -866,7 +866,8 @@ export default function GeneralTable(props) {
     buttonCreateGoodsIssue,
     buttonCreateGoodsReceipt,
     buttonCreateDailyMaterial,
-    buttonCreateMaterialPart
+    buttonCreateMaterialPart,
+    buttonCreateMaterialRequisition,
   };
 
   return (
@@ -912,7 +913,7 @@ export default function GeneralTable(props) {
                       }
                       aria-labelledby="tableTitle"
                       size={'medium'}
-                    // aria-label="enhanced table"
+                      // aria-label="enhanced table"
                     >
                       <EnhancedTableHead
                         classes={classes}

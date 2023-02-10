@@ -1,4 +1,5 @@
 import {
+  Snackbar,
   Box,
   Button,
   Dialog,
@@ -25,30 +26,24 @@ import {
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { format as formatDate } from 'date-fns';
 import { AccountCircleOutlined as AccountCircleOutlinedIcon, Delete, Today as TodayIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
+import { AddCircleOutline } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import useView from './../../../../hooks/useView';
 import useConfirmPopup from './../../../../hooks/useConfirmPopup';
 import { view } from './../../../../store/constant';
-import {
-  FLOATING_MENU_CHANGE,
-  SNACKBAR_OPEN,
-  DOCUMENT_CHANGE,
-  CONFIRM_CHANGE,
-  CLOSE_MODAL_MATERIAL,
-  SET_MATERIAL,
-} from './../../../../store/actions';
+import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CONFIRM_CHANGE } from './../../../../store/actions';
 import FirebaseUpload from './../../../FloatingMenu/FirebaseUpload/index';
 import DatePicker from './../../../../component/DatePicker/index';
+import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
 import {
   createPurchaseMaterial,
-  deletePurchaseMaterialDetail,
-  getPurchaseMaterialStatus,
   updatePurchaseMaterial,
+  getPurchaseMaterialStatus,
+  deletePurchaseMaterialDetail,
 } from './../../../../services/api/Material/Purchase';
-import { popupWindow } from '../../../../utils/helper.js';
-import { getSupplierListByWorkOrder } from './../../../../services/api/Partner/Supplier';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -76,20 +71,20 @@ function a11yProps(index) {
   };
 }
 
-const PurchaseMaterialModal = () => {
+const MaterialRequisitionModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { form_buttons: formButtons } = useView();
   const { setConfirmPopup } = useConfirmPopup();
-  const { materialBuy } = useSelector((state) => state.material);
+  const { materials } = useSelector((state) => state.metadata);
   const saveButton = formButtons.find((button) => button.name === view.purchaseMaterial.detail.save);
-  const { purchaseMaterialDocument: openDialog } = useSelector((state) => state.floatingMenu);
+  const { materialRequisitionDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
 
-  const [purchaseMaterialData, setPurchaseMaterialData] = useState({
+  const [materialRequisitionData, setMaterialRequisitionData] = useState({
     order_date: new Date(),
     delivery_date: new Date(),
-    is_workorer: true,
+    is_workorer: false,
   });
   const [supplier, setSupplier] = useState([]);
   const [statusList, setStatusList] = useState([]);
@@ -105,13 +100,9 @@ const PurchaseMaterialModal = () => {
     setTabIndex(newValue);
   };
 
-  const newWindow = React.useRef(null);
-
   const handleCloseDialog = () => {
     setDocumentToDefault();
-    dispatch({ type: FLOATING_MENU_CHANGE, purchaseMaterialDocument: false });
-    dispatch({ type: CLOSE_MODAL_MATERIAL });
-    if (newWindow.current) newWindow.current.close();
+    dispatch({ type: FLOATING_MENU_CHANGE, materialRequisitionDocument: false });
   };
 
   const handleOpenSnackbar = (type, text) => {
@@ -125,15 +116,15 @@ const PurchaseMaterialModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setPurchaseMaterialData({ order_date: new Date(), delivery_date: new Date(), is_workorer: true });
+    setMaterialRequisitionData({ order_date: new Date(), delivery_date: new Date(), is_workorer: false });
     setMaterialList([]);
     setTabIndex(0);
   };
   const setURL = (image) => {
     if (dialogUpload.type === 'image') {
-      setPurchaseMaterialData({ ...purchaseMaterialData, image_url: image });
+      setMaterialRequisitionData({ ...materialRequisitionData, image_url: image });
     } else if (dialogUpload.type === 'banner') {
-      setPurchaseMaterialData({ ...purchaseMaterialData, banner_url: image });
+      setMaterialRequisitionData({ ...materialRequisitionData, banner_url: image });
     }
   };
 
@@ -143,7 +134,6 @@ const PurchaseMaterialModal = () => {
       type: type,
     });
   };
-
   const handleCloseDiaLog = () => {
     setDialogUpload({
       open: false,
@@ -154,13 +144,13 @@ const PurchaseMaterialModal = () => {
   const handleSubmitForm = async () => {
     try {
       if (selectedDocument?.id) {
-        await updatePurchaseMaterial({ ...purchaseMaterialData, order_detail: materialList });
+        await updatePurchaseMaterial({ ...materialRequisitionData, order_detail: materialList });
         handleOpenSnackbar('success', 'Cập nhật Đơn hàng thành công!');
       } else {
-        await createPurchaseMaterial({ ...purchaseMaterialData, order_detail: materialList });
+        await createPurchaseMaterial({ ...materialRequisitionData, order_detail: materialList });
         handleOpenSnackbar('success', 'Tạo mới Đơn hàng thành công!');
       }
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'purchaseMaterial' });
+      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'materialRequisition' });
       handleCloseDialog();
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
@@ -173,7 +163,49 @@ const PurchaseMaterialModal = () => {
 
   const handleChanges = (e) => {
     const { name, value } = e.target;
-    setPurchaseMaterialData({ ...purchaseMaterialData, [name]: value });
+    setMaterialRequisitionData({ ...materialRequisitionData, [name]: value });
+  };
+
+  const handleAddMaterial = () => {
+    if (!materialRequisitionData.supplier_id) {
+      handleOpenSnackbar('error', 'Vui lòng chọn nhà cung cấp!');
+      return;
+    }
+    setMaterialList([
+      ...materialList,
+      {
+        requisition_id: selectedDocument?.id || '',
+        id: '',
+        part_id: '',
+        part_name: '',
+        part_code: '',
+        supplier_id: '',
+        supplier_name: '',
+        category_id: '',
+        category_name: '',
+        status: '',
+        unit_id: '',
+        unit_name: '',
+        quantity_in_piece: 0,
+      },
+    ]);
+  };
+
+  const handleChangeMaterialCode = (index, newItem) => {
+    const newMaterialList = [...materialList];
+    const newMaterial = {
+      part_id: newItem?.id || '',
+      part_code: newItem?.part_code || '',
+      part_name: newItem?.title || '',
+      category_id: newItem?.category_id || '',
+      category_name: newItem?.category_name || '',
+      supplier_id: materialRequisitionData?.supplier_id || '',
+      supplier_name: materialRequisitionData?.supplier_name || '',
+      unit_id: newItem?.unit_id || '',
+      unit_name: newItem?.unit_name || '',
+    };
+    newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
+    setMaterialList(newMaterialList);
   };
 
   const handleChangeMaterial = (index, e) => {
@@ -203,39 +235,18 @@ const PurchaseMaterialModal = () => {
     }
   };
 
-  const handleOpenShortageDialog = () => {
-    if (!purchaseMaterialData.supplier_id) {
-      handleOpenSnackbar('error', 'Vui lòng chọn nhà cung cấp!');
-      return;
-    }
-    if (!purchaseMaterialData.warehouse_id) {
-      handleOpenSnackbar('error', 'Vui lòng chọn kho!');
-      return;
-    }
-    newWindow.current = popupWindow(
-      `/dashboard/material?supplier=${purchaseMaterialData.supplier_id}&warehouse=${purchaseMaterialData.warehouse_id}`,
-      'Vật tư thiếu'
-    );
-  };
-
-  const handleChangeSupplier = (e) => {
-    setMaterialList([]);
-    dispatch({ type: CLOSE_MODAL_MATERIAL });
-  };
-
   useEffect(() => {
     if (!selectedDocument) return;
-    setPurchaseMaterialData({
-      ...purchaseMaterialData,
+    setMaterialRequisitionData({
+      ...materialRequisitionData,
       ...selectedDocument,
     });
     setMaterialList(selectedDocument?.order_detail);
-    dispatch({ type: SET_MATERIAL, payload: selectedDocument?.order_detail });
   }, [selectedDocument]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const supplier = await getSupplierListByWorkOrder();
+      const supplier = await getAllSupplier();
       setSupplier(supplier);
       const { warehouse_list, status_list } = await getPurchaseMaterialStatus();
       setStatusList(status_list);
@@ -244,17 +255,6 @@ const PurchaseMaterialModal = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const newMaterial = materialBuy.map((item) => {
-      return {
-        ...item,
-        requisition_id: selectedDocument?.id || '',
-        id: '',
-      };
-    });
-    setMaterialList(newMaterial);
-  }, [materialBuy]);
-
   return (
     <React.Fragment>
       <FirebaseUpload
@@ -262,7 +262,7 @@ const PurchaseMaterialModal = () => {
         onSuccess={setURL}
         onClose={handleCloseDiaLog}
         type="image"
-        folder="PurchaseMaterial"
+        folder="MaterialRequisition"
       />
       <Grid container>
         <Dialog
@@ -346,7 +346,7 @@ const PurchaseMaterialModal = () => {
                                 name="order_code"
                                 type="text"
                                 size="small"
-                                value={purchaseMaterialData.order_code || ''}
+                                value={materialRequisitionData.order_code || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
@@ -358,22 +358,22 @@ const PurchaseMaterialModal = () => {
                                 name="title"
                                 type="text"
                                 size="small"
-                                value={purchaseMaterialData.title || ''}
+                                value={materialRequisitionData.title || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
                               <span className={classes.tabItemLabelField}>Ngày lập đơn hàng:</span>
                               <DatePicker
-                                date={purchaseMaterialData.order_date}
-                                onChange={(date) => setPurchaseMaterialData({ ...purchaseMaterialData, order_date: date })}
+                                date={materialRequisitionData.order_date}
+                                onChange={(date) => setMaterialRequisitionData({ ...materialRequisitionData, order_date: date })}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
                               <span className={classes.tabItemLabelField}>Ngày giao hàng:</span>
                               <DatePicker
-                                date={purchaseMaterialData.delivery_date}
-                                onChange={(date) => setPurchaseMaterialData({ ...purchaseMaterialData, delivery_date: date })}
+                                date={materialRequisitionData.delivery_date}
+                                onChange={(date) => setMaterialRequisitionData({ ...materialRequisitionData, delivery_date: date })}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
@@ -384,14 +384,13 @@ const PurchaseMaterialModal = () => {
                                 getOptionLabel={(option) => option.title || ''}
                                 fullWidth
                                 size="small"
-                                value={supplier?.find((item) => item.id === purchaseMaterialData.supplier_id) || null}
+                                value={supplier?.find((item) => item.id === materialRequisitionData.supplier_id) || null}
                                 onChange={(event, newValue) => {
-                                  setPurchaseMaterialData({
-                                    ...purchaseMaterialData,
+                                  setMaterialRequisitionData({
+                                    ...materialRequisitionData,
                                     supplier_id: newValue?.id,
                                     supplier_name: newValue?.title,
                                   });
-                                  handleChangeSupplier();
                                 }}
                                 renderInput={(params) => <TextField {...params} variant="outlined" />}
                               />
@@ -404,7 +403,7 @@ const PurchaseMaterialModal = () => {
                                 variant="outlined"
                                 select
                                 size="small"
-                                value={purchaseMaterialData.warehouse_id || ''}
+                                value={materialRequisitionData.warehouse_id || ''}
                                 onChange={handleChanges}
                               >
                                 {warehouseList?.map((option) => (
@@ -422,7 +421,7 @@ const PurchaseMaterialModal = () => {
                                 variant="outlined"
                                 select
                                 size="small"
-                                value={purchaseMaterialData.status || ''}
+                                value={materialRequisitionData.status || ''}
                                 onChange={handleChanges}
                               >
                                 {statusList?.map((option) => (
@@ -442,7 +441,7 @@ const PurchaseMaterialModal = () => {
                                 name="notes"
                                 type="text"
                                 size="small"
-                                value={purchaseMaterialData.notes || ''}
+                                value={materialRequisitionData.notes || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
@@ -454,11 +453,11 @@ const PurchaseMaterialModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>Danh sách vật tư</div>
-                          {/* <Tooltip title="Thêm vật tư">
+                          <Tooltip title="Thêm vật tư">
                             <IconButton onClick={handleAddMaterial}>
                               <AddCircleOutline />
                             </IconButton>
-                          </Tooltip> */}
+                          </Tooltip>
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
@@ -469,6 +468,7 @@ const PurchaseMaterialModal = () => {
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">SL cần</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
+                                  {/* {selectedDocument?.id && <TableCell align="left">Trạng thái</TableCell>} */}
                                   <TableCell align="left">Ghi chú</TableCell>
                                   <TableCell align="center">Xoá</TableCell>
                                 </TableRow>
@@ -476,23 +476,40 @@ const PurchaseMaterialModal = () => {
                               <TableBody>
                                 {materialList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '20%' }}>
-                                      <Tooltip title={row?.part_code}>
-                                        <span>{row?.part_code}</span>
-                                      </Tooltip>
+                                    <TableCell align="left" style={{ width: '25%' }}>
+                                      <Autocomplete
+                                        options={materials}
+                                        getOptionLabel={(option) => option.part_code || ''}
+                                        fullWidth
+                                        size="small"
+                                        value={materials.find((item) => item.part_code === row.part_code) || null}
+                                        onChange={(event, newValue) => handleChangeMaterialCode(index, newValue)}
+                                        renderInput={(params) => <TextField {...params} variant="outlined" />}
+                                      />
                                     </TableCell>
                                     <TableCell align="left" className={classes.maxWidthCell} style={{ width: '25%' }}>
                                       <Tooltip title={row?.part_name}>
                                         <span>{row?.part_name}</span>
                                       </Tooltip>
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
-                                      {row.quantity_in_piece}
+                                    <TableCell align="left" style={{ width: '15%' }}>
+                                      <TextField
+                                        InputProps={{
+                                          inputProps: { min: 0 },
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
+                                        name="quantity_in_piece"
+                                        type="number"
+                                        size="small"
+                                        value={row?.quantity_in_piece || ''}
+                                        onChange={(e) => handleChangeMaterial(index, e)}
+                                      />
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       {row.unit_name}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '25%' }}>
+                                    <TableCell align="left" style={{ width: '15%' }}>
                                       <TextField
                                         multiline
                                         minRows={1}
@@ -541,9 +558,6 @@ const PurchaseMaterialModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
-                <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleOpenShortageDialog}>
-                  Chi tiết vật tư thiếu
-                </Button>
                 {saveButton && selectedDocument?.id && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
                     {saveButton.text}
@@ -563,4 +577,4 @@ const PurchaseMaterialModal = () => {
   );
 };
 
-export default PurchaseMaterialModal;
+export default MaterialRequisitionModal;

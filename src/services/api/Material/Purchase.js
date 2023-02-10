@@ -40,7 +40,8 @@ export const getPurchaseMaterialStatus = () => {
     .post(apiEndpoints.get_purchase_material_status, {})
     .then((response) => {
       if (response.status === 200 && response.data.return === 200) {
-        return response.data.list;
+        const { warehouse_list, status_list } = response.data;
+        return { warehouse_list, status_list };
       }
       return [];
     })

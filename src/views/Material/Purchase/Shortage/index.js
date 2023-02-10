@@ -17,43 +17,52 @@ import {
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import useStyles from './../../../../utils/classes';
-import { ADD_MATERIAL, CLOSE_MODAL_MATERIAL, REMOVE_MATERIAL } from './../../../../store/actions';
-import { useParams } from 'react-router';
+import { ADD_MATERIAL, REMOVE_MATERIAL } from './../../../../store/actions';
+import { useLocation } from 'react-router';
 import { getMaterialDailyRequisitionList } from '../../../../services/api/Workorder/index.js';
 
 const ShortageModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { materialBuy } = useSelector((state) => state.material);
-  const { supplierID } = useParams();
+  const { search } = useLocation();
   const [materials, setMaterials] = useState([]);
+  const [data, setData] = useState({
+    supplier: '',
+    warehouse: '',
+  });
 
   const handleClose = () => {
-    dispatch({ type: CLOSE_MODAL_MATERIAL });
     window.opener = null;
     window.open('', '_self');
     window.close();
   };
 
   const handleChangeMaterial = (material, e) => {
-    if (e.target.checked) dispatch({ type: ADD_MATERIAL, payload: material });
+    const newMaterial = { ...material, material_daily_requisition_id: material.id };
+    if (e.target.checked) dispatch({ type: ADD_MATERIAL, payload: newMaterial });
     else {
       dispatch({ type: REMOVE_MATERIAL, payload: material?.part_id });
     }
   };
 
-  const getMaterial = async (supplierID) => {
+  const getMaterial = async (supplierID, warehouseID) => {
     try {
-      const res = await getMaterialDailyRequisitionList(supplierID);
+      const res = await getMaterialDailyRequisitionList(supplierID, warehouseID);
       setMaterials(res);
     } catch (error) {
-      const res = await getMaterialDailyRequisitionList(supplierID);
-      setMaterials(res);
+      const res = await getMaterialDailyRequisitionList(supplierID, warehouseID);
+      setMaterials(res?.list);
+      setData({
+        supplier: res?.supplier?.title,
+        warehouse: res?.warehouse?.warehouse_name,
+      });
     }
   };
 
   useEffect(() => {
-    getMaterial(supplierID);
+    const params = new URLSearchParams(search);
+    getMaterial(params.get('supplier'), params.get('warehouse'));
     window.addEventListener('beforeunload', handleClose);
     return () => {
       window.removeEventListener('beforeunload', handleClose);
@@ -76,6 +85,33 @@ const ShortageModal = () => {
                   <Grid item lg={12} md={12} xs={12}>
                     <div className={classes.tabItem}>
                       <div className={classes.tabItemTitle}>
+                        <div className={classes.tabItemLabel}>Thông tin</div>
+                      </div>
+                      <div className={classes.tabItemBody}>
+                        <Grid container spacing={1}>
+                          <Grid item lg={12} md={12} xs={12}>
+                            <div className={classes.tabItemBody}>
+                              <Grid container spacing={2} alignItems="center">
+                                <Grid item>
+                                  <span className={classes.tabItemLabelField}>Nhà cung cấp:</span>
+                                </Grid>
+                                <Grid item>{data.supplier}</Grid>
+                              </Grid>
+                              <Grid container spacing={2} alignItems="center">
+                                <Grid item>
+                                  <span className={classes.tabItemLabelField}>Kho vật tư:</span>
+                                </Grid>
+                                <Grid item>{data.warehouse}</Grid>
+                              </Grid>
+                            </div>
+                          </Grid>
+                        </Grid>
+                      </div>
+                    </div>
+                  </Grid>
+                  <Grid item lg={12} md={12} xs={12}>
+                    <div className={classes.tabItem}>
+                      <div className={classes.tabItemTitle}>
                         <div className={classes.tabItemLabel}>Danh sách vật tư</div>
                       </div>
                       <div className={classes.tabItemBody}>
@@ -89,7 +125,6 @@ const ShortageModal = () => {
                                       <TableCell align="left">Chọn</TableCell>
                                       <TableCell align="left">Mã vật tư</TableCell>
                                       <TableCell align="left">Tên vật tư</TableCell>
-                                      <TableCell align="left">Kho</TableCell>
                                       <TableCell align="left">Số lượng thiếu</TableCell>
                                       <TableCell align="left">Đơn vị</TableCell>
                                     </TableRow>
@@ -106,7 +141,6 @@ const ShortageModal = () => {
                                         </TableCell>
                                         <TableCell align="left">{material.part_code}</TableCell>
                                         <TableCell align="left">{material.part_name}</TableCell>
-                                        <TableCell align="left">{material.warehouse_name}</TableCell>
                                         <TableCell align="left">{material.quantity_in_piece}</TableCell>
                                         <TableCell align="left">{material.unit_name}</TableCell>
                                       </TableRow>
@@ -134,9 +168,9 @@ const ShortageModal = () => {
               <Grid item>
                 <Grid container spacing={2} justifyContent="flex-end">
                   <Grid item>
-                    <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }}>
+                    {/* <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }}>
                       Lưu
-                    </Button>
+                    </Button> */}
                   </Grid>
                 </Grid>
               </Grid>

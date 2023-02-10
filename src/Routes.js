@@ -56,7 +56,7 @@ const Routes = () => {
                     <Route path="/dashboard/default" component={DashboardDefault} />
                     <Route path="/dashboard/workorder/:id" component={OrderModal} />
                     <Route path="/dashboard/workorder/material" component={AlertDialogSlide} />
-                    <Route path="/dashboard/material/:supplierID" component={ShortageModal} />
+                    <Route path="/dashboard/material" component={ShortageModal} />
                   </AuthGuard>
                 </NavMotion>
               </Switch>
