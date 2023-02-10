@@ -41,7 +41,7 @@ export default function AlertDialogSlide() {
   const [detail, setDetail] = useState({});
   const [indexColor, setIndexColor] = useState(-1);
   const classes = useStyles();
-  const [totalPart,setTotal] = useState({total: 0});
+  const [totalPart, setTotal] = useState({ total: 0 });
   const [supplierList, setSupplierList] = useState([
 
   ]);
@@ -81,20 +81,20 @@ export default function AlertDialogSlide() {
       total = totalCa >= 0 ? totalCa : 0;
       detail.part_list[indexColor].Quantity_In_Piece = total;
       setSupplierList([...newProductList]);
-      setTotal({total: total})
+      setTotal({ total: total })
     }
   };
-  const handleChangeTotal = () =>{
+  const handleChangeTotal = () => {
     let total = orderRedux.workorderDetail.part_list[indexColor].Quantity_In_Piece;
-        const newProductList = [...supplierList];
-        newProductList.forEach((element,indexf) => {
-        let totalCa=total- element.quantity_in_piece;
-        newProductList[indexf]={...element, quantity: totalCa >= 0 ? totalCa: 0, is_enough: element.is_enough ||false }
-        total=totalCa;
-      });
-      detail.part_list[indexColor].Quantity_In_Piece= total;
-      setSupplierList([...newProductList]);
-      setTotal({total:total})
+    const newProductList = [...supplierList];
+    newProductList.forEach((element, indexf) => {
+      let totalCa = total - element.quantity_in_piece;
+      newProductList[indexf] = { ...element, quantity: totalCa >= 0 ? totalCa : 0, is_enough: element.is_enough || false }
+      total = totalCa;
+    });
+    detail.part_list[indexColor].Quantity_In_Piece = total;
+    setSupplierList([...newProductList]);
+    setTotal({ total: total })
   }
   const handleAddRow = () => {
     const newProduct = {
@@ -106,16 +106,16 @@ export default function AlertDialogSlide() {
 
   };
   const handleSubmit = async () => {
-    let data = supplierList.filter((x) => (x.part_id !== ''&& !x.id && x.quantity_in_piece!=0))
-    let data2 = supplierListAll.filter((x) => (x.part_id !== '' && !x.id && x.quantity_in_piece!=0))
-    if (data.length >0 || data2.length >0)
-    await createMaterialRequisition({
-      order_date: detail.order_date,
-      daily_requisition_detail_list: [...data2, ...data],
-      requisition_id: detail?.supplierList[0]?.requisition_id || '',
-      daily_work_order_detail_id: detail.id,
-      work_order_id: detail.work_order_id,
-    })
+    let data = supplierList.filter((x) => (x.part_id !== '' && !x.id && x.quantity_in_piece != 0))
+    let data2 = supplierListAll.filter((x) => (x.part_id !== '' && !x.id && x.quantity_in_piece != 0))
+    if (data.length > 0 || data2.length > 0)
+      await createMaterialRequisition({
+        order_date: detail.order_date,
+        daily_requisition_detail_list: [...data2, ...data],
+        requisition_id: detail?.supplierList[0]?.requisition_id || '',
+        daily_work_order_detail_id: detail.id,
+        work_order_id: detail.work_order_id,
+      })
     dispatch({
       type: MATERIAL_CHANGE, order: null, orderDetail: null,
       workorderDetail: { data: 1 }
@@ -132,7 +132,7 @@ export default function AlertDialogSlide() {
     setSupplierDropList([]);
     setOpen(false);
   };
-  
+
   const fetchDataDropList = async () => {
     let data = await getSupplierList()
     setSupplierDropList(data)
@@ -140,7 +140,7 @@ export default function AlertDialogSlide() {
 
   const handleGetsupllier = (index) => {
     setIndexColor(index)
-    setTotal({total:orderRedux.workorderDetail.part_list[index].Quantity_In_Piece})
+    setTotal({ total: orderRedux.workorderDetail.part_list[index].Quantity_In_Piece })
     let data = supplierListAll.filter((x) => x.part_code === orderRedux.workorderDetail.part_list[index].Part_Code)
     let data2 = supplierListAll.filter((x) => x.part_code !== orderRedux.workorderDetail.part_list[index].Part_Code)
     setSupplierListAll([...data2, ...supplierList])
@@ -148,10 +148,10 @@ export default function AlertDialogSlide() {
     fetchDataDropList()
   };
   const handleCheck = (item) => {
-  
+
     if (item.Quantity_In_Piece === 0 || item.Is_Enough)
       return <Typography style={{ backgroundColor: 'rgb(48, 188, 65)' }}>
-        {item.Quantity_In_Piece 
+        {item.Quantity_In_Piece
         }</Typography>
     return <Typography style={{ backgroundColor: 'yellow' }}>
       {item.Quantity_In_Piece.toLocaleString()
@@ -160,8 +160,8 @@ export default function AlertDialogSlide() {
 
 
   };
-  const handleDeleteRow =async (index) => {
-    if(!!supplierList[index].id && supplierList[index]?.id != ''){
+  const handleDeleteRow = async (index) => {
+    if (!!supplierList[index].id && supplierList[index]?.id != '') {
       await removeRequisitionDaily(supplierList[index].id)
     }
     supplierList.splice(index, 1);
@@ -171,53 +171,64 @@ export default function AlertDialogSlide() {
 
   useEffect(() => {
     if (!orderRedux.workorderDetail) return;
-    const detailData=[]
-    orderRedux.workorderDetail.part_list.forEach(element=>{
-      detailData.push({...element,check:0});
+    const detailData = []
+    orderRedux.workorderDetail.part_list.forEach(element => {
+      detailData.push({ ...element, check: 0 });
     })
     setDetailPartList([...orderRedux.workorderDetail.part_list])
     setSupplierList([])
     var newSupplierList = [];
-      orderRedux.workorderDetail.supplierList.forEach((row)=>{
-        if(row.is_enough){
-          newSupplierList=[...newSupplierList,{...row,
-            is_enough: true,
-            quantity: 0,
-            is_disable: true,
-          }]
-          let date2 =  orderRedux.workorderDetail.part_list.findIndex((x) => x.Part_Code === row.part_code)
-            detailData[date2] = {...detailData[date2],...orderRedux.workorderDetail.part_list[date2],
-              Quantity_In_Piece: orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece
-             }
+    orderRedux.workorderDetail.supplierList.forEach((row) => {
+      if (row.is_enough) {
+        newSupplierList = [...newSupplierList, {
+          ...row,
+          is_enough: true,
+          quantity: 0,
+          is_disable: true,
+        }]
+        let date2 = orderRedux.workorderDetail.part_list.findIndex((x) => x.Part_Code === row.part_code)
+        detailData[date2] = {
+          ...detailData[date2], ...orderRedux.workorderDetail.part_list[date2],
+          Quantity_In_Piece: orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece
         }
-        else {
-          newSupplierList=[...newSupplierList,{...row,
-            is_enough: row.quantity_in_piece-row.quantity_in_wh > 0 ? false : true,
-            quantity: row.quantity_in_piece - row.quantity_in_wh > 0 ? 
+      }
+      else {
+        newSupplierList = [...newSupplierList, {
+          ...row,
+          is_enough: row.quantity_in_piece - row.quantity_in_wh > 0 ? false : true,
+          quantity: row.quantity_in_piece - row.quantity_in_wh > 0 ?
             row.quantity_in_piece - row.quantity_in_wh : row.quantity_in_wh - row.quantity_in_piece,
-            is_disable: true,
-          }]
-          let date2 =  orderRedux.workorderDetail.part_list.findIndex((x) => x.Part_Code === row.part_code)
-          if (date2>=0){
-              detailData[date2] = {...detailData[date2],...orderRedux.workorderDetail.part_list[date2],
-              Quantity_In_Piece: orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece-row.quantity_in_wh > 0 
-              ? orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece - row.quantity_in_wh : 0}
+          is_disable: true,
+        }]
+        let date2 = orderRedux.workorderDetail.part_list.findIndex((x) => x.Part_Code === row.part_code)
+        if (date2 >= 0) {
+          detailData[date2] = {
+            ...detailData[date2], ...orderRedux.workorderDetail.part_list[date2],
+            Quantity_In_Piece: orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece - row.quantity_in_wh > 0
+              ? orderRedux.workorderDetail.part_list[date2].Quantity_In_Piece - row.quantity_in_wh : 0
           }
-           
         }
-       
-         
-      })
-   
-   
-    setSupplierListAll([...newSupplierList])
-    setDetail({...orderRedux.workorderDetail, part_list: [...detailData]});
-  }, [orderRedux.workorderDetail])
-  useEffect(()=>{
-    if (indexColor<0) return
-    handleChangeTotal()
-  },[indexColor])
 
+      }
+
+
+    })
+
+
+    setSupplierListAll([...newSupplierList])
+    setDetail({ ...orderRedux.workorderDetail, part_list: [...detailData] });
+  }, [orderRedux.workorderDetail])
+  useEffect(() => {
+    if (indexColor < 0) return
+    handleChangeTotal()
+  }, [indexColor])
+  useEffect(() => {
+    if (orderRedux?.close) {
+      window.opener = null;
+      window.open("", "_self");
+      window.close();
+    }
+  })
   return (
     <div>
       <Dialog
@@ -354,7 +365,7 @@ export default function AlertDialogSlide() {
                         <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                           <TableCell component="th" scope="row" style={{ minWidth: 250, maxWidth: 250 }}>
                             <Autocomplete
-                              value={{id: item.supplier_id, value: item.supplier_name}}
+                              value={{ id: item.supplier_id, value: item.supplier_name }}
                               size="small"
                               disabled={item.is_disable}
                               disableClearable
@@ -372,13 +383,15 @@ export default function AlertDialogSlide() {
                             {item.quantity_in_piece?.toLocaleString()}
                           </TableCell>
                           <TableCell >
-                            { (item.quantity?.toLocaleString())}
+                            {(item.quantity?.toLocaleString())}
                           </TableCell>
-                          <TableCell  align='center'>
-                            <Typography style={{ backgroundColor: item.status==='WORKORDER_MATERIAL_DAILY_REQUISTION_STATUS_COMPLETED' ? 'rgb(255,165,0)' 
-                                                                : item.status==='WORKORDER_MATERIAL_DAILY_REQUISTION_STATUS_INPROGRESS' ? 'rgb(250,128,114)'
-                                                                : item.is_enough ? 'rgb(48, 188, 65)': 'yellow' }}>
-                              { item.status==='WORKORDER_MATERIAL_DAILY_REQUISTION_STATUS_AUTO_COMPLETED'? item.is_enough? item.status_display: 'Thiếu': item.status_display}
+                          <TableCell align='center'>
+                            <Typography style={{
+                              backgroundColor: item.status === 'WORKORDER_MATERIAL_DAILY_REQUISTION_STATUS_COMPLETED' ? 'rgb(255,165,0)'
+                                : item.status === 'WORKORDER_MATERIAL_DAILY_REQUISTION_STATUS_INPROGRESS' ? 'rgb(250,128,114)'
+                                  : item.is_enough ? 'rgb(48, 188, 65)' : 'yellow'
+                            }}>
+                              {item.status === 'WORKORDER_MATERIAL_DAILY_REQUISTION_STATUS_AUTO_COMPLETED' ? item.is_enough ? item.status_display : 'Thiếu' : item.status_display}
                             </Typography>
                           </TableCell>
                           <TableCell align="left">

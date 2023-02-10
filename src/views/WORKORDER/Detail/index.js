@@ -39,8 +39,6 @@ import {
   createWorkorOrder,
   updateWorkorOrder,
   getMaterialDaily,
-  getPartList,
-  getDetail,
   getLink,
   getWorkOrderRequest,
   deleteWorkOrderDetail,
@@ -52,7 +50,6 @@ import {
   getProductWHSList
 } from '../../../services/api/Workorder/index.js';
 import DatePicker from '../../../component/DatePicker/index.js';
-import { delay, set } from 'lodash';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -86,7 +83,7 @@ const WorkorderModal = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [disableComponent, setDisable] = useState(false);
   const { selectedDocument } = useSelector((state) => state.document);
-  const { detailDocument: openDialog } = useSelector((state) => state.floatingMenu);
+  const { workOrderDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { order } = useSelector((state) => state.order);
   const { order: orderRedux } = useSelector((state) => state.order);
   const [checkChangeData, setCheckChangeData] = useState({
@@ -251,11 +248,13 @@ const WorkorderModal = () => {
   };
 
   const handleCloseDialog = () => {
-    setDocumentToDefault();
-    dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
-    dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null });
     dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'workorder' });
-    dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: false, documentType: 'workorder' });
+    dispatch({ type: FLOATING_MENU_CHANGE, workOrderDocument: false, documentType: 'workorder' });
+    dispatch({ type: ORDER_CHANGE, order: { close: true } });
+    dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null });
+    setDocumentToDefault();
+
+
   };
 
   const [snackbarStatus, setSnackbarStatus] = useState({
@@ -341,15 +340,9 @@ const WorkorderModal = () => {
               daily_work_order_id: IdWorkorderRequest,
             });
         }
-
-
-
-
         setCheckChangeData({ changeWorkOrder: false, changeWorkOrderDaily: false, changeWorkOrderRequest: false })
-
         if (getdate)
           return handleGetWorkOrderRequest(IdWorkorderRequest, -1)
-
       }
 
 
@@ -398,7 +391,6 @@ const WorkorderModal = () => {
         },
       });
       popupWindowFull(`/dashboard/workorder/material`, `Vật tư`, 400);
-
     } catch { }
   };
   const handleChangeStatus = (e) => {
@@ -412,36 +404,43 @@ const WorkorderModal = () => {
 
   const handleChange = (e) => {
     const value = e.target.value;
-    let from_date = workorder.from_date;
-    let to_date = workorder.to_date;
-    if (e.target.name === 'to_date') {
-      if (workorder.from_date < value) {
-        setCheckChangeData({ ...checkChangeData, changeWorkOrder: true })
-        setWorkorder({
-          ...workorder,
-          to_date: value,
-          from_date: from_date,
-        });
-      }
-    } else if (e.target.name === 'from_date') {
-      if (value < workorder.to_date) {
-        setCheckChangeData({ ...checkChangeData, changeWorkOrder: true })
-        setWorkorder({
-          ...workorder,
-          to_date: to_date,
-          from_date: value,
-        });
-      }
-    } else {
-      setCheckChangeData({ ...checkChangeData, changeWorkOrder: true })
-      setWorkorder(pre => ({
-        ...pre,
-        [e.target.name]: value,
-      }));
-    }
+    setCheckChangeData({ ...checkChangeData, changeWorkOrder: true })
+    setWorkorder(pre => ({
+      ...pre,
+      [e.target.name]: value,
+    }));
     updateDataDailyRequest(productList);
-
   };
+  const setToDate = (currentDate) => {
+    var month = currentDate.getMonth() + 1;
+    if (month < 10) month = "0" + month;
+    var dateOfMonth = currentDate.getDate();
+    if (dateOfMonth < 10) dateOfMonth = "0" + dateOfMonth;
+    var year = currentDate.getFullYear();
+    var value = year + "-" + month + "-" + dateOfMonth;
+    if (workorder.from_date < value) {
+      setCheckChangeData({ ...checkChangeData, changeWorkOrder: true })
+      setWorkorder({
+        ...workorder,
+        to_date: value,
+      });
+    }
+  }
+  const setFromDate = (currentDate) => {
+    var month = currentDate.getMonth() + 1;
+    if (month < 10) month = "0" + month;
+    var dateOfMonth = currentDate.getDate();
+    if (dateOfMonth < 10) dateOfMonth = "0" + dateOfMonth;
+    var year = currentDate.getFullYear();
+    var value = year + "-" + month + "-" + dateOfMonth;
+    if (value < workorder.to_date) {
+      setCheckChangeData({ ...checkChangeData, changeWorkOrder: true })
+      setWorkorder({
+        ...workorder,
+        from_date: value,
+      });
+    }
+  }
   const handleChangeHours = (e) => {
 
     const value = e.target.value;
@@ -472,10 +471,8 @@ const WorkorderModal = () => {
         isOpen: true,
         type: 'error',
         text: 'Số lượng đạt yêu cầu!',
-      }) 
-
+      })
     }
-
   };
 
   const calculatePercent = (number_of_worker, number_of_working_hour, piece, sl, productivity_per_worker) => {
@@ -536,8 +533,6 @@ const WorkorderModal = () => {
             type: ORDER_CHANGE,
             order: { id: productListApi.work_order_detail[0]?.customer_order_id, change: true, work_order_id: workorder.id, workorderDetail: orderRedux.workorderDetail, }
           });
-
-
     }
     return productListApi.work_order_detail
   }
@@ -703,16 +698,17 @@ const WorkorderModal = () => {
     });
     var date = [];
     if (to_date !== '' && from_date !== '') {
-
       for (var d = new Date(from_date); d <= new Date(to_date); d.setDate(d.getDate() + 1)) {
-        const day = d.getFullYear() + '-' + month[d.getMonth()] + '-' + d.getDate();
+        let dateFormat = d.getDate();
+        if (dateFormat < 10) dateFormat = '0' + dateFormat;
+        const day = d.getFullYear() + '-' + month[d.getMonth()] + '-' + dateFormat;
         if (!selectedDocument) {
           date = [
             ...date,
             {
               id: '',
               work_order_date: day,
-              percent: 0 / 1,
+              percent: (0 / 1).toFixed(1),
               is_enough: false,
               color_check: 'yellow'
             },
@@ -773,10 +769,7 @@ const WorkorderModal = () => {
         setEnd(date.length);
       }
       setIndexDate(pre => indexCurrentDate);
-
       setCurrentWeek(week);
-
-
       setDateListNull([]);
       if (date.length < 7) {
         let datenull = [];
@@ -796,7 +789,9 @@ const WorkorderModal = () => {
     let date = [];
     if (to_date !== '' && from_date !== '') {
       for (var d = new Date(from_date); d <= new Date(to_date); d.setDate(d.getDate() + 1)) {
-        const day = d.getFullYear() + '-' + month[d.getMonth()] + '-' + d.getDate();
+        let dateFormat = d.getDate();
+        if (dateFormat < 10) dateFormat = '0' + dateFormat;
+        const day = d.getFullYear() + '-' + month[d.getMonth()] + '-' + dateFormat;
         let data = productionDailyRequestList.find((x) => x.work_order_date === day);
         if (!data) {
           date = [
@@ -804,7 +799,7 @@ const WorkorderModal = () => {
             {
               work_order_date: day,
               id: '',
-              percent: 0 / 1,
+              percent: (0 / 1).toFixed(1),
               color_check: 'yellow'
             },
           ];
@@ -859,12 +854,12 @@ const WorkorderModal = () => {
         {' '}
         <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }} hover style={{ minWidth: 10, maxWidth: 10 }}>
           <TableCell align="left">{index + 1}</TableCell>
-          <TableCell align="left" style={{ maxWidth: 50, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <TableCell align="left" style={{ maxWidth: 150, minWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis' }}>
             <Tooltip title={item.customer_order_code}>
               <span> {item.customer_order_code}</span>
             </Tooltip>
           </TableCell>
-          <TableCell align="left" style={{ minWidth: 150, maxWidth: 150 }}>
+          <TableCell align="left" style={{ minWidth: 200, maxWidth: 200 }}>
             <Autocomplete
               value={item}
               size="small"
@@ -880,7 +875,7 @@ const WorkorderModal = () => {
 
           <TableCell align="left">{item.product_customer_code}</TableCell>
 
-          <TableCell align="left" style={{ maxWidth: 250, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <TableCell align="left" style={{ maxWidth: 400, minWidth: 400, overflow: 'hidden', textOverflow: 'ellipsis' }}>
             <Tooltip title={item.product_name}>
               <span> {item.product_name}</span>
             </Tooltip>
@@ -929,7 +924,6 @@ const WorkorderModal = () => {
     fetchStatus();
   }, []);
   useEffect(() => {
-
     if (orderReduxWork?.workorderDetail?.data === 1) {
       handleGetWorkOrderRequest(productionDailyRequestList[indexDate].id, -1)
     }
@@ -937,14 +931,19 @@ const WorkorderModal = () => {
 
   useEffect(() => {
     handleSetProduct();
-    if (!selectedDocument) return
-    popupWindow(`/dashboard/workorder/order-list`, `Mục tiêu sản xuất`)
+    // if (openDialog===false) return
+    //     popupWindow(`/dashboard/workorder/order-list`, `Mục tiêu sản xuất`)
   }, [selectedDocument]);
 
   useEffect(() => {
     if (checkChangeData.changeWorkOrder)
       handleSetDate(workorder.from_date, workorder.to_date);
   }, [workorder.from_date, workorder.to_date]);
+  useEffect(() => {
+    window.onbeforeunload = function (event) {
+      handleCloseDialog()
+    };
+  }, [])
   return (
     <React.Fragment>
       {snackbarStatus.isOpen && (
@@ -1015,7 +1014,7 @@ const WorkorderModal = () => {
                                   />
                                 </Grid>
                                 <Grid item lg={3} md={3} xs={3}>
-                                  <span className={classes.tabItemLabelField}>Trạng thái: </span>
+                                  {/* <span className={classes.tabItemLabelField}>Trạng thái: </span>
                                   <TextField
                                     select
                                     fullWidth
@@ -1031,46 +1030,7 @@ const WorkorderModal = () => {
                                           {item.value}
                                         </MenuItem>
                                       ))}
-                                  </TextField>
-                                </Grid>
-                              </Grid>
-
-                              <Grid container className={classes.gridItemInfo} alignItems="center" spacing={1}>
-                                <Grid item lg={2} md={2} xs={2}>
-                                  <span className={classes.tabItemLabelField}>Thời gian bắt đầu:</span>
-                                  <TextField
-                                    fullWidth
-                                    type="date"
-                                    variant="outlined"
-                                    name="from_date"
-                                    value={workorder.from_date}
-                                    size="small"
-                                    onChange={handleChange}
-                                  />
-                                  {/* <DatePicker
-                                    // date={orderData.expected_deliver_date}
-                                    // onChange={(date) => setOrderData({ ...orderData, expected_deliver_date: date })}
-                                  /> */}
-                                </Grid>
-
-
-                                <Grid item lg={2} md={2} xs={2}>
-                                  <span className={classes.tabItemLabelField}>Thời gian kết thúc:</span>
-                                  <TextField
-                                    fullWidth
-                                    type="date"
-                                    variant="outlined"
-                                    name="to_date"
-                                    value={workorder.to_date}
-                                    size="small"
-                                    onChange={handleChange}
-                                  />
-                                  {/* <DatePicker
-                                    // date={orderData.expected_deliver_date}
-                                    // onChange={(date) => setOrderData({ ...orderData, expected_deliver_date: date })}
-                                  /> */}
-                                </Grid>
-                                <Grid item lg={3} md={3} xs={3}>
+                                  </TextField> */}
                                   <span className={classes.tabItemLabelField}>Xưởng: </span>
                                   <TextField
                                     select
@@ -1089,8 +1049,66 @@ const WorkorderModal = () => {
                                       ))}
                                   </TextField>
                                 </Grid>
+                              </Grid>
 
-                                <Grid item lg={2} md={2} xs={2}>
+                              <Grid container className={classes.gridItemInfo} alignItems="center" spacing={1}>
+                                <Grid item lg={3} md={3} xs={3}>
+                                  <span className={classes.tabItemLabelField}>Thời gian bắt đầu:</span>
+                                  {/* <TextField
+                                    fullWidth
+                                    type="date"
+                                    variant="outlined"
+                                    name="from_date"
+                                    format={'dd/mm/yyyy'}
+                                    value={workorder.from_date}
+                                    size="small"
+                                    onChange={handleChange}
+                                  /> */}
+                                  <DatePicker
+                                    date={workorder.from_date}
+
+                                    onChange={(date) => setFromDate(date)}
+                                  />
+                                </Grid>
+
+
+                                <Grid item lg={3} md={3} xs={3}>
+                                  <span className={classes.tabItemLabelField}>Thời gian kết thúc:</span>
+                                  {/* <TextField
+                                    fullWidth
+                                    type="date"
+                                    variant="outlined"
+                                    name="to_date"
+                                    value={workorder.to_date}
+                                    size="small"
+                                    onChange={handleChange}
+                                  /> */}
+                                  <DatePicker
+                                    date={workorder.to_date}
+                                    onChange={(date) => setToDate(date)}
+                                  />
+                                </Grid>
+                                {/* <Grid item lg={3} md={3} xs={3}>
+                                  <span className={classes.tabItemLabelField}>Xưởng: </span>
+                                  <TextField
+                                    select
+                                    fullWidth
+                                    id="outlined-size-small"
+                                    variant="outlined"
+                                    size="small"
+                                    value={workorder?.workshop_id}
+                                    onChange={(event) => setWorkorder({ ...workorder, workshop_id: event.target.value })}
+                                  >
+                                    {workshopList &&
+                                      workshopList.map((item) => (
+                                        <MenuItem key={item.Key} value={item.Key}>
+                                          {item.Value}
+                                        </MenuItem>
+                                      ))}
+                                  </TextField>
+                                </Grid> */}
+
+                                <Grid item lg={3} md={3} xs={3}>
                                   <span className={classes.tabItemLabelField}>Kho vật tư:</span>
                                   <TextField
                                     select
@@ -1175,7 +1193,8 @@ const WorkorderModal = () => {
                                               <span>
                                                 {weekday[new Date(item.work_order_date).getDay()]}
                                                 <br />
-                                                {new Date(item.work_order_date).getDate() +
+                                                {(new Date(item.work_order_date).getDate() >= 10 ? new Date(item.work_order_date).getDate()
+                                                  : '0' + new Date(item.work_order_date).getDate()) +
                                                   '/' +
                                                   month[new Date(item.work_order_date).getMonth()]}
                                               </span>
@@ -1189,11 +1208,11 @@ const WorkorderModal = () => {
                                       <TableBody>
                                         <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                           {productionDailyRequestList?.slice(start, end).map((item) => (
-                                            <TableCell  align="center">
+                                            <TableCell align="center">
                                               <Typography
                                                 style={
                                                   item.percent >= 100
-                                                    ? { backgroundColor: 'rgb(48, 188, 65)'}
+                                                    ? { backgroundColor: 'rgb(48, 188, 65)' }
                                                     : { backgroundColor: 'yellow' }
                                                 }
                                               >

@@ -437,7 +437,7 @@ export default function GeneralTable(props) {
       case 'workorder':
         detailDocument = await getDetailWorkorOrder(selectedDocument.id, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
-        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
+        dispatch({ type: FLOATING_MENU_CHANGE, workOrderDocument: true });
         break;
       case 'customer':
         detailDocument = await getDetailCustomer(selectedDocument.id, setView);
@@ -536,7 +536,7 @@ export default function GeneralTable(props) {
         dispatch({ type: FLOATING_MENU_CHANGE, accountDocument: true });
         break;
       case 'workorder':
-        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
+        dispatch({ type: FLOATING_MENU_CHANGE, workOrderDocument: true });
         break;
       case 'department':
         dispatch({ type: FLOATING_MENU_CHANGE, departmentDocument: true });
