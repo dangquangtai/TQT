@@ -83,7 +83,8 @@ const EnhancedTableToolbar = (props) => {
     buttonCreateGoodsIssue,
     buttonCreateGoodsReceipt,
     buttonCreateDailyMaterial,
-    buttonCreateMaterialPart
+    buttonCreateMaterialPart,
+    buttonCreateMaterialRequisition,
   } = props;
 
   const filterRef = useRef(null);
@@ -417,6 +418,13 @@ const EnhancedTableToolbar = (props) => {
                     </Button>
                   </Grid>
                 )}
+                {buttonCreateMaterialRequisition && (
+                  <Grid item xs={6}>
+                    <Button variant="contained" color={'primary'} onClick={handleCreate}>
+                      {buttonCreateMaterialRequisition.text}
+                    </Button>
+                  </Grid>
+                )}
               </Grid>
             </Grid>
             <Grid item xs={8}>
@@ -454,7 +462,6 @@ const EnhancedTableToolbar = (props) => {
                       </Button>
                     </Grid>
                   )}
-
                 </Grid>
               </Grid>
             )}

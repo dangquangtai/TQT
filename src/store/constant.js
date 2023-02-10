@@ -98,7 +98,6 @@ export const apiEndpoints = {
   create_material_part: '/Primary/?FlowAlias=bs_api_factory_create_material_part&action=api',
   update_material_part: '/Primary/?FlowAlias=bs_api_factory_update_material_part&action=api',
 
-
   // Product
   get_product_list: '/Primary/?FlowAlias=bs_api_factory_get_list_product&action=api',
   get_product_detail: '/Primary/?FlowAlias=bs_api_factory_get_detail_product&action=api',
@@ -269,6 +268,11 @@ export const apiEndpoints = {
   get_material_inventory_by_part_id: '/Primary/?FlowAlias=bs_api_factory_get_inventory_by_part_id&action=api',
 
   get_material_by_work_order: '/Primary/?FlowAlias=bs_api_factory_get_material_by_work_order&action=api',
+
+  // Material Requisition
+  get_material_requisition_list: '/Primary/?FlowAlias=bs_api_factory_get_material_requisition_list&action=api',
+  create_material_requisition: '/Primary/?FlowAlias=bs_api_factory_create_material_requisition&action=api',
+  update_material_requisition: '/Primary/?FlowAlias=bs_api_factory_update_material_requisition&action=api',
 };
 
 export const apiDomain = 'https://upload.truebpm.vn';
@@ -352,7 +356,6 @@ export const goodsIssueActions = {
 export const goodsReceiptActions = {
   list_goods_receipt: 'TQT_PRODUCT_DEFAULT_OPEN_GOODS_RECEIPT_LIST',
 };
-
 export const productionActions = {
   list_production_daily_request: 'TQT_PRODUCTION_DEFAULT_OPEN_PRODUCTION_DAILY_REQUEST_LIST',
 };
@@ -367,6 +370,9 @@ export const productionDailyMaterialRequisitionActions = {
 };
 export const productionDailyMaterialReceivedActions = {
   list_production_daily_material_received: 'TQT_PRODUCTION_DEFAULT_OPEN_DAILY_MATERIAL_RECEIVED_LIST',
+};
+export const materialRequisitionActions = {
+  list_material_requisition: 'TQT_MATERIAL_DEFAULT_OPEN_REQUISITION_NOT_WORKORDER_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -585,6 +591,11 @@ export const view = {
     },
     detail: {
       save: 'TQT_SETTING_DEFAULT_MATERIAL_SAVE_FORM_BUTTON',
+    },
+  },
+  materialRequisition: {
+    list: {
+      create: 'TQT_MATERIAL_DEFAULT_REQUISITION_NOT_WORKORDER_CREATE_MENU_BUTTON',
     },
   },
 };

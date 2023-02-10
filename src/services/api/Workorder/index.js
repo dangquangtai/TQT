@@ -217,17 +217,17 @@ export const removeRequisitionDaily = (id) => {
   });
 };
 
-export const getMaterialDailyRequisitionList = (supplier_id) => {
-  return axiosServices.post(apiEndpoints.get_material_by_work_order, { supplier_id }).then((response) => {
-  if (response.status === 200 && response.data.return === 200) {
-      return response.data.list;
+export const getMaterialDailyRequisitionList = (supplier_id, warehouse_id) => {
+  return axiosServices.post(apiEndpoints.get_material_by_work_order, { supplier_id, warehouse_id }).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data;
     }
     return [];
   });
 };
 
 export const getSupplierList = () => {
-  return axiosServices.post(apiEndpoints.get_active_supplier_list, {  }).then((response) => {
+  return axiosServices.post(apiEndpoints.get_active_supplier_list, {}).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
       return response.data.list;
     }

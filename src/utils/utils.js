@@ -25,14 +25,12 @@ import {
   productWarehouseActions,
   goodsIssueActions,
   goodsReceiptActions,
-
   productionActions,
-
   dailyDeliveryMateialActions,
   productInventoryActions,
   productionDailyMaterialReceivedActions,
   productionDailyMaterialRequisitionActions,
-
+  materialRequisitionActions,
 } from '../store/constant.js';
 
 export function getUrlByAction(selectedFolder) {
@@ -76,7 +74,7 @@ export function getUrlByAction(selectedFolder) {
     case productActions.list_product: {
       return apiEndpoints.get_product_list;
     }
-    
+
     case orderActions.list_pending_order: {
       return apiEndpoints.get_order_list;
     }
@@ -137,7 +135,9 @@ export function getUrlByAction(selectedFolder) {
     }
     case productionDailyMaterialRequisitionActions.list_production_daily_material_requisition: {
       return apiEndpoints.get_production_daily_material_requisition_list;
-
+    }
+    case materialRequisitionActions.list_material_requisition: {
+      return apiEndpoints.get_material_requisition_list;
     }
     default: {
       return '';
