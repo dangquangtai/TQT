@@ -931,10 +931,11 @@ const WorkorderModal = () => {
 
   useEffect(() => {
     handleSetProduct();
-    // if (openDialog===false) return
-    //     popupWindow(`/dashboard/workorder/order-list`, `Mục tiêu sản xuất`)
   }, [selectedDocument]);
-
+  useEffect(()=>{
+      if (openDialog===false) return
+        popupWindow(`/dashboard/workorder/order-list`, `Mục tiêu sản xuất`)
+  },[openDialog])
   useEffect(() => {
     if (checkChangeData.changeWorkOrder)
       handleSetDate(workorder.from_date, workorder.to_date);
