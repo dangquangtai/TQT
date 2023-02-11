@@ -167,8 +167,8 @@ const ProductionRequestModal = () => {
                           <Grid container spacing={1} rowSpacing={1}>
                         
                               <Grid container className={classes.gridItemInfo} alignItems="center" spacing={1} >
-                                <Grid item lg={3} md={3} xs={3}>
-                                  <span className={classes.tabItemLabelField}>Mã hoạch sản xuất: </span>
+                                <Grid item lg={2} md={2} xs={2}>
+                                  <span className={classes.tabItemLabelField}>Mã kế hoạch sản xuất: </span>
                                   <TextField
                                     fullWidth
                                     variant="outlined"
@@ -192,7 +192,8 @@ const ProductionRequestModal = () => {
 
                                   />
                                 </Grid>
-                                <Grid item lg={1} md={1} xs={1} >
+                                
+                                <Grid item lg={2} md={2} xs={2} >
                                   <span className={classes.tabItemLabelField}>{'Ngày sản xuất: '}</span>
 
                                   <TextField
@@ -233,7 +234,42 @@ const ProductionRequestModal = () => {
                                    
                                   />
                                 </Grid>
-                                
+                                <Grid item lg={4} md={4} xs={4}>
+                                  <span className={classes.tabItemLabelField}>Xưởng: </span>
+                                  <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    type="text"
+                                    size="small"
+                                    name="title"
+                                    value={selectedDocument?.workshop_name}
+
+                                  />
+                                </Grid>
+                                <Grid item lg={4} md={4} xs={4}>
+                                  <span className={classes.tabItemLabelField}>Kho vật tư: </span>
+                                  <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    type="text"
+                                    size="small"
+                                    name="title"
+                                    value={selectedDocument?.material_warehouse_name}
+
+                                  />
+                                </Grid>
+                                <Grid item lg={4} md={4} xs={4}>
+                                  <span className={classes.tabItemLabelField}>Kho thành phẩm: </span>
+                                  <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    type="text"
+                                    size="small"
+                                    name="title"
+                                    value={selectedDocument?.product_warehouse_name}
+
+                                  />
+                                </Grid>
 
                               </Grid>
                            
@@ -291,7 +327,7 @@ const ProductionRequestModal = () => {
           </DialogContent>
           <DialogActions>
             <Grid container justifyContent="space-between">
-              <Grid item>
+              <Grid item className={classes.gridItemInfoButtonWrap}>
                 <Button
                   variant="contained"
                   style={{ background: 'rgb(70, 81, 105)' }}

@@ -22,7 +22,7 @@ const ProductWarehouseWrapper = () => {
   return (
     <React.Fragment>
       <ProductWarehouseTable
-        tableTitle="Quản lý Kho thành phẩm"
+        tableTitle="Quản lý kho thành phẩm"
         url={getUrlByAction(selectedFolder)}
         documentType="productWarehouse"
         setActiveUrl={apiEndpoints.active_product_warehouse}

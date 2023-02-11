@@ -16,7 +16,8 @@ const materialReducer = (state = initialState, action) => {
     case actionTypes.REMOVE_MATERIAL:
       return {
         ...state,
-        materialBuy: state.materialBuy.filter((item) => item.part_id !== action.payload),
+        materialBuy: state.materialBuy.filter((item) => item.part_id !== action.payload.part_id 
+        || item.material_daily_requisition_id !== action.payload.material_daily_requisition_id),
       };
     case actionTypes.SET_MATERIAL:
       return {

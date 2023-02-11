@@ -21,7 +21,7 @@ const MaterialInventoryWrapper = () => {
   return (
     <React.Fragment>
       <MaterialInventoryTable
-        tableTitle="Quản lý Tồn kho vật tư"
+        tableTitle="Quản lý tồn kho vật tư"
         url={getUrlByAction(selectedFolder)}
         documentType="materialInventory"
         // setActiveUrl={apiEndpoints.active_material_Inventory}

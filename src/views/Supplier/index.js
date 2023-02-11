@@ -27,7 +27,7 @@ const SupplierWrapper = () => {
   return (
     <React.Fragment>
       <SupplierTable
-        tableTitle="Quản lý Nhà cung cấp"
+        tableTitle="Quản lý nhà cung cấp"
         url={getUrlByAction(selectedFolder)}
         documentType="supplier"
         categories={categories}

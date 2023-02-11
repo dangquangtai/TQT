@@ -21,7 +21,7 @@ const ReceivedMaterialWrapper = () => {
   return (
     <React.Fragment>
       <ReceivedMaterialTable
-        tableTitle="Quản lý Nhập vật tư"
+        tableTitle="Quản lý nhập vật tư"
         url={getUrlByAction(selectedFolder)}
         documentType="receivedMaterial"
         // setActiveUrl={apiEndpoints.active_material_Inventory}

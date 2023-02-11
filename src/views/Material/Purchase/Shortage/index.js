@@ -42,7 +42,7 @@ const ShortageModal = () => {
     const newMaterial = { ...material, material_daily_requisition_id: material.id };
     if (e.target.checked) dispatch({ type: ADD_MATERIAL, payload: newMaterial });
     else {
-      dispatch({ type: REMOVE_MATERIAL, payload: material?.part_id });
+      dispatch({ type: REMOVE_MATERIAL, payload: {part_id: material?.part_id,material_daily_requisition_id: material.id } });
     }
   };
 
@@ -134,7 +134,7 @@ const ShortageModal = () => {
                                       <TableRow key={material.id}>
                                         <TableCell align="left">
                                           <Checkbox
-                                            checked={materialBuy.some((item) => item.part_id === material.part_id)}
+                                            checked={materialBuy.some((item) => (item.part_id === material.part_id)&&(item.material_daily_requisition_id===material.id))}
                                             onChange={(e) => handleChangeMaterial(material, e)}
                                             inputProps={{ 'aria-label': 'primary checkbox' }}
                                           />
@@ -160,7 +160,7 @@ const ShortageModal = () => {
           </DialogContent>
           <DialogActions>
             <Grid container justifyContent="space-between">
-              <Grid item>
+              <Grid item className={classes.gridItemInfoButtonWrap}>
                 <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }} onClick={handleClose}>
                   Đóng
                 </Button>

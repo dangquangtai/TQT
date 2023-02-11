@@ -27,7 +27,7 @@ const MaterialPartWrapper = () => {
   return (
     <React.Fragment>
       <MaterialPartTable
-        tableTitle="Quản lý Vật tư"
+        tableTitle="Quản lý vật tư"
         categories={categories}
         url={getUrlByAction(selectedFolder)}
         documentType="materialPart"

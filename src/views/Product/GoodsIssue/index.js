@@ -22,7 +22,7 @@ const GoodsIssueWrapper = () => {
   return (
     <React.Fragment>
       <GoodsIssueTable
-        tableTitle="Quản lý Xuất kho thành phẩm"
+        tableTitle="Quản lý xuất kho thành phẩm"
         url={getUrlByAction(selectedFolder)}
         documentType="goodsIssue"
         setActiveUrl={apiEndpoints.active_product_warehouse}
