@@ -293,7 +293,7 @@ const WorkshopModal = () => {
           </DialogContent>
           <DialogActions>
             <Grid container justifyContent="space-between">
-              <Grid item>
+              <Grid item className={classes.gridItemInfoButtonWrap}>
                 <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }} onClick={() => handleCloseDialog()}>
                   Đóng
                 </Button>

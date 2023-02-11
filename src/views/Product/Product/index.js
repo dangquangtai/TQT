@@ -23,7 +23,7 @@ const ProductWrapper = () => {
   return (
     <React.Fragment>
       <ProductTable
-        tableTitle="Quản lý Thành phẩm"
+        tableTitle="Quản lý thành phẩm"
         url={getUrlByAction(selectedFolder)}
         documentType="product"
         // setActiveUrl={apiEndpoints.active_material_Part}

@@ -90,6 +90,7 @@ const PurchaseMaterialModal = () => {
     order_date: new Date(),
     delivery_date: new Date(),
     is_workorer: true,
+    notes: '',
   });
   const [supplier, setSupplier] = useState([]);
   const [statusList, setStatusList] = useState([]);
@@ -248,8 +249,10 @@ const PurchaseMaterialModal = () => {
     const newMaterial = materialBuy.map((item) => {
       return {
         ...item,
+        material_daily_requisition_id: item.id,
         requisition_id: selectedDocument?.id || '',
         id: '',
+        notes: '',
       };
     });
     setMaterialList(newMaterial);
@@ -535,7 +538,7 @@ const PurchaseMaterialModal = () => {
           </DialogContent>
           <DialogActions>
             <Grid container justifyContent="space-between">
-              <Grid item>
+              <Grid item className={classes.gridItemInfoButtonWrap}>
                 <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }} onClick={() => handleCloseDialog()}>
                   Đóng
                 </Button>

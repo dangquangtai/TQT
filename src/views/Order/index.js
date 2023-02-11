@@ -22,7 +22,7 @@ const OrderWrapper = () => {
   return (
     <React.Fragment>
       <OrderTable
-        tableTitle="Quản lý Đơn hàng"
+        tableTitle="Quản lý đơn hàng"
         url={getUrlByAction(selectedFolder)}
         documentType="order"
         // setActiveUrl={apiEndpoints.active_material_Part}
