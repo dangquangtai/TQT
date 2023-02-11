@@ -126,6 +126,7 @@ const PurchaseMaterialModal = () => {
   };
 
   const setDocumentToDefault = async () => {
+    dispatch({ type: SET_MATERIAL, payload: [] });
     setPurchaseMaterialData({ order_date: new Date(), delivery_date: new Date(), is_workorer: true });
     setMaterialList([]);
     setTabIndex(0);
@@ -146,6 +147,7 @@ const PurchaseMaterialModal = () => {
   };
 
   const handleCloseDiaLog = () => {
+    
     setDialogUpload({
       open: false,
       type: '',
@@ -246,6 +248,7 @@ const PurchaseMaterialModal = () => {
   }, []);
 
   useEffect(() => {
+    if (materialBuy === selectedDocument?.order_detail) return
     const newMaterial = materialBuy.map((item) => {
       return {
         ...item,
