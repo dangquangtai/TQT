@@ -279,9 +279,10 @@ export default function GeneralTable(props) {
   }, []);
 
   useEffect(() => {
-  
-    reloadCurrentDocuments();
-    
+    if (selectedDocument === null && documents.length > 0) {
+      reloadCurrentDocuments(page);
+    }
+
     if (changeDeptReload === 0) {
       ReloadDept(1);
     } else {

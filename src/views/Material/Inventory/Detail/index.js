@@ -37,13 +37,7 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && <Box p={0}>{children}</Box>}
     </div>
   );
@@ -110,7 +104,7 @@ const InventoryModal = () => {
       } else {
         handleOpenSnackbar('error', 'Cập nhật Thành phẩm thất bại!');
       }
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'Inventory' });
+      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'materialInventory' });
       handleCloseDialog();
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
@@ -352,11 +346,7 @@ const InventoryModal = () => {
           <DialogActions>
             <Grid container justifyContent="space-between">
               <Grid item className={classes.gridItemInfoButtonWrap}>
-                <Button
-                  variant="contained"
-                  style={{ background: 'rgb(70, 81, 105)' }}
-                  onClick={() => handleCloseDialog()}
-                >
+                <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }} onClick={() => handleCloseDialog()}>
                   Đóng
                 </Button>
               </Grid>

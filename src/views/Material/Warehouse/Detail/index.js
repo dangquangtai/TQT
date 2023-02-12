@@ -66,7 +66,7 @@ const MaterialWarehouseModal = () => {
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
-    dispatch({ type: FLOATING_MENU_CHANGE, materialMaterialWarehouseDocument: false });
+    dispatch({ type: FLOATING_MENU_CHANGE, materialWarehouseDocument: false });
   };
 
   const handleChangeTab = (event, newValue) => {
@@ -177,7 +177,7 @@ const MaterialWarehouseModal = () => {
                                 name="warehouse_name"
                                 size="small"
                                 type="text"
-                                value={materialWarehouseData.warehouse_name}
+                                value={materialWarehouseData.warehouse_name || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
@@ -193,7 +193,7 @@ const MaterialWarehouseModal = () => {
                                 minRows={2}
                                 variant="outlined"
                                 name="address"
-                                value={materialWarehouseData.address}
+                                value={materialWarehouseData.address || ''}
                                 size="small"
                                 type="text"
                                 onChange={handleChanges}
@@ -250,6 +250,11 @@ const MaterialWarehouseModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
+                {!selectedDocument?.id && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmit}>
+                    Tạo mới
+                  </Button>
+                )}
                 {selectedDocument?.id && buttonSave && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmit}>
                     {buttonSave.text}

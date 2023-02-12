@@ -104,7 +104,7 @@ const InventoryModal = () => {
       } else {
         handleOpenSnackbar('error', 'Cập nhật Thành phẩm thất bại!');
       }
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'Inventory' });
+      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'productInventory' });
       handleCloseDialog();
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');

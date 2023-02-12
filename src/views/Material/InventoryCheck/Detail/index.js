@@ -51,13 +51,7 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && <Box p={0}>{children}</Box>}
     </div>
   );
@@ -385,9 +379,7 @@ const InventoryCheckModal = () => {
                             <Grid item lg={8} md={8} xs={8}>
                               <DatePicker
                                 date={inventoryCheckData.inventory_check_date}
-                                onChange={(date) =>
-                                  setInventoryCheckData({ ...inventoryCheckData, inventory_check_date: date })
-                                }
+                                onChange={(date) => setInventoryCheckData({ ...inventoryCheckData, inventory_check_date: date })}
                               />
                             </Grid>
                           </Grid>
@@ -450,13 +442,7 @@ const InventoryCheckModal = () => {
                               <span className={classes.tabItemLabelField}>Kiểm tra bởi:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
-                              <TextField
-                                fullWidth
-                                disabled
-                                variant="outlined"
-                                value={inventoryCheckData.checked_by}
-                                size="small"
-                              />
+                              <TextField fullWidth disabled variant="outlined" value={inventoryCheckData.checked_by} size="small" />
                             </Grid>
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
@@ -464,13 +450,7 @@ const InventoryCheckModal = () => {
                               <span className={classes.tabItemLabelField}>Xác nhận bởi:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
-                              <TextField
-                                fullWidth
-                                disabled
-                                variant="outlined"
-                                value={inventoryCheckData.verified_by}
-                                size="small"
-                              />
+                              <TextField fullWidth disabled variant="outlined" value={inventoryCheckData.verified_by} size="small" />
                             </Grid>
                           </Grid>
                         </div>
@@ -530,11 +510,7 @@ const InventoryCheckModal = () => {
           <DialogActions>
             <Grid container justifyContent="space-between">
               <Grid item className={classes.gridItemInfoButtonWrap}>
-                <Button
-                  variant="contained"
-                  style={{ background: 'rgb(70, 81, 105)' }}
-                  onClick={() => handleCloseDialog()}
-                >
+                <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }} onClick={() => handleCloseDialog()}>
                   Đóng
                 </Button>
               </Grid>

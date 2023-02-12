@@ -102,7 +102,7 @@ const ProductWarehouseModal = () => {
         await createProductWarehouse(productWarehouseData);
         handleOpenSnackbar('success', 'Tạo mới kho thành phẩm thành công!');
       }
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'ProductWarehouse' });
+      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'productWarehouse' });
       handleCloseDialog();
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
@@ -177,7 +177,7 @@ const ProductWarehouseModal = () => {
                                 name="warehouse_name"
                                 size="small"
                                 type="text"
-                                value={productWarehouseData.warehouse_name}
+                                value={productWarehouseData.warehouse_name || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
@@ -193,7 +193,7 @@ const ProductWarehouseModal = () => {
                                 minRows={2}
                                 variant="outlined"
                                 name="address"
-                                value={productWarehouseData.address}
+                                value={productWarehouseData.address || ''}
                                 size="small"
                                 type="text"
                                 onChange={handleChanges}
@@ -250,6 +250,11 @@ const ProductWarehouseModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
+                {!selectedDocument?.id && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmit}>
+                    Tạo mới
+                  </Button>
+                )}
                 {selectedDocument?.id && buttonSave && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmit}>
                     {buttonSave.text}

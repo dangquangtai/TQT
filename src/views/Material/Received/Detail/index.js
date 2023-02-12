@@ -178,6 +178,7 @@ const ReceivedMaterialModal = () => {
       {
         received_id: selectedDocument?.id || '',
         material_order_id: '',
+        material_daily_requisition_id: '',
         id: '',
         part_id: '',
         part_name: '',
@@ -227,6 +228,7 @@ const ReceivedMaterialModal = () => {
       unit_id: newItem?.unit_id || '',
       unit_name: newItem?.unit_name || '',
       quantity_in_piece: newItem?.quantity_in_piece || 0,
+      material_daily_requisition_id: newItem?.material_daily_requisition_id || '',
     };
     newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
     if (

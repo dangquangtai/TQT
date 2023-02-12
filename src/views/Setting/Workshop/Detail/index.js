@@ -66,7 +66,7 @@ const WorkshopModal = () => {
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
-    dispatch({ type: FLOATING_MENU_CHANGE, materialWorkshopDocument: false });
+    dispatch({ type: FLOATING_MENU_CHANGE, workshopDocument: false });
   };
 
   const handleChangeTab = (event, newValue) => {
@@ -102,7 +102,7 @@ const WorkshopModal = () => {
         await createWorkshop(workshopData);
         handleOpenSnackbar('success', 'Tạo mới xưởng sản xuất thành công!');
       }
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'Workshop' });
+      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'workshop' });
       handleCloseDialog();
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
@@ -177,7 +177,7 @@ const WorkshopModal = () => {
                                 name="workshop_code"
                                 size="small"
                                 type="text"
-                                value={workshopData.workshop_code}
+                                value={workshopData.workshop_code || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
@@ -193,7 +193,7 @@ const WorkshopModal = () => {
                                 name="workshop_name"
                                 size="small"
                                 type="text"
-                                value={workshopData.workshop_name}
+                                value={workshopData.workshop_name || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
@@ -209,7 +209,7 @@ const WorkshopModal = () => {
                                 name="default_no_worker"
                                 size="small"
                                 type="number"
-                                value={workshopData.default_no_worker}
+                                value={workshopData.default_no_worker || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
@@ -226,7 +226,7 @@ const WorkshopModal = () => {
                                 name="default_no_working_hour"
                                 size="small"
                                 type="number"
-                                value={workshopData.default_no_working_hour}
+                                value={workshopData.default_no_working_hour || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
@@ -242,7 +242,7 @@ const WorkshopModal = () => {
                                 minRows={2}
                                 variant="outlined"
                                 name="address"
-                                value={workshopData.address}
+                                value={workshopData.address || ''}
                                 size="small"
                                 type="text"
                                 onChange={handleChanges}
@@ -299,6 +299,11 @@ const WorkshopModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
+                {!selectedDocument?.id && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmit}>
+                    Tạo mới
+                  </Button>
+                )}
                 {selectedDocument?.id && buttonSave && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmit}>
                     {buttonSave.text}
