@@ -74,11 +74,10 @@ export default function AlertDialogSlide() {
         quantity: orderRedux.workorderDetail.part_list[indexColor].Quantity_In_Piece,
         line: indexColor,
         is_disable: false,
-        status_display: data.Quantity_In_Piece===0? 'Đặt mua': 'Đủ',
-        
+        status_display: data.Quantity_In_Piece===0? 'Đặt mua': 'Có sẵn',
       };
       newProductList[index] = { ...newProductList[index], ...newProduct };
-      let totalCa = total - newProductList[index].quantity_in_wh;
+      let totalCa = total - newProductList[index].quantity_in_piece;
       newProductList[index] = { ...newProductList[index], quantity: totalCa >= 0 ? totalCa : 0, is_enough: total < newProductList[index].quantity_in_wh ? true : false }
       total = totalCa >= 0 ? totalCa : 0;
       detail.part_list[indexColor].Quantity_In_Piece = total;
@@ -97,8 +96,10 @@ export default function AlertDialogSlide() {
     detail.part_list[indexColor].Quantity_In_Piece = total;
     setSupplierList([...newProductList]);
     setTotal({ total: total })
+ 
   }
   const handleAddRow = () => {
+    if (totalPart.total ===0 ) return
     const newProduct = {
       part_id: '',
       quantity_in_piece: 0,
@@ -170,7 +171,11 @@ export default function AlertDialogSlide() {
     handleChangeTotal()
     setSupplierList([...supplierList])
   }
-
+  const handleChangeNumber = (e, item) => {
+    var value =e.target.value;
+    item.quantity_in_piece= e.target.value;
+    handleChangeTotal()
+  }
   useEffect(() => {
     if (!orderRedux.workorderDetail) return;
     const detailData = []
@@ -224,6 +229,7 @@ export default function AlertDialogSlide() {
     if (indexColor < 0) return
     handleChangeTotal()
   }, [indexColor])
+
   useEffect(() => {
     if (orderRedux?.close) {
       window.opener = null;
@@ -382,7 +388,17 @@ export default function AlertDialogSlide() {
                             {item.quantity_in_wh?.toLocaleString()}
                           </TableCell>
                           <TableCell  >
-                            {item.quantity_in_piece?.toLocaleString()}
+                          <TextField
+                              fullWidth
+                              type="number"
+                              style={{ minWidth: 80, maxWidth: 80 }}
+                              variant="outlined"
+                              disabled={item.is_disable}
+                              InputProps={{ inputProps: { min: 1, max: item.maxValue } }}
+                              value={item.quantity_in_piece?.toLocaleString()}
+                              size="small"
+                              onChange={(e) => handleChangeNumber(e, item)}
+                            />
                           </TableCell>
                           <TableCell >
                             {(item.quantity?.toLocaleString())}
