@@ -35,3 +35,17 @@ export const getDailyMaterialReceivedData = () => {
     return [];
   });
 };
+
+export const exportDailyMaterialReceived = (id) => {
+  return axiosServices
+    .post(apiEndpoints.export_production_daily_material_received, { id })
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return response.data.url;
+      }
+      return '';
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};

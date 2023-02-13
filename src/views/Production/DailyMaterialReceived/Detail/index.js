@@ -31,8 +31,13 @@ import useConfirmPopup from './../../../../hooks/useConfirmPopup';
 import { view } from './../../../../store/constant';
 import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CONFIRM_CHANGE } from './../../../../store/actions';
 import DatePicker from './../../../../component/DatePicker/index';
-import { updateDailyMaterialReceived, getDailyMaterialReceivedData } from '../../../../services/api/Production/MaterialReceived.js';
+import {
+  updateDailyMaterialReceived,
+  getDailyMaterialReceivedData,
+  exportDailyMaterialReceived,
+} from '../../../../services/api/Production/MaterialReceived.js';
 import BrokenModal from './../../../Dialog/Broken/index';
+import { downloadFile } from '../../../../utils/helper.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -159,6 +164,25 @@ const DailyMaterialReceivedModal = () => {
     };
     setReceivedDetailList(newreceivedDetailList);
     handleCloseBrokenModal();
+  };
+
+  const handleClickExport = () => {
+    showConfirmPopup({
+      title: 'Xuất phiếu nhập vật tư',
+      message: 'Bạn có chắc chắn muốn xuất phiếu nhập vật tư này?',
+      action: exportDailyMaterialReceived,
+      payload: dailyMaterialReceivedData.daily_work_order_id,
+      onSuccess: (url) => handleDownload(url),
+    });
+  };
+
+  const handleDownload = (url) => {
+    if (!url) {
+      handleOpenSnackbar('error', 'Không tìm thấy file!');
+      return;
+    }
+    downloadFile(url);
+    handleOpenSnackbar('success', 'Tải file thành công!');
   };
 
   useEffect(() => {
@@ -456,14 +480,12 @@ const DailyMaterialReceivedModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
+                <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleClickExport}>
+                  In phiếu
+                </Button>
                 {saveButton && selectedDocument?.id && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
                     {saveButton.text}
-                  </Button>
-                )}
-                {!selectedDocument?.id && (
-                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
-                    Tạo mới
                   </Button>
                 )}
               </Grid>
