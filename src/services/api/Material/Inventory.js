@@ -16,3 +16,12 @@ export const getDetailInventory = (id, setView) => {
       console.log(error);
     });
 };
+
+export const updateMaterialInventory = (data) => {
+  return axiosServices.post(apiEndpoints.update_material_inventory, data).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return true;
+    }
+    return false;
+  });
+};

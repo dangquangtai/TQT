@@ -165,6 +165,7 @@ export const apiEndpoints = {
   // Material Inventory
   get_material_inventory_list: '/Primary/?FlowAlias=bs_api_factory_get_material_inventory_list&action=api',
   get_material_inventory_detail: '/Primary/?FlowAlias=bs_api_factory_get_material_inventory_detail&action=api',
+  update_material_inventory: '/Primary/?FlowAlias=bs_api_factory_update_material_inventory&action=api',
 
   // Material Inventory Check
   get_material_inventory_check_list: '/Primary/?FlowAlias=bs_api_factory_get_material_inventory_check_list&action=api',

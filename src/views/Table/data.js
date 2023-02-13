@@ -3,13 +3,13 @@ export const headCells = [
   { id: 'fullname', numeric: false, disablePadding: false, label: 'Khách hàng', maxWidth: 150 },
   { id: 'received_code', numeric: false, disablePadding: false, label: 'Mã phiếu', maxWidth: 150 },
   { id: 'order_code', numeric: false, disablePadding: false, label: 'Mã đơn hàng', maxWidth: 150 },
-  { id: 'part_code', numeric: false, disablePadding: false, label: 'Mã phụ tùng', maxWidth: 150 },
+  { id: 'part_code', numeric: false, disablePadding: false, label: 'Mã vật tư', maxWidth: 150 },
   { id: 'product_code', numeric: false, disablePadding: false, label: 'Mã thành phẩm', maxWidth: 150 },
   { id: 'customer_code', numeric: false, disablePadding: false, label: 'Mã khách hàng', maxWidth: 150 },
   { id: 'supplier_code', numeric: false, disablePadding: false, label: 'Mã nhà cung cấp', maxWidth: 150 },
   { id: 'inventory_check_code', numeric: false, disablePadding: false, label: 'Mã kiểm kho', maxWidth: 150 },
   { id: 'title', numeric: false, disablePadding: false, label: 'Tiêu đề', maxWidth: 150 },
-  { id: 'part_name', numeric: false, disablePadding: false, label: 'Tên phụ tùng', maxWidth: 150 },
+  { id: 'part_name', numeric: false, disablePadding: false, label: 'Tên vật tư', maxWidth: 150 },
   { id: 'product_name', numeric: false, disablePadding: false, label: 'Tên thành phẩm ', maxWidth: 150 },
   { id: 'customer_name', numeric: false, disablePadding: false, label: 'Tên khách hàng', maxWidth: 150 },
   { id: 'supplier_name', numeric: false, disablePadding: false, label: 'Tên nhà cung cấp', maxWidth: 150 },
@@ -22,7 +22,7 @@ export const headCells = [
   { id: 'productivity_per_worker', numeric: false, disablePadding: false, label: 'Năng suất', maxWidth: 150 },
   { id: 'quantity_in_piece', numberic: false, disablePadding: false, label: 'Số lượng', maxWidth: 150 },
   { id: 'quantity_in_box', numberic: false, disablePadding: false, label: 'Số lượng', maxWidth: 150 },
-  { id: 'broken_quantity_in_piece', numberic: false, disablePadding: false, label: 'Số lượng hỏng', maxWidth: 150 },
+  { id: 'broken_quantity_in_piece', numberic: false, disablePadding: false, label: 'SL hỏng', maxWidth: 150 },
   { id: 'order_date', numeric: false, disablePadding: false, label: 'Ngày đặt hàng', maxWidth: 150 },
   { id: 'received_date', numeric: false, disablePadding: false, label: 'Ngày nhận hàng', maxWidth: 150 },
   { id: 'inventory_check_date', numeric: false, disablePadding: false, label: 'Ngày kiểm kho', maxWidth: 150 },
@@ -60,9 +60,6 @@ export const headCells = [
   { id: 'number_of_worker', numeric: false, disablePadding: false, label: 'Số người làm', maxWidth: 150 },
   { id: 'number_of_working_hour', numeric: false, disablePadding: false, label: 'Số giờ làm', maxWidth: 150 },
   { id: 'work_order_date_string', numeric: false, disablePadding: false, label: 'Ngày', maxWidth: 150 },
-  
-
-
 
   { id: 'menuButtons', numeric: false, disablePadding: false, label: '', maxWidth: 150 },
 ];
