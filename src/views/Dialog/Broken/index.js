@@ -28,7 +28,7 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    minWidth: 500,
+    width: 500,
     boxShadow: 24,
     background: '#FFFFFF',
     borderRadius: '15px',
@@ -120,8 +120,9 @@ export default function BrokenModal(props) {
         brokenList[index].Quantity_In_Piece = 0;
         return;
       }
-      const broken = brokens?.find((item) => item.Broken_Type_Code === value);
+      const broken = brokens?.find((item) => item.id === value);
       list[index].Broken_Type_Name = broken?.value;
+      console.log(broken, list);
     }
     list[index][name] = value;
     setTotalBroken(list.reduce((a, b) => a + Number(b.Quantity_In_Piece), 0));
@@ -141,7 +142,7 @@ export default function BrokenModal(props) {
       {
         Broken_Type_Code: '',
         Broken_Type_Name: '',
-        Quantity_In_Piece: 0,
+        Quantity_In_Piece: '',
       },
     ]);
   };
@@ -199,7 +200,7 @@ export default function BrokenModal(props) {
                 <TableBody>
                   {brokenList?.map((broken, index) => (
                     <TableRow key={index}>
-                      <StyledTableCell style={{ width: '50%' }}>
+                      <StyledTableCell style={{ width: '55%' }}>
                         <TextField
                           fullWidth
                           size="small"
@@ -216,7 +217,7 @@ export default function BrokenModal(props) {
                           ))}
                         </TextField>
                       </StyledTableCell>
-                      <StyledTableCell align="left" style={{ width: '40%' }}>
+                      <StyledTableCell align="left" style={{ width: '35%' }}>
                         <TextField
                           fullWidth
                           size="small"

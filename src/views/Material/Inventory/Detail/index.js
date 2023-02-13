@@ -19,15 +19,21 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  IconButton,
+  Tooltip,
+  MenuItem,
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { view } from '../../../../store/constant';
 import useView from '../../../../hooks/useView';
 import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../../store/actions';
-import { History, DescriptionOutlined as DescriptionOutlinedIcon } from '@material-ui/icons';
+import { History, DescriptionOutlined as DescriptionOutlinedIcon, AddCircleOutlineOutlined } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import { SNACKBAR_OPEN } from './../../../../store/actions';
+import BrokenModal from './../../../Dialog/Broken/index';
+import { updateMaterialInventory } from '../../../../services/api/Material/Inventory.js';
+import { getMaterialWHSList } from '../../../../services/api/Workorder/index.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -66,6 +72,8 @@ const InventoryModal = () => {
   const [tabIndex, setTabIndex] = React.useState(0);
 
   const [inventoryData, setInventoryData] = useState({});
+  const [brokenDialog, setBrokenDialog] = useState(false);
+  const [warehouseList, setWarehouseList] = useState([]);
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
@@ -98,17 +106,31 @@ const InventoryModal = () => {
 
   const handleSubmit = async () => {
     try {
-      const update = true;
+      const update = await updateMaterialInventory(inventoryData);
       if (update) {
-        handleOpenSnackbar('success', 'Cập nhật Thành phẩm thành công!');
+        handleOpenSnackbar('success', 'Cập nhật Vật tư thành công!');
       } else {
-        handleOpenSnackbar('error', 'Cập nhật Thành phẩm thất bại!');
+        handleOpenSnackbar('error', 'Cập nhật Vật tư thất bại!');
       }
       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'materialInventory' });
       handleCloseDialog();
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
     }
+  };
+
+  const handleOpenBrokenModal = () => {
+    setBrokenDialog(true);
+  };
+
+  const handleCloseBrokenModal = () => {
+    setBrokenDialog(false);
+  };
+
+  const handleSubmitBroken = (brokens, totalBroken) => {
+    console.log(brokens);
+    setInventoryData({ ...inventoryData, broken_list: brokens, broken_quantity_in_piece: totalBroken });
+    setBrokenDialog(false);
   };
 
   useEffect(() => {
@@ -119,8 +141,23 @@ const InventoryModal = () => {
     });
   }, [selectedDocument]);
 
+  useEffect(() => {
+    const getWarehouseList = async () => {
+      const warehouseList = await getMaterialWHSList();
+      setWarehouseList(warehouseList);
+    };
+    getWarehouseList();
+  }, []);
+
   return (
     <React.Fragment>
+      <BrokenModal
+        isOpen={brokenDialog}
+        handleClose={handleCloseBrokenModal}
+        handleSubmit={handleSubmitBroken}
+        handleOpenSnackbar={handleOpenSnackbar}
+        list={inventoryData?.broken_list || []}
+      />
       <Grid container>
         <Dialog
           open={openDialog || false}
@@ -183,17 +220,33 @@ const InventoryModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Vật tư:</span>
+                              <span className={classes.tabItemLabelField}>Mã vật tư:</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={8}>
+                              <TextField
+                                fullWidth
+                                disabled
+                                variant="outlined"
+                                // name="part_code"
+                                value={inventoryData.part_code}
+                                type="text"
+                                size="small"
+                              />
+                            </Grid>
+                          </Grid>
+                          <Grid container className={classes.gridItemInfo} alignItems="center">
+                            <Grid item lg={4} md={4} xs={4}>
+                              <span className={classes.tabItemLabelField}>Tên vật tư:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
                                 variant="outlined"
-                                name="part_name"
+                                disabled
+                                // name="part_name"
                                 value={inventoryData.part_name}
                                 type="text"
                                 size="small"
-                                onChange={handleChanges}
                               />
                             </Grid>
                           </Grid>
@@ -204,12 +257,12 @@ const InventoryModal = () => {
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
+                                disabled
                                 variant="outlined"
-                                name="category_name"
+                                // name="category_name"
                                 size="small"
                                 type="text"
                                 value={inventoryData.category_name}
-                                onChange={handleChanges}
                               />
                             </Grid>
                           </Grid>
@@ -221,11 +274,11 @@ const InventoryModal = () => {
                               <TextField
                                 fullWidth
                                 variant="outlined"
-                                name="supplier_name"
+                                disabled
+                                // name="supplier_name"
                                 value={inventoryData.supplier_name}
                                 size="small"
                                 type="text"
-                                onChange={handleChanges}
                               />
                             </Grid>
                           </Grid>
@@ -247,12 +300,19 @@ const InventoryModal = () => {
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
+                                select
                                 variant="outlined"
-                                name="warehouse_name"
-                                value={inventoryData?.warehouse_name}
+                                name="warehouse_id"
+                                value={inventoryData?.warehouse_id || ''}
                                 size="small"
                                 onChange={handleChanges}
-                              />
+                              >
+                                {warehouseList.map((item) => (
+                                  <MenuItem key={item.id} value={item.id}>
+                                    {item.value}
+                                  </MenuItem>
+                                ))}
+                              </TextField>
                             </Grid>
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
@@ -279,11 +339,11 @@ const InventoryModal = () => {
                               <TextField
                                 fullWidth
                                 variant="outlined"
+                                disabled
                                 name="broken_quantity_in_piece"
                                 value={inventoryData.broken_quantity_in_piece}
                                 size="small"
                                 type="number"
-                                onChange={handleChanges}
                               />
                             </Grid>
                           </Grid>
@@ -315,6 +375,11 @@ const InventoryModal = () => {
                           <div className={classes.tabItemLabel}>
                             <span>Chi tiết hỏng</span>
                           </div>
+                          <Tooltip title="Thêm mới">
+                            <IconButton aria-label="add" onClick={handleOpenBrokenModal}>
+                              <AddCircleOutlineOutlined />
+                            </IconButton>
+                          </Tooltip>
                         </div>
                         <div className={classes.tabItemBody}>
                           <TableContainer style={{ maxHeight: '65vh' }} component={Paper}>
@@ -328,7 +393,7 @@ const InventoryModal = () => {
                               <TableBody>
                                 {inventoryData?.broken_list?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left">{row.Broken_Type_Code}</TableCell>
+                                    <TableCell align="left">{row.Broken_Type_Name}</TableCell>
                                     <TableCell align="left">{row.Quantity_In_Piece}</TableCell>
                                   </TableRow>
                                 ))}
@@ -351,11 +416,11 @@ const InventoryModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
-                {/* {selectedDocument?.id && buttonSave && (
-                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmit}>
-                    {buttonSave.text}
-                  </Button>
-                )} */}
+                {/* {selectedDocument?.id && buttonSave && ( */}
+                <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmit}>
+                  Lưu
+                </Button>
+                {/* )} */}
               </Grid>
             </Grid>
           </DialogActions>
