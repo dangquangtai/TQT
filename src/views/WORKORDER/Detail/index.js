@@ -453,26 +453,36 @@ const WorkorderModal = () => {
 
   };
   const handleChangeNumber = (e, index) => {
-    const value = e.target.value;
-    let orderDetail = order?.orderDetail;
-    let product = orderDetail.find((x) => x.product_id === productList[index].product_id)
-    if ((parseInt(product.quantity_in_workorder) + parseInt(value) - parseInt(productList[index].quantity_in_box)) <= parseInt(product.quantity_in_box)) {
-      setCheckChangeData({ ...checkChangeData, changeWorkOrderDaily: true })
-      try {
-        orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder += value - productList[index].quantity_in_box;
-        dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
-      } catch { }
-
-      productList[index].quantity_in_box = value;
-      setProductList([...productList]);
-      updateDataDailyRequest(productList);
-    } else {
+    
+    if (!order.orderDetail){
       setSnackbarStatus({
         isOpen: true,
         type: 'error',
-        text: 'Số lượng đạt yêu cầu!',
+        text: 'Mở mục tiêu sản xuất để thực hiện thay đổi!',
       })
+    } else {
+      const value = e.target.value;
+      let orderDetail = order?.orderDetail;
+      let product = orderDetail.find((x) => x.product_id === productList[index].product_id)
+      if ((parseInt(product.quantity_in_workorder) + parseInt(value) - parseInt(productList[index].quantity_in_box)) <= (parseInt(product.quantity_in_box)-parseInt(product.quantity_produced))) {
+        setCheckChangeData({ ...checkChangeData, changeWorkOrderDaily: true })
+        try {
+          orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder += value - productList[index].quantity_in_box;
+          dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
+        } catch { }
+  
+        productList[index].quantity_in_box = value;
+        setProductList([...productList]);
+        updateDataDailyRequest(productList);
+      } else {
+        setSnackbarStatus({
+          isOpen: true,
+          type: 'error',
+          text: 'Số lượng đạt yêu cầu!',
+        })
+      }
     }
+    
   };
 
   const calculatePercent = (number_of_worker, number_of_working_hour, piece, sl, productivity_per_worker) => {
@@ -887,7 +897,7 @@ const WorkorderModal = () => {
               style={{ minWidth: 80, maxWidth: 80 }}
               variant="outlined"
               disabled={disableComponent}
-              InputProps={{ inputProps: { min: 1, max: item.maxValue } }}
+              InputProps={{ inputProps: { min: 1 } }}
               value={item.quantity_in_box}
               size="small"
               onChange={(e) => handleChangeNumber(e, index)}
@@ -932,11 +942,11 @@ const WorkorderModal = () => {
   useEffect(() => {
     handleSetProduct();
   }, [selectedDocument]);
-  useEffect(()=>{
-      if (openDialog===false) return
-      if (!selectedDocument) return
-        popupWindow(`/dashboard/workorder/order-list`, `Mục tiêu sản xuất`)
-  },[openDialog])
+  // useEffect(()=>{
+  //     if (openDialog===false) return
+  //     if (!selectedDocument) return
+  //       popupWindow(`/dashboard/workorder/order-list`, `Mục tiêu sản xuất`)
+  // },[openDialog])
   useEffect(() => {
     if (checkChangeData.changeWorkOrder)
       handleSetDate(workorder.from_date, workorder.to_date);

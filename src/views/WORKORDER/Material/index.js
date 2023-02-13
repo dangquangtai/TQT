@@ -391,11 +391,11 @@ export default function AlertDialogSlide() {
                           <TextField
                               fullWidth
                               type="number"
-                              style={{ minWidth: 80, maxWidth: 80 }}
+                              style={{ minWidth: 120, maxWidth: 120 }}
                               variant="outlined"
                               disabled={item.is_disable}
                               InputProps={{ inputProps: { min: 1, max: item.maxValue } }}
-                              value={item.quantity_in_piece?.toLocaleString()}
+                              value={item.quantity_in_piece}
                               size="small"
                               onChange={(e) => handleChangeNumber(e, item)}
                             />
