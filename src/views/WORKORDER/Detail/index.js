@@ -145,7 +145,7 @@ const WorkorderModal = () => {
 
     return (
       <>
-        <Typography style={{ backgroundColor: color }}>{product.is_enough ? 'Đủ' : 'Thiếu'}</Typography>
+        <Typography style={{ backgroundColor: color }}>{product.status_check}</Typography>
         <u>
           <label onClick={() => handleViewDetailMaterial(product, index)}>Chi tiết</label>
         </u>
@@ -464,7 +464,14 @@ const WorkorderModal = () => {
       const value = e.target.value;
       let orderDetail = order?.orderDetail;
       let product = orderDetail.find((x) => x.product_id === productList[index].product_id)
-      if ((parseInt(product.quantity_in_workorder) + parseInt(value) - parseInt(productList[index].quantity_in_box)) <= (parseInt(product.quantity_in_box)-parseInt(product.quantity_produced))) {
+      if (!product) {
+         setSnackbarStatus({
+          isOpen: true,
+          type: 'error',
+          text: `Chọn đơn hàng mã ${productList[index].customer_order_code}!`,
+        })
+      } else {
+        if ((parseInt(product.quantity_in_workorder) + parseInt(value) - parseInt(productList[index].quantity_in_box)) <= (parseInt(product.quantity_in_box)-parseInt(product.quantity_produced))) {
         setCheckChangeData({ ...checkChangeData, changeWorkOrderDaily: true })
         try {
           orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder += value - productList[index].quantity_in_box;
@@ -481,6 +488,8 @@ const WorkorderModal = () => {
           text: 'Số lượng đạt yêu cầu!',
         })
       }
+      }
+      
     }
     
   };
