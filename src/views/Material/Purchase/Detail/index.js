@@ -147,7 +147,6 @@ const PurchaseMaterialModal = () => {
   };
 
   const handleCloseDiaLog = () => {
-    
     setDialogUpload({
       open: false,
       type: '',
@@ -248,7 +247,7 @@ const PurchaseMaterialModal = () => {
   }, []);
 
   useEffect(() => {
-    if (materialBuy === selectedDocument?.order_detail) return
+    if (materialBuy === selectedDocument?.order_detail) return;
     const newMaterial = materialBuy.map((item) => {
       return {
         ...item,
@@ -262,9 +261,9 @@ const PurchaseMaterialModal = () => {
   }, [materialBuy]);
   useEffect(() => {
     window.onbeforeunload = function (event) {
-      handleCloseDialog()
+      handleCloseDialog();
     };
-  }, [])
+  }, []);
   return (
     <React.Fragment>
       <FirebaseUpload

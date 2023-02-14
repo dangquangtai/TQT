@@ -39,11 +39,13 @@ import DatePicker from './../../../../component/DatePicker/index';
 import {
   createReceivedMaterial,
   deleteReceivedMaterialDetail,
+  exportMaterialReceived,
   getReceivedMaterialStatus,
   updateReceivedMaterial,
 } from './../../../../services/api/Material/Received';
 import { getPurchaseMaterialByOrder, getPurchaseMaterialList } from '../../../../services/api/Material/Purchase.js';
 import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
+import { downloadFile } from './../../../../utils/helper';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -76,6 +78,7 @@ const ReceivedMaterialModal = () => {
   const { setConfirmPopup } = useConfirmPopup();
   const { materials } = useSelector((state) => state.metadata);
   const saveButton = formButtons.find((button) => button.name === view.receivedMaterial.detail.save);
+  const exportButton = formButtons.find((button) => button.name === view.receivedMaterial.detail.export);
   const { receivedMaterialDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
 
@@ -291,6 +294,26 @@ const ReceivedMaterialModal = () => {
     }
     setMaterialOrderDetailList(newMaterialOrderDetailList);
   };
+
+  const handleClickExport = () => {
+    showConfirmPopup({
+      title: 'Xuất phiếu nhập vật tư',
+      message: 'Bạn có chắc chắn muốn xuất phiếu nhập vật tư này?',
+      action: exportMaterialReceived,
+      payload: receivedMaterialData.id,
+      onSuccess: (url) => handleDownload(url),
+    });
+  };
+
+  const handleDownload = (url) => {
+    if (!url) {
+      handleOpenSnackbar('error', 'Không tìm thấy file!');
+      return;
+    }
+    downloadFile(url);
+    handleOpenSnackbar('success', 'Tải file thành công!');
+  };
+
   useEffect(() => {
     if (!selectedDocument) return;
     setReceivedMaterialData({
@@ -625,6 +648,11 @@ const ReceivedMaterialModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
+                {exportButton && selectedDocument?.id && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleClickExport}>
+                    {exportButton.text}
+                  </Button>
+                )}
                 {saveButton && selectedDocument?.id && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
                     {saveButton.text}

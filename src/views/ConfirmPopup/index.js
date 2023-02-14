@@ -69,18 +69,13 @@ export default function ConfirmPupup() {
   const closeConfirmPopup = () => setConfirmPopup({ type: CONFIRM_CHANGE, open: false });
 
   const doAction = async () => {
-    await action(payload);
-    onSuccess();
+    const data = await action(payload);
+    onSuccess(data);
     setConfirmPopup({ type: CONFIRM_CHANGE, open: false });
   };
 
   return (
-    <Modal
-      open={open}
-      onClose={closeConfirmPopup}
-      aria-labelledby="simple-modal-title"
-      aria-describedby="simple-modal-description"
-    >
+    <Modal open={open} onClose={closeConfirmPopup} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
       <Box style={style.box}>
         <div id="modal-modal-title" style={style.title} variant="h6" component="h2">
           {title}
@@ -94,12 +89,11 @@ export default function ConfirmPupup() {
               </Button>
             </Grid>
             <Grid item>
-              {!!action &&(
+              {!!action && (
                 <Button variant="contained" color="primary" onClick={doAction}>
-                Xác nhận
-              </Button>
+                  Xác nhận
+                </Button>
               )}
-              
             </Grid>
           </Grid>
         </div>

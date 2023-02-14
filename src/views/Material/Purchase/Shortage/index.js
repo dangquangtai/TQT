@@ -17,9 +17,10 @@ import {
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import useStyles from './../../../../utils/classes';
-import { ADD_MATERIAL, REMOVE_MATERIAL } from './../../../../store/actions';
+import { ADD_MATERIAL, REMOVE_MATERIAL, SET_MATERIAL } from './../../../../store/actions';
 import { useLocation } from 'react-router';
 import { getMaterialDailyRequisitionList } from '../../../../services/api/Workorder/index.js';
+import { format as formatDate } from 'date-fns';
 
 const ShortageModal = () => {
   const classes = useStyles();
@@ -27,22 +28,30 @@ const ShortageModal = () => {
   const { materialBuy } = useSelector((state) => state.material);
   const { search } = useLocation();
   const [materials, setMaterials] = useState([]);
+  const [materialSelected, setMaterialSelected] = useState([]);
   const [data, setData] = useState({
     supplier: '',
     warehouse: '',
   });
 
   const handleClose = () => {
+    setMaterialSelected([]);
     window.opener = null;
     window.open('', '_self');
     window.close();
   };
 
+  const handleSave = () => {
+    dispatch({ type: SET_MATERIAL, payload: materialSelected });
+    handleClose();
+  };
+
   const handleChangeMaterial = (material, e) => {
     const newMaterial = { ...material, material_daily_requisition_id: material.id };
-    if (e.target.checked) dispatch({ type: ADD_MATERIAL, payload: newMaterial });
-    else {
-      dispatch({ type: REMOVE_MATERIAL, payload: {part_id: material?.part_id,material_daily_requisition_id: material.id } });
+    if (e.target.checked) {
+      setMaterialSelected([...materialSelected, newMaterial]);
+    } else {
+      setMaterialSelected(materialSelected.filter((item) => item.part_id !== material.part_id));
     }
   };
 
@@ -59,6 +68,12 @@ const ShortageModal = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (materialBuy?.length > 0) {
+      setMaterialSelected(materialBuy);
+    }
+  }, [materialBuy]);
 
   useEffect(() => {
     const params = new URLSearchParams(search);
@@ -93,15 +108,12 @@ const ShortageModal = () => {
                             <div className={classes.tabItemBody}>
                               <Grid container spacing={2} alignItems="center">
                                 <Grid item>
-                                  <span className={classes.tabItemLabelField}>Nhà cung cấp:</span>
+                                  <span className={classes.tabItemLabelField}>Nhà cung cấp: </span> {data.supplier}
                                 </Grid>
-                                <Grid item>{data.supplier}</Grid>
-                              </Grid>
-                              <Grid container spacing={2} alignItems="center">
                                 <Grid item>
-                                  <span className={classes.tabItemLabelField}>Kho vật tư:</span>
+                                  <span className={classes.tabItemLabelField}>Kho vật tư: </span>
+                                  {data.warehouse}
                                 </Grid>
-                                <Grid item>{data.warehouse}</Grid>
                               </Grid>
                             </div>
                           </Grid>
@@ -123,6 +135,8 @@ const ShortageModal = () => {
                                   <TableHead>
                                     <TableRow>
                                       <TableCell align="left">Chọn</TableCell>
+                                      <TableCell align="left">Ngày sản xuất</TableCell>
+                                      <TableCell align="left">Mã Đơn hàng</TableCell>
                                       <TableCell align="left">Mã vật tư</TableCell>
                                       <TableCell align="left">Tên vật tư</TableCell>
                                       <TableCell align="left">Số lượng thiếu</TableCell>
@@ -134,11 +148,18 @@ const ShortageModal = () => {
                                       <TableRow key={material.id}>
                                         <TableCell align="left">
                                           <Checkbox
-                                            checked={materialBuy.some((item) => (item.part_id === material.part_id)&&(item.material_daily_requisition_id===material.id))}
+                                            checked={materialSelected?.some(
+                                              (item) =>
+                                                item.part_id === material.part_id && item.material_daily_requisition_id === material.id
+                                            )}
                                             onChange={(e) => handleChangeMaterial(material, e)}
                                             inputProps={{ 'aria-label': 'primary checkbox' }}
                                           />
                                         </TableCell>
+                                        <TableCell align="left">
+                                          {material.order_date ? formatDate(new Date(material.order_date), 'dd/MM/yyyy') : ''}
+                                        </TableCell>
+                                        <TableCell align="left">{material.order_code}</TableCell>
                                         <TableCell align="left">{material.part_code}</TableCell>
                                         <TableCell align="left">{material.part_name}</TableCell>
                                         <TableCell align="left">{material.quantity_in_piece}</TableCell>
@@ -168,9 +189,9 @@ const ShortageModal = () => {
               <Grid item>
                 <Grid container spacing={2} justifyContent="flex-end">
                   <Grid item>
-                    {/* <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }}>
-                      Lưu
-                    </Button> */}
+                    <Button variant="contained" onClick={handleSave} style={{ background: 'rgb(97, 42, 255)' }}>
+                      Chọn
+                    </Button>
                   </Grid>
                 </Grid>
               </Grid>

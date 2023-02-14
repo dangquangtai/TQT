@@ -86,3 +86,17 @@ export const deletePurchaseMaterialDetail = (id) => {
     return false;
   });
 };
+
+export const exportMaterial = () => {
+  return axiosServices
+    .post(apiEndpoints.export_purchase_material, {})
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return response.data.url;
+      }
+      return '';
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
