@@ -365,7 +365,7 @@ const EnhancedTableToolbar = (props) => {
                   </Grid>
                 )}
                 {buttonExportMaterial && (
-                  <Grid item xs={6}>
+                  <Grid item>
                     <Button variant="contained" color={'primary'} onClick={handleExportMaterial}>
                       {buttonExportMaterial.text}
                     </Button>
