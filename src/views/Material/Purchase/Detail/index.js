@@ -474,6 +474,7 @@ const PurchaseMaterialModal = () => {
                             <Table className={classes.tableSmall} aria-label="simple table">
                               <TableHead>
                                 <TableRow>
+                                  <TableCell align="left">Mã đơn hàng</TableCell>
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">SL cần</TableCell>
@@ -485,7 +486,10 @@ const PurchaseMaterialModal = () => {
                               <TableBody>
                                 {materialList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '20%' }}>
+                                    <TableCell align="left" style={{ width: '15%' }}>
+                                      {row?.order_code}
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '15%' }}>
                                       <Tooltip title={row?.part_code}>
                                         <span>{row?.part_code}</span>
                                       </Tooltip>
@@ -498,7 +502,7 @@ const PurchaseMaterialModal = () => {
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       {row.quantity_in_piece}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
+                                    <TableCell align="left" style={{ width: '5%' }}>
                                       {row.unit_name}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '25%' }}>
@@ -514,7 +518,7 @@ const PurchaseMaterialModal = () => {
                                         onChange={(e) => handleChangeMaterial(index, e)}
                                       />
                                     </TableCell>
-                                    <TableCell align="center" style={{ width: '10%' }}>
+                                    <TableCell align="center" style={{ width: '5%' }}>
                                       <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>
                                         <Delete />
                                       </IconButton>

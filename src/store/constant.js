@@ -186,6 +186,7 @@ export const apiEndpoints = {
   get_purchase_material_by_status: '/Primary/?FlowAlias=bs_api_factory_get_purchase_material_by_status&action=api',
   get_purchase_material_detail_by_order_id: '/Primary/?FlowAlias=bs_api_factory_get_purchase_material_by_order_id&action=api',
   delete_purchase_material: '/Primary/?FlowAlias=bs_api_factory_delete_purchase_material&action=api',
+  export_purchase_material: '/Primary/?FlowAlias=bs_api_factory_export_purchase_material&action=api',
 
   // Received Material
   get_received_material_list: '/Primary/?FlowAlias=bs_api_factory_get_received_material_list&action=api',
