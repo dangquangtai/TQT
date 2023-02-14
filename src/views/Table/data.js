@@ -50,6 +50,8 @@ export const headCells = [
   { id: 'active', numeric: false, disablePadding: false, label: 'Hoạt động', maxWidth: 100 },
   { id: 'created_by', numeric: false, disablePadding: false, label: 'Người tạo', maxWidth: 100 },
   { id: 'created_date', numeric: false, disablePadding: false, label: 'Ngày tạo', maxWidth: 100 },
+  { id: 'percent_production', numeric: false, disablePadding: false, label: '% đã SX', maxWidth: 100 },
+  { id: 'percent_plan', numeric: false, disablePadding: false, label: '% đã lập KH', maxWidth: 100 },
   { id: 'is_active', numeric: false, disablePadding: false, label: 'Hoạt động', maxWidth: 150 },
   { id: 'is_featured', numeric: false, disablePadding: false, label: 'Nổi bật', maxWidth: 150 },
   { id: 'order__title', numeric: false, disablePadding: false, label: 'Tên kế hoạch', maxWidth: 150 },

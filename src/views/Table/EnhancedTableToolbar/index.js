@@ -85,6 +85,8 @@ const EnhancedTableToolbar = (props) => {
     buttonCreateDailyMaterial,
     buttonCreateMaterialPart,
     buttonCreateMaterialRequisition,
+    buttonExportMaterial,
+    handleExportMaterial,
   } = props;
 
   const filterRef = useRef(null);
@@ -362,6 +364,13 @@ const EnhancedTableToolbar = (props) => {
                     </Button>
                   </Grid>
                 )}
+                {buttonExportMaterial && (
+                  <Grid item xs={6}>
+                    <Button variant="contained" color={'primary'} onClick={handleExportMaterial}>
+                      {buttonExportMaterial.text}
+                    </Button>
+                  </Grid>
+                )}
                 {buttonCreateReceivedMaterial && (
                   <Grid item>
                     <Button variant="contained" color={'primary'} onClick={handleCreate}>
@@ -445,7 +454,6 @@ const EnhancedTableToolbar = (props) => {
                 )}
               </Grid>
             </Grid>
-         
           </Grid>
         </Grid>
         {documentType !== 'department' && documentType !== 'processrole' && (

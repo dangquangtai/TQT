@@ -194,6 +194,7 @@ export const apiEndpoints = {
   update_received_material: '/Primary/?FlowAlias=bs_api_factory_update_received_material&action=api',
   get_received_material_status: '/Primary/?FlowAlias=bs_api_factory_get_received_material_status&action=api',
   delete_received_material: '/Primary/?FlowAlias=bs_api_factory_delete_received_material&action=api',
+  export_material_received: '/Primary/?FlowAlias=bs_api_factory_export_production_material_received&action=api',
 
   get_workshop_list_by_company: '/Primary/?FlowAlias=bs_api_factory_workorder_get_workshop_by_company_code&action=api',
   get_productwhs_list_by_company: '/Primary/?FlowAlias=bs_api_factory_productwhs_get_productwhs_by_company_code&action=api',
@@ -523,6 +524,7 @@ export const view = {
   purchaseMaterial: {
     list: {
       create: 'TQT_MATERIAL_DEFAULT_REQUISITION_CREATE_MENU_BUTTON',
+      export: 'TQT_MATERIAL_DEFAULT_REQUISITION_EXPORT_MENU_BUTTON',
     },
     detail: {
       save: 'TQT_MATERIAL_DEFAULT_REQUISITION_SAVE_FORM_BUTTON',
@@ -534,6 +536,7 @@ export const view = {
     },
     detail: {
       save: 'TQT_MATERIAL_DEFAULT_RECEIVED_SAVE_FORM_BUTTON',
+      export: 'TQT_MATERIAL_DEFAULT_RECEIVED_EXPORT_MENU_BUTTON',
     },
   },
   workshop: {

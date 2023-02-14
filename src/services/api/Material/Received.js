@@ -53,3 +53,17 @@ export const deleteReceivedMaterialDetail = (id) => {
     return false;
   });
 };
+
+export const exportMaterialReceived = (id) => {
+  return axiosServices
+    .post(apiEndpoints.export_material_received, { id })
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return response.data.url;
+      }
+      return '';
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};

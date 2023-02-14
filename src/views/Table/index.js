@@ -17,7 +17,7 @@ import {
 } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { CONFIRM_CHANGE, DOCUMENT_CHANGE, FLOATING_MENU_CHANGE, TASK_CHANGE } from '../../store/actions';
+import { CONFIRM_CHANGE, DOCUMENT_CHANGE, FLOATING_MENU_CHANGE, SNACKBAR_OPEN, TASK_CHANGE } from '../../store/actions';
 import { gridSpacing, view } from '../../store/constant';
 import EnhancedTableHead from './EnhancedTableHead';
 import EnhancedTableToolbar from './EnhancedTableToolbar';
@@ -47,7 +47,7 @@ import { getDetailSupplier } from './../../services/api/Partner/Supplier';
 import { getDetailWarehouseCategory } from './../../services/api/Setting/WHSCategory';
 import { getDetailInventory } from './../../services/api/Material/Inventory';
 import { getDetailInventoryCheck } from './../../services/api/Material/InventoryCheck';
-import { getDetailPurchaseMaterial } from './../../services/api/Material/Purchase';
+import { exportMaterial, getDetailPurchaseMaterial } from './../../services/api/Material/Purchase';
 import { getDetailReceivedMaterial } from './../../services/api/Material/Received';
 import { getDetailMaterialWarehouse } from './../../services/api/Material/Warehouse';
 import { getDetailWorkshop } from './../../services/api/Setting/Workshop';
@@ -59,6 +59,7 @@ import { getDetailDeliveryMaterial } from '../../services/api/Material/DailyRequ
 import { getDetailDailyMaterialReceived } from './../../services/api/Production/MaterialReceived';
 import { getDetailDailyMaterialRequisition } from './../../services/api/Production/MaterialRequisition';
 import { getDetailMaterialPart } from '../../services/api/Material/MaterialPart';
+import { downloadFile } from './../../utils/helper';
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
     if (response.status === 200 && response.data.return === 200) return true;
@@ -139,6 +140,8 @@ export default function GeneralTable(props) {
       number_of_worker: tableColumns.includes('number_of_worker'),
       number_of_working_hour: tableColumns.includes('number_of_working_hour'),
       work_order_date_string: tableColumns.includes('work_order_date_string'),
+      percent_production: tableColumns.includes('percent_production'),
+      percent_plan: tableColumns.includes('percent_plan'),
     };
     setDisplayOptions(initOptions);
   }, [tableColumns, selectedFolder]);
@@ -179,6 +182,7 @@ export default function GeneralTable(props) {
   const buttonCreateDailyMaterial = menuButtons.find((button) => button.name === view.dailyDeliveryMateial.list.create);
   const buttonCreateMaterialPart = menuButtons.find((button) => button.name === view.materialPart.list.create);
   const buttonCreateMaterialRequisition = menuButtons.find((button) => button.name === view.materialRequisition.list.create);
+  const buttonExportMaterial = menuButtons.find((button) => button.name === view.purchaseMaterial.list.export);
 
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -646,6 +650,16 @@ export default function GeneralTable(props) {
     setConfirmPopup({ type: CONFIRM_CHANGE, open: true, title, message, action, payload, onSuccess });
   };
 
+  const handleOpenSnackbar = (type, text) => {
+    dispatch({
+      type: SNACKBAR_OPEN,
+      open: true,
+      variant: 'alert',
+      message: text,
+      alertSeverity: type,
+    });
+  };
+
   const toggleSetActiveAccount = async (event, email_address, is_active) => {
     event.stopPropagation();
     await activeAccount({
@@ -797,6 +811,25 @@ export default function GeneralTable(props) {
     });
   };
 
+  const handleExportMaterial = async () => {
+    showConfirmPopup({
+      title: 'Xuất vật tư thiếu',
+      message: 'Bạn có chắc chắn muốn xuất file tổng hợp tất cả vật tư thiếu?',
+      action: exportMaterial,
+      payload: null,
+      onSuccess: (url) => handleDownload(url),
+    });
+  };
+
+  const handleDownload = (url) => {
+    if (!url) {
+      handleOpenSnackbar('error', 'Không tìm thấy file!');
+      return;
+    }
+    downloadFile(url);
+    handleOpenSnackbar('success', 'Tải file thành công!');
+  };
+
   const clickSuccess = () => {};
 
   const getColor = (status) => {
@@ -869,6 +902,8 @@ export default function GeneralTable(props) {
     buttonCreateDailyMaterial,
     buttonCreateMaterialPart,
     buttonCreateMaterialRequisition,
+    buttonExportMaterial,
+    handleExportMaterial,
   };
 
   return (
@@ -1195,6 +1230,8 @@ export default function GeneralTable(props) {
                                   {row.created_date ? formatDate(new Date(row.created_date), 'dd/MM/yyyy') : ''}
                                 </TableCell>
                               )}
+                              {displayOptions.percent_production && <TableCell align="left">{row.percent_production || '0'}%</TableCell>}
+                              {displayOptions.percent_plan && <TableCell align="left">{row.percent_plan || '0'}%</TableCell>}
                               {displayOptions.order__title && (
                                 <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
                                   {row.order_title}{' '}
