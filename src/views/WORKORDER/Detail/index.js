@@ -481,20 +481,19 @@ const WorkorderModal = () => {
       } else {
         if ((parseInt(product.quantity_in_workorder) + parseInt(value) - parseInt(productList[index].quantity_in_box)) <= (parseInt(product.quantity_in_box)-parseInt(product.quantity_produced))) {
         setCheckChangeData({ ...checkChangeData, changeWorkOrderDaily: true })
-        try {
-          orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder += value - productList[index].quantity_in_box;
-          dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
-        } catch { }
-  
+        orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder += value - productList[index].quantity_in_box;
+        dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
         productList[index].quantity_in_box = value;
         setProductList([...productList]);
         updateDataDailyRequest(productList);
       } else {
-        setSnackbarStatus({
-          isOpen: true,
-          type: 'error',
-          text: 'Số lượng đạt yêu cầu!',
-        })
+        const calculateQuantityChange =(parseInt(product.quantity_in_box)-parseInt(product.quantity_produced)) - (parseInt(product.quantity_in_workorder) - parseInt(productList[index].quantity_in_box))
+        setCheckChangeData({ ...checkChangeData, changeWorkOrderDaily: true })
+        orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder += calculateQuantityChange - productList[index].quantity_in_box;
+        dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
+        productList[index].quantity_in_box =calculateQuantityChange
+        setProductList([...productList]);
+        updateDataDailyRequest(productList);
       }
       }
       
