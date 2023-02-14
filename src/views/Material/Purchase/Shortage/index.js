@@ -54,6 +54,20 @@ const ShortageModal = () => {
       setMaterialSelected(materialSelected.filter((item) => item.part_id !== material.part_id));
     }
   };
+  const handleChangeMaterialAll = (value) => {
+    if(value){
+      var materialListNew = [];
+      materials.forEach((materialItem)=>{
+        const newMaterial = { ...materialItem, material_daily_requisition_id: materialItem.id };
+        materialListNew= [...materialListNew, newMaterial];
+      })
+     setMaterialSelected([...materialListNew])
+    } else {
+      setMaterialSelected([]);
+    }
+    
+  };
+
 
   const getMaterial = async (supplierID, warehouseID) => {
     try {
@@ -134,7 +148,11 @@ const ShortageModal = () => {
                                 <Table size="small" stickyHeader aria-label="sticky table">
                                   <TableHead>
                                     <TableRow>
-                                      <TableCell align="left">Chọn</TableCell>
+                                      <TableCell align="left"> <Checkbox
+                                            checked={materialSelected?.length === materials.length}
+                                            onChange={(e) => handleChangeMaterialAll(materialSelected?.length !== materials.length)}
+                                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                                          /></TableCell>
                                       <TableCell align="left">Ngày sản xuất</TableCell>
                                       <TableCell align="left">Mã Đơn hàng</TableCell>
                                       <TableCell align="left">Mã vật tư</TableCell>
@@ -188,7 +206,7 @@ const ShortageModal = () => {
               </Grid>
               <Grid item>
                 <Grid container spacing={2} justifyContent="flex-end">
-                  <Grid item>
+                  <Grid item className={classes.gridItemInfoButtonWrap}>
                     <Button variant="contained" onClick={handleSave} style={{ background: 'rgb(97, 42, 255)' }}>
                       Chọn
                     </Button>
