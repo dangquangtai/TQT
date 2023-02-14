@@ -23,7 +23,7 @@ const ProductCategoryWrapper = () => {
   return (
     <React.Fragment>
       <ProductCategoryTable
-        tableTitle="Quản lý Danh mục Thành phẩm"
+        tableTitle="Danh mục Thành phẩm"
         url={getUrlByAction(selectedFolder)}
         documentType="productCategory"
         setActiveUrl={apiEndpoints.active_product_category}

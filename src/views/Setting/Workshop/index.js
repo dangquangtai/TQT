@@ -22,7 +22,7 @@ const WorkshopWrapper = () => {
   return (
     <React.Fragment>
       <WorkshopTable
-        tableTitle="Quản lý Xưởng sản xuất"
+        tableTitle="Xưởng sản xuất"
         url={getUrlByAction(selectedFolder)}
         documentType="workshop"
         setActiveUrl={apiEndpoints.active_workshop}

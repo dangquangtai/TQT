@@ -28,6 +28,7 @@ export const style = {
   tableTitle: {
     fontSize: '24px',
     fontWeight: 'bold',
+    textTransform: 'capitalize',
   },
   assessWrap: {
     display: 'flex',

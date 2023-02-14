@@ -23,7 +23,7 @@ const SupplierCategoryWrapper = () => {
   return (
     <React.Fragment>
       <SupplierCategoryTable
-        tableTitle="Quản lý Danh mục nhà cung cấp"
+        tableTitle="Danh mục nhà cung cấp"
         url={getUrlByAction(selectedFolder)}
         documentType="supplierCategory"
         setActiveUrl={apiEndpoints.active_supplier_category}

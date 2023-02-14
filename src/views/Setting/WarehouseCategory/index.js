@@ -23,7 +23,7 @@ const WarehouseCategoryWrapper = () => {
   return (
     <React.Fragment>
       <WarehouseCategoryTable
-        tableTitle="Quản lý Loại kiểm kê"
+        tableTitle="Loại kiểm kê"
         url={getUrlByAction(selectedFolder)}
         documentType="warehouseCategory"
         setActiveUrl={apiEndpoints.active_warehouse_category}

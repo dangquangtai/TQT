@@ -21,7 +21,7 @@ const ProductInventoryWrapper = () => {
   return (
     <React.Fragment>
       <ProductInventoryTable
-        tableTitle="Quản lý tồn kho thành phẩm"
+        tableTitle="tồn kho thành phẩm"
         url={getUrlByAction(selectedFolder)}
         documentType="productInventory"
         // setActiveUrl={apiEndpoints.active_Product_Inventory}

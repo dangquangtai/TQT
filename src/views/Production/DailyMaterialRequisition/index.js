@@ -22,7 +22,7 @@ const DailyMaterialRequisitionWrapper = () => {
   return (
     <React.Fragment>
       <DailyMaterialRequisitionTable
-        tableTitle="Quản lý Xuất kho vật tư theo lệnh sản xuất"
+        tableTitle="Xuất kho vật tư theo lệnh sản xuất"
         url={getUrlByAction(selectedFolder)}
         documentType="dailyMaterialRequisition"
         // setActiveUrl={apiEndpoints.active_product_warehouse}

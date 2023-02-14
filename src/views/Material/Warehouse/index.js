@@ -22,7 +22,7 @@ const MaterialWarehouseWrapper = () => {
   return (
     <React.Fragment>
       <MaterialWarehouseTable
-        tableTitle="Quản lý kho vật tư"
+        tableTitle="kho vật tư"
         url={getUrlByAction(selectedFolder)}
         documentType="materialWarehouse"
         setActiveUrl={apiEndpoints.active_material_warehouse}

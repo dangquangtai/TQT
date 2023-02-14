@@ -23,7 +23,7 @@ const CustomerCategoryWrapper = () => {
   return (
     <React.Fragment>
       <CustomerCategoryTable
-        tableTitle="Quản lý Danh mục khách hàng"
+        tableTitle="Danh mục khách hàng"
         url={getUrlByAction(selectedFolder)}
         documentType="customerCategory"
         setActiveUrl={apiEndpoints.active_customer_category}

@@ -21,7 +21,7 @@ const PurchaseMaterialWrapper = () => {
   return (
     <React.Fragment>
       <PurchaseMaterialTable
-        tableTitle="Quản lý mua vật tư theo kế hoạch sản xuất"
+        tableTitle="Mua vật tư theo kế hoạch sản xuất"
         url={getUrlByAction(selectedFolder)}
         documentType="purchaseMaterial"
         // setActiveUrl={apiEndpoints.active_material_Inventory}

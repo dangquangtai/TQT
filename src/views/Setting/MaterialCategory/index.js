@@ -23,7 +23,7 @@ const MaterialCategoryWrapper = () => {
   return (
     <React.Fragment>
       <MaterialCategoryTable
-        tableTitle="Quản lý Danh mục vật tư"
+        tableTitle="Danh mục vật tư"
         url={getUrlByAction(selectedFolder)}
         documentType="materialCategory"
         setActiveUrl={apiEndpoints.active_material_category}

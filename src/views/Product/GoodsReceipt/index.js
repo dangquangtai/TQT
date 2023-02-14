@@ -22,7 +22,7 @@ const GoodsReceiptWrapper = () => {
   return (
     <React.Fragment>
       <GoodsReceiptTable
-        tableTitle="Quản lý nhập kho thành phẩm"
+        tableTitle="nhập kho thành phẩm"
         url={getUrlByAction(selectedFolder)}
         documentType="goodsReceipt"
         setActiveUrl={apiEndpoints.active_product_warehouse}
