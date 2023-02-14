@@ -937,6 +937,11 @@ const WorkorderModal = () => {
   };
   useEffect(() => {
     setDopDownData(orderRedux.orderDetail || []);
+    if(!orderRedux.orderDetail) return
+    handleCreateWorkOrder(false, false)
+    productionDailyRequestList[indexDate].percent = calculateTotalPercentList(productList, workorderRequest.number_of_worker, workorderRequest.number_of_working_hour)
+    setCurrentDate(currentDate);
+    setIndexDate(indexDate);
   }, [orderRedux.orderDetail]);
 
   useEffect(() => {
