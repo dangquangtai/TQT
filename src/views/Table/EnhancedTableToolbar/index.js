@@ -207,8 +207,8 @@ const EnhancedTableToolbar = (props) => {
       <Grid container justifyContent="flex-end" spacing={gridSpacing}>
         <Grid
           item
-          lg={documentType === 'department' ? 6 : documentType === 'processrole' ? 12 : 3}
-          md={documentType === 'department' ? 6 : documentType === 'processrole' ? 12 : 3}
+          lg={documentType === 'department' ? 6 : documentType === 'processrole' ? 12 : 4}
+          md={documentType === 'department' ? 6 : documentType === 'processrole' ? 12 : 4}
           xs={12}
           className={classes.toolSearchWrap}
         >
@@ -436,28 +436,30 @@ const EnhancedTableToolbar = (props) => {
                 )}
               </Grid>
             </Grid>
-            <Grid item xs={8}>
-              <Grid container justifyContent="flex-start" spacing={gridSpacing}>
-                {buttonAddDeptRole && (
-                  <Grid item xs={6}>
-                    <Button variant="contained" color={'primary'} onClick={() => handleClickUpdateDeptProcessRole()}>
-                      {buttonAddDeptRole.text}
-                    </Button>
-                  </Grid>
-                )}
-                {buttonAddAccountRole && (
-                  <Grid item xs={6}>
-                    <Button variant="contained" color={'primary'} onClick={() => handleClickUpdateUserProcessRole()}>
-                      {buttonAddAccountRole.text}
-                    </Button>
-                  </Grid>
-                )}
+            {(documentType === 'department' || documentType === 'processrole') && (
+              <Grid item xs={8}>
+                <Grid container justifyContent="flex-start" spacing={gridSpacing}>
+                  {buttonAddDeptRole && (
+                    <Grid item xs={6}>
+                      <Button variant="contained" color={'primary'} onClick={() => handleClickUpdateDeptProcessRole()}>
+                        {buttonAddDeptRole.text}
+                      </Button>
+                    </Grid>
+                  )}
+                  {buttonAddAccountRole && (
+                    <Grid item xs={6}>
+                      <Button variant="contained" color={'primary'} onClick={() => handleClickUpdateUserProcessRole()}>
+                        {buttonAddAccountRole.text}
+                      </Button>
+                    </Grid>
+                  )}
+                </Grid>
               </Grid>
-            </Grid>
+            )}
           </Grid>
         </Grid>
         {documentType !== 'department' && documentType !== 'processrole' && (
-          <Grid item lg={3} md={6} xs={12} className={classes.toolSearchWrap}>
+          <Grid item lg={2} md={6} xs={12} className={classes.toolSearchWrap}>
             {numSelected > 0 && (
               <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
                 {numSelected} bản ghi được chọn
