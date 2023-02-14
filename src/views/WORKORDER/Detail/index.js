@@ -461,6 +461,14 @@ const WorkorderModal = () => {
         text: 'Mở mục tiêu sản xuất để thực hiện thay đổi!',
       })
     } else {
+      if(productList[index].customer_order_code!=order.order_code){
+        setSnackbarStatus({
+          isOpen: true,
+          type: 'error',
+          text: `Chọn đơn hàng mã ${productList[index].customer_order_code} để cập nhập số lượng!`,
+        })
+        return
+      }
       const value = e.target.value;
       let orderDetail = order?.orderDetail;
       let product = orderDetail.find((x) => x.product_id === productList[index].product_id)
@@ -468,7 +476,7 @@ const WorkorderModal = () => {
          setSnackbarStatus({
           isOpen: true,
           type: 'error',
-          text: `Chọn đơn hàng mã ${productList[index].customer_order_code}!`,
+          text: `Chọn đơn hàng mã ${productList[index].customer_order_code} để cập nhập số lượng!`,
         })
       } else {
         if ((parseInt(product.quantity_in_workorder) + parseInt(value) - parseInt(productList[index].quantity_in_box)) <= (parseInt(product.quantity_in_box)-parseInt(product.quantity_produced))) {
