@@ -23,6 +23,7 @@ import {
   CLOSE_MODAL_MATERIAL,
   REMOVE_MATERIAL,
   SET_MATERIAL,
+  MATERIAL_RECEIVED,
 } from './store/actions.js';
 
 const syncConfig = {
@@ -35,6 +36,7 @@ const syncConfig = {
     REMOVE_MATERIAL,
     SET_MATERIAL,
     CLOSE_MODAL_MATERIAL,
+    MATERIAL_RECEIVED,
   ],
 };
 const middlewares = [createStateSyncMiddleware(syncConfig)];

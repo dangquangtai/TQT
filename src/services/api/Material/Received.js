@@ -67,3 +67,12 @@ export const exportMaterialReceived = (id) => {
       console.log(error);
     });
 };
+
+export const getMaterialOrderList = (supplier_id, warehouse_id) => {
+  return axiosServices.post(apiEndpoints.get_material_order_list, { supplier_id, warehouse_id }).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data;
+    }
+    return [];
+  });
+};

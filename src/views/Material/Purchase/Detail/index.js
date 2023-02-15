@@ -259,11 +259,13 @@ const PurchaseMaterialModal = () => {
     });
     setMaterialList(newMaterial);
   }, [materialBuy]);
+
   useEffect(() => {
     window.onbeforeunload = function (event) {
       handleCloseDialog();
     };
   }, []);
+
   return (
     <React.Fragment>
       <FirebaseUpload
@@ -348,7 +350,7 @@ const PurchaseMaterialModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={3} className={classes.gridItemInfo}>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Mã đơn hàng:</span>
+                              <span className={classes.tabItemLabelField}>Mã đơn hàng(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -360,7 +362,7 @@ const PurchaseMaterialModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên đơn hàng:</span>
+                              <span className={classes.tabItemLabelField}>Tên đơn hàng(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -372,21 +374,21 @@ const PurchaseMaterialModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày lập đơn hàng:</span>
+                              <span className={classes.tabItemLabelField}>Ngày lập đơn hàng(*):</span>
                               <DatePicker
                                 date={purchaseMaterialData.order_date}
                                 onChange={(date) => setPurchaseMaterialData({ ...purchaseMaterialData, order_date: date })}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày giao hàng:</span>
+                              <span className={classes.tabItemLabelField}>Ngày giao hàng(*):</span>
                               <DatePicker
                                 date={purchaseMaterialData.delivery_date}
                                 onChange={(date) => setPurchaseMaterialData({ ...purchaseMaterialData, delivery_date: date })}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà cung cấp:</span>
+                              <span className={classes.tabItemLabelField}>Nhà cung cấp(*):</span>
                               <Autocomplete
                                 id="combo-box-demo"
                                 options={supplier}
@@ -406,7 +408,7 @@ const PurchaseMaterialModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà kho:</span>
+                              <span className={classes.tabItemLabelField}>Nhà kho(*):</span>
                               <TextField
                                 fullWidth
                                 name="warehouse_id"
@@ -424,7 +426,7 @@ const PurchaseMaterialModal = () => {
                               </TextField>
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Trạng thái:</span>
+                              <span className={classes.tabItemLabelField}>Trạng thái(*):</span>
                               <TextField
                                 fullWidth
                                 name="status"
@@ -474,6 +476,7 @@ const PurchaseMaterialModal = () => {
                             <Table className={classes.tableSmall} aria-label="simple table">
                               <TableHead>
                                 <TableRow>
+                                  <TableCell align="left">Mã đơn hàng</TableCell>
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">SL cần</TableCell>
@@ -486,7 +489,10 @@ const PurchaseMaterialModal = () => {
                               <TableBody>
                                 {materialList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '20%' }}>
+                                    <TableCell align="left" style={{ width: '15%' }}>
+                                      {row?.order_code}
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '15%' }}>
                                       <Tooltip title={row?.part_code}>
                                         <span>{row?.part_code}</span>
                                       </Tooltip>
@@ -499,7 +505,7 @@ const PurchaseMaterialModal = () => {
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       {row.quantity_in_piece}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
+                                    <TableCell align="left" style={{ width: '5%' }}>
                                       {row.unit_name}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
@@ -518,7 +524,7 @@ const PurchaseMaterialModal = () => {
                                         onChange={(e) => handleChangeMaterial(index, e)}
                                       />
                                     </TableCell>
-                                    <TableCell align="center" style={{ width: '10%' }}>
+                                    <TableCell align="center" style={{ width: '5%' }}>
                                       <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>
                                         <Delete />
                                       </IconButton>

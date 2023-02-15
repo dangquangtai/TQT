@@ -30,3 +30,4 @@ export const ADD_MATERIAL = '@order/ADD_MATERIAL';
 export const REMOVE_MATERIAL = '@order/REMOVE_MATERIAL';
 export const SET_MATERIAL = '@order/SET_MATERIAL';
 export const CLOSE_MODAL_MATERIAL = '@order/CLOSE_MODAL_MATERIAL';
+export const MATERIAL_RECEIVED = '@order/MATERIAL_RECEIVED';

@@ -137,9 +137,31 @@ const DailyMaterialReceivedModal = () => {
   const handleChangeProduct = (index, e) => {
     const newreceivedDetailList = [...receivedDetailList];
     const { name, value } = e.target;
-    if (name === 'total_return_quantity_in_piece' && value > newreceivedDetailList[index].quantity_in_piece) {
-      handleOpenSnackbar('error', 'Số lượng không được lớn hơn số lượng trong kế hoạch!');
-      return;
+
+    const quantity = +newreceivedDetailList[index].quantity_in_piece;
+    const consumed_quantity = +newreceivedDetailList[index].consumed_quantity_in_piece;
+    const broken_quantity = +newreceivedDetailList[index].total_broken_quantity_in_piece;
+    const return_quantity = +newreceivedDetailList[index].total_return_quantity_in_piece;
+
+    if (name === 'consumed_quantity_in_piece') {
+      if (value > quantity) {
+        handleOpenSnackbar('error', 'Số lượng sử dụng không được lớn hơn số lượng trong kế hoạch!');
+        return;
+      }
+      if (+value + return_quantity + broken_quantity > quantity) {
+        handleOpenSnackbar('error', 'Số lượng không được lớn hơn số lượng trong kế hoạch!');
+        return;
+      }
+    }
+    if (name === 'total_return_quantity_in_piece') {
+      if (value > quantity) {
+        handleOpenSnackbar('error', 'Số lượng hoàn trả không được lớn hơn số lượng trong kế hoạch!');
+        return;
+      }
+      if (+value + consumed_quantity + broken_quantity > quantity) {
+        handleOpenSnackbar('error', 'Số lượng không được lớn hơn số lượng trong kế hoạch!');
+        return;
+      }
     }
     newreceivedDetailList[index] = { ...newreceivedDetailList[index], [name]: value };
     setReceivedDetailList(newreceivedDetailList);
@@ -378,24 +400,25 @@ const DailyMaterialReceivedModal = () => {
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
-                            <Table aria-label="simple table">
+                            <Table aria-label="simple table" size="small">
                               <TableHead>
                                 <TableRow>
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">Nhà cung cấp</TableCell>
-                                  <TableCell align="left">Số lượng xuất</TableCell>
-                                  <TableCell align="left">Số lượng nhập</TableCell>
-                                  <TableCell align="left">Số lượng hỏng</TableCell>
+                                  <TableCell align="left">SL xuất</TableCell>
+                                  <TableCell align="left">SL sử dụng</TableCell>
+                                  <TableCell align="left">SL nhập</TableCell>
+                                  <TableCell align="left">SL hỏng</TableCell>
                                   <TableCell align="left">Chênh lệch</TableCell>
-                                  <TableCell align="left">Chi tiết hỏng</TableCell>
+                                  <TableCell align="left">Hỏng</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
                                 {receivedDetailList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '20%' }}>
+                                    <TableCell align="left" style={{ width: '15%' }}>
                                       <Tooltip title={row?.part_code}>
                                         <span>{row?.part_code}</span>
                                       </Tooltip>
@@ -418,10 +441,10 @@ const DailyMaterialReceivedModal = () => {
                                         }}
                                         fullWidth
                                         variant="outlined"
-                                        name="total_return_quantity_in_piece"
+                                        name="consumed_quantity_in_piece"
                                         type="number"
                                         size="small"
-                                        value={row?.total_return_quantity_in_piece || ''}
+                                        value={row?.consumed_quantity_in_piece || ''}
                                         onChange={(e) => handleChangeProduct(index, e)}
                                       />
                                     </TableCell>
@@ -431,19 +454,28 @@ const DailyMaterialReceivedModal = () => {
                                           inputProps: { min: 0 },
                                         }}
                                         fullWidth
-                                        disabled
                                         variant="outlined"
-                                        name="total_broken_quantity_in_piece"
+                                        name="total_return_quantity_in_piece"
                                         type="number"
                                         size="small"
-                                        value={row?.total_broken_quantity_in_piece || ''}
+                                        value={row?.total_return_quantity_in_piece || ''}
                                         onChange={(e) => handleChangeProduct(index, e)}
                                       />
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '5%' }}>
-                                      {row.quantity_in_piece - row.total_return_quantity_in_piece - row.total_broken_quantity_in_piece}
+                                      {row?.total_broken_quantity_in_piece || '0'}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '5%' }} onClick={() => handleOpenBrokenModal(row, index)}>
+                                    <TableCell align="left" style={{ width: '5%' }}>
+                                      {row.quantity_in_piece -
+                                        row.consumed_quantity_in_piece -
+                                        row.total_return_quantity_in_piece -
+                                        row.total_broken_quantity_in_piece}
+                                    </TableCell>
+                                    <TableCell
+                                      align="left"
+                                      style={{ width: '5%', cursor: 'pointer', textDecoration: 'underline' }}
+                                      onClick={() => handleOpenBrokenModal(row, index)}
+                                    >
                                       Chi tiết
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '5%' }}>
