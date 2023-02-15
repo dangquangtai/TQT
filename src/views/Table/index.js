@@ -283,16 +283,15 @@ export default function GeneralTable(props) {
   }, []);
 
   useEffect(() => {
-    if (selectedDocument === null && documents?.length > 0) {
+    if (process_role_code_selected !='' && documentType==='processrole'){
       reloadCurrentDocuments(page);
     }
-
     if (changeDeptReload === 0) {
       ReloadDept(1);
     } else {
       ReloadDept(0);
     }
-  }, [selectedDocument, process_role_code_selected]);
+  }, [ process_role_code_selected]);
 
   const fetchDocument = (additionalQuery) => {
     const queries = { ...defaultQueries, ...additionalQuery };
