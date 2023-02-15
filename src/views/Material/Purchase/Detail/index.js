@@ -49,7 +49,7 @@ import {
 } from './../../../../services/api/Material/Purchase';
 import { popupWindow } from '../../../../utils/helper.js';
 import { getSupplierListByWorkOrder } from './../../../../services/api/Partner/Supplier';
-
+import { format as formatDate } from 'date-fns';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -478,6 +478,7 @@ const PurchaseMaterialModal = () => {
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">SL cần</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
+                                  <TableCell align="left">Ngày sản xuất</TableCell>
                                   <TableCell align="left">Ghi chú</TableCell>
                                   <TableCell align="center">Xoá</TableCell>
                                 </TableRow>
@@ -500,6 +501,9 @@ const PurchaseMaterialModal = () => {
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       {row.unit_name}
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '10%' }}>
+                                      {row.order_date ? formatDate(new Date(row.order_date), 'dd/MM/yyyy') : ''}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '25%' }}>
                                       <TextField
