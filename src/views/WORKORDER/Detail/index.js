@@ -28,7 +28,7 @@ import { useRef } from 'react';
 import PropTypes from 'prop-types';
 import useStyles from './classes.js';
 import { FLOATING_MENU_CHANGE, ORDER_DETAIL_CHANGE, DOCUMENT_CHANGE, MATERIAL_CHANGE, ORDER_CHANGE } from '../../../store/actions.js';
-import { SkipNext, SkipPrevious } from '@material-ui/icons';
+import { LocalConvenienceStoreOutlined, SkipNext, SkipPrevious } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { month, weekday } from './../data';
 import { Delete } from '@material-ui/icons';
@@ -91,6 +91,9 @@ const WorkorderModal = () => {
     changeWorkOrderRequest: false,
     changeWorkOrderDaily: false,
   })
+  const [workShopID, setWorkShopID] = useState('');
+  const [productWHID, setProductWHID] = useState('');
+  const [materialWHID, setMaterialWhID] = useState('');
   const [dayCurrent, setDateCurrent] = useState('');
   const [productionDailyRequestList, setProductionDailyRequest] = useState([]);
   const [end, setEnd] = useState(0);
@@ -114,11 +117,7 @@ const WorkorderModal = () => {
     title: '',
     to_date: '',
     from_date: '',
-    workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
-    materialwh_id: '207b6a56-73e1-11ed-b860-005056a3c175',
-    productwh_id: 'a45934f4-73bb-11ed-b860-005056a3c175',
   });
-
   const [productionStatus, setProductionStatus] = useState([
     {
       id: '',
@@ -327,6 +326,9 @@ const WorkorderModal = () => {
             order_title: workorder.title,
             work_order_date: currentDate,
             id: workorderRequest.id,
+            material_warehouse_id: materialWHID,
+            product_warehouse_id: productWHID,
+            workshop_id: workShopID
           })
           productionDailyRequestList[indexDate].id = IdWorkorderRequest
         }
@@ -550,6 +552,9 @@ const WorkorderModal = () => {
         productionDailyRequestList[indexDate].color_check = productListApi.work_order_request.color_check
         productionDailyRequestList[indexDate].is_enough = productListApi.work_order_request.is_enough
       }
+      setProductWHID(productListApi.work_order_request.product_warehouse_id);
+      setMaterialWhID(productListApi.work_order_request.material_warehouse_id);
+      setWorkShopID(productListApi.work_order_request.workshop_id);
       setDisable(productListApi.work_order_request.is_disable)
       setProductList(productListApi.work_order_detail);
       setWorkorderRequest({ ...productListApi.work_order_request });
@@ -581,9 +586,9 @@ const WorkorderModal = () => {
     setCheckChangeData({ changeWorkOrder: false, changeWorkOrderDaily: false, changeWorkOrderRequest: false })
     setWorkorder({
       title: '', status: '', order_id: '', to_date: '', from_date: '',
-      workshop_id: '4bcc7f81-785d-11ed-b861-005056a3c175',
-      materialwh_id: '207b6a56-73e1-11ed-b860-005056a3c175',
-      productwh_id: 'a45934f4-73bb-11ed-b860-005056a3c175',
+      workshop_id: workshopList[0].Key,
+      materialwh_id: materialWHSList[0].id,
+      productwh_id: productWHSList[0].Key
     });
     setWorkorderRequest({})
     setProductList([]);
@@ -666,14 +671,21 @@ const WorkorderModal = () => {
     return total.toFixed(1);
   };
   const fetchStatus = async () => {
-    let data = await getStatusList();
-    setProductionStatus(data);
-    data = await getWorkShopList();
-    setWorkShopList([...data])
-    data = await getMaterialWHSList();
-    setMaterialWHSList([...data])
-    data = await getProductWHSList();
-    setProductWHSList([...data])
+    let status = await getStatusList();
+    setProductionStatus(status);
+    let workshop = await getWorkShopList();
+    setWorkShopList([...workshop])
+    let material = await getMaterialWHSList();
+    setMaterialWHSList([...material])
+    let productwh = await getProductWHSList();
+    setProductWHSList([...productwh]);
+    setWorkorder({...workorder,
+      workshop_id: workshop[0].Key,
+      materialwh_id: material[0].id,
+      productwh_id: productwh[0].Key})
+    setWorkShopID(workshop[0].Key);
+    setProductWHID(productwh[0].Key);
+    setMaterialWhID(material[0].id)
   };
   function toJSONLocal(date) {
     var local = new Date(date);
@@ -681,7 +693,6 @@ const WorkorderModal = () => {
     return local.toJSON().slice(0, 10);
   }
   const handleSetProduct = async () => {
-
     let to_date = '';
     let from_date = '';
     let title = '';
@@ -689,9 +700,7 @@ const WorkorderModal = () => {
     let order_code = '';
     if (!selectedDocument) {
       let date = new Date();
-
       if (date.getDate() < 10) {
-
         from_date = date.getFullYear() + '-' + month[date.getMonth()] + '-0' + date.getDate();
       } else {
         from_date = date.getFullYear() + '-' + month[date.getMonth()] + '-' + date.getDate();
@@ -710,8 +719,6 @@ const WorkorderModal = () => {
       status_code = selectedDocument.status;
       order_code = selectedDocument.order_code;
     }
-
-
     workorder.id = selectedDocument?.id || ''
     setWorkorder({
       ...workorder,
@@ -736,7 +743,8 @@ const WorkorderModal = () => {
               work_order_date: day,
               percent: (0 / 1).toFixed(1),
               is_enough: false,
-              color_check: 'yellow'
+              color_check: 'yellow',
+             
             },
           ];
         } else {
@@ -759,7 +767,8 @@ const WorkorderModal = () => {
                 id: selectedDocument.production_daily_request[index]?.id || "",
                 percent: percent,
                 is_enough: selectedDocument.production_daily_request[index]?.is_enough,
-                color_check: selectedDocument.production_daily_request[index]?.color_check
+                color_check: selectedDocument.production_daily_request[index]?.color_check,
+               
               },
             ];
           }
@@ -771,7 +780,8 @@ const WorkorderModal = () => {
                 id: "",
                 percent: percent,
                 is_enough: false,
-                color_check: 'yellow'
+                color_check: 'yellow',
+               
               },
             ];
           }
@@ -805,8 +815,6 @@ const WorkorderModal = () => {
         setDateListNull(datenull);
       }
       handleGetWorkOrderRequest(date[indexCurrentDate].id, -1)
-
-
     }
   };
 
@@ -953,7 +961,13 @@ const WorkorderModal = () => {
 
   useEffect(() => {
     fetchStatus();
+    window.onbeforeunload = function (event) {
+      handleCloseDialog()
+    };
   }, []);
+  useEffect(()=>{
+    handleSetProduct();
+  },[openDialog])
   useEffect(() => {
     if (orderReduxWork?.workorderDetail?.data === 1) {
       handleGetWorkOrderRequest(productionDailyRequestList[indexDate].id, -1)
@@ -963,20 +977,11 @@ const WorkorderModal = () => {
   useEffect(() => {
     handleSetProduct();
   }, [selectedDocument]);
-  // useEffect(()=>{
-  //     if (openDialog===false) return
-  //     if (!selectedDocument) return
-  //       popupWindow(`/dashboard/workorder/order-list`, `Mục tiêu sản xuất`)
-  // },[openDialog])
   useEffect(() => {
     if (checkChangeData.changeWorkOrder)
       handleSetDate(workorder.from_date, workorder.to_date);
   }, [workorder.from_date, workorder.to_date]);
-  useEffect(() => {
-    window.onbeforeunload = function (event) {
-      handleCloseDialog()
-    };
-  }, [])
+  
   return (
     <React.Fragment>
       {snackbarStatus.isOpen && (
@@ -1071,8 +1076,8 @@ const WorkorderModal = () => {
                                     id="outlined-size-small"
                                     variant="outlined"
                                     size="small"
-                                    value={workorder?.workshop_id}
-                                    onChange={(event) => setWorkorder({ ...workorder, workshop_id: event.target.value })}
+                                    value={workShopID}
+                                    onChange={(event) => setWorkShopID( event.target.value )}
                                   >
                                     {workshopList &&
                                       workshopList.map((item) => (
@@ -1149,8 +1154,8 @@ const WorkorderModal = () => {
                                     id="outlined-size-small"
                                     variant="outlined"
                                     size="small"
-                                    value={workorder?.materialwh_id}
-                                    onChange={(event) => setWorkorder({ ...workorder, materialwh_id: event.target.value })}
+                                    value={materialWHID}
+                                    onChange={(event) => setMaterialWhID( event.target.value )}
                                   >
                                     {materialWHSList &&
                                       materialWHSList.map((item) => (
@@ -1170,8 +1175,8 @@ const WorkorderModal = () => {
                                     id="outlined-size-small"
                                     variant="outlined"
                                     size="small"
-                                    value={workorder?.productwh_id}
-                                    onChange={(event) => setWorkorder({ ...workorder, productwh_id: event.target.value })}
+                                    value={productWHID}
+                                    onChange={(event) => setProductWHID( event.target.value )}
                                   >
                                     {productWHSList &&
                                       productWHSList.map((item) => (
