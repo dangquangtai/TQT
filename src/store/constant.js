@@ -196,6 +196,7 @@ export const apiEndpoints = {
   get_received_material_status: '/Primary/?FlowAlias=bs_api_factory_get_received_material_status&action=api',
   delete_received_material: '/Primary/?FlowAlias=bs_api_factory_delete_received_material&action=api',
   export_material_received: '/Primary/?FlowAlias=bs_api_factory_export_production_material_received&action=api',
+  get_material_order_list: '/Primary/?FlowAlias=bs_api_factory_get_material_order_list&action=api',
 
   get_workshop_list_by_company: '/Primary/?FlowAlias=bs_api_factory_workorder_get_workshop_by_company_code&action=api',
   get_productwhs_list_by_company: '/Primary/?FlowAlias=bs_api_factory_productwhs_get_productwhs_by_company_code&action=api',

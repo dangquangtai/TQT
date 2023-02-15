@@ -33,7 +33,7 @@ import useStyles from './../../../../utils/classes';
 import useView from './../../../../hooks/useView';
 import useConfirmPopup from './../../../../hooks/useConfirmPopup';
 import { view } from './../../../../store/constant';
-import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CONFIRM_CHANGE } from './../../../../store/actions';
+import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CONFIRM_CHANGE, CLOSE_MODAL_MATERIAL } from './../../../../store/actions';
 import FirebaseUpload from './../../../FloatingMenu/FirebaseUpload/index';
 import DatePicker from './../../../../component/DatePicker/index';
 import {
@@ -45,7 +45,7 @@ import {
 } from './../../../../services/api/Material/Received';
 import { getPurchaseMaterialByOrder, getPurchaseMaterialList } from '../../../../services/api/Material/Purchase.js';
 import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
-import { downloadFile } from './../../../../utils/helper';
+import { downloadFile, popupWindow } from './../../../../utils/helper';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -81,13 +81,14 @@ const ReceivedMaterialModal = () => {
   const exportButton = formButtons.find((button) => button.name === view.receivedMaterial.detail.export);
   const { receivedMaterialDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
+  const newWindow = React.useRef(null);
+  const { materialReceived } = useSelector((state) => state.material);
 
   const [receivedMaterialData, setReceivedMaterialData] = useState({
     received_date: new Date(),
     received_by: '',
     handled_by: '',
   });
-  const [materialOrderList, setMaterialOrderList] = useState([]);
   const [materialOrderDetailList, setMaterialOrderDetailList] = useState([]);
   const [receivedDetailList, setReceivedDetailList] = useState([]);
   const [statusList, setStatusList] = useState([]);
@@ -107,6 +108,8 @@ const ReceivedMaterialModal = () => {
   const handleCloseDialog = () => {
     setDocumentToDefault();
     dispatch({ type: FLOATING_MENU_CHANGE, receivedMaterialDocument: false });
+    dispatch({ type: CLOSE_MODAL_MATERIAL });
+    if (newWindow.current) newWindow.current.close();
   };
 
   const handleOpenSnackbar = (type, text) => {
@@ -172,85 +175,6 @@ const ReceivedMaterialModal = () => {
     setReceivedMaterialData({ ...receivedMaterialData, [name]: value });
   };
 
-  const handleAddReceivedDetail = () => {
-    if (!receivedMaterialData.supplier_id) {
-      handleOpenSnackbar('error', 'Vui lòng chọn nhà cung cấp!');
-      return;
-    }
-    setReceivedDetailList([
-      {
-        received_id: selectedDocument?.id || '',
-        material_order_id: '',
-        material_daily_requisition_id: '',
-        id: '',
-        part_id: '',
-        part_name: '',
-        part_code: '',
-        category_id: '',
-        category_name: '',
-        unit_id: '',
-        unit_name: '',
-        quantity_in_piece: 0,
-        supplier_id: '',
-        supplier_name: '',
-      },
-      ...receivedDetailList,
-    ]);
-    setMaterialOrderDetailList([[], ...materialOrderDetailList]);
-  };
-
-  const handleChangeOrder = async (index, newOrder) => {
-    const newReceivedDetailList = [...receivedDetailList];
-    newReceivedDetailList[index] = {
-      ...newReceivedDetailList[index],
-      material_order_id: newOrder?.id,
-      supplier_id: receivedMaterialData?.supplier_id,
-      supplier_name: receivedMaterialData?.supplier_name,
-    };
-    setReceivedDetailList(newReceivedDetailList);
-    const newOrderPartList = [...materialOrderDetailList];
-    if (receivedDetailList.filter((item) => item.material_order_id === newOrder?.id).length >= 1) {
-      const indexMaterial = receivedDetailList.findIndex((item) => item.material_order_id === newOrder?.id);
-      newOrderPartList[index] = materialOrderDetailList[indexMaterial];
-      setMaterialOrderDetailList(newOrderPartList);
-    } else {
-      const partList = await getPartListByOrder(newOrder?.id);
-      newOrderPartList[index] = partList;
-      setMaterialOrderDetailList(newOrderPartList);
-    }
-  };
-
-  const handleChangeMaterialCode = (index, newItem) => {
-    const newMaterialList = [...receivedDetailList];
-    const newMaterial = {
-      part_id: newItem?.part_id || '',
-      part_code: newItem?.part_code || '',
-      part_name: newItem?.part_name || '',
-      category_id: newItem?.category_id || '',
-      category_name: newItem?.category_name || '',
-      unit_id: newItem?.unit_id || '',
-      unit_name: newItem?.unit_name || '',
-      quantity_in_piece: newItem?.quantity_in_piece || 0,
-      material_daily_requisition_id: newItem?.material_daily_requisition_id || '',
-    };
-    newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
-    if (
-      receivedDetailList?.some((item) => item.material_order_id === newItem?.requisition_id) &&
-      receivedDetailList?.some((item) => item.part_id === newItem?.part_id)
-    ) {
-      handleOpenSnackbar('error', 'Vật tư đã tồn tại!');
-      return;
-    }
-    setReceivedDetailList(newMaterialList);
-  };
-
-  const handleChangeMaterial = (index, e) => {
-    const { name, value } = e.target;
-    const newReceivedDetailList = [...receivedDetailList];
-    newReceivedDetailList[index] = { ...newReceivedDetailList[index], [name]: value };
-    setReceivedDetailList(newReceivedDetailList);
-  };
-
   const handleDeleteMaterial = (index, id) => {
     if (id) {
       showConfirmPopup({
@@ -276,25 +200,6 @@ const ReceivedMaterialModal = () => {
     setMaterialOrderDetailList(newMaterialOrderDetailList);
   };
 
-  const getPartListByOrder = async (id) => {
-    const parts = await getPurchaseMaterialByOrder(id);
-    return parts;
-  };
-
-  const getPartListByReceivedDetail = async (receivedDetail) => {
-    const newMaterialOrderDetailList = [];
-    for (const [index, item] of receivedDetail.entries()) {
-      const checkReceivedDetail = [...receivedDetail].slice(0, index);
-      let parts = [];
-      if (checkReceivedDetail?.some((check) => check.material_order_id === item?.material_order_id)) {
-        const indexPartList = checkReceivedDetail?.findIndex((check) => check.material_order_id === item?.material_order_id);
-        parts = newMaterialOrderDetailList[indexPartList];
-      } else parts = await getPurchaseMaterialByOrder(item?.material_order_id);
-      newMaterialOrderDetailList.push(parts);
-    }
-    setMaterialOrderDetailList(newMaterialOrderDetailList);
-  };
-
   const handleClickExport = () => {
     showConfirmPopup({
       title: 'Xuất phiếu nhập vật tư',
@@ -314,6 +219,21 @@ const ReceivedMaterialModal = () => {
     handleOpenSnackbar('success', 'Tải file thành công!');
   };
 
+  const handleOpenShortageDialog = () => {
+    if (!receivedMaterialData.supplier_id) {
+      handleOpenSnackbar('error', 'Vui lòng chọn nhà cung cấp!');
+      return;
+    }
+    if (!receivedMaterialData.warehouse_id) {
+      handleOpenSnackbar('error', 'Vui lòng chọn kho!');
+      return;
+    }
+    newWindow.current = popupWindow(
+      `/received/material?supplier=${receivedMaterialData.supplier_id}&warehouse=${receivedMaterialData.warehouse_id}`,
+      'Vật tư'
+    );
+  };
+
   useEffect(() => {
     if (!selectedDocument) return;
     setReceivedMaterialData({
@@ -322,16 +242,7 @@ const ReceivedMaterialModal = () => {
     });
     const receivedDetail = selectedDocument?.received_detail;
     setReceivedDetailList(receivedDetail);
-    getPartListByReceivedDetail(receivedDetail);
   }, [selectedDocument]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const orders = await getPurchaseMaterialList(receivedMaterialData.supplier_id);
-      setMaterialOrderList(orders);
-    };
-    if (receivedMaterialData.supplier_id) fetchData();
-  }, [receivedMaterialData.supplier_id]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -343,6 +254,21 @@ const ReceivedMaterialModal = () => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (materialReceived === selectedDocument?.order_detail) return;
+    const newMaterial = materialReceived.map((item) => {
+      return {
+        ...item,
+        received_id: selectedDocument?.id || '',
+        material_order_id: item.requisition_id,
+        id: '',
+        customer_order_code: item.order_code,
+        customer_order_date: item.order_date,
+      };
+    });
+    setReceivedDetailList(newMaterial);
+  }, [materialReceived]);
 
   return (
     <React.Fragment>
@@ -557,11 +483,6 @@ const ReceivedMaterialModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>Danh sách vật tư</div>
-                          <Tooltip title="Thêm vật tư">
-                            <IconButton onClick={handleAddReceivedDetail}>
-                              <AddCircleOutline />
-                            </IconButton>
-                          </Tooltip>
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
@@ -580,26 +501,10 @@ const ReceivedMaterialModal = () => {
                                 {receivedDetailList?.map((row, index) => (
                                   <TableRow key={index}>
                                     <TableCell align="left" style={{ width: '20%' }}>
-                                      <Autocomplete
-                                        options={materialOrderList}
-                                        getOptionLabel={(option) => option.order_code || ''}
-                                        fullWidth
-                                        size="small"
-                                        value={materialOrderList?.find((item) => item.id === row.material_order_id) || null}
-                                        onChange={(event, newValue) => handleChangeOrder(index, newValue)}
-                                        renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                      />
+                                      {row.customer_order_code}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '25%' }}>
-                                      <Autocomplete
-                                        options={materialOrderDetailList[index] || []}
-                                        getOptionLabel={(option) => option.part_code || ''}
-                                        fullWidth
-                                        size="small"
-                                        value={materialOrderDetailList[index]?.find((item) => item.part_code === row.part_code) || null}
-                                        onChange={(event, newValue) => handleChangeMaterialCode(index, newValue)}
-                                        renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                      />
+                                      {row.part_code}
                                     </TableCell>
                                     <TableCell align="left" className={classes.maxWidthCell} style={{ width: '35%' }}>
                                       <Tooltip title={row?.part_name}>
@@ -656,6 +561,11 @@ const ReceivedMaterialModal = () => {
                 {saveButton && selectedDocument?.id && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
                     {saveButton.text}
+                  </Button>
+                )}
+                {!selectedDocument?.id && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleOpenShortageDialog}>
+                    Danh sách vật tư
                   </Button>
                 )}
                 {!selectedDocument?.id && (

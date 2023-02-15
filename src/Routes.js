@@ -12,6 +12,7 @@ import AppLayout from './layout/AppLayout/index';
 import OrderModal from './views/WORKORDER/Order/index.js';
 import AlertDialogSlide from './views/WORKORDER/Material';
 import ShortageModal from './views/Material/Purchase/Shortage/index';
+import MaterialModal from './views/Material/Received/Material';
 const AuthLogin = lazy(() => import('./views/Login'));
 const App = lazy(() => import('./views/Dashboard/App/index.js'));
 const DashboardDefault = lazy(() => import('./views/Dashboard/Default'));
@@ -47,7 +48,7 @@ const Routes = () => {
               </Switch>
             </MinimalLayout>
           </Route>
-          <Route path={['/dashboard/app', '/dashboard/workorder/:id', '/dashboard/material']}>
+          <Route path={['/dashboard/app', '/dashboard/workorder/:id', '/dashboard/material', '/received/material']}>
             <AppLayout>
               <Switch location={location} key={location.pathname}>
                 <NavMotion>
@@ -57,6 +58,7 @@ const Routes = () => {
                     <Route path="/dashboard/workorder/:id" component={OrderModal} />
                     <Route path="/dashboard/workorder/material" component={AlertDialogSlide} />
                     <Route path="/dashboard/material" component={ShortageModal} />
+                    <Route path="/received/material" component={MaterialModal} />
                   </AuthGuard>
                 </NavMotion>
               </Switch>

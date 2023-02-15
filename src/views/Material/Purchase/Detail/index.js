@@ -259,11 +259,13 @@ const PurchaseMaterialModal = () => {
     });
     setMaterialList(newMaterial);
   }, [materialBuy]);
+
   useEffect(() => {
     window.onbeforeunload = function (event) {
       handleCloseDialog();
     };
   }, []);
+
   return (
     <React.Fragment>
       <FirebaseUpload
