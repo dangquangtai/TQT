@@ -88,6 +88,7 @@ const ReceivedMaterialModal = () => {
     received_date: new Date(),
     received_by: '',
     handled_by: '',
+    notes: '',
   });
   const [materialOrderDetailList, setMaterialOrderDetailList] = useState([]);
   const [receivedDetailList, setReceivedDetailList] = useState([]);
@@ -123,7 +124,7 @@ const ReceivedMaterialModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setReceivedMaterialData({ received_date: new Date() });
+    setReceivedMaterialData({ received_date: new Date(), received_by: '', handled_by: '', notes: '' });
     setReceivedDetailList([]);
     setMaterialOrderDetailList([]);
     setTabIndex(0);
@@ -232,6 +233,16 @@ const ReceivedMaterialModal = () => {
       `/received/material?supplier=${receivedMaterialData.supplier_id}&warehouse=${receivedMaterialData.warehouse_id}`,
       'Vật tư'
     );
+  };
+
+  const handleChangeQuantity = (index, value) => {
+    const newReceivedDetailList = [...receivedDetailList];
+    if (value > newReceivedDetailList[index].quantity_in_piece) {
+      handleOpenSnackbar('error', 'Số lượng nhập không được lớn hơn số lượng đặt!');
+      return;
+    }
+    newReceivedDetailList[index].received_quantity_in_piece = value;
+    setReceivedDetailList(newReceivedDetailList);
   };
 
   useEffect(() => {
@@ -354,7 +365,7 @@ const ReceivedMaterialModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={2} className={classes.gridItemInfo}>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Mã phiếu:</span>
+                              <span className={classes.tabItemLabelField}>Mã phiếu(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -366,7 +377,7 @@ const ReceivedMaterialModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên phiếu nhập:</span>
+                              <span className={classes.tabItemLabelField}>Tên phiếu nhập(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -378,14 +389,14 @@ const ReceivedMaterialModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày nhận hàng:</span>
+                              <span className={classes.tabItemLabelField}>Ngày nhận hàng(*):</span>
                               <DatePicker
                                 date={receivedMaterialData.received_date}
                                 onChange={(date) => setReceivedMaterialData({ ...receivedMaterialData, received_date: date })}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Người nhận hàng:</span>
+                              <span className={classes.tabItemLabelField}>Người nhận hàng(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -397,7 +408,7 @@ const ReceivedMaterialModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà cung cấp:</span>
+                              <span className={classes.tabItemLabelField}>Nhà cung cấp(*):</span>
                               <Autocomplete
                                 options={supplierList}
                                 size="small"
@@ -414,19 +425,7 @@ const ReceivedMaterialModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Người giao hàng:</span>
-                              <TextField
-                                fullWidth
-                                variant="outlined"
-                                name="handled_by"
-                                type="text"
-                                size="small"
-                                value={receivedMaterialData.handled_by || ''}
-                                onChange={handleChanges}
-                              />
-                            </Grid>
-                            <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà kho:</span>
+                              <span className={classes.tabItemLabelField}>Nhà kho(*):</span>
                               <TextField
                                 fullWidth
                                 name="warehouse_id"
@@ -444,7 +443,19 @@ const ReceivedMaterialModal = () => {
                               </TextField>
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Trạng thái:</span>
+                              <span className={classes.tabItemLabelField}>Người giao hàng(*):</span>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="handled_by"
+                                type="text"
+                                size="small"
+                                value={receivedMaterialData.handled_by || ''}
+                                onChange={handleChanges}
+                              />
+                            </Grid>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Trạng thái(*):</span>
                               <TextField
                                 fullWidth
                                 name="status"
@@ -492,6 +503,7 @@ const ReceivedMaterialModal = () => {
                                   <TableCell align="left">Mã đơn hàng</TableCell>
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
+                                  <TableCell align="left">SL đặt</TableCell>
                                   <TableCell align="left">SL nhập</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
                                   <TableCell align="center">Xoá</TableCell>
@@ -500,10 +512,10 @@ const ReceivedMaterialModal = () => {
                               <TableBody>
                                 {receivedDetailList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '20%' }}>
+                                    <TableCell align="left" style={{ width: '15%' }}>
                                       {row.customer_order_code}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '25%' }}>
+                                    <TableCell align="left" style={{ width: '20%' }}>
                                       {row.part_code}
                                     </TableCell>
                                     <TableCell align="left" className={classes.maxWidthCell} style={{ width: '35%' }}>
@@ -513,6 +525,20 @@ const ReceivedMaterialModal = () => {
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       {row.quantity_in_piece}
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '10%' }}>
+                                      <TextField
+                                        InputProps={{
+                                          inputProps: { min: 0 },
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
+                                        name="received_quantity_in_piece"
+                                        type="number"
+                                        size="small"
+                                        value={row?.received_quantity_in_piece || ''}
+                                        onChange={(e) => handleChangeQuantity(index, e.target.value)}
+                                      />
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '5%' }}>
                                       {row.unit_name}

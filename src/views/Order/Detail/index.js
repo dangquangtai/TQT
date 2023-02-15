@@ -327,7 +327,7 @@ const OrderModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={3} className={classes.gridItemInfo}>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Mã đơn hàng:</span>
+                              <span className={classes.tabItemLabelField}>Mã đơn hàng(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -339,7 +339,7 @@ const OrderModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên đơn hàng:</span>
+                              <span className={classes.tabItemLabelField}>Tên đơn hàng(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -351,14 +351,14 @@ const OrderModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày lập đơn hàng:</span>
+                              <span className={classes.tabItemLabelField}>Ngày lập đơn hàng(*):</span>
                               <DatePicker
                                 date={orderData.order_date}
                                 onChange={(date) => setOrderData({ ...orderData, order_date: date })}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Cảng đến:</span>
+                              <span className={classes.tabItemLabelField}>Cảng đến(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -370,7 +370,7 @@ const OrderModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Khách hàng:</span>
+                              <span className={classes.tabItemLabelField}>Khách hàng(*):</span>
                               <Autocomplete
                                 id="combo-box-demo"
                                 options={customer}
@@ -385,14 +385,14 @@ const OrderModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày giao hàng:</span>
+                              <span className={classes.tabItemLabelField}>Ngày giao hàng(*):</span>
                               <DatePicker
                                 date={orderData.expected_deliver_date}
                                 onChange={(date) => setOrderData({ ...orderData, expected_deliver_date: date })}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Trạng thái:</span>
+                              <span className={classes.tabItemLabelField}>Trạng thái(*):</span>
                               <TextField
                                 fullWidth
                                 name="status"
