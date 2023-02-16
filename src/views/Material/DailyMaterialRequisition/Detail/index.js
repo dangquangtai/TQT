@@ -518,7 +518,7 @@ const DeliveryMaterialModal = () => {
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
-                            <Table aria-label="simple table">
+                            <Table aria-label="simple table" stickyHeader>
                               <TableHead>
                                 <TableRow>
                                   <TableCell align="left">Mã vật tư</TableCell>

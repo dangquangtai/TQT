@@ -202,8 +202,8 @@ const ReceivedMaterialModal = () => {
   };
 
   const handleClickExport = async () => {
-    var url = await exportMaterialReceived(receivedMaterialData.id)
-    handleDownload(url)
+    var url = await exportMaterialReceived(receivedMaterialData.id);
+    handleDownload(url);
     // showConfirmPopup({
     //   title: 'Xuất phiếu nhập vật tư',
     //   message: 'Bạn có chắc chắn muốn xuất phiếu nhập vật tư này?',
@@ -499,7 +499,7 @@ const ReceivedMaterialModal = () => {
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
-                            <Table aria-label="simple table">
+                            <Table aria-label="simple table" stickyHeader>
                               <TableHead>
                                 <TableRow>
                                   <TableCell align="left">Mã đơn hàng</TableCell>

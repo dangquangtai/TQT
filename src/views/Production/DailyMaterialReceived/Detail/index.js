@@ -188,9 +188,9 @@ const DailyMaterialReceivedModal = () => {
     handleCloseBrokenModal();
   };
 
-  const handleClickExport =async () => {
-    var url = await exportDailyMaterialReceived(dailyMaterialReceivedData.daily_work_order_id)
-    handleDownload(url)
+  const handleClickExport = async () => {
+    var url = await exportDailyMaterialReceived(dailyMaterialReceivedData.daily_work_order_id);
+    handleDownload(url);
     // showConfirmPopup({
     //   title: 'Xuất phiếu nhập vật tư',
     //   message: 'Bạn có chắc chắn muốn xuất phiếu nhập vật tư này?',
@@ -402,7 +402,7 @@ const DailyMaterialReceivedModal = () => {
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
-                            <Table aria-label="simple table" size="small">
+                            <Table aria-label="simple table" size="small" stickyHeader>
                               <TableHead>
                                 <TableRow>
                                   <TableCell align="left">Mã vật tư</TableCell>

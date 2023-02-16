@@ -473,7 +473,7 @@ const PurchaseMaterialModal = () => {
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
-                            <Table className={classes.tableSmall} aria-label="simple table">
+                            <Table className={classes.tableSmall} aria-label="simple table" stickyHeader>
                               <TableHead>
                                 <TableRow>
                                   <TableCell align="left">Mã đơn hàng</TableCell>
