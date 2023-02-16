@@ -188,14 +188,16 @@ const DailyMaterialReceivedModal = () => {
     handleCloseBrokenModal();
   };
 
-  const handleClickExport = () => {
-    showConfirmPopup({
-      title: 'Xuất phiếu nhập vật tư',
-      message: 'Bạn có chắc chắn muốn xuất phiếu nhập vật tư này?',
-      action: exportDailyMaterialReceived,
-      payload: dailyMaterialReceivedData.daily_work_order_id,
-      onSuccess: (url) => handleDownload(url),
-    });
+  const handleClickExport =async () => {
+    var url = await exportDailyMaterialReceived(dailyMaterialReceivedData.daily_work_order_id)
+    handleDownload(url)
+    // showConfirmPopup({
+    //   title: 'Xuất phiếu nhập vật tư',
+    //   message: 'Bạn có chắc chắn muốn xuất phiếu nhập vật tư này?',
+    //   action: exportDailyMaterialReceived,
+    //   payload: dailyMaterialReceivedData.daily_work_order_id,
+    //   onSuccess: (url) => handleDownload(url),
+    // });
   };
 
   const handleDownload = (url) => {

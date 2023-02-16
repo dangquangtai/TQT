@@ -201,14 +201,16 @@ const ReceivedMaterialModal = () => {
     setMaterialOrderDetailList(newMaterialOrderDetailList);
   };
 
-  const handleClickExport = () => {
-    showConfirmPopup({
-      title: 'Xuất phiếu nhập vật tư',
-      message: 'Bạn có chắc chắn muốn xuất phiếu nhập vật tư này?',
-      action: exportMaterialReceived,
-      payload: receivedMaterialData.id,
-      onSuccess: (url) => handleDownload(url),
-    });
+  const handleClickExport = async () => {
+    var url = await exportMaterialReceived(receivedMaterialData.id)
+    handleDownload(url)
+    // showConfirmPopup({
+    //   title: 'Xuất phiếu nhập vật tư',
+    //   message: 'Bạn có chắc chắn muốn xuất phiếu nhập vật tư này?',
+    //   action: exportMaterialReceived,
+    //   payload: receivedMaterialData.id,
+    //   onSuccess: (url) => handleDownload(url),
+    // });
   };
 
   const handleDownload = (url) => {
