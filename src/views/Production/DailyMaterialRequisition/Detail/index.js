@@ -33,6 +33,8 @@ import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CONFIRM_CHANGE } 
 import DatePicker from './../../../../component/DatePicker/index';
 import { updateDailyMaterialRequisition } from '../../../../services/api/Production/MaterialRequisition.js';
 import { getDeliveryMaterialData } from '../../../../services/api/Material/DailyRequisitionMaterial.js';
+import { downloadFile } from './../../../../utils/helper';
+import { exportDailyMaterialRequisition } from './../../../../services/api/Production/MaterialRequisition';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -118,6 +120,20 @@ const DailyMaterialRequisitionModal = () => {
   const handleChanges = (e) => {
     const { name, value } = e.target;
     setDailyMaterialRequisitionData({ ...dailyMaterialRequisitionData, [name]: value });
+  };
+
+  const handleClickExport = async () => {
+    var url = await exportDailyMaterialRequisition(dailyMaterialRequisitionData.daily_work_order_id);
+    handleDownload(url);
+  };
+
+  const handleDownload = (url) => {
+    if (!url) {
+      handleOpenSnackbar('error', 'Không tìm thấy file!');
+      return;
+    }
+    downloadFile(url);
+    handleOpenSnackbar('success', 'Tải file thành công!');
   };
 
   useEffect(() => {
@@ -369,6 +385,9 @@ const DailyMaterialRequisitionModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
+                <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleClickExport}>
+                  In phiếu
+                </Button>
                 {saveButton && selectedDocument?.id && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
                     {saveButton.text}

@@ -53,3 +53,12 @@ export const deleteGoodsReceiptDetail = (id) => {
     return false;
   });
 };
+
+export const exportGoodsReceipt = (id) => {
+  return axiosServices.post(apiEndpoints.export_goods_receipt, { id }).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data.url;
+    }
+    return '';
+  });
+};

@@ -238,6 +238,7 @@ export const apiEndpoints = {
   update_goods_receipt: '/Primary/?FlowAlias=bs_api_factory_update_goods_receipt&action=api',
   get_goods_receipt_data: '/Primary/?FlowAlias=bs_api_factory_get_goods_receipt_data&action=api',
   delete_goods_receipt_detail: '/Primary/?FlowAlias=bs_api_factory_delete_goods_receipt_detail&action=api',
+  export_goods_receipt: '/Primary/?FlowAlias=bs_api_factory_export_goods_receipt&action=api',
 
   //Production
   get_production_daily_request_list: '/Primary/?FlowAlias=bs_api_workorder_get_production_daily_request_list&action=api',
@@ -262,6 +263,8 @@ export const apiEndpoints = {
   get_production_daily_material_requisition_detail:
     '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_requisition_detail&action=api',
   update_production_daily_material_requisiton: '/Primary/?FlowAlias=bs_api_factory_update_production_daily_material_requisition&action=api',
+  export_production_daily_material_requisition:
+    '/Primary/?FlowAlias=bs_api_factory_export_production_daily_material_requisition&action=api',
 
   // Production Daily Material Received
   get_production_daily_material_received_list: '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_list&action=api',

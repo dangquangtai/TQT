@@ -38,10 +38,12 @@ import DatePicker from './../../../../component/DatePicker/index';
 import {
   createGoodsReceipt,
   deleteGoodsReceiptDetail,
+  exportGoodsReceipt,
   getGoodsReceiptData,
   updateGoodsReceipt,
 } from './../../../../services/api/Product/GoodsReceipt.js';
 import { getWorkOrderRequest, getDailyWorkOrderList } from './../../../../services/api/Workorder/index';
+import { downloadFile } from './../../../../utils/helper';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -142,14 +144,8 @@ const GoodsReceiptModal = () => {
 
   const handleSubmitForm = async () => {
     try {
-      if (selectedDocument?.id) {
-        await updateGoodsReceipt({ ...goodsReceiptData, receipt_detail: receiptDetailList });
-        handleOpenSnackbar('success', 'Cập nhật Phiếu xuất thành phẩm thành công!');
-      } else {
-        await createGoodsReceipt({ ...goodsReceiptData, receipt_detail: receiptDetailList });
-        console.log(receiptDetailList);
-        handleOpenSnackbar('success', 'Tạo mới Phiếu xuất thành phẩm thành công!');
-      }
+      await updateGoodsReceipt({ ...goodsReceiptData, receipt_detail: receiptDetailList });
+      handleOpenSnackbar('success', 'Cập nhật Phiếu nhập thành phẩm thành công!');
       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'goodsReceipt' });
       handleCloseDialog();
     } catch (error) {
@@ -175,6 +171,20 @@ const GoodsReceiptModal = () => {
     }
     newReceiptDetailList[index] = { ...newReceiptDetailList[index], [name]: value };
     setReceiptDetailList(newReceiptDetailList);
+  };
+
+  const handleClickExport = async () => {
+    var url = await exportGoodsReceipt(goodsReceiptData.id);
+    handleDownload(url);
+  };
+
+  const handleDownload = (url) => {
+    if (!url) {
+      handleOpenSnackbar('error', 'Không tìm thấy file!');
+      return;
+    }
+    downloadFile(url);
+    handleOpenSnackbar('success', 'Tải file thành công!');
   };
 
   useEffect(() => {
@@ -204,24 +214,6 @@ const GoodsReceiptModal = () => {
     };
     fetchData();
   }, [goodsReceiptData.work_order_id]);
-
-  useEffect(() => {
-    if (!goodsReceiptData?.daily_work_order_id) return;
-    if (!!goodsReceiptData?.id) return;
-    const fetchData = async () => {
-      const { work_order_request, work_order_detail } = await getWorkOrderRequest(goodsReceiptData?.daily_work_order_id);
-      const newOrderDetail = work_order_detail.map((item) => ({
-        ...item,
-        daily_quantity_in_box: item.quantity_in_box,
-        quantity_in_box: 0,
-        order_id: item?.customer_order_id,
-        work_order_id: goodsReceiptData?.work_order_id,
-        daily_work_order_id: goodsReceiptData?.daily_work_order_id,
-      }));
-      setReceiptDetailList(newOrderDetail);
-    };
-    fetchData();
-  }, [goodsReceiptData.daily_work_order_id]);
 
   return (
     <React.Fragment>
@@ -296,7 +288,7 @@ const GoodsReceiptModal = () => {
                     <Grid item lg={12} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>Xuất thành phẩm</div>
+                          <div className={classes.tabItemLabel}>Nhập kho thành phẩm</div>
                         </div>
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={2} className={classes.gridItemInfo}>
@@ -506,14 +498,12 @@ const GoodsReceiptModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
+                <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleClickExport}>
+                  In phiếu
+                </Button>
                 {saveButton && selectedDocument?.id && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
                     {saveButton.text}
-                  </Button>
-                )}
-                {!selectedDocument?.id && (
-                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
-                    Tạo mới
                   </Button>
                 )}
               </Grid>
