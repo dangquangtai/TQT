@@ -104,7 +104,7 @@ const DailyMaterialRequisitionModal = () => {
 
   const handleSubmitForm = async () => {
     try {
-      await updateDailyMaterialRequisition(dailyMaterialRequisitionData);
+      await updateDailyMaterialRequisition({ ...dailyMaterialRequisitionData, detail_list: RequisitionDetailList });
       handleOpenSnackbar('success', 'Cập nhật Phiếu xuất vật tư thành công!');
       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'dailyMaterialRequisition' });
       handleCloseDialog();
@@ -120,6 +120,13 @@ const DailyMaterialRequisitionModal = () => {
   const handleChanges = (e) => {
     const { name, value } = e.target;
     setDailyMaterialRequisitionData({ ...dailyMaterialRequisitionData, [name]: value });
+  };
+
+  const handleQuantityChange = (e, index) => {
+    const { value } = e.target;
+    const newRequisitionDetailList = [...RequisitionDetailList];
+    newRequisitionDetailList[index].contingency_quantity_in_piece = value;
+    setRequisitionDetailList(newRequisitionDetailList);
   };
 
   const handleClickExport = async () => {
@@ -328,19 +335,20 @@ const DailyMaterialRequisitionModal = () => {
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">Nhà cung cấp</TableCell>
-                                  <TableCell align="left">Số lượng xuất</TableCell>
+                                  <TableCell align="left">SL xuất</TableCell>
+                                  <TableCell align="left">SL dự phòng</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
                                 {RequisitionDetailList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '30%' }}>
+                                    <TableCell align="left" style={{ width: '25%' }}>
                                       <Tooltip title={row?.part_code}>
                                         <span>{row?.part_code}</span>
                                       </Tooltip>
                                     </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '40%' }}>
+                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '35%' }}>
                                       <Tooltip title={row?.part_name}>
                                         <span>{row?.part_name}</span>
                                       </Tooltip>
@@ -350,6 +358,20 @@ const DailyMaterialRequisitionModal = () => {
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       {row.quantity_in_piece}
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '10%' }}>
+                                      <TextField
+                                        InputProps={{
+                                          inputProps: { min: 0 },
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
+                                        name="contingency_quantity_in_piece"
+                                        type="number"
+                                        size="small"
+                                        value={row?.contingency_quantity_in_piece || ''}
+                                        onChange={(e) => handleQuantityChange(e, index)}
+                                      />
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       {row.unit_name}

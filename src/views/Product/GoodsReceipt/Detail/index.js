@@ -423,6 +423,7 @@ const GoodsReceiptModal = () => {
                             <Table aria-label="simple table">
                               <TableHead>
                                 <TableRow>
+                                  <TableCell align="left">Mã TP KH</TableCell>
                                   <TableCell align="left">Mã thành phẩm</TableCell>
                                   <TableCell align="left">Tên thành phẩm</TableCell>
                                   <TableCell align="left">SL kế hoạch</TableCell>
@@ -434,20 +435,25 @@ const GoodsReceiptModal = () => {
                               <TableBody>
                                 {receiptDetailList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '25%' }}>
+                                    <TableCell align="left" style={{ width: '15%' }}>
+                                      <Tooltip title={row?.product_customer_code}>
+                                        <span>{row?.product_customer_code}</span>
+                                      </Tooltip>
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '15%' }}>
                                       <Tooltip title={row?.product_code}>
                                         <span>{row?.product_code}</span>
                                       </Tooltip>
                                     </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '40%' }}>
+                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '30%' }}>
                                       <Tooltip title={row?.product_name}>
                                         <span>{row?.product_name}</span>
                                       </Tooltip>
                                     </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '15%' }}>
+                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '10%' }}>
                                       {row?.daily_quantity_in_box}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '15%' }}>
+                                    <TableCell align="left" style={{ width: '10%' }}>
                                       <TextField
                                         InputProps={{
                                           inputProps: { min: 0, max: row?.daily_quantity_in_box },
