@@ -231,7 +231,7 @@ export const apiEndpoints = {
   update_goods_issue: '/Primary/?FlowAlias=bs_api_factory_update_goods_issue&action=api',
   get_goods_issue_data: '/Primary/?FlowAlias=bs_api_factory_get_goods_issue_data&action=api',
   delete_goods_issue_detail: '/Primary/?FlowAlias=bs_api_factory_delete_goods_issue_detail&action=api',
-
+  export_goods_issue_request: '/Primary/?FlowAlias=bs_api_factory_export_goods_issue_request_by_id&action=api',
   // Goods Receipt
   get_goods_receipt_list: '/Primary/?FlowAlias=bs_api_factory_get_goods_receipt_list&action=api',
   get_goods_receipt_detail: '/Primary/?FlowAlias=bs_api_factory_get_goods_receipt_detail&action=api',

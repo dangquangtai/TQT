@@ -53,3 +53,16 @@ export const deleteGoodsIssueDetail = (id) => {
     return false;
   });
 };
+export const getLink = (id) => {
+  return axiosServices
+    .post(apiEndpoints.export_goods_issue_request, { id:id })
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return response.data.url;
+      }
+      return '';
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};

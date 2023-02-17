@@ -354,32 +354,35 @@ const WorkorderModal = () => {
     } catch { }
   };
   const handleGetlink = async () => {
-    setSnackbarStatus({
-      isOpen: true,
-      type: 'info',
-      text: 'Vui lòng chờ trong giây lát. Báo cáo đang được tải xuống',
-    });
-    const link = await getLink(productionDailyRequestList[indexDate].id);
-    const link2 = await exportDailyMaterialReceived(productionDailyRequestList[indexDate].id);
-    const link3 = await exportDailyMaterialRequisition(productionDailyRequestList[indexDate].id);
-    const link4 = await exportGoodsReceiptByWorkOrder(productionDailyRequestList[indexDate].id)
-    if (link !== '') {
-      downloadFile(link);
-      downloadFile(link2);
-      downloadFile(link3);
-      downloadFile(link4);
+    try{
       setSnackbarStatus({
         isOpen: true,
-        type: 'success',
-        text: 'Tải xuống báo cáo thành công',
+        type: 'info',
+        text: 'Vui lòng chờ trong giây lát. Báo cáo đang được tải xuống',
       });
-    } else {
+      let link = await getLink(productionDailyRequestList[indexDate].id);
+      let link2 = await exportDailyMaterialReceived(productionDailyRequestList[indexDate].id);
+      let link3 = await exportDailyMaterialRequisition(productionDailyRequestList[indexDate].id);
+      let link4 = await exportGoodsReceiptByWorkOrder(productionDailyRequestList[indexDate].id);
+    
+      downloadFile(link4); 
+      downloadFile(link); 
+      downloadFile(link3);
+      downloadFile(link2); 
+        // setSnackbarStatus({
+        //   isOpen: true,
+        //   type: 'success',
+        //   text: 'Tải xuống báo cáo thành công',
+        // });
+      handleOpenSnackbar(true,'success','Tải file thành công')
+    } catch{
       setSnackbarStatus({
         isOpen: true,
         type: 'error',
         text: 'Tải xuống báo cáo thất bại',
       });
     }
+   
     ///
   };
   const handleUpdateWorkOrder = async (product, index) => {
@@ -559,7 +562,7 @@ const WorkorderModal = () => {
         productionDailyRequestList[index].color_check = productListApi.work_order_request.color_check
         productionDailyRequestList[index].is_enough = productListApi.work_order_request.is_enough
       } else {
-        productionDailyRequestList[indexDate].color_check = productListApi.work_order_request.color_check
+        productionDailyRequestList[indexDate].color_check = productListApi.work_order_request?.color_check || 'yellow'
         productionDailyRequestList[indexDate].is_enough = productListApi.work_order_request.is_enough
       }
       setProductWHID(productListApi.work_order_request.product_warehouse_id);
@@ -596,9 +599,9 @@ const WorkorderModal = () => {
     setCheckChangeData({ changeWorkOrder: false, changeWorkOrderDaily: false, changeWorkOrderRequest: false })
     setWorkorder({
       title: '', status: '', order_id: '', to_date: '', from_date: '',
-      workshop_id: workshopList[0].Key,
-      materialwh_id: materialWHSList[0].id,
-      productwh_id: productWHSList[0].Key
+      workshop_id: workshopList[0]?.Key,
+      materialwh_id: materialWHSList[0]?.id,
+      productwh_id: productWHSList[0]?.Key
     });
     setWorkorderRequest({})
     setProductList([]);
