@@ -60,6 +60,7 @@ import { getDetailDailyMaterialReceived } from './../../services/api/Production/
 import { getDetailDailyMaterialRequisition } from './../../services/api/Production/MaterialRequisition';
 import { getDetailMaterialPart } from '../../services/api/Material/MaterialPart';
 import { downloadFile } from './../../utils/helper';
+
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
     if (response.status === 200 && response.data.return === 200) return true;
@@ -76,76 +77,60 @@ async function setActive(setActiveUrl, documentId, isActive) {
 
 export default function GeneralTable(props) {
   const classes = useStyles();
+  const { url, documentType, categories, tableTitle, setFeaturedUrl, setActiveUrl } = props;
   const dispatch = useDispatch();
   const { setConfirmPopup } = useConfirmPopup();
   const { setView, menu_buttons: menuButtons, columns: tableColumns } = useView();
-  const [displayOptions, setDisplayOptions] = React.useState({});
   const { selectedFolder } = useSelector((state) => state.folder);
   const { selectedDocument } = useSelector((state) => state.document);
+  const reduxDocuments = useSelector((state) => state.task);
+  const { projects } = useSelector((state) => state.project);
+  const selectedProject = projects.find((project) => project.selected);
+  const [displayOptions, setDisplayOptions] = React.useState({});
+  const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState('calories');
+  const [selected, setSelected] = React.useState([]);
+  const [pageCurrent, setPage] = React.useState(1);
+  const [roletemplateList, setRoleList] = React.useState([]);
+  const [userList, setUserList] = React.useState([]);
+  const [deptList, setDeptList] = React.useState([]);
+  const [changeDeptReload, ReloadDept] = React.useState(0);
+  const [department_code_selected, setSelectedDepartment] = React.useState('');
+  const [role_template_selected, setSelectedRoleTemplate] = React.useState('Member');
+  const [process_role_code_selected, setSelectedProcessRole] = React.useState('');
 
-  useEffect(() => {
-    const initOptions = {
-      id: tableColumns.includes('id'),
-      image_url: tableColumns.includes('image_url'),
-      title: tableColumns.includes('title'),
-      part_code: tableColumns.includes('part_code'),
-      product_code: tableColumns.includes('product_code'),
-      category_name: tableColumns.includes('category_name'),
-      product_customer_code: tableColumns.includes('product_customer_code'),
-      no_piece_per_box: tableColumns.includes('piece'),
-      productivity_per_worker: tableColumns.includes('productivity'),
-      fullname: tableColumns.includes('fullname'),
-      email_address: tableColumns.includes('email_address'),
-      number_phone: tableColumns.includes('number_phone'),
-      created_date: tableColumns.includes('created_date'),
-      created_by: tableColumns.includes('created_by'),
-      account_id: tableColumns.includes('account_id'),
-      department_name: tableColumns.includes('department_name'),
-      department_parent: tableColumns.includes('department_parent'),
-      number_member: tableColumns.includes('number_member'),
-      role_template_name: tableColumns.includes('role_template_name'),
-      apply_to_department_type: tableColumns.includes('apply_to_department_type'),
-      approval_role: tableColumns.includes('approval_role'),
-      visible_for_selection: tableColumns.includes('visible_for_selection'),
-      active: tableColumns.includes('active'),
-      full_name: tableColumns.includes('full_name'),
-      menuButtons: !!menuButtons.length || false,
-      is_featured: tableColumns.includes('is_featured'),
-      is_active: tableColumns.includes('is_active'),
-      customer_name: tableColumns.includes('customer_name'),
-      order_date: tableColumns.includes('order_date'),
-      order__title: tableColumns.includes('order__title'),
-      from__date: tableColumns.includes('from__date'),
-      to__date: tableColumns.includes('to__date'),
-      status__display: tableColumns.includes('status__display'),
-      expected_deliver_date: tableColumns.includes('expected_deliver_date'),
-      customer_code: tableColumns.includes('customer_code'),
-      supplier_code: tableColumns.includes('supplier_code'),
-      is_part_list_available: tableColumns.includes('is_part_list_available'),
-      part_name: tableColumns.includes('part_name'),
-      product_name: tableColumns.includes('product_name'),
-      supplier_name: tableColumns.includes('supplier_name'),
-      quantity_in_piece: tableColumns.includes('quantity_in_piece'),
-      broken_quantity_in_piece: tableColumns.includes('broken_quantity_in_piece'),
-      quantity_in_box: tableColumns.includes('quantity_in_box'),
-      inventory_check_code: tableColumns.includes('inventory_check_code'),
-      inventory_check_date: tableColumns.includes('inventory_check_date'),
-      order_code: tableColumns.includes('order_code'),
-      received_code: tableColumns.includes('received_code'),
-      received_date: tableColumns.includes('received_date'),
-      warehouse_name: tableColumns.includes('warehouse_name'),
-      province_name: tableColumns.includes('province_name'),
-      workshop_name: tableColumns.includes('workshop_name'),
-      order_title: tableColumns.includes('order_title'),
-      number_of_worker: tableColumns.includes('number_of_worker'),
-      number_of_working_hour: tableColumns.includes('number_of_working_hour'),
-      work_order_date_string: tableColumns.includes('work_order_date_string'),
-      percent_production: tableColumns.includes('percent_production'),
-      percent_plan: tableColumns.includes('percent_plan'),
-    };
-    setDisplayOptions(initOptions);
-  }, [tableColumns, selectedFolder]);
+  const { getProcessDetail, addDeptUser, removeUser, removeDept, syncProcessRole } = useProcessRole();
+  const { getDocuments } = useTask();
+  const { activeDepartment, getDepartmentDetail, getAllDepartment } = useDepartment();
+  const { activeRole, getRoleDetail, getDepartmentListGroup, syncRole, getRoletemplateByDept } = useRole();
+  const { getAccountDetail, activeAccount, assignAccount, removeAccount, getAllUser } = useAccount();
 
+  const {
+    documents = [],
+    total_item: count = 0,
+    page = 1,
+    order_by = '',
+    order_type = 'desc',
+    no_item_per_page = 10,
+    category_id = '',
+    search_text = '',
+    folder_id,
+    project_id,
+    from_date = '',
+    to_date = '',
+  } = reduxDocuments[documentType] || {};
+  const defaultQueries = {
+    page: 1,
+    order_by,
+    order_type,
+    no_item_per_page,
+    category_id,
+    search_text: '',
+    department_code: department_code_selected,
+    role_template_code: role_template_selected,
+    process_role_code: process_role_code_selected,
+  };
+  // Menu Button
   const buttonAccountCreate = menuButtons.find((button) => button.name === view.user.list.create);
   const buttonDeptCreate = menuButtons.find((button) => button.name === view.department.list.create);
   const buttonDeptUpdate = menuButtons.find((button) => button.name === view.department.list.update);
@@ -184,116 +169,6 @@ export default function GeneralTable(props) {
   const buttonCreateMaterialRequisition = menuButtons.find((button) => button.name === view.materialRequisition.list.create);
   const buttonExportMaterial = menuButtons.find((button) => button.name === view.purchaseMaterial.list.export);
 
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
-  const [selected, setSelected] = React.useState([]);
-  const { url, documentType, categories, tableTitle, setFeaturedUrl, setActiveUrl } = props;
-  const [pageCurrent, setPage] = React.useState(1);
-  const { projects } = useSelector((state) => state.project);
-  const selectedProject = projects.find((project) => project.selected);
-  const [roletemplateList, setRoleList] = React.useState([]);
-  const [userList, setUserList] = React.useState([]);
-  const [deptList, setDeptList] = React.useState([]);
-  const reduxDocuments = useSelector((state) => state.task);
-  const [changeDeptReload, ReloadDept] = React.useState(0);
-  const { getProcessDetail, addDeptUser, removeUser, removeDept, syncProcessRole } = useProcessRole();
-
-  const {
-    documents = [],
-    total_item: count = 0,
-    page = 1,
-    order_by = '',
-    order_type = 'desc',
-    no_item_per_page = 10,
-    category_id = '',
-    search_text = '',
-    folder_id,
-    project_id,
-    from_date = '',
-    to_date = '',
-  } = reduxDocuments[documentType] || {};
-  const [department_code_selected, setSelectedDepartment] = React.useState('');
-  const [role_template_selected, setSelectedRoleTemplate] = React.useState('Member');
-  const [process_role_code_selected, setSelectedProcessRole] = React.useState('');
-  const defaultQueries = {
-    page: 1,
-    order_by,
-    order_type,
-    no_item_per_page,
-    category_id,
-    search_text: '',
-    department_code: department_code_selected,
-    role_template_code: role_template_selected,
-    process_role_code: process_role_code_selected,
-  };
-
-  const { getDocuments } = useTask();
-
-  const { activeDepartment, getDepartmentDetail, getAllDepartment } = useDepartment();
-
-  const { activeRole, getRoleDetail, getDepartmentListGroup, syncRole, getRoletemplateByDept } = useRole();
-
-  const { getAccountDetail, activeAccount, assignAccount, removeAccount, getAllUser } = useAccount();
-
-  useEffect(() => {
-    if (selectedProject && selectedFolder && url) {
-      fetchDocument(url, documentType, selectedProject.id, selectedFolder.id);
-    } else {
-      dispatch({
-        type: TASK_CHANGE,
-        documentType,
-        documents: [],
-        total_item: count,
-        page,
-        order_by,
-        order_type,
-        no_item_per_page,
-        search_text,
-        category_id,
-        folder_id,
-        project_id,
-        from_date,
-        to_date,
-      });
-    }
-  }, [selectedFolder]);
-
-  useEffect(() => {
-    if (documentType === 'department' && department_code_selected !== '') {
-      const fetchRoleList = async () => {
-        let data = await getRoletemplateByDept(department_code_selected);
-        setRoleList(data);
-      };
-
-      fetchRoleList();
-      reloadCurrentDocuments();
-      
-    }
-  }, [department_code_selected]);
-
-  useEffect(() => {
-    if (documentType === 'department') {
-      const fetchUserList = async () => {
-        let data = await getAllUser();
-        setUserList(data);
-        data = await getAllDepartment();
-        setDeptList(data);
-      };
-      fetchUserList();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (process_role_code_selected !='' && documentType==='processrole'){
-      reloadCurrentDocuments(page);
-    }
-    if (changeDeptReload === 0) {
-      ReloadDept(1);
-    } else {
-      ReloadDept(0);
-    }
-  }, [ process_role_code_selected]);
-
   const fetchDocument = (additionalQuery) => {
     const queries = { ...defaultQueries, ...additionalQuery };
     getDocuments(url, documentType, selectedProject?.id, selectedFolder?.id, queries);
@@ -317,6 +192,7 @@ export default function GeneralTable(props) {
       });
     }
   };
+
   const handleAddDeptUser = async (email_address, department_code) => {
     await addDeptUser(process_role_code_selected, department_code, email_address);
     reloadCurrentDocuments();
@@ -637,7 +513,7 @@ export default function GeneralTable(props) {
 
   const reloadCurrentDocuments = (page = 1) => {
     setSelected([]);
-    fetchDocument({ page: pageCurrent });
+    fetchDocument({ page: pageCurrent, search_text });
   };
 
   const showConfirmPopup = ({
@@ -838,6 +714,133 @@ export default function GeneralTable(props) {
     if (status?.includes('COMPLETED')) return '#0FAD00';
     return '#425466';
   };
+
+  useEffect(() => {
+    const initOptions = {
+      id: tableColumns.includes('id'),
+      image_url: tableColumns.includes('image_url'),
+      title: tableColumns.includes('title'),
+      part_code: tableColumns.includes('part_code'),
+      product_code: tableColumns.includes('product_code'),
+      category_name: tableColumns.includes('category_name'),
+      product_customer_code: tableColumns.includes('product_customer_code'),
+      no_piece_per_box: tableColumns.includes('piece'),
+      productivity_per_worker: tableColumns.includes('productivity'),
+      fullname: tableColumns.includes('fullname'),
+      email_address: tableColumns.includes('email_address'),
+      number_phone: tableColumns.includes('number_phone'),
+      created_date: tableColumns.includes('created_date'),
+      created_by: tableColumns.includes('created_by'),
+      account_id: tableColumns.includes('account_id'),
+      department_name: tableColumns.includes('department_name'),
+      department_parent: tableColumns.includes('department_parent'),
+      number_member: tableColumns.includes('number_member'),
+      role_template_name: tableColumns.includes('role_template_name'),
+      apply_to_department_type: tableColumns.includes('apply_to_department_type'),
+      approval_role: tableColumns.includes('approval_role'),
+      visible_for_selection: tableColumns.includes('visible_for_selection'),
+      active: tableColumns.includes('active'),
+      full_name: tableColumns.includes('full_name'),
+      menuButtons: !!menuButtons.length || false,
+      is_featured: tableColumns.includes('is_featured'),
+      is_active: tableColumns.includes('is_active'),
+      customer_name: tableColumns.includes('customer_name'),
+      order_date: tableColumns.includes('order_date'),
+      order__title: tableColumns.includes('order__title'),
+      from__date: tableColumns.includes('from__date'),
+      to__date: tableColumns.includes('to__date'),
+      status__display: tableColumns.includes('status__display'),
+      expected_deliver_date: tableColumns.includes('expected_deliver_date'),
+      customer_code: tableColumns.includes('customer_code'),
+      supplier_code: tableColumns.includes('supplier_code'),
+      is_part_list_available: tableColumns.includes('is_part_list_available'),
+      part_name: tableColumns.includes('part_name'),
+      product_name: tableColumns.includes('product_name'),
+      supplier_name: tableColumns.includes('supplier_name'),
+      quantity_in_piece: tableColumns.includes('quantity_in_piece'),
+      broken_quantity_in_piece: tableColumns.includes('broken_quantity_in_piece'),
+      quantity_in_box: tableColumns.includes('quantity_in_box'),
+      inventory_check_code: tableColumns.includes('inventory_check_code'),
+      inventory_check_date: tableColumns.includes('inventory_check_date'),
+      order_code: tableColumns.includes('order_code'),
+      received_code: tableColumns.includes('received_code'),
+      received_date: tableColumns.includes('received_date'),
+      warehouse_name: tableColumns.includes('warehouse_name'),
+      province_name: tableColumns.includes('province_name'),
+      workshop_name: tableColumns.includes('workshop_name'),
+      order_title: tableColumns.includes('order_title'),
+      number_of_worker: tableColumns.includes('number_of_worker'),
+      number_of_working_hour: tableColumns.includes('number_of_working_hour'),
+      work_order_date_string: tableColumns.includes('work_order_date_string'),
+      percent_production: tableColumns.includes('percent_production'),
+      percent_plan: tableColumns.includes('percent_plan'),
+    };
+    setDisplayOptions(initOptions);
+  }, [tableColumns, selectedFolder]);
+
+  useEffect(() => {
+    if (selectedProject && selectedFolder && url) {
+      fetchDocument(url, documentType, selectedProject.id, selectedFolder.id);
+    } else {
+      dispatch({
+        type: TASK_CHANGE,
+        documentType,
+        documents: [],
+        total_item: count,
+        page,
+        order_by,
+        order_type,
+        no_item_per_page,
+        search_text,
+        category_id,
+        folder_id,
+        project_id,
+        from_date,
+        to_date,
+      });
+    }
+  }, [selectedFolder]);
+
+  useEffect(() => {
+    if (documentType === 'department' && department_code_selected !== '') {
+      const fetchRoleList = async () => {
+        let data = await getRoletemplateByDept(department_code_selected);
+        setRoleList(data);
+      };
+
+      fetchRoleList();
+      reloadCurrentDocuments();
+    }
+  }, [department_code_selected]);
+
+  useEffect(() => {
+    if (documentType === 'department') {
+      const fetchUserList = async () => {
+        let data = await getAllUser();
+        setUserList(data);
+        data = await getAllDepartment();
+        setDeptList(data);
+      };
+      fetchUserList();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (process_role_code_selected !== '' && documentType === 'processrole') {
+      reloadCurrentDocuments(page);
+    }
+    if (changeDeptReload === 0) {
+      ReloadDept(1);
+    } else {
+      ReloadDept(0);
+    }
+  }, [process_role_code_selected]);
+
+  useEffect(() => {
+    if (!selectedDocument) {
+      reloadCurrentDocuments();
+    }
+  }, [selectedDocument]);
 
   const toolbarProps = {
     categories,
