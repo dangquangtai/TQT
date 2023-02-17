@@ -62,3 +62,11 @@ export const exportGoodsReceipt = (id) => {
     return '';
   });
 };
+export const exportGoodsReceiptByWorkOrder = (id) => {
+  return axiosServices.post(apiEndpoints.export_goods_receipt_by_daily_work_order, { id }).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data.url;
+    }
+    return '';
+  });
+};

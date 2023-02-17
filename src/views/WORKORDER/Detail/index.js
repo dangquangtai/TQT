@@ -50,6 +50,9 @@ import {
   getProductWHSList,
   checkMaterial
 } from '../../../services/api/Workorder/index.js';
+import {exportDailyMaterialReceived} from '../../../services/api/Production/MaterialReceived';
+import {exportGoodsReceiptByWorkOrder} from '../../../services/api/Product/GoodsReceipt';
+import {exportDailyMaterialRequisition} from '../../../services/api/Production/MaterialRequisition';
 import DatePicker from '../../../component/DatePicker/index.js';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -357,8 +360,14 @@ const WorkorderModal = () => {
       text: 'Vui lòng chờ trong giây lát. Báo cáo đang được tải xuống',
     });
     const link = await getLink(productionDailyRequestList[indexDate].id);
+    const link2 = await exportDailyMaterialReceived(productionDailyRequestList[indexDate].id);
+    const link3 = await exportDailyMaterialRequisition(productionDailyRequestList[indexDate].id);
+    const link4 = await exportGoodsReceiptByWorkOrder(productionDailyRequestList[indexDate].id)
     if (link !== '') {
       downloadFile(link);
+      downloadFile(link2);
+      downloadFile(link3);
+      downloadFile(link4);
       setSnackbarStatus({
         isOpen: true,
         type: 'success',
