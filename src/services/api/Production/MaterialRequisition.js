@@ -27,7 +27,7 @@ export const updateDailyMaterialRequisition = (data) => {
 };
 
 export const exportDailyMaterialRequisition = (id) => {
-  return axiosServices.post(apiEndpoints.export_production_daily_material_requisition, { id }).then((response) => {
+  return axiosServices.post(apiEndpoints.export_production_daily_material_requisition, { id: id }).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
       return response.data.url;
     }

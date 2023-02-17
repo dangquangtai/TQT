@@ -40,8 +40,9 @@ import {
   deleteGoodsIssueDetail,
   getGoodsIssueData,
   updateGoodsIssue,
+  getLink
 } from './../../../../services/api/Product/GoodsIssue.js';
-
+import { downloadFile } from '../../../../utils/helper';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -153,7 +154,15 @@ const GoodsIssueModal = () => {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
     }
   };
-
+  const handleGetLink = async () => {
+    try {
+        let url = await getLink(selectedDocument.id)
+        downloadFile(url)
+        handleOpenSnackbar('success', 'Tải file thành công!');
+    } catch (error) {
+      handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
+    }
+  };
   const showConfirmPopup = ({ title = 'Thông báo', message = '', action = null, payload = null, onSuccess = null }) => {
     setConfirmPopup({ type: CONFIRM_CHANGE, open: true, title, message, action, payload, onSuccess });
   };
@@ -520,6 +529,11 @@ const GoodsIssueModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
+              {selectedDocument?.id && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleGetLink}>
+                    {'In phiếu'}
+                  </Button>
+                )}
                 {saveButton && selectedDocument?.id && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
                     {saveButton.text}
