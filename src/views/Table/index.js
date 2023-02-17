@@ -267,6 +267,7 @@ export default function GeneralTable(props) {
 
       fetchRoleList();
       reloadCurrentDocuments();
+      
     }
   }, [department_code_selected]);
 

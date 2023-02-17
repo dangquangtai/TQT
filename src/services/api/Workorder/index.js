@@ -127,8 +127,8 @@ export const updateWorkorOrder = (data) => {
   });
 };
 
-export const checkMaterial = (data) => {
-  return axiosServices.post(apiEndpoints.check_daily_workorder_material_avaiability, data).then((response) => {
+export const checkMaterial = (data,data2) => {
+  return axiosServices.post(apiEndpoints.check_daily_workorder_material_avaiability, {work_order_id: data,work_order_request_id: data2}).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
       return response.data.list;
     }
