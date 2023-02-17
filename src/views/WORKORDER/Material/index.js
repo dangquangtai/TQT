@@ -220,8 +220,6 @@ export default function AlertDialogSlide() {
 
 
     })
-
-
     setSupplierListAll([...newSupplierList])
     setDetail({ ...orderRedux.workorderDetail, part_list: [...detailData] });
   }, [orderRedux.workorderDetail])
@@ -360,7 +358,7 @@ export default function AlertDialogSlide() {
                         <TableCell>SL sử dụng </TableCell>
                         <TableCell>SL thiếu</TableCell>
                         <TableCell>Trạng thái</TableCell>
-                        <TableCell><IconButton
+                        <TableCell><IconButton disabled={orderRedux.workorderDetail.is_disable}
                           onClick={handleAddRow}
                         >
                           <AddCircleOutline />
@@ -405,15 +403,13 @@ export default function AlertDialogSlide() {
                           </TableCell>
                           <TableCell align='center'>
                             <Typography style={{
-                              backgroundColor: item.status === 'WORKORDER_MATERIAL_DAILY_REQUISTION_STATUS_COMPLETED' ? 'rgb(255,165,0)'
-                                : item.status === 'WORKORDER_MATERIAL_DAILY_REQUISTION_STATUS_INPROGRESS' ? 'rgb(250,128,114)'
-                                  : item.is_enough ? 'rgb(48, 188, 65)' : 'yellow'
+                              backgroundColor: item.color_check
                             }}>
-                              {item.status === 'WORKORDER_MATERIAL_DAILY_REQUISTION_STATUS_AUTO_COMPLETED' ? item.is_enough ? item.status_display : 'Thiếu' : item.status_display}
+                              {item.status_display}
                             </Typography>
                           </TableCell>
                           <TableCell align="left">
-                            <IconButton
+                            <IconButton disabled={orderRedux.workorderDetail.is_disable}
                               onClick={() => handleDeleteRow(index)}
                             >
                               <Delete />

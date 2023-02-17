@@ -47,7 +47,8 @@ import {
   createWorkOrderRequest,
   getWorkShopList,
   getMaterialWHSList,
-  getProductWHSList
+  getProductWHSList,
+  checkMaterial
 } from '../../../services/api/Workorder/index.js';
 import DatePicker from '../../../component/DatePicker/index.js';
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -141,7 +142,6 @@ const WorkorderModal = () => {
   };
   const calculateQuantity = (product, index) => {
     const color = product.color_check;
-
     return (
       <>
         <Typography style={{ backgroundColor: color }}>{product.status_check}</Typography>
@@ -384,6 +384,7 @@ const WorkorderModal = () => {
       dispatch({
         type: MATERIAL_CHANGE,
         workorderDetail: {
+          is_disable: disableComponent,
           ...product_list[index],
           part_list: [...product_list[index].part_list],
           work_order_id: workorder.id,
@@ -817,7 +818,15 @@ const WorkorderModal = () => {
       handleGetWorkOrderRequest(date[indexCurrentDate].id, -1)
     }
   };
-
+  const handleCheckMaterial = async() =>{
+    await checkMaterial(workorder.id, productionDailyRequestList[indexDate].id)
+    setSnackbarStatus({
+      isOpen: true,
+      type: 'success',
+      text: 'Kiểm tra hoàn tất'
+    })
+    handleGetWorkOrderRequest(productionDailyRequestList[indexDate].id,indexDate)
+  }
   const handleSetDate = async (from_date, to_date) => {
     handleCreateWorkOrder(true, true)
     let date = [];
@@ -1439,6 +1448,8 @@ const WorkorderModal = () => {
                     {/* </Link> */}
                   </Grid>
                   {!workorder.id && (
+                    <>
+                    
                     <Grid item>
                       <Button
                         variant="contained"
@@ -1448,9 +1459,19 @@ const WorkorderModal = () => {
                         {'Tạo mới'}
                       </Button>
                     </Grid>
+                    </>
                   )}
                   {!!workorder.id && (
                     <>
+                     <Grid item>
+                     <Button
+                       variant="contained"
+                       style={{ background: 'rgb(97, 42, 255)' }}
+                       onClick={handleCheckMaterial}
+                     >
+                       {'Kiểm tra vật tư'}
+                     </Button>
+                   </Grid>
                       <Grid item>
                         <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleGetlink}>
                           In lệnh sản xuất
