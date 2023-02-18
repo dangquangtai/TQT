@@ -152,12 +152,12 @@ const MaterialModal = () => {
                                           inputProps={{ 'aria-label': 'primary checkbox' }}
                                         />
                                       </TableCell>
-                                      <TableCell align="left">Ngày sản xuất</TableCell>
                                       <TableCell align="left">Mã Đơn hàng</TableCell>
                                       <TableCell align="left">Mã vật tư</TableCell>
                                       <TableCell align="left">Tên vật tư</TableCell>
                                       <TableCell align="left">Số lượng nhập</TableCell>
                                       <TableCell align="left">Đơn vị</TableCell>
+                                      <TableCell align="left">Ngày sản xuất</TableCell>
                                     </TableRow>
                                   </TableHead>
                                   <TableBody>
@@ -173,14 +173,14 @@ const MaterialModal = () => {
                                             inputProps={{ 'aria-label': 'primary checkbox' }}
                                           />
                                         </TableCell>
-                                        <TableCell align="left">
-                                          {material.order_date ? formatDate(new Date(material.order_date), 'dd/MM/yyyy') : ''}
-                                        </TableCell>
                                         <TableCell align="left">{material.order_code}</TableCell>
                                         <TableCell align="left">{material.part_code}</TableCell>
                                         <TableCell align="left">{material.part_name}</TableCell>
                                         <TableCell align="left">{material.quantity_in_piece}</TableCell>
                                         <TableCell align="left">{material.unit_name}</TableCell>
+                                        <TableCell align="left">
+                                          {material.order_date ? formatDate(new Date(material.order_date), 'dd/MM/yyyy') : ''}
+                                        </TableCell>
                                       </TableRow>
                                     ))}
                                   </TableBody>
