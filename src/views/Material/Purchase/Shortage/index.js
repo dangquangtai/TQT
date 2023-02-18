@@ -55,19 +55,17 @@ const ShortageModal = () => {
     }
   };
   const handleChangeMaterialAll = (value) => {
-    if(value){
+    if (value) {
       var materialListNew = [];
-      materials.forEach((materialItem)=>{
+      materials.forEach((materialItem) => {
         const newMaterial = { ...materialItem, material_daily_requisition_id: materialItem.id };
-        materialListNew= [...materialListNew, newMaterial];
-      })
-     setMaterialSelected([...materialListNew])
+        materialListNew = [...materialListNew, newMaterial];
+      });
+      setMaterialSelected([...materialListNew]);
     } else {
       setMaterialSelected([]);
     }
-    
   };
-
 
   const getMaterial = async (supplierID, warehouseID) => {
     try {
@@ -148,16 +146,18 @@ const ShortageModal = () => {
                                 <Table size="small" stickyHeader aria-label="sticky table">
                                   <TableHead>
                                     <TableRow>
-                                      <TableCell align="left"> <Checkbox
-                                            checked={materialSelected?.length === materials.length}
-                                            onChange={(e) => handleChangeMaterialAll(materialSelected?.length !== materials.length)}
-                                            inputProps={{ 'aria-label': 'primary checkbox' }}
-                                          /></TableCell>
-                                      <TableCell align="left">Ngày sản xuất</TableCell>
+                                      <TableCell align="left">
+                                        <Checkbox
+                                          checked={materialSelected?.length === materials.length}
+                                          onChange={(e) => handleChangeMaterialAll(materialSelected?.length !== materials.length)}
+                                          inputProps={{ 'aria-label': 'primary checkbox' }}
+                                        />
+                                      </TableCell>
                                       <TableCell align="left">Mã Đơn hàng</TableCell>
                                       <TableCell align="left">Mã vật tư</TableCell>
                                       <TableCell align="left">Tên vật tư</TableCell>
                                       <TableCell align="left">Số lượng thiếu</TableCell>
+                                      <TableCell align="left">Ngày sản xuất</TableCell>
                                       <TableCell align="left">Đơn vị</TableCell>
                                     </TableRow>
                                   </TableHead>
@@ -174,13 +174,13 @@ const ShortageModal = () => {
                                             inputProps={{ 'aria-label': 'primary checkbox' }}
                                           />
                                         </TableCell>
-                                        <TableCell align="left">
-                                          {material.order_date ? formatDate(new Date(material.order_date), 'dd/MM/yyyy') : ''}
-                                        </TableCell>
                                         <TableCell align="left">{material.order_code}</TableCell>
                                         <TableCell align="left">{material.part_code}</TableCell>
                                         <TableCell align="left">{material.part_name}</TableCell>
                                         <TableCell align="left">{material.quantity_in_piece}</TableCell>
+                                        <TableCell align="left">
+                                          {material.order_date ? formatDate(new Date(material.order_date), 'dd/MM/yyyy') : ''}
+                                        </TableCell>
                                         <TableCell align="left">{material.unit_name}</TableCell>
                                       </TableRow>
                                     ))}

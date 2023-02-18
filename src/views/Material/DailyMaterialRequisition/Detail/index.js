@@ -523,7 +523,6 @@ const DeliveryMaterialModal = () => {
                                 <TableRow>
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Nhà cung cấp</TableCell>
-
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">Tồn kho</TableCell>
                                   <TableCell align="left">SL xuất</TableCell>

@@ -117,7 +117,7 @@ const DailyMaterialReceivedModal = () => {
   const handleSubmitForm = async () => {
     try {
       await updateDailyMaterialReceived({ ...dailyMaterialReceivedData, detail_list: receivedDetailList });
-      handleOpenSnackbar('success', 'Cập nhật Phiếu nhập vật tư thành công!');
+      handleOpenSnackbar('success', 'Cập nhật Phiếu nhập vật tư hàng ngày thành công!');
       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'dailyMaterialReceived' });
       handleCloseDialog();
     } catch (error) {
@@ -251,7 +251,7 @@ const DailyMaterialReceivedModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              {selectedDocument?.id ? 'Cập nhật Phiếu nhập vật tư' : 'Tạo mới Phiếu nhập vật tư'}
+              {selectedDocument?.id ? 'Cập nhật Phiếu nhập vật tư hàng ngày' : 'Tạo mới Phiếu nhập vật tư hàng ngày'}
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>

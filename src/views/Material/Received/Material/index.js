@@ -55,6 +55,17 @@ const MaterialModal = () => {
     }
   };
 
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      const newMaterial = materials.map((item) => {
+        return { ...item, material_order_id: item.requisition_id };
+      });
+      setMaterialSelected(newMaterial);
+    } else {
+      setMaterialSelected([]);
+    }
+  };
+
   const getMaterial = async (supplierID, warehouseID) => {
     try {
       const res = await getMaterialOrderList(supplierID, warehouseID);
@@ -90,7 +101,7 @@ const MaterialModal = () => {
         <Dialog open={true} fullScreen>
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              Nhập vật tư
+              Nhập vật tư từ đơn hàng
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent} style={{ background: '#f1f1f9' }}>
@@ -134,7 +145,13 @@ const MaterialModal = () => {
                                 <Table size="small" stickyHeader aria-label="sticky table">
                                   <TableHead>
                                     <TableRow>
-                                      <TableCell align="left">Chọn</TableCell>
+                                      <TableCell align="left">
+                                        <Checkbox
+                                          checked={materialSelected?.length === materials?.length}
+                                          onChange={handleSelectAll}
+                                          inputProps={{ 'aria-label': 'primary checkbox' }}
+                                        />
+                                      </TableCell>
                                       <TableCell align="left">Ngày sản xuất</TableCell>
                                       <TableCell align="left">Mã Đơn hàng</TableCell>
                                       <TableCell align="left">Mã vật tư</TableCell>

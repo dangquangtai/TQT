@@ -105,7 +105,7 @@ const DailyMaterialRequisitionModal = () => {
   const handleSubmitForm = async () => {
     try {
       await updateDailyMaterialRequisition({ ...dailyMaterialRequisitionData, detail_list: RequisitionDetailList });
-      handleOpenSnackbar('success', 'Cập nhật Phiếu xuất vật tư thành công!');
+      handleOpenSnackbar('success', 'Cập nhật Phiếu xuất vật tư hàng ngày thành công!');
       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'dailyMaterialRequisition' });
       handleCloseDialog();
     } catch (error) {
@@ -178,7 +178,7 @@ const DailyMaterialRequisitionModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              Phiếu xuất vật tư
+              Phiếu xuất vật tư hàng ngày
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -335,8 +335,8 @@ const DailyMaterialRequisitionModal = () => {
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">Nhà cung cấp</TableCell>
-                                  <TableCell align="left">SL xuất</TableCell>
-                                  <TableCell align="left">SL dự phòng</TableCell>
+                                  <TableCell align="left">SL xuất theo KH</TableCell>
+                                  <TableCell align="left">SL xuất dự phòng</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
                                 </TableRow>
                               </TableHead>

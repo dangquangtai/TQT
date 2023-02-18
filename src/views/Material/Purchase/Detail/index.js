@@ -157,10 +157,10 @@ const PurchaseMaterialModal = () => {
     try {
       if (selectedDocument?.id) {
         await updatePurchaseMaterial({ ...purchaseMaterialData, order_detail: materialList });
-        handleOpenSnackbar('success', 'Cập nhật Đơn hàng thành công!');
+        handleOpenSnackbar('success', 'Cập nhật Đơn hàng mua vật tư thành công!');
       } else {
         await createPurchaseMaterial({ ...purchaseMaterialData, order_detail: materialList });
-        handleOpenSnackbar('success', 'Tạo mới Đơn hàng thành công!');
+        handleOpenSnackbar('success', 'Tạo mới Đơn hàng mua vật tư thành công!');
       }
       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'purchaseMaterial' });
       handleCloseDialog();
@@ -290,7 +290,7 @@ const PurchaseMaterialModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              {selectedDocument?.id ? 'Cập nhật đơn hàng' : 'Tạo mới đơn hàng'}
+              {selectedDocument?.id ? 'Cập nhật đơn hàng mua vật tư' : 'Tạo mới đơn hàng mua vật tư'}
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -479,7 +479,7 @@ const PurchaseMaterialModal = () => {
                                   <TableCell align="left">Mã đơn hàng</TableCell>
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
-                                  <TableCell align="left">SL cần</TableCell>
+                                  <TableCell align="left">SL mua</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
                                   <TableCell align="left">Ngày sản xuất</TableCell>
                                   <TableCell align="left">Ghi chú</TableCell>

@@ -307,7 +307,7 @@ const ReceivedMaterialModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              {selectedDocument?.id ? 'Cập nhật Phiếu nhập vật tư' : 'Tạo mới Phiếu nhập vật tư'}
+              {selectedDocument?.id ? 'Cập nhật Phiếu nhập vật tư theo nhà cung cấp' : 'Tạo mới Phiếu nhập vật tư theo nhà cung cấp'}
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
