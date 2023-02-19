@@ -60,6 +60,7 @@ import { getDetailDailyMaterialReceived } from './../../services/api/Production/
 import { getDetailDailyMaterialRequisition } from './../../services/api/Production/MaterialRequisition';
 import { getDetailMaterialPart } from '../../services/api/Material/MaterialPart';
 import { downloadFile } from './../../utils/helper';
+import { getDetailReturnMaterial } from './../../services/api/Material/Return';
 
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
@@ -168,6 +169,7 @@ export default function GeneralTable(props) {
   const buttonCreateMaterialPart = menuButtons.find((button) => button.name === view.materialPart.list.create);
   const buttonCreateMaterialRequisition = menuButtons.find((button) => button.name === view.materialRequisition.list.create);
   const buttonExportMaterial = menuButtons.find((button) => button.name === view.purchaseMaterial.list.export);
+  const buttonCreateReturnMaterial = menuButtons.find((button) => button.name === view.materialReturn.list.create);
 
   const fetchDocument = (additionalQuery) => {
     const queries = { ...defaultQueries, ...additionalQuery };
@@ -405,6 +407,11 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, materialRequisitionDocument: true });
         break;
+      case 'returnMaterial':
+        detailDocument = await getDetailReturnMaterial(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, returnMaterialDocument: true });
+        break;
       default:
         break;
     }
@@ -473,6 +480,9 @@ export default function GeneralTable(props) {
         break;
       case 'materialRequisition':
         dispatch({ type: FLOATING_MENU_CHANGE, materialRequisitionDocument: true });
+        break;
+      case 'returnMaterial':
+        dispatch({ type: FLOATING_MENU_CHANGE, returnMaterialDocument: true });
         break;
       default:
         break;
@@ -837,8 +847,8 @@ export default function GeneralTable(props) {
   }, [process_role_code_selected]);
 
   useEffect(() => {
-    if (!selectedDocument) {
-      reloadCurrentDocuments();
+    if (selectedDocument === null && documents?.length > 0) {
+      reloadCurrentDocuments(page);
     }
   }, [selectedDocument]);
 
@@ -907,6 +917,7 @@ export default function GeneralTable(props) {
     buttonCreateMaterialRequisition,
     buttonExportMaterial,
     handleExportMaterial,
+    buttonCreateReturnMaterial,
   };
 
   return (

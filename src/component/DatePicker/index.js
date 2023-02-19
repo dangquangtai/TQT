@@ -3,7 +3,7 @@ import { DatePicker as Picker } from '@material-ui/pickers';
 import { InputAdornment } from '@material-ui/core';
 import { CalendarToday as CalendarTodayIcon } from '@material-ui/icons';
 
-const DatePicker = ({ date, onChange }) => {
+const DatePicker = ({ date, onChange, disabled = false }) => {
   return (
     <Picker
       autoOk
@@ -14,6 +14,7 @@ const DatePicker = ({ date, onChange }) => {
       format="dd/MM/yyyy"
       value={date}
       onChange={onChange}
+      disabled={disabled}
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">

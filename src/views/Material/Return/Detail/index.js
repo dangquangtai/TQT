@@ -19,30 +19,28 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
   Tooltip,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { format as formatDate } from 'date-fns';
-import { AccountCircleOutlined as AccountCircleOutlinedIcon, Delete, Today as TodayIcon, AddCircleOutline } from '@material-ui/icons';
+import { AccountCircleOutlined as AccountCircleOutlinedIcon, Today as TodayIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import useStyles from './../../../../utils/classes';
 import useView from './../../../../hooks/useView';
-import useConfirmPopup from './../../../../hooks/useConfirmPopup';
 import { view } from './../../../../store/constant';
-import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CONFIRM_CHANGE } from './../../../../store/actions';
-import FirebaseUpload from './../../../FloatingMenu/FirebaseUpload/index';
+import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE } from './../../../../store/actions';
 import DatePicker from './../../../../component/DatePicker/index';
 import {
-  createGoodsReceipt,
-  deleteGoodsReceiptDetail,
-  exportGoodsReceipt,
-  getGoodsReceiptData,
-  updateGoodsReceipt,
-} from './../../../../services/api/Product/GoodsReceipt.js';
-import { getWorkOrderRequest, getDailyWorkOrderList } from './../../../../services/api/Workorder/index';
+  createReturnMaterial,
+  updateReturnMaterial,
+  getReturnMaterialData,
+  getMaterialBrokenList,
+  exportReturnMaterial,
+} from './../../../../services/api/Material/Return';
+import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
+import BrokenModal from './../../../Dialog/Broken/index';
 import { downloadFile } from './../../../../utils/helper';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -69,32 +67,28 @@ function a11yProps(index) {
   };
 }
 
-const GoodsReceiptModal = () => {
+const ReturnMaterialModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { form_buttons: formButtons } = useView();
-  const { setConfirmPopup } = useConfirmPopup();
-  const { products } = useSelector((state) => state.metadata);
-  const saveButton = formButtons.find((button) => button.name === view.goodsReceipt.detail.save);
-  const { goodsReceiptDocument: openDialog } = useSelector((state) => state.floatingMenu);
+  const saveButton = formButtons.find((button) => button.name === view.materialReturn.detail.save);
+  const { returnMaterialDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
 
-  const [goodsReceiptData, setGoodsReceiptData] = useState({
+  const [returnMaterialData, setReturnMaterialData] = useState({
     order_date: new Date(),
     notes: '',
   });
-
-  const [receiptDetailList, setReceiptDetailList] = useState([]);
+  const [returnDetailList, setReturnDetailList] = useState([]);
   const [statusList, setStatusList] = useState([]);
+  const [supplierList, setSupplierList] = useState([]);
   const [warehouseList, setWarehouseList] = useState([]);
-  const [workOrderList, setWorkOrderList] = useState([]);
-  const [dailyWorkOrderList, setDailyWorkOrderList] = useState([]);
+  const [brokenModal, setBrokenModal] = useState({
+    open: false,
+    list: [],
+  });
 
   const [tabIndex, setTabIndex] = React.useState(0);
-  const [dialogUpload, setDialogUpload] = useState({
-    open: false,
-    type: '',
-  });
 
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
@@ -102,7 +96,7 @@ const GoodsReceiptModal = () => {
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
-    dispatch({ type: FLOATING_MENU_CHANGE, goodsReceiptDocument: false });
+    dispatch({ type: FLOATING_MENU_CHANGE, returnMaterialDocument: false });
   };
 
   const handleOpenSnackbar = (type, text) => {
@@ -116,69 +110,42 @@ const GoodsReceiptModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setGoodsReceiptData({ order_date: new Date() });
-    setReceiptDetailList([]);
+    setReturnMaterialData({ order_date: new Date(), notes: '' });
+    setReturnDetailList([]);
     setTabIndex(0);
-  };
-  const setURL = (image) => {
-    if (dialogUpload.type === 'image') {
-      setGoodsReceiptData({ ...goodsReceiptData, image_url: image });
-    } else if (dialogUpload.type === 'banner') {
-      setGoodsReceiptData({ ...goodsReceiptData, banner_url: image });
-    }
-  };
-
-  const handleOpenDiaLog = (type) => {
-    setDialogUpload({
-      open: true,
-      type: type,
-    });
-  };
-
-  const handleCloseDiaLog = () => {
-    setDialogUpload({
-      open: false,
-      type: '',
-    });
   };
 
   const handleSubmitForm = async () => {
     try {
-      await updateGoodsReceipt({ ...goodsReceiptData, receipt_detail: receiptDetailList });
-      handleOpenSnackbar('success', 'Cập nhật Phiếu nhập thành phẩm thành công!');
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'goodsReceipt' });
+      if (selectedDocument?.id) {
+        await updateReturnMaterial({ ...returnMaterialData, detail_list: returnDetailList });
+        handleOpenSnackbar('success', 'Cập nhật Phiếu hoàn trả vật tư!');
+      } else {
+        await createReturnMaterial({ ...returnMaterialData, detail_list: returnDetailList });
+        handleOpenSnackbar('success', 'Tạo mới Phiếu hoàn trả vật tư!');
+      }
+      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'returnMaterial' });
       handleCloseDialog();
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
     }
   };
 
-  const showConfirmPopup = ({ title = 'Thông báo', message = '', action = null, payload = null, onSuccess = null }) => {
-    setConfirmPopup({ type: CONFIRM_CHANGE, open: true, title, message, action, payload, onSuccess });
-  };
-
   const handleChanges = (e) => {
     const { name, value } = e.target;
-    setGoodsReceiptData({ ...goodsReceiptData, [name]: value });
+    setReturnMaterialData({ ...returnMaterialData, [name]: value });
   };
 
-  const handleChangeProduct = (index, e) => {
-    const newReceiptDetailList = [...receiptDetailList];
-    const { name, value } = e.target;
-    if (name === 'quantity_in_box' && value > newReceiptDetailList[index].daily_quantity_in_box) {
-      handleOpenSnackbar('error', 'Số lượng không được lớn hơn số lượng trong kế hoạch!');
-      return;
-    }
-    newReceiptDetailList[index] = { ...newReceiptDetailList[index], [name]: value };
-    setReceiptDetailList(newReceiptDetailList);
+  const handeCloseBroken = () => {
+    setBrokenModal({ open: false, list: [] });
+  };
+
+  const handleOpenBroken = (list) => {
+    setBrokenModal({ open: true, list });
   };
 
   const handleClickExport = async () => {
-    var url = await exportGoodsReceipt(goodsReceiptData.id);
-    handleDownload(url);
-  };
-
-  const handleDownload = (url) => {
+    var url = await exportReturnMaterial(returnMaterialData.id);
     if (!url) {
       handleOpenSnackbar('error', 'Không tìm thấy file!');
       return;
@@ -189,35 +156,41 @@ const GoodsReceiptModal = () => {
 
   useEffect(() => {
     if (!selectedDocument) return;
-    setGoodsReceiptData({
-      ...goodsReceiptData,
+    setReturnMaterialData({
+      ...returnMaterialData,
       ...selectedDocument,
     });
-    setReceiptDetailList(selectedDocument?.receipt_detail || []);
+    const returnDetail = selectedDocument?.detail_list;
+    setReturnDetailList(returnDetail);
   }, [selectedDocument]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const { status, warehouses, workOrders } = await getGoodsReceiptData();
+      const { status, warehouses } = await getReturnMaterialData();
       setStatusList(status);
       setWarehouseList(warehouses);
-      setWorkOrderList(workOrders);
+      const suppliers = await getAllSupplier();
+      setSupplierList(suppliers);
     };
     fetchData();
   }, []);
 
   useEffect(() => {
-    if (!goodsReceiptData?.work_order_id) return;
+    if (selectedDocument?.id) return;
+    if (!returnMaterialData.supplier_id) return;
+    if (!returnMaterialData.warehouse_id) return;
     const fetchData = async () => {
-      const res = await getDailyWorkOrderList(goodsReceiptData?.work_order_id);
-      setDailyWorkOrderList(res);
+      const res = await getMaterialBrokenList(returnMaterialData.warehouse_id, returnMaterialData.supplier_id);
+      setReturnDetailList(res);
     };
     fetchData();
-  }, [goodsReceiptData.work_order_id]);
+  }, [returnMaterialData.supplier_id, returnMaterialData.warehouse_id]);
+
+  const isDisabled = !!returnMaterialData?.id;
 
   return (
     <React.Fragment>
-      <FirebaseUpload open={dialogUpload.open || false} onSuccess={setURL} onClose={handleCloseDiaLog} type="image" folder="GoodsReceipt" />
+      <BrokenModal isOpen={brokenModal.open} handleSubmit={handeCloseBroken} handleClose={handeCloseBroken} list={brokenModal.list} />
       <Grid container>
         <Dialog
           open={openDialog || false}
@@ -233,7 +206,7 @@ const GoodsReceiptModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              {selectedDocument?.id ? 'Cập nhật Phiếu xuất thành phẩm' : 'Tạo mới Phiếu xuất thành phẩm'}
+              {selectedDocument?.id ? 'Cập nhật Phiếu hoàn trả vật tư' : 'Tạo mới Phiếu hoàn trả vật tư'}
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -288,105 +261,51 @@ const GoodsReceiptModal = () => {
                     <Grid item lg={12} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>Nhập kho thành phẩm</div>
+                          <div className={classes.tabItemLabel}>Nhập vật tư</div>
                         </div>
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={2} className={classes.gridItemInfo}>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Mã phiếu:</span>
+                              <span className={classes.tabItemLabelField}>Mã phiếu(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
                                 name="order_code"
                                 type="text"
                                 size="small"
-                                value={goodsReceiptData.order_code || ''}
+                                value={returnMaterialData.order_code || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên phiếu nhập:</span>
+                              <span className={classes.tabItemLabelField}>Tên phiếu(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
                                 name="title"
                                 type="text"
                                 size="small"
-                                value={goodsReceiptData.title || ''}
+                                value={returnMaterialData.title || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày nhập kho:</span>
+                              <span className={classes.tabItemLabelField}>Ngày xuất kho(*):</span>
                               <DatePicker
-                                disabled={true}
-                                date={goodsReceiptData.order_date}
-                                onChange={(date) => setGoodsReceiptData({ ...goodsReceiptData, order_date: date })}
+                                disabled={isDisabled}
+                                date={returnMaterialData.return_date}
+                                onChange={(date) => setReturnMaterialData({ ...returnMaterialData, order_date: date })}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà kho:</span>
-                              <TextField
-                                fullWidth
-                                name="warehouse_id"
-                                variant="outlined"
-                                select
-                                size="small"
-                                value={goodsReceiptData.warehouse_id || ''}
-                                onChange={handleChanges}
-                              >
-                                {warehouseList?.map((option) => (
-                                  <MenuItem key={option.id} value={option.id}>
-                                    {option.value}
-                                  </MenuItem>
-                                ))}
-                              </TextField>
-                            </Grid>
-                            <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Kế hoạch sản xuất:</span>
-                              <Autocomplete
-                                options={workOrderList || []}
-                                size="small"
-                                getOptionLabel={(option) => option.order_title}
-                                onChange={(event, newValue) => {
-                                  setGoodsReceiptData({
-                                    ...goodsReceiptData,
-                                    work_order_id: newValue?.id || '',
-                                  });
-                                }}
-                                value={workOrderList?.find((item) => item.id === goodsReceiptData.work_order_id) || null}
-                                disabled={!!goodsReceiptData.id}
-                                renderInput={(params) => <TextField {...params} variant="outlined" />}
-                              />
-                            </Grid>
-                            <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày thực hiện:</span>
-                              <TextField
-                                fullWidth
-                                name="daily_work_order_id"
-                                variant="outlined"
-                                select
-                                size="small"
-                                value={goodsReceiptData.daily_work_order_id || ''}
-                                disabled={!!goodsReceiptData.id}
-                                onChange={handleChanges}
-                              >
-                                {dailyWorkOrderList?.map((option) => (
-                                  <MenuItem key={option.id} value={option.id}>
-                                    {formatDate(new Date(option.work_order_date), 'dd/MM/yyyy')}
-                                  </MenuItem>
-                                ))}
-                              </TextField>
-                            </Grid>
-                            <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Trạng thái:</span>
+                              <span className={classes.tabItemLabelField}>Trạng thái(*):</span>
                               <TextField
                                 fullWidth
                                 name="status"
                                 variant="outlined"
                                 select
                                 size="small"
-                                value={goodsReceiptData.status || ''}
+                                value={returnMaterialData.status || ''}
                                 onChange={handleChanges}
                               >
                                 {statusList?.map((option) => (
@@ -397,6 +316,43 @@ const GoodsReceiptModal = () => {
                               </TextField>
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Nhà cung cấp(*):</span>
+                              <Autocomplete
+                                options={supplierList}
+                                size="small"
+                                disabled={isDisabled}
+                                getOptionLabel={(option) => option.title}
+                                onChange={(event, newValue) => {
+                                  setReturnMaterialData({
+                                    ...returnMaterialData,
+                                    supplier_id: newValue?.id || '',
+                                    supplier_name: newValue?.title || '',
+                                  });
+                                }}
+                                value={supplierList?.find((item) => item.id === returnMaterialData.supplier_id) || null}
+                                renderInput={(params) => <TextField {...params} variant="outlined" />}
+                              />
+                            </Grid>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Nhà kho(*):</span>
+                              <TextField
+                                fullWidth
+                                disabled={isDisabled}
+                                name="warehouse_id"
+                                variant="outlined"
+                                select
+                                size="small"
+                                value={returnMaterialData.warehouse_id || ''}
+                                onChange={handleChanges}
+                              >
+                                {warehouseList?.map((option) => (
+                                  <MenuItem key={option.id} value={option.id}>
+                                    {option.value}
+                                  </MenuItem>
+                                ))}
+                              </TextField>
+                            </Grid>
+                            {/* <Grid item lg={6} md={6} xs={6}>
                               <span className={classes.tabItemLabelField}>Ghi chú:</span>
                               <TextField
                                 fullWidth
@@ -406,10 +362,10 @@ const GoodsReceiptModal = () => {
                                 name="notes"
                                 type="text"
                                 size="small"
-                                value={goodsReceiptData.notes || ''}
+                                value={returnMaterialData.notes || ''}
                                 onChange={handleChanges}
                               />
-                            </Grid>
+                            </Grid> */}
                           </Grid>
                         </div>
                       </div>
@@ -417,62 +373,43 @@ const GoodsReceiptModal = () => {
                     <Grid item lg={12} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>Danh sách thành phẩm</div>
+                          <div className={classes.tabItemLabel}>Danh sách vật tư</div>
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
-                            <Table aria-label="simple table">
+                            <Table aria-label="simple table" stickyHeader>
                               <TableHead>
                                 <TableRow>
-                                  <TableCell align="left">Mã TP KH</TableCell>
-                                  <TableCell align="left">Mã thành phẩm</TableCell>
-                                  <TableCell align="left">Tên thành phẩm</TableCell>
-                                  <TableCell align="left">SL kế hoạch</TableCell>
-                                  <TableCell align="left">SL nhập</TableCell>
+                                  <TableCell align="left">Mã vật tư</TableCell>
+                                  <TableCell align="left">Tên vật tư</TableCell>
+                                  <TableCell align="left">SL hỏng</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
-                                  <TableCell align="left">Trạng thái</TableCell>
+                                  <TableCell align="left">Chi tiết</TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {receiptDetailList?.map((row, index) => (
+                                {returnDetailList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '15%' }}>
-                                      <Tooltip title={row?.product_customer_code}>
-                                        <span>{row?.product_customer_code}</span>
-                                      </Tooltip>
+                                    <TableCell align="left" style={{ width: '20%' }}>
+                                      {row.part_code}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '15%' }}>
-                                      <Tooltip title={row?.product_code}>
-                                        <span>{row?.product_code}</span>
+                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '50%' }}>
+                                      <Tooltip title={row?.part_name}>
+                                        <span>{row?.part_name}</span>
                                       </Tooltip>
-                                    </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '30%' }}>
-                                      <Tooltip title={row?.product_name}>
-                                        <span>{row?.product_name}</span>
-                                      </Tooltip>
-                                    </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '10%' }}>
-                                      {row?.daily_quantity_in_box}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
-                                      <TextField
-                                        InputProps={{
-                                          inputProps: { min: 0, max: row?.daily_quantity_in_box },
-                                        }}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="quantity_in_box"
-                                        type="number"
-                                        size="small"
-                                        value={row?.quantity_in_box || ''}
-                                        onChange={(e) => handleChangeProduct(index, e)}
-                                      />
+                                      {row.total_broken_quantity_in_piece}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       {row.unit_name}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
-                                      {row.status_display}
+                                    <TableCell
+                                      align="left"
+                                      style={{ width: '10%', cursor: 'pointer', textDecoration: 'underline' }}
+                                      onClick={() => handleOpenBroken(row.broken_list)}
+                                    >
+                                      Chi tiết
                                     </TableCell>
                                   </TableRow>
                                 ))}
@@ -505,12 +442,19 @@ const GoodsReceiptModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
-                <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleClickExport}>
-                  In phiếu
-                </Button>
+                {selectedDocument?.id && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleClickExport}>
+                    In phiếu
+                  </Button>
+                )}
                 {saveButton && selectedDocument?.id && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
                     {saveButton.text}
+                  </Button>
+                )}
+                {!selectedDocument?.id && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
+                    Tạo mới
                   </Button>
                 )}
               </Grid>
@@ -522,4 +466,4 @@ const GoodsReceiptModal = () => {
   );
 };
 
-export default GoodsReceiptModal;
+export default ReturnMaterialModal;
