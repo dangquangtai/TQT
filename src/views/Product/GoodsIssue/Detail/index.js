@@ -19,14 +19,13 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
   Tooltip,
+  Chip,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { format as formatDate } from 'date-fns';
-import { AccountCircleOutlined as AccountCircleOutlinedIcon, Delete, Today as TodayIcon, AddCircleOutline } from '@material-ui/icons';
+import { AccountCircleOutlined as AccountCircleOutlinedIcon, Today as TodayIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import useStyles from './../../../../utils/classes';
 import useView from './../../../../hooks/useView';
@@ -35,14 +34,10 @@ import { view } from './../../../../store/constant';
 import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CONFIRM_CHANGE } from './../../../../store/actions';
 import FirebaseUpload from './../../../FloatingMenu/FirebaseUpload/index';
 import DatePicker from './../../../../component/DatePicker/index';
-import {
-  createGoodsIssue,
-  deleteGoodsIssueDetail,
-  getGoodsIssueData,
-  updateGoodsIssue,
-  getLink
-} from './../../../../services/api/Product/GoodsIssue.js';
+import { createGoodsIssue, getGoodsIssueData, updateGoodsIssue, getLink } from './../../../../services/api/Product/GoodsIssue.js';
 import { downloadFile } from '../../../../utils/helper';
+import { getOrderByStatus, getOrderDetailList } from './../../../../services/api/Order/index';
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -85,7 +80,7 @@ const GoodsIssueModal = () => {
   const [issueDetailList, setIssueDetailList] = useState([]);
   const [statusList, setStatusList] = useState([]);
   const [warehouseList, setWarehouseList] = useState([]);
-  const [customerList, setCustomerList] = useState([]);
+  const [orderList, setOrderList] = useState([]);
 
   const [tabIndex, setTabIndex] = React.useState(0);
   const [dialogUpload, setDialogUpload] = useState({
@@ -145,6 +140,14 @@ const GoodsIssueModal = () => {
         await updateGoodsIssue({ ...goodsIssueData, issue_detail: issueDetailList });
         handleOpenSnackbar('success', 'Cập nhật Phiếu xuất thành phẩm thành công!');
       } else {
+        if (issueDetailList?.length === 0) {
+          handleOpenSnackbar('error', 'Vui lòng chọn thành phẩm!');
+          return;
+        }
+        // if (issueDetailList?.some((item) => item.status === 'Thiếu')) {
+        //   handleOpenSnackbar('error', 'Thành phẩm không đủ số lượng!');
+        //   return;
+        // }
         await createGoodsIssue({ ...goodsIssueData, issue_detail: issueDetailList });
         handleOpenSnackbar('success', 'Tạo mới Phiếu xuất thành phẩm thành công!');
       }
@@ -154,15 +157,17 @@ const GoodsIssueModal = () => {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
     }
   };
+
   const handleGetLink = async () => {
     try {
-        let url = await getLink(selectedDocument.id)
-        downloadFile(url)
-        handleOpenSnackbar('success', 'Tải file thành công!');
+      let url = await getLink(selectedDocument.id);
+      downloadFile(url);
+      handleOpenSnackbar('success', 'Tải file thành công!');
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
     }
   };
+
   const showConfirmPopup = ({ title = 'Thông báo', message = '', action = null, payload = null, onSuccess = null }) => {
     setConfirmPopup({ type: CONFIRM_CHANGE, open: true, title, message, action, payload, onSuccess });
   };
@@ -170,72 +175,6 @@ const GoodsIssueModal = () => {
   const handleChanges = (e) => {
     const { name, value } = e.target;
     setGoodsIssueData({ ...goodsIssueData, [name]: value });
-  };
-
-  const handleAddIssueDetail = () => {
-    // if (!goodsIssueData.supplier_id) {
-    //   handleOpenSnackbar('error', 'Vui lòng chọn nhà cung cấp!');
-    //   return;
-    // }
-    setIssueDetailList([
-      {
-        issue_id: selectedDocument?.id || '',
-        id: '',
-        product_id: '',
-        product_code: '',
-        product_name: '',
-        unit_id: '',
-        unit_name: '',
-        quantity_in_box: 0,
-      },
-      ...issueDetailList,
-    ]);
-  };
-
-  const handleChangeProductCode = (index, newItem) => {
-    const newProductList = [...issueDetailList];
-    const newProduct = {
-      product_id: newItem?.id || '',
-      product_code: newItem?.product_code || '',
-      product_name: newItem?.title || '',
-      unit_id: newItem?.unit_id || '',
-      unit_name: newItem?.unit_name || '',
-    };
-    newProductList[index] = { ...newProductList[index], ...newProduct };
-    if (issueDetailList?.some((item) => item.product_id === newItem?.id)) {
-      handleOpenSnackbar('error', 'Thành phẩm đã tồn tại!');
-      return;
-    }
-    setIssueDetailList(newProductList);
-  };
-
-  const handleChangeProduct = (index, e) => {
-    const { name, value } = e.target;
-    const newIssueDetailList = [...issueDetailList];
-    newIssueDetailList[index] = { ...newIssueDetailList[index], [name]: value };
-    setIssueDetailList(newIssueDetailList);
-  };
-
-  const handleDeleteProduct = (index, id) => {
-    if (id) {
-      showConfirmPopup({
-        title: 'Xóa thành phẩm',
-        message: 'Bạn có chắc chắn muốn xóa thành phẩm này?',
-        action: deleteGoodsIssueDetail,
-        payload: id,
-        onSuccess: () => {
-          spliceProduct(index);
-        },
-      });
-    } else {
-      spliceProduct(index);
-    }
-  };
-
-  const spliceProduct = (index) => {
-    const newIssueDetailList = [...issueDetailList];
-    newIssueDetailList.splice(index, 1);
-    setIssueDetailList(newIssueDetailList);
   };
 
   useEffect(() => {
@@ -249,13 +188,27 @@ const GoodsIssueModal = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { status, warehouses, customers } = await getGoodsIssueData();
+      const { status, warehouses } = await getGoodsIssueData();
       setStatusList(status);
       setWarehouseList(warehouses);
-      setCustomerList(customers);
+      const orders = await getOrderByStatus('STATUS_INPROGRESS');
+      setOrderList(orders);
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (!goodsIssueData.customer_order_id) return;
+    if (!goodsIssueData.warehouse_id) return;
+    if (isDisabled) return;
+    const fetchData = async () => {
+      const order = await getOrderDetailList(goodsIssueData.customer_order_id, goodsIssueData.warehouse_id);
+      setIssueDetailList(order);
+    };
+    fetchData();
+  }, [goodsIssueData.customer_order_id, goodsIssueData.warehouse_id]);
+
+  const isDisabled = !!selectedDocument?.id;
 
   return (
     <React.Fragment>
@@ -361,30 +314,16 @@ const GoodsIssueModal = () => {
                             <Grid item lg={3} md={3} xs={3}>
                               <span className={classes.tabItemLabelField}>Ngày xuất kho:</span>
                               <DatePicker
+                                disabled={isDisabled}
                                 date={goodsIssueData.order_date}
                                 onChange={(date) => setGoodsIssueData({ ...goodsIssueData, order_date: date })}
-                              />
-                            </Grid>
-                            <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Khách hàng:</span>
-                              <Autocomplete
-                                options={customerList || []}
-                                size="small"
-                                getOptionLabel={(option) => option.value}
-                                onChange={(event, newValue) => {
-                                  setGoodsIssueData({
-                                    ...goodsIssueData,
-                                    customer_order_id: newValue?.id || '',
-                                  });
-                                }}
-                                value={customerList?.find((item) => item.id === goodsIssueData.customer_order_id) || null}
-                                renderInput={(params) => <TextField {...params} variant="outlined" />}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
                               <span className={classes.tabItemLabelField}>Nhà kho:</span>
                               <TextField
                                 fullWidth
+                                disabled={isDisabled}
                                 name="warehouse_id"
                                 variant="outlined"
                                 select
@@ -398,6 +337,33 @@ const GoodsIssueModal = () => {
                                   </MenuItem>
                                 ))}
                               </TextField>
+                            </Grid>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Đơn hàng:</span>
+                              {isDisabled ? (
+                                <TextField
+                                  fullWidth
+                                  disabled
+                                  variant="outlined"
+                                  size="small"
+                                  value={goodsIssueData.customer_order_code || ''}
+                                />
+                              ) : (
+                                <Autocomplete
+                                  options={orderList || []}
+                                  size="small"
+                                  getOptionLabel={(option) => option.title}
+                                  onChange={(event, newValue) => {
+                                    setGoodsIssueData({
+                                      ...goodsIssueData,
+                                      customer_order_id: newValue?.id || '',
+                                      customer_order_code: newValue?.order_code || '',
+                                    });
+                                  }}
+                                  value={orderList?.find((item) => item.id === goodsIssueData.customer_order_id) || null}
+                                  renderInput={(params) => <TextField {...params} variant="outlined" />}
+                                />
+                              )}
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
                               <span className={classes.tabItemLabelField}>Trạng thái:</span>
@@ -439,64 +405,42 @@ const GoodsIssueModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>Danh sách thành phẩm</div>
-                          <Tooltip title="Thêm thành phẩm">
-                            <IconButton onClick={handleAddIssueDetail}>
-                              <AddCircleOutline />
-                            </IconButton>
-                          </Tooltip>
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
                             <Table aria-label="simple table">
                               <TableHead>
                                 <TableRow>
+                                  <TableCell align="left">Mã TP KH</TableCell>
                                   <TableCell align="left">Mã thành phẩm</TableCell>
                                   <TableCell align="left">Tên thành phẩm</TableCell>
-                                  <TableCell align="left">SL nhập</TableCell>
+                                  <TableCell align="left">SL xuất</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
-                                  <TableCell align="center">Xoá</TableCell>
+                                  <TableCell align="left">Trạng thái</TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
                                 {issueDetailList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '25%' }}>
-                                      <Autocomplete
-                                        options={products}
-                                        getOptionLabel={(option) => option.product_code || ''}
-                                        fullWidth
-                                        size="small"
-                                        value={products.find((item) => item.id === row.product_id) || null}
-                                        onChange={(event, newValue) => handleChangeProductCode(index, newValue)}
-                                        renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                      />
+                                    <TableCell align="left" style={{ width: '15%' }}>
+                                      {row?.product_customer_code}
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '15%' }}>
+                                      {row?.product_code}
                                     </TableCell>
                                     <TableCell align="left" className={classes.maxWidthCell} style={{ width: '40%' }}>
                                       <Tooltip title={row?.product_name}>
                                         <span>{row?.product_name}</span>
                                       </Tooltip>
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '20%' }}>
-                                      <TextField
-                                        InputProps={{
-                                          inputProps: { min: 0 },
-                                        }}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="quantity_in_box"
-                                        type="number"
-                                        size="small"
-                                        value={row?.quantity_in_box || ''}
-                                        onChange={(e) => handleChangeProduct(index, e)}
-                                      />
+                                    <TableCell align="left" style={{ width: '10%' }}>
+                                      {row.quantity_in_box}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       {row.unit_name}
                                     </TableCell>
-                                    <TableCell align="center" style={{ width: '5%' }}>
-                                      <IconButton onClick={() => handleDeleteProduct(index, row.id)}>
-                                        <Delete />
-                                      </IconButton>
+                                    <TableCell align="left" style={{ width: '10%' }}>
+                                      <Chip label={row.status} style={{ backgroundColor: row.color_check }} />
                                     </TableCell>
                                   </TableRow>
                                 ))}
@@ -529,7 +473,7 @@ const GoodsIssueModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
-              {selectedDocument?.id && (
+                {selectedDocument?.id && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleGetLink}>
                     {'In phiếu'}
                   </Button>

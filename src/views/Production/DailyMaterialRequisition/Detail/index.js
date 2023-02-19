@@ -178,7 +178,7 @@ const DailyMaterialRequisitionModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              Phiếu xuất vật tư hàng ngày
+              Phiếu xuất vật tư theo lệnh sản xuất
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -264,6 +264,7 @@ const DailyMaterialRequisitionModal = () => {
                             <Grid item lg={3} md={3} xs={3}>
                               <span className={classes.tabItemLabelField}>Ngày nhập kho:</span>
                               <DatePicker
+                                disabled={true}
                                 date={dailyMaterialRequisitionData.order_date}
                                 onChange={(date) => setDailyMaterialRequisitionData({ ...dailyMaterialRequisitionData, order_date: date })}
                               />

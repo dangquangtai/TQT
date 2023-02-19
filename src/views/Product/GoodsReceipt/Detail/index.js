@@ -319,6 +319,7 @@ const GoodsReceiptModal = () => {
                             <Grid item lg={3} md={3} xs={3}>
                               <span className={classes.tabItemLabelField}>Ngày nhập kho:</span>
                               <DatePicker
+                                disabled={true}
                                 date={goodsReceiptData.order_date}
                                 onChange={(date) => setGoodsReceiptData({ ...goodsReceiptData, order_date: date })}
                               />

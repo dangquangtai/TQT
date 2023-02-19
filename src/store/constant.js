@@ -112,6 +112,8 @@ export const apiEndpoints = {
   get_status_list: '/Primary/?FlowAlias=bs_api_order_get_order_status_list&action=api',
   delete_order_detail: '/Primary/?FlowAlias=bs_api_order_delete_order_detail&action=api',
   get_order_completed_list: '/Primary/?FlowAlias=bs_api_order_get_order_completed_list_by_company&action=api',
+  get_order_by_status: '/Primary/?FlowAlias=bs_api_order_get_order_list_by_status&action=api',
+  get_order_detail_list: '/Primary/?FlowAlias=bs_api_order_get_order_detail_list_by_order_id&action=api',
   // Customer
   get_all_customer: '/Primary/?FlowAlias=bs_api_customer_get_list_by_company&action=api',
   get_product_requesr_list: '/Primary/?FlowAlias=bs_api_factory_workorder_get_list_by_page&action=api',
