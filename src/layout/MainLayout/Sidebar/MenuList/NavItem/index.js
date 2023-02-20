@@ -28,9 +28,8 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '5px',
   },
   listCustomIcon: {
-    // width: '20px',
+    fontSize: '1.8rem',
     height: '30px',
-    fontSize: '1.5rem',
   },
   menuText: {
     opacity: 1,
@@ -94,7 +93,7 @@ const NavItem = (props) => {
         to={item.url}
         target={itemTarget}
         button
-        style={{ paddingLeft: item.children.length === 0 ? '28px' : level * 15 + 'px' }}
+        style={{ paddingLeft: item.children.length === 0 ? '26px' : level * 15 + 'px' }}
         {...listItemProps}
       >
         <ListItemIcon className={itemIconClass}>{itemIcon}</ListItemIcon>
