@@ -60,7 +60,7 @@ import { getDetailDailyMaterialReceived } from './../../services/api/Production/
 import { getDetailDailyMaterialRequisition } from './../../services/api/Production/MaterialRequisition';
 import { getDetailMaterialPart } from '../../services/api/Material/MaterialPart';
 import { downloadFile } from './../../utils/helper';
-
+import { getUserGroupDetail} from '../../services/api/UserGroup/index';
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
     if (response.status === 200 && response.data.return === 200) return true;
@@ -405,6 +405,11 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, materialRequisitionDocument: true });
         break;
+      case 'usergroup':
+        detailDocument = await getUserGroupDetail(selectedDocument.group_code, setView)
+        console.log('data',detailDocument)
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType});
+        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true})
       default:
         break;
     }
@@ -774,6 +779,9 @@ export default function GeneralTable(props) {
       work_order_date_string: tableColumns.includes('work_order_date_string'),
       percent_production: tableColumns.includes('percent_production'),
       percent_plan: tableColumns.includes('percent_plan'),
+      user_group_code: tableColumns.includes('user_group_code'),
+      user_group_name: tableColumns.includes('user_group_name'),
+      user_group_number_member: tableColumns.includes('user_group_number_member'),
     };
     setDisplayOptions(initOptions);
   }, [tableColumns, selectedFolder]);
@@ -1106,6 +1114,33 @@ export default function GeneralTable(props) {
                                   {row.supplier_name || row.title}
                                 </TableCell>
                               )}
+                              {displayOptions.user_group_code && (
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.group_code}
+                                </TableCell>
+                              )}
+                              {displayOptions.user_group_name && (
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.group_name}
+                                </TableCell>
+                              )}
+                              {displayOptions.user_group_number_member && (
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.number_member}
+                                </TableCell>
+                              )}
                               {displayOptions.warehouse_name && (
                                 <TableCell
                                   align="left"
@@ -1393,12 +1428,13 @@ export default function GeneralTable(props) {
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                   />
-                </Grid>
+               </Grid> 
               </Grid>
             </Paper>
           </Card>
         </Grid>
       </Grid>
+      
     </React.Fragment>
   );
 }

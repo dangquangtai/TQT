@@ -116,6 +116,12 @@ export const AccountProvider = ({ children }) => {
       return false;
     });
   };
+  const updatePermisstionGroup = async (id,permission_group, email_address,group_name_list) => {
+    return axiosInstance.post(apiEndpoints.update_user_group_account, {id: id, permission_group: permission_group, email_address: email_address, group_name_list: group_name_list}).then((response) => {
+      if (response.status === 200 && response.data.return === 200) return true;
+      return false;
+    });
+  };
 
   return (
     <AccountContext.Provider
@@ -130,6 +136,7 @@ export const AccountProvider = ({ children }) => {
         assignAccount,
         removeAccount,
         getAccount,
+        updatePermisstionGroup
       }}
     >
       {children}

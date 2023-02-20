@@ -280,6 +280,14 @@ export const apiEndpoints = {
   get_material_requisition_list: '/Primary/?FlowAlias=bs_api_factory_get_material_requisition_list&action=api',
   create_material_requisition: '/Primary/?FlowAlias=bs_api_factory_create_material_requisition&action=api',
   update_material_requisition: '/Primary/?FlowAlias=bs_api_factory_update_material_requisition&action=api',
+
+  //User Group
+  get_user_group_list_by_page: '/Primary/?FlowAlias=bs_api_orgm_ugroup_get_user_group_list_by_page&action=api',
+  get_user_group_detail: '/Primary/?FlowAlias=bs_api_orgm_ugroup_get_user_group_detail&action=api',
+  update_user_group_detail: '/Primary/?FlowAlias=bs_api_orgm_ugroup_update_user_group&action=api',
+  create_user_group_detail: '/Primary/?FlowAlias=bs_api_orgm_ugroup_create_user_group&action=api',
+  update_user_group_account: '/Primary/?FlowAlias=bs_api_orgm_user_update_permistion_group&action=api',
+  get_user_group_list: '/Primary/?FlowAlias=bs_api_orgm_ugroup_get_user_group_list_by_company&action=api',
 };
 
 export const apiDomain = 'https://upload.truebpm.vn';
@@ -302,6 +310,9 @@ export const departmentActions = {
 export const departmentDeactiveActions = {
   list_inactive_department: comanyCode + '_ORGANISATION_' + defaultProcess + '_OPEN_DEPARTMENT_DEACTIVE_LIST',
 };
+export const usergroupAction = {
+  list: `${comanyCode}_ORGANISATION_${defaultProcess}_OPEN_USER_GROUP_LIST`,
+}
 export const materialCategoryActions = {
   list_material_category: 'TQT_SETTING_DEFAULT_OPEN_MATERIAL_CATEGORY_LIST',
 };

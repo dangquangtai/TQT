@@ -62,6 +62,9 @@ export const headCells = [
   { id: 'number_of_worker', numeric: false, disablePadding: false, label: 'Số người làm', maxWidth: 150 },
   { id: 'number_of_working_hour', numeric: false, disablePadding: false, label: 'Số giờ làm', maxWidth: 150 },
   { id: 'work_order_date_string', numeric: false, disablePadding: false, label: 'Ngày', maxWidth: 150 },
+  { id: 'user_group_code', numeric: false, disablePadding: false, label: 'Mã group', maxWidth: 150 },
+  { id: 'user_group_name', numeric: false, disablePadding: false, label: 'Tên group', maxWidth: 150 },
+  { id: 'user_group_number_member', numeric: false, disablePadding: false, label: 'Số người', maxWidth: 150 },
 
   { id: 'menuButtons', numeric: false, disablePadding: false, label: '', maxWidth: 150 },
 ];

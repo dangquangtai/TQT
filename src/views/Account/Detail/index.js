@@ -28,6 +28,9 @@ import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../store/actions.js
 import useAccount from '../../../hooks/useAccount.js';
 import FirebaseUpload from '../../FloatingMenu/FirebaseUpload/index.js';
 import { initAccount } from '../../../store/constants/initial.js';
+import {getUserGroupList} from '../../../services/api/UserGroup/index';
+import { useStaticState } from '@material-ui/pickers';
+import { Autocomplete } from '@material-ui/lab';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -69,8 +72,9 @@ const AccountModal = () => {
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
-
-  const { createAccount, updateAccount } = useAccount();
+  const [permissionGroup , setPermissionGroup] = useState('');
+  const [groupNameList, setGroupNameList] = useState('');
+  const { createAccount, updateAccount, updatePermissionGroup } = useAccount();
   const { accountDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
   const [dialogUpload, setDialogUpload] = useState({
@@ -81,7 +85,7 @@ const AccountModal = () => {
   const [account, setAccount] = React.useState({
     ...initAccount,
   });
-
+  const [groupList, setGroupList] = useState([]);
   useEffect(() => {
     if (!selectedDocument) return;
     setAccount({
@@ -89,6 +93,13 @@ const AccountModal = () => {
       ...selectedDocument,
     });
   }, [selectedDocument]);
+  useEffect(() => {
+    const fetch = async () =>{
+      let list = await getUserGroupList();
+      setGroupList(list)
+    }
+    fetch()
+  }, []);
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
@@ -128,6 +139,8 @@ const AccountModal = () => {
           ...account,
           outputtype: 'RawJson',
         });
+        let group_name_list = groupNameList.map(item=> item.group_code)
+        await updatePermissionGroup(account.id, permissionGroup, group_name_list,account.email_address)
         if (check == true) {
           handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
           dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'account' });
@@ -137,7 +150,7 @@ const AccountModal = () => {
         }
       }
     } catch (error) {
-      handleOpenSnackbar(true, 'error', 'Vui lòng chọn ngày tháng năm sinh!');
+      handleOpenSnackbar(true, 'error', 'Vui lòng điền đầy đủ thông tin!');
     } finally {
     }
   };
@@ -226,6 +239,7 @@ const AccountModal = () => {
                     value={0}
                     {...a11yProps(0)}
                   />
+              
                 </Tabs>
               </Grid>
               <Grid item xs={12}>
@@ -247,7 +261,50 @@ const AccountModal = () => {
                           </div>
                         </div>
                       </div>
+                      <div className={classes.tabItem}>
+                        <div className={classes.tabItemTitle}>
+                          <div className={classes.tabItemLabel}>
+                            <AccountCircleOutlinedIcon />
+                            <span>Permission Group</span>
+                          </div>
+                        </div>
+                        <div className={classes.tabItemBody}>
+                          <Grid container className={classes.gridItem} alignItems="center">
+                            <Grid item lg={4} md={4} xs={12}>
+                              <span className={classes.tabItemLabelField}>Permission:</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={12}>
+                              <Autocomplete
+                              options={groupList}
+                              getOptionLabel={(option)=> option.group_code}
+                              fullWidth
+                              onChange={(e, value)=> setPermissionGroup(value.group_code)}
+                              size='small'
+                              renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
+                              />
+                            </Grid>
+                          </Grid>
+                          <Grid container className={classes.gridItem} alignItems="center">
+                            <Grid item lg={4} md={4} xs={12}>
+                              <span className={classes.tabItemLabelField}>User Group:</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={12}>
+                              <Autocomplete
+                              options={groupList}
+                              getOptionLabel={(option)=> option.group_code}
+                              fullWidth
+                              onChange={(e, value)=> setGroupNameList([...value])}
+                              multiple={true}
+                              size='small'
+                              renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
+                              />
+                            </Grid>
+                          </Grid>
+                        </div>
+                      </div>
                     </Grid>
+                    
+                   
                     <Grid item lg={6} md={6} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
@@ -257,6 +314,23 @@ const AccountModal = () => {
                           </div>
                         </div>
                         <div className={classes.tabItemBody}>
+                          <Grid container className={classes.gridItemInfo} alignItems="center">
+                            <Grid item lg={4} md={4} xs={4}>
+                              <span className={classes.tabItemLabelField}>Mã nhân viên: </span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={8}>
+                              <TextField
+                                fullWidth
+                                rows={1}
+                                rowsMax={1}
+                                variant="outlined"
+                                name="employee_code"
+                                value={account.employee_code || ''}
+                                className={classes.inputField}
+                                onChange={handleChange}
+                              />
+                            </Grid>
+                          </Grid>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
                               <span className={classes.tabItemLabelField}>Họ và tên: </span>
@@ -408,7 +482,7 @@ const AccountModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Trường:</span>
+                              <span className={classes.tabItemLabelField}>Địa chỉ:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={12}>
                               <TextField
@@ -416,8 +490,8 @@ const AccountModal = () => {
                                 rows={1}
                                 rowsMax={1}
                                 variant="outlined"
-                                name="current_school"
-                                value={account?.current_school}
+                                name="address"
+                                value={account?.address}
                                 className={classes.inputField}
                                 onChange={handleChange}
                               />
@@ -428,6 +502,7 @@ const AccountModal = () => {
                     </Grid>
                   </Grid>
                 </TabPanel>
+                
               </Grid>
             </Grid>
           </DialogContent>

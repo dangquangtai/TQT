@@ -31,6 +31,7 @@ import {
   productionDailyMaterialReceivedActions,
   productionDailyMaterialRequisitionActions,
   materialRequisitionActions,
+  usergroupAction,
 } from '../store/constant.js';
 
 export function getUrlByAction(selectedFolder) {
@@ -138,6 +139,9 @@ export function getUrlByAction(selectedFolder) {
     }
     case materialRequisitionActions.list_material_requisition: {
       return apiEndpoints.get_material_requisition_list;
+    }
+    case usergroupAction.list: {
+      return apiEndpoints.get_user_group_list_by_page;
     }
     default: {
       return '';

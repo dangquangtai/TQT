@@ -38,6 +38,7 @@ import {
   productionDailyMaterialReceivedActions,
   productionDailyMaterialRequisitionActions,
   materialRequisitionActions,
+  usergroupAction,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
 import { Redirect } from 'react-router-dom';
@@ -69,7 +70,7 @@ import ProductInventoryWrapper from './../../Product/Inventory/index';
 import DailyMaterialReceivedWrapper from './../../Production/DailyMaterialReceived/index';
 import DailyMaterialRequisitionWrapper from './../../Production/DailyMaterialRequisition/index';
 import MaterialRequisitionWrapper from './../../Material/Requisition/index';
-
+import UserGroupWrapper from '../../UserGroup';
 const Default = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
   const { selectedApp } = useSelector((state) => state.app);
@@ -105,6 +106,7 @@ const Default = () => {
   const availableProductionDailyMaterialRequisitionEndpoint = Object.values(productionDailyMaterialRequisitionActions);
   const availableDeliveryMaterialEndpoint = Object.values(dailyDeliveryMateialActions);
   const availableMaterialRequisitionEndpoint = Object.values(materialRequisitionActions);
+  const availableUserGroupEndpoint = Object.values(usergroupAction);
 
   if (!selectedApp?.id) {
     return <Redirect to="/dashboard/app" />;
@@ -146,6 +148,7 @@ const Default = () => {
           {availableProductionDailyMaterialReceivedEndpoint.includes(selectedFolder?.action) && <DailyMaterialReceivedWrapper />}
           {availableProductionDailyMaterialRequisitionEndpoint.includes(selectedFolder?.action) && <DailyMaterialRequisitionWrapper />}
           {availableMaterialRequisitionEndpoint.includes(selectedFolder?.action) && <MaterialRequisitionWrapper />}
+          {availableUserGroupEndpoint.includes(selectedFolder?.action) && <UserGroupWrapper />}
         </Grid>
       )}
     </Grid>
