@@ -2,16 +2,7 @@ import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  Avatar,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-  useMediaQuery,
-  useTheme,
-  Tooltip,
-} from '@material-ui/core';
+import { Avatar, ListItem, ListItemIcon, ListItemText, Typography, useMediaQuery, useTheme, Tooltip } from '@material-ui/core';
 import { pageUrls } from '../../../../../store/constant';
 
 import CustomIcon from '../CustomIcon/index';
@@ -37,8 +28,19 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '5px',
   },
   listCustomIcon: {
-    width: '20px',
+    // width: '20px',
     height: '30px',
+    fontSize: '1.5rem',
+  },
+  menuText: {
+    opacity: 1,
+  },
+  menuTextClose: {
+    opacity: 0,
+  },
+  noWrap: {
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
   },
 }));
 
@@ -92,30 +94,25 @@ const NavItem = (props) => {
         to={item.url}
         target={itemTarget}
         button
-        style={{ paddingLeft: item.children.length === 0 ? '32px' : level * 16 + 'px' }}
+        style={{ paddingLeft: item.children.length === 0 ? '28px' : level * 15 + 'px' }}
         {...listItemProps}
       >
         <ListItemIcon className={itemIconClass}>{itemIcon}</ListItemIcon>
-        {drawerOpen && (
-          <ListItemText
-            primary={
-              <Typography
-                variant={customization.isOpen === item.id ? 'subtitle1' : 'body1'}
-                color="inherit"
-                className={classes.listItemTypography}
-              >
-                {item.name}
+        <ListItemText
+          className={drawerOpen ? classes.menuText : classes.menuTextClose}
+          primary={
+            <Typography variant={customization.isOpen === item.id ? 'subtitle1' : 'body1'} className={classes.noWrap} color="inherit">
+              {item.name}
+            </Typography>
+          }
+          secondary={
+            item.caption && (
+              <Typography variant="caption" className={classes.subMenuCaption} display="block" gutterBottom>
+                {item.caption}
               </Typography>
-            }
-            secondary={
-              item.caption && (
-                <Typography variant="caption" className={classes.subMenuCaption} display="block" gutterBottom>
-                  {item.caption}
-                </Typography>
-              )
-            }
-          />
-        )}
+            )
+          }
+        />
         {item.chip && (
           <Chip
             color={item.chip.color}

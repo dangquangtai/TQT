@@ -9,8 +9,16 @@ import { useSelector } from 'react-redux';
 import useFolder from '../../../../../hooks/useFolder';
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: 36,
+    marginBottom: 4,
+  },
   menuCaption: {
     ...theme.typography.menuCaption,
+    marginTop: 0,
   },
   subMenuCaption: {
     ...theme.typography.subMenuCaption,
@@ -21,11 +29,18 @@ const useStyles = makeStyles((theme) => ({
   },
   menuIconMini: {
     width: '100%',
-    '& button': {
-      paddingLeft: '16px',
-      paddingRight: '100%',
-      minWidth: 'unset !important',
-    },
+    textAlign: 'center',
+  },
+  item: {
+    opacity: 1,
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    paddingTop: 3,
+  },
+  itemClose: {
+    opacity: 0,
+    height: 0,
   },
 }));
 
@@ -57,19 +72,12 @@ const NavGroup = (props) => {
   return (
     <List
       subheader={
-        <Grid container justifyContent="space-between">
-          {drawerOpen && (
-            <Grid item>
-              <Typography variant="caption" className={classes.menuCaption} display="block" gutterBottom>
-                {item.title}
-                {item.caption && (
-                  <Typography variant="caption" className={classes.subMenuCaption} display="block" gutterBottom>
-                    {item.caption}
-                  </Typography>
-                )}
-              </Typography>
-            </Grid>
-          )}
+        <Grid container className={classes.root}>
+          <Grid item className={`${classes.item} ${drawerOpen ? '' : classes.itemClose}`}>
+            <Typography variant="caption" className={classes.menuCaption}>
+              {item.title}
+            </Typography>
+          </Grid>
           <Grid item className={`${drawerOpen ? '' : classes.menuIconMini}`}>
             {item.action === 'reload' && (
               <Button onClick={() => reloadFolders(selectedProject || '', selectedApp?.id || '')}>

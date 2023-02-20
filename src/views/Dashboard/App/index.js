@@ -22,11 +22,17 @@ const App = () => {
     <Grid container justifyContent="center" alignItems="center">
       <Grid item xs={12} sm={12} md={12} lg={12}>
         <Grid container spacing={gridSpacing} alignItems="stretch">
-          {apps?.map((app) => (
-            <Grid key={app.app_code} item lg={4} sm={6} xs={12}>
-              <AppCard app={app} />
-            </Grid>
-          ))}
+          {apps?.map((app) => {
+            if (app?.projects?.length > 0) {
+              return (
+                <Grid key={app.app_code} item lg={4} sm={6} xs={12}>
+                  <AppCard app={app} />
+                </Grid>
+              );
+            } else {
+              return null;
+            }
+          })}
         </Grid>
       </Grid>
     </Grid>
