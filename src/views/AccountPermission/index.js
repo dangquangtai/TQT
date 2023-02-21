@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import UserGroupTable from '../Table';
+import AccountPermissionTable from '../Table';
 import { getUrlByAction } from '../../utils/utils';
 import { DOCUMENT_CHANGE } from '../../store/actions';
 // import axiosInstance from '../../services/axios';
 
-const UserGroupWrapper = () => {
+const AccountPermissionWrapper = () => {
   const dispatch = useDispatch();
 
   const [categories, setCategories] = React.useState([]);
@@ -16,7 +16,7 @@ const UserGroupWrapper = () => {
 
   useEffect(() => {
     async function fetchData() {
-      dispatch({ type: DOCUMENT_CHANGE, documentType: 'usergroup' });
+      dispatch({ type: DOCUMENT_CHANGE, documentType: 'accountpermission' });
     }
     if (selectedProject) {
       fetchData();
@@ -25,15 +25,15 @@ const UserGroupWrapper = () => {
 
   return (
     <React.Fragment>
-      <UserGroupTable
-        tableTitle="Quản lý user group"
+      <AccountPermissionTable
+        tableTitle="Cấu hình permission group"
         url={getUrlByAction(selectedFolder)}
         categories={categories}
-        documentType="usergroup"
-        setActiveUrl={'cxzcxz'}
+        documentType="accountpermission"
+        // setFeaturedUrl={}
       />
     </React.Fragment>
   );
 };
 
-export default UserGroupWrapper;
+export default AccountPermissionWrapper;

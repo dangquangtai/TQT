@@ -168,7 +168,7 @@ export default function GeneralTable(props) {
   const buttonCreateMaterialPart = menuButtons.find((button) => button.name === view.materialPart.list.create);
   const buttonCreateMaterialRequisition = menuButtons.find((button) => button.name === view.materialRequisition.list.create);
   const buttonExportMaterial = menuButtons.find((button) => button.name === view.purchaseMaterial.list.export);
-
+  const buttonCreateUGroup = menuButtons.find((button)=>button.name===view.ugroup.list.create)
   const fetchDocument = (additionalQuery) => {
     const queries = { ...defaultQueries, ...additionalQuery };
     getDocuments(url, documentType, selectedProject?.id, selectedFolder?.id, queries);
@@ -410,6 +410,10 @@ export default function GeneralTable(props) {
         console.log('data',detailDocument)
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType});
         dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true})
+      case 'usergroupmenuitem':
+        detailDocument = await getUserGroupDetail(selectedDocument.group_code, setView)
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType});
+        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true})
       default:
         break;
     }
@@ -478,6 +482,10 @@ export default function GeneralTable(props) {
         break;
       case 'materialRequisition':
         dispatch({ type: FLOATING_MENU_CHANGE, materialRequisitionDocument: true });
+        break;
+        break;
+      case 'usergroup':
+        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
         break;
       default:
         break;
@@ -746,6 +754,9 @@ export default function GeneralTable(props) {
       visible_for_selection: tableColumns.includes('visible_for_selection'),
       active: tableColumns.includes('active'),
       full_name: tableColumns.includes('full_name'),
+      user_group_code: tableColumns.includes('user_group_code'),
+      user_group_name: tableColumns.includes('user_group_name'),
+      user_group_number_member: tableColumns.includes('user_group_number_member'),
       menuButtons: !!menuButtons.length || false,
       is_featured: tableColumns.includes('is_featured'),
       is_active: tableColumns.includes('is_active'),
@@ -779,9 +790,7 @@ export default function GeneralTable(props) {
       work_order_date_string: tableColumns.includes('work_order_date_string'),
       percent_production: tableColumns.includes('percent_production'),
       percent_plan: tableColumns.includes('percent_plan'),
-      user_group_code: tableColumns.includes('user_group_code'),
-      user_group_name: tableColumns.includes('user_group_name'),
-      user_group_number_member: tableColumns.includes('user_group_number_member'),
+     
     };
     setDisplayOptions(initOptions);
   }, [tableColumns, selectedFolder]);
@@ -915,6 +924,8 @@ export default function GeneralTable(props) {
     buttonCreateMaterialRequisition,
     buttonExportMaterial,
     handleExportMaterial,
+    buttonCreateUGroup,
+  
   };
 
   return (
@@ -1114,33 +1125,7 @@ export default function GeneralTable(props) {
                                   {row.supplier_name || row.title}
                                 </TableCell>
                               )}
-                              {displayOptions.user_group_code && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
-                                  {row.group_code}
-                                </TableCell>
-                              )}
-                              {displayOptions.user_group_name && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
-                                  {row.group_name}
-                                </TableCell>
-                              )}
-                              {displayOptions.user_group_number_member && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
-                                  {row.number_member}
-                                </TableCell>
-                              )}
+                            
                               {displayOptions.warehouse_name && (
                                 <TableCell
                                   align="left"
@@ -1309,6 +1294,33 @@ export default function GeneralTable(props) {
                               {displayOptions.work_order_date_string && (
                                 <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
                                   {row.work_order_date_string}
+                                </TableCell>
+                              )}
+                                {displayOptions.user_group_code && (
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.group_code}
+                                </TableCell>
+                              )}
+                              {displayOptions.user_group_name && (
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.group_name}
+                                </TableCell>
+                              )}
+                              {displayOptions.user_group_number_member && (
+                                <TableCell
+                                  align="left"
+                                  onClick={(event) => openDetailDocument(event, row)}
+                                  className={classes.tableItemName}
+                                >
+                                  {row.number_member}
                                 </TableCell>
                               )}
                               {displayOptions.is_active && (

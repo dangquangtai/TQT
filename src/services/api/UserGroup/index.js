@@ -65,3 +65,48 @@ export const updateUserGroupDetail = (group_code,group_name, email_list,group_co
                                     console.log(error)
                   })
 };
+
+export const getTreeViewMenuList = () =>{
+                  return axiosServices
+                  .post(apiEndpoints.get_menu_item_tree_view,
+                                    {})
+                  .then((response)=>{
+                                    if (response.status===200 && response.data.return===200){
+                                                     const {list} = response.data 
+                                                      return list;
+                                    }
+                                    return [];
+                  })
+                  .catch((error)=>{
+                                    console.log(error)
+                  })
+};
+export const getMenuLookupList = (user_group) =>{
+                  return axiosServices
+                  .post(apiEndpoints.get_menu_item_lookup_tree_view,
+                                    {user_group: user_group})
+                  .then((response)=>{
+                                    if (response.status===200 && response.data.return===200){
+                                                     const {list} = response.data 
+                                                      return list;
+                                    }
+                                    return [];
+                  })
+                  .catch((error)=>{
+                                    console.log(error)
+                  })
+};
+export const updateMenuLookupList = (user_group, menu_list) =>{
+                  return axiosServices
+                  .post(apiEndpoints.update_menu_item_update_lookup,
+                                    {user_group: user_group, menu_list: menu_list})
+                  .then((response)=>{
+                                    if (response.status===200 && response.data.return===200){
+                                                   return true;
+                                    }
+                                    return false;
+                  })
+                  .catch((error)=>{
+                                    console.log(error)
+                  })
+};

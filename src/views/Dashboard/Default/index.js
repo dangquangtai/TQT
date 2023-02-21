@@ -39,6 +39,8 @@ import {
   productionDailyMaterialRequisitionActions,
   materialRequisitionActions,
   usergroupAction,
+  usergroupItemAction,
+  accountPermissionAction,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
 import { Redirect } from 'react-router-dom';
@@ -71,6 +73,8 @@ import DailyMaterialReceivedWrapper from './../../Production/DailyMaterialReceiv
 import DailyMaterialRequisitionWrapper from './../../Production/DailyMaterialRequisition/index';
 import MaterialRequisitionWrapper from './../../Material/Requisition/index';
 import UserGroupWrapper from '../../UserGroup';
+import UserGroupMenuItemWrapper from '../../UserGroupMenuItem';
+import AccountPermissionWrapper from '../../AccountPermission';
 const Default = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
   const { selectedApp } = useSelector((state) => state.app);
@@ -107,7 +111,8 @@ const Default = () => {
   const availableDeliveryMaterialEndpoint = Object.values(dailyDeliveryMateialActions);
   const availableMaterialRequisitionEndpoint = Object.values(materialRequisitionActions);
   const availableUserGroupEndpoint = Object.values(usergroupAction);
-
+  const availableUserGroupMenuItemEndpoint = Object.values(usergroupItemAction);
+  const availableUserPermissionEndpoint = Object.values(accountPermissionAction)
   if (!selectedApp?.id) {
     return <Redirect to="/dashboard/app" />;
   }
@@ -149,6 +154,8 @@ const Default = () => {
           {availableProductionDailyMaterialRequisitionEndpoint.includes(selectedFolder?.action) && <DailyMaterialRequisitionWrapper />}
           {availableMaterialRequisitionEndpoint.includes(selectedFolder?.action) && <MaterialRequisitionWrapper />}
           {availableUserGroupEndpoint.includes(selectedFolder?.action) && <UserGroupWrapper />}
+          {availableUserGroupMenuItemEndpoint.includes(selectedFolder?.action) && <UserGroupMenuItemWrapper />}
+          {availableUserPermissionEndpoint.includes(selectedFolder?.action) && <AccountPermissionWrapper />}
         </Grid>
       )}
     </Grid>

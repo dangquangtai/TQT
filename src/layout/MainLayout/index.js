@@ -39,6 +39,7 @@ import DailyMaterialRequisitionModal from './../../views/Production/DailyMateria
 import MaterialPartModal from '../../views/Material/MaterialPart/Detail';
 import MaterialRequisitionModal from './../../views/Material/Requisition/Detail/index';
 import UserGroupModal from '../../views/UserGroup/Detail';
+import UserGroupMenuItemModal from '../../views/UserGroupMenuItem/Detail';
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -158,6 +159,8 @@ const MainLayout = ({ children }) => {
         return <MaterialRequisitionModal />;
       case 'usergroup':
         return <UserGroupModal/>
+      case 'usergroupmenuitem':
+        return <UserGroupMenuItemModal/>
       default:
         return null;
     }

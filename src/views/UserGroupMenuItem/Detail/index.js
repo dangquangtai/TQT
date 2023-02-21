@@ -11,20 +11,21 @@ import {
   Box,
   Typography,
   Tab,
-  Select,
-  MenuItem,
-  TextField,
   Snackbar,
+  Checkbox,
+  TextField,
   TableContainer,
   Paper,
-  TableCell,
-  TableRow,
-  TableBody,
   Table,
+  TableBody,
+  TableRow,
   TableHead,
-  IconButton
+  TableCell
 } from '@material-ui/core';
-import { Delete } from '@material-ui/icons';
+import { TreeView } from '@material-ui/lab';
+import TreeItem from '@material-ui/lab/TreeItem';
+import TreeItemClassKey from '@material-ui/lab/TreeItem/TreeItem';
+import SvgIcon from '@material-ui/core/SvgIcon';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import Alert from '../../../component/Alert/index.js';
 import { useSelector, useDispatch } from 'react-redux';
@@ -33,10 +34,7 @@ import { view } from '../../../store/constant.js';
 import useView from '../../../hooks/useView';
 import useStyles from './classes.js';
 import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../store/actions.js';
-import { style } from '../../Table/style';
-import useAccount from '../../../hooks/useAccount.js';
-import { Autocomplete } from '@material-ui/lab';
-import {createUserGroupDetail,updateUserGroupDetail} from '../../../services/api/UserGroup/index'
+import { getTreeViewMenuList, getMenuLookupList, updateMenuLookupList } from '../../../services/api/UserGroup/index';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -69,7 +67,7 @@ function a11yProps(index) {
   };
 }
 
-const UserGroupModal = () => {
+const UserGroupMenuItemModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [tabIndex, setTabIndex] = React.useState(0);
@@ -78,41 +76,9 @@ const UserGroupModal = () => {
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
-  const { getAllUser } = useAccount();
-  const [accountList , setAccountList] = useState([]);
+  const [listChecked, setListChecked] = useState([]);
   const { detailDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
-  const [dialogUpload, setDialogUpload] = useState({
-    open: false,
-    type: '',
-  });
-  const [usergroup, setUserGroup] = useState({ group_code: '', group_name: '' });
-  const [rows, setRows] = useState([])
-  const [ itemAdd, setAddItem] = useState([])
-  useEffect(() => {
-    if (!selectedDocument) return;
-    setRows([...selectedDocument.user_list])
-    setUserGroup({ ...selectedDocument })
-  }, [selectedDocument]);
-  useEffect(() =>{
-    const fetch = async () => {
-      let data = await getAllUser();
-      setAccountList(data)
-    }
-    fetch();
-  },[])
-  const handelRemoveItem = (item) => {
-    let arrayFilter = rows.filter(itemarr => itemarr !== item)
-    setRows([...arrayFilter])
-    
-  }
-  const handleAddItem = () =>{
-    let arrayFilter = rows.filter(itemarr => itemAdd.includes(itemarr)===false)
-    let arrayDrop = accountList.filter(itemarr=>itemarr !== itemAdd[0])
-    setAccountList(arrayDrop)
-    setRows([...arrayFilter,...itemAdd])
-    setAddItem([])
-  }
   const handleCloseDialog = () => {
     setDocumentToDefault();
     dispatch({ type: FLOATING_MENU_CHANGE, accountDocument: false });
@@ -129,43 +95,105 @@ const UserGroupModal = () => {
       text: text,
     });
   };
+  const handleChecked = (value) => {
+    let check = listChecked.some(item => item === value)
+    if (check) {
+      let filterarray = listChecked.filter(item => item !== value)
+      setListChecked([...filterarray])
+    } else {
+      setListChecked([...listChecked, value])
+    }
+
+  }
   const handleUpdateAccount = async () => {
     try {
-      if (!selectedDocument) {
-        let email_list = rows.map(item=>item.email_address)
-        let check = await createUserGroupDetail(usergroup.group_code, usergroup.group_name, email_list);
-        if (check == true) {
-          handleOpenSnackbar(true, 'success', 'Tạo mới thành công!');
-          dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'usergroup' });
-          handleCloseDialog();
-        } else {
-          handleOpenSnackbar(true, 'error', 'Tạo mới lỗi!');
-        }
-      } else {
-        let email_list = rows.map(item=>item.email_address)
-        let check = await updateUserGroupDetail(usergroup.group_code, usergroup.group_name, email_list, selectedDocument.group_code)
-        if (check == true) {
-          handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
-          dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'usergroup' });
-          handleCloseDialog();
-        } else {
-          handleOpenSnackbar(true, 'error', 'Tạo mới lỗi!');
-        }
-      }
+      let check = await updateMenuLookupList(selectedDocument.group_code, listChecked)
+      handleOpenSnackbar(true, 'success', 'Cập nhật thành công!');
+      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'usergroupmenuitem' });
+      handleCloseDialog()
     } catch (error) {
-      handleOpenSnackbar(true, 'error', 'Tạo mới lỗi!');
+      handleOpenSnackbar(true, 'error', 'Cập nhật thất bại!');
     } finally {
     }
   };
-
-  const handleChange = (e) => {
-    const value = e.target.value;
-
-  };
-
   const setDocumentToDefault = async () => {
     setTabIndex(0);
   };
+  const [dataShow, setData] = React.useState();
+  useEffect(() => {
+    const fetch = async () => {
+      let data = await getTreeViewMenuList();
+      setData(data);
+    };
+    fetch();
+  }, []);
+  useEffect(() => {
+    if (!selectedDocument) return;
+    const fetch = async () => {
+      let list = await getMenuLookupList(selectedDocument.group_code)
+      setListChecked([...list])
+    }
+    fetch()
+  }, [selectedDocument])
+
+  const renderItem = (data) => {
+    if (data.children.length === 0) {
+      return (
+        <>
+          <TreeItem
+            nodeId={data.id}
+            label={<><Checkbox
+              checked={listChecked?.some(
+                (item) =>
+                  item === data.id
+              )}
+              onChange={(e) => handleChecked(data.id)}
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+            />{data.name}</>}
+            key={data.id}
+            // onClick={(event) => handleClickOpen(data.id)}
+            className={TreeItemClassKey.MuiTreeItemlabel}
+          />
+        </>
+      );
+    } else {
+      return (
+        <TreeItem
+          nodeId={data.id}
+          label={<><Checkbox
+            checked={listChecked?.some(
+              (item) =>
+                item === data.id
+            )}
+            onChange={(e) => handleChecked(data.id)}
+            inputProps={{ 'aria-label': 'primary checkbox' }}
+          />{data.name}</>}
+          key={data.id}
+        // onClick={(event) => handleClickOpen(data.id)}
+        >
+          {data.children.map((data2) => renderItem(data2))}
+        </TreeItem>
+      );
+
+    }
+  };
+
+  function MinusSquare(props) {
+    return (
+      <SvgIcon fontSize="inherit" style={{ width: 14, height: 14 }} {...props}>
+        <path d="M22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0zM17.873 11.023h-11.826q-.375 0-.669.281t-.294.682v0q0 .401.294 .682t.669.281h11.826q.375 0 .669-.281t.294-.682v0q0-.401-.294-.682t-.669-.281z" />
+      </SvgIcon>
+    );
+  }
+
+  function PlusSquare(props) {
+    return (
+      <SvgIcon fontSize="inherit" style={{ width: 14, height: 14 }} {...props}>
+        <path d="M22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0zM17.873 12.977h-4.923v4.896q0 .401-.281.682t-.682.281v0q-.375 0-.669-.281t-.294-.682v-4.896h-4.923q-.401 0-.682-.294t-.281-.669v0q0-.401.281-.682t.682-.281h4.923v-4.896q0-.401.294-.682t.669-.281v0q.401 0 .682.281t.281.682v4.896h4.923q.401 0 .682.281t.281.682v0q0 .375-.281.669t-.682.294z" />
+      </SvgIcon>
+    );
+  }
+
 
   return (
     <React.Fragment>
@@ -227,12 +255,37 @@ const UserGroupModal = () => {
                 <TabPanel value={tabIndex} index={0}>
                   <Grid container spacing={1}>
 
-                    <Grid item lg={12} md={12} xs={12}>
+                    <Grid item lg={6} md={6} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>
                             <AccountCircleOutlinedIcon />
-                            <span>Thông tin cá nhân</span>
+                            <span>Danh sách menu item</span>
+                          </div>
+                        </div>
+                        <div className={classes.tabItemBody}>
+                          <Grid container className={classes.gridItemInfo} alignItems="center">
+                            {dataShow && (
+                              <TreeView
+                                style={{ padding: 5, minHeight: 480, maxHeight: 480, background: '#fff', overflow: 'auto' }}
+                                aria-label="file system navigator"
+                                defaultCollapseIcon={<MinusSquare />}
+                                defaultExpandIcon={<PlusSquare />}
+                                sx={{ height: 264, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
+                              >
+                                <>{dataShow.map((data) => renderItem(data))}</>
+                              </TreeView>
+                            )}
+                          </Grid>
+                        </div>
+                      </div>
+                    </Grid>
+                    <Grid item lg={6} md={6} xs={12}>
+                      <div className={classes.tabItem}>
+                        <div className={classes.tabItemTitle}>
+                          <div className={classes.tabItemLabel}>
+                            <AccountCircleOutlinedIcon />
+                            <span>Thông tin user group</span>
                           </div>
                         </div>
                         <div className={classes.tabItemBody}>
@@ -245,9 +298,9 @@ const UserGroupModal = () => {
                                 fullWidth
                                 variant="outlined"
                                 name="group_code"
-                                value={usergroup?.group_code}
+                                value={selectedDocument?.group_code}
                                 className={classes.inputField}
-                                onChange={handleChange}
+                                disabled={true}
                               />
                             </Grid>
                           </Grid>
@@ -260,39 +313,13 @@ const UserGroupModal = () => {
                                 fullWidth
                                 variant="outlined"
                                 name="group_name"
-                                value={usergroup?.group_name}
+                                value={selectedDocument?.group_name}
                                 className={classes.inputField}
-                                onChange={handleChange}
+                                disabled={true}
                               />
                             </Grid>
                           </Grid>
-                          <Grid container className={classes.gridItem} alignItems="center" spacing={1}>
-                            <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Danh sách tài khoản:</span>
-                            </Grid>
-                            <Grid item lg={7} md={7} xs={12}>
-                              <Autocomplete
-                              options={accountList}
-                              value={itemAdd}
-                              blurOnSelect={true}
-                              multiple
-                              size='small'
-                              onChange={(e, value)=>setAddItem(value)}
-                              getOptionLabel={(option)=>option.email_address}
-                              fullWidth
-                              renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
-                              />
-                            </Grid>
-                            <Grid item lg={1} md={1} xs={12}>
-                            <Button
-                              variant="contained"
-                              style={{ background: 'rgb(97, 42, 255)' }}
-                              onClick ={handleAddItem} 
-                            >
-                              {'Thêm'}
-                            </Button>
-                            </Grid>
-                          </Grid>
+
                           <Grid container className={classes.gridItem} alignItems="center">
                             <TableContainer component={Paper} style={{ maxHeight: 300 }}>
                               <Table  aria-label="simple table">
@@ -301,25 +328,25 @@ const UserGroupModal = () => {
                                     <TableCell></TableCell>
                                     <TableCell align="left">Email</TableCell>
                                     <TableCell align="left">Tên</TableCell>
-                                    <TableCell align="right"></TableCell>
                                   </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                  {rows.map((row) => (
+                                  {selectedDocument?.user_list.map((row) => (
                                     <TableRow
                                       key={row.email_address}
                                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     >
                                       <TableCell component="th" scope="row">
-                                        <img alt="" src={row.image_url} style={style.tableUserAvatar} />
+                                        <img alt="" src={row.image_url} style={{
+                                          height: '50px',
+                                          width: '50px',
+                                          objectFit: 'cover',
+                                          boxShadow: 'rgb(50 50 93 / 25%) 0px 2px 5px -1px, rgb(0 0 0 / 30%) 0px 1px 3px -1px',
+                                          borderRadius: '4px',
+                                        }} />
                                       </TableCell>
                                       <TableCell align="left">{row.email_address}</TableCell>
                                       <TableCell align="left">{row.full_name}</TableCell>
-                                      <TableCell align="right">
-                                        <IconButton onClick={() => handelRemoveItem(row)} >
-                                          <Delete />
-                                        </IconButton>
-                                      </TableCell>
                                     </TableRow>
                                   ))}
                                 </TableBody>
@@ -374,5 +401,4 @@ const UserGroupModal = () => {
     </React.Fragment>
   );
 };
-
-export default UserGroupModal;
+export default UserGroupMenuItemModal;

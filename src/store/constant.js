@@ -9,14 +9,16 @@ export const apiEndpoints = {
   get_app_list: '/Primary/?FlowAlias=bs_menu_api_get_list_app&action=api',
   get_folders: '/Primary/?FlowAlias=bs_menu_api_get_menu_tree&action=api',
   get_metadata: '/Primary/?FlowAlias=bs_api_tqt_get_meta_data&action=api',
+  get_menu_item_tree_view: '/Primary/?FlowAlias=bs_api_ui_get_menu_item_tree_view_by_company_code&action=api',
+  get_menu_item_lookup_tree_view: '/Primary/?FlowAlias=bs_api_ui_get_project_item_lookup_list_by_user_group&action=api',
+  update_menu_item_update_lookup: '/Primary/?FlowAlias=bs_api_ui_update_menu_project_item_list_by_user_group&action=api',
   // Account
   get_all_active_account: '/Primary/?FlowAlias=bs_user_api_get_all_active_account_by_page&action=api',
   get_all_deactive_account: '/Primary/?FlowAlias=bs_user_api_get_all_deactive_account_by_page&action=api',
   get_account_detail: '/Primary/?FlowAlias=bs_api_user_get_account_by_id&action=api',
   create_account: '/Primary/?FlowAlias=bs_api_user_create_account_by_host&action=api',
   update_account: '/Primary/?FlowAlias=bs_api_user_update_account_by_id&action=api',
-  get_all_account_by_department_and_role_template:
-    '/Primary/?FlowAlias=bs_api_user_get_all_acount_by_departmentand_role_template&action=api',
+  get_all_account_by_department_and_role_template: '/Primary/?FlowAlias=bs_api_user_get_all_acount_by_departmentand_role_template&action=api',
   assign_account_to_dept: '/Primary/?FlowAlias=bs_api_user_api_assign_account_to_department&action=api',
   remove_account_from_dept: '/Primary/?FlowAlias=bs_api_user_api_remove_account_from_department&action=api',
   active_account: '/Primary/?FlowAlias=bs_api_user_active_account&action=api',
@@ -259,17 +261,14 @@ export const apiEndpoints = {
   get_product_inventory_detail: '/Primary/?FlowAlias=bs_api_factory_get_product_inventory_detail&action=api',
 
   // Production Daily Material Requisition
-  get_production_daily_material_requisition_list:
-    '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_requisition_list&action=api',
-  get_production_daily_material_requisition_detail:
-    '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_requisition_detail&action=api',
+  get_production_daily_material_requisition_list: '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_requisition_list&action=api',
+  get_production_daily_material_requisition_detail: '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_requisition_detail&action=api',
   update_production_daily_material_requisiton: '/Primary/?FlowAlias=bs_api_factory_update_production_daily_material_requisition&action=api',
-  export_production_daily_material_requisition:'/Primary/?FlowAlias=bs_api_factory_export_production_daily_material_requisition&action=api',
+  export_production_daily_material_requisition: '/Primary/?FlowAlias=bs_api_factory_export_production_daily_material_requisition&action=api',
 
   // Production Daily Material Received
   get_production_daily_material_received_list: '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_list&action=api',
-  get_production_daily_material_received_detail:
-    '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_detail&action=api',
+  get_production_daily_material_received_detail: '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_detail&action=api',
   update_production_daily_material_received: '/Primary/?FlowAlias=bs_api_factory_update_production_daily_material_received&action=api',
   get_production_daily_material_received_data: '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_data&action=api',
   export_production_daily_material_received: '/Primary/?FlowAlias=bs_api_factory_export_production_daily_material_received&action=api',
@@ -312,7 +311,11 @@ export const departmentDeactiveActions = {
 };
 export const usergroupAction = {
   list: `${comanyCode}_ORGANISATION_${defaultProcess}_OPEN_USER_GROUP_LIST`,
+  
 }
+export const usergroupItemAction = {
+  list_role_item: `${comanyCode}_ORGANISATION_${defaultProcess}_OPEN_MENU_ITEM_LIST`
+};
 export const materialCategoryActions = {
   list_material_category: 'TQT_SETTING_DEFAULT_OPEN_MATERIAL_CATEGORY_LIST',
 };
@@ -391,6 +394,9 @@ export const productionDailyMaterialReceivedActions = {
 };
 export const materialRequisitionActions = {
   list_material_requisition: 'TQT_MATERIAL_DEFAULT_OPEN_REQUISITION_NOT_WORKORDER_LIST',
+};
+export const accountPermissionAction= {
+  list: 'TQT_ORGANISATION_DEFAULT_OPEN_USER_GROUP_PERMISSION_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -618,4 +624,9 @@ export const view = {
       create: 'TQT_MATERIAL_DEFAULT_REQUISITION_NOT_WORKORDER_CREATE_MENU_BUTTON',
     },
   },
+  ugroup: {
+    list: {
+      create: 'TQT_ORGANISATION_DEFAULT_CREATE_USER_GROUP_MENU_BUTTON'
+    }
+  }
 };

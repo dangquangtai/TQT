@@ -32,6 +32,8 @@ import {
   productionDailyMaterialRequisitionActions,
   materialRequisitionActions,
   usergroupAction,
+  usergroupItemAction,
+  accountPermissionAction,
 } from '../store/constant.js';
 
 export function getUrlByAction(selectedFolder) {
@@ -142,6 +144,12 @@ export function getUrlByAction(selectedFolder) {
     }
     case usergroupAction.list: {
       return apiEndpoints.get_user_group_list_by_page;
+    }
+    case usergroupItemAction.list_role_item: {
+      return apiEndpoints.get_user_group_list_by_page;
+    }
+    case accountPermissionAction.list: {
+      return apiEndpoints.get_all_active_account;
     }
     default: {
       return '';

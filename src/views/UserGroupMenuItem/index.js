@@ -5,7 +5,7 @@ import { getUrlByAction } from '../../utils/utils';
 import { DOCUMENT_CHANGE } from '../../store/actions';
 // import axiosInstance from '../../services/axios';
 
-const UserGroupWrapper = () => {
+const UserGroupMenuItemWrapper = () => {
   const dispatch = useDispatch();
 
   const [categories, setCategories] = React.useState([]);
@@ -16,7 +16,7 @@ const UserGroupWrapper = () => {
 
   useEffect(() => {
     async function fetchData() {
-      dispatch({ type: DOCUMENT_CHANGE, documentType: 'usergroup' });
+      dispatch({ type: DOCUMENT_CHANGE, documentType: 'usergroupmenuitem' });
     }
     if (selectedProject) {
       fetchData();
@@ -26,14 +26,14 @@ const UserGroupWrapper = () => {
   return (
     <React.Fragment>
       <UserGroupTable
-        tableTitle="Quản lý user group"
+        tableTitle="Quản lý user group menu item"
         url={getUrlByAction(selectedFolder)}
         categories={categories}
-        documentType="usergroup"
-        setActiveUrl={'cxzcxz'}
+        documentType="usergroupmenuitem"
+        // setFeaturedUrl={}
       />
     </React.Fragment>
   );
 };
 
-export default UserGroupWrapper;
+export default UserGroupMenuItemWrapper;
