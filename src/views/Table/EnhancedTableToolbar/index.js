@@ -216,7 +216,7 @@ const EnhancedTableToolbar = (props) => {
           <Grid container spacing={gridSpacing}>
             <Grid item xs={(documentType === 'processrole' || documentType === 'department') ? 4 : 12}>
               <Grid container justifyContent="flex-start" spacing={gridSpacing}>
-                {btnCreateNewAccount && (
+                {btnCreateNewAccount&& documentType!='accountpermission' && (
                   <Grid item>
                     <Button variant="contained" color={'primary'} onClick={createNewAccount}>
                       {btnCreateNewAccount.text}

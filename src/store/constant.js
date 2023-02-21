@@ -287,6 +287,7 @@ export const apiEndpoints = {
   create_user_group_detail: '/Primary/?FlowAlias=bs_api_orgm_ugroup_create_user_group&action=api',
   update_user_group_account: '/Primary/?FlowAlias=bs_api_orgm_user_update_permistion_group&action=api',
   get_user_group_list: '/Primary/?FlowAlias=bs_api_orgm_ugroup_get_user_group_list_by_company&action=api',
+  get_user_group_list_by_account: '/Primary/?FlowAlias=bs_api_ugroup_get_ugroup_list_by_account_id&action=api',
 };
 
 export const apiDomain = 'https://upload.truebpm.vn';

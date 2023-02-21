@@ -270,6 +270,11 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, accountDocument: true });
         break;
+      case 'accountpermission':
+        detailDocument = await getAccountDetail(selectedDocument.id);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, accountDocument: true });
+        break;
       case 'role':
         detailDocument = await getRoleDetail(selectedDocument.role_template_id);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });

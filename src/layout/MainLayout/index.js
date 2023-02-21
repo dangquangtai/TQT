@@ -40,6 +40,7 @@ import MaterialPartModal from '../../views/Material/MaterialPart/Detail';
 import MaterialRequisitionModal from './../../views/Material/Requisition/Detail/index';
 import UserGroupModal from '../../views/UserGroup/Detail';
 import UserGroupMenuItemModal from '../../views/UserGroupMenuItem/Detail';
+import AccountPermissionModal from '../../views/AccountPermission/Detail';
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -97,6 +98,8 @@ const MainLayout = ({ children }) => {
     switch (documentType) {
       case 'account':
         return <AccountModal />;
+      case 'accountpermission':
+        return <AccountPermissionModal />;
       case 'department':
         return <DepartmentModal />;
       case 'role':
