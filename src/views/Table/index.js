@@ -498,6 +498,7 @@ export default function GeneralTable(props) {
         break;
       case 'usergroup':
         dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
+        break;
       case 'returnMaterial':
         dispatch({ type: FLOATING_MENU_CHANGE, returnMaterialDocument: true });
         break;

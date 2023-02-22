@@ -129,14 +129,14 @@ const useStyles = makeStyles((theme) => ({
 
 const tasks = [
   {
-    assigned_date: '7/21/2022 22:4:13',
-    assigned_date_time: null,
-    assignment_id: 'e9795bf1-b7b8-44e9-a24d-1ffa1237a494',
-    case_object_id: '1599b5f9-9f73-4ec6-acff-ef4c7f39db48',
-    customer_name: 'Lê văn hiểu 4',
-    data_object_id: 'HNN_000153',
-    due_date: null,
-    task_url: null,
+    // assigned_date: '7/21/2022 22:4:13',
+    // assigned_date_time: null,
+    // assignment_id: 'e9795bf1-b7b8-44e9-a24d-1ffa1237a494',
+    // case_object_id: '1599b5f9-9f73-4ec6-acff-ef4c7f39db48',
+    // customer_name: 'Lê văn hiểu 4',
+    // data_object_id: 'HNN_000153',
+    // due_date: null,
+    // task_url: null,
   },
 ];
 

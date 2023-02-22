@@ -175,7 +175,8 @@ const UserGroupModal = () => {
 
   const handleChange = (e) => {
     const value = e.target.value;
-
+    setUserGroup({...usergroup,
+                  [e.target.name]: e.target.value})
   };
 
   const setDocumentToDefault = async () => {

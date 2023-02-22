@@ -129,8 +129,8 @@ const AccountPermissionModal = () => {
   };
   const handleUpdateAccount = async () => {
     try {
-        let group_name_list = groupNameList.map(item=> item.group_code)
-        let check = await updatePermisstionGroup(account.id, permissionGroup,account.email_address, group_name_list)
+        let group_name_list = groupAccountList.map(item=> item.group_code)
+        let check = await updatePermisstionGroup(account.id, permissionGroup.group_code,account.email_address, group_name_list)
         if (check === true) {
           handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
           dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'accountpermission' });
@@ -308,7 +308,7 @@ const AccountPermissionModal = () => {
                               options={groupList}
                               getOptionLabel={(option)=> option.group_code}
                               fullWidth
-                              onChange={(e, value)=> setPermissionGroup(value.group_code)}
+                              onChange={(e, value)=> setPermissionGroup(value)}
                               size='small'
                               renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
                               />
@@ -324,7 +324,7 @@ const AccountPermissionModal = () => {
                               options={groupList}
                               getOptionLabel={(option)=> option.group_code}
                               fullWidth
-                              onChange={(e, value)=> setGroupNameList([...value])}
+                              onChange={(e, value)=> setGroupAccountList(value)}
                               multiple={true}
                               size='small'
                               renderInput={(params) => <TextField {...params} label="" variant="outlined" />}

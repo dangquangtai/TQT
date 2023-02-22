@@ -459,6 +459,21 @@ const AccountModal = () => {
                               />
                             </Grid>
                           </Grid>
+                          <Grid container className={classes.gridItem} alignItems="center">
+                            <Grid item lg={4} md={4} xs={12}>
+                              <span className={classes.tabItemLabelField}>Chức danh(*):</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={12}>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="major"
+                                value={account?.major}
+                                className={classes.inputField}
+                                onChange={handleChange}
+                              />
+                            </Grid>
+                          </Grid>
                         </div>
                       </div>
                     </Grid>
