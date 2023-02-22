@@ -307,7 +307,7 @@ const ReceivedMaterialModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              {selectedDocument?.id ? 'Cập nhật Phiếu nhập vật tư' : 'Tạo mới Phiếu nhập vật tư'}
+              {selectedDocument?.id ? 'Cập nhật Phiếu nhập vật tư theo nhà cung cấp' : 'Tạo mới Phiếu nhập vật tư theo nhà cung cấp'}
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -508,6 +508,7 @@ const ReceivedMaterialModal = () => {
                                   <TableCell align="left">SL đặt</TableCell>
                                   <TableCell align="left">SL nhập</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
+                                  <TableCell align="left">Ngày sản xuất</TableCell>
                                   <TableCell align="center">Xoá</TableCell>
                                 </TableRow>
                               </TableHead>
@@ -544,6 +545,9 @@ const ReceivedMaterialModal = () => {
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '5%' }}>
                                       {row.unit_name}
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '10%' }}>
+                                      {row.order_date ? formatDate(new Date(row.customer_order_date), 'dd/MM/yyyy') : ''}
                                     </TableCell>
                                     <TableCell align="center" style={{ width: '5%' }}>
                                       <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>

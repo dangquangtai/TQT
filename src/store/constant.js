@@ -112,6 +112,8 @@ export const apiEndpoints = {
   get_status_list: '/Primary/?FlowAlias=bs_api_order_get_order_status_list&action=api',
   delete_order_detail: '/Primary/?FlowAlias=bs_api_order_delete_order_detail&action=api',
   get_order_completed_list: '/Primary/?FlowAlias=bs_api_order_get_order_completed_list_by_company&action=api',
+  get_order_by_status: '/Primary/?FlowAlias=bs_api_order_get_order_list_by_status&action=api',
+  get_order_detail_list: '/Primary/?FlowAlias=bs_api_order_get_order_detail_list_by_order_id&action=api',
   // Customer
   get_all_customer: '/Primary/?FlowAlias=bs_api_customer_get_list_by_company&action=api',
   get_product_requesr_list: '/Primary/?FlowAlias=bs_api_factory_workorder_get_list_by_page&action=api',
@@ -264,6 +266,7 @@ export const apiEndpoints = {
   update_production_daily_material_requisiton: '/Primary/?FlowAlias=bs_api_factory_update_production_daily_material_requisition&action=api',
   export_production_daily_material_requisition: '/Primary/?FlowAlias=bs_api_factory_export_production_daily_material_requisition&action=api',
 
+
   // Production Daily Material Received
   get_production_daily_material_received_list: '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_list&action=api',
   get_production_daily_material_received_detail: '/Primary/?FlowAlias=bs_api_factory_get_production_daily_material_received_detail&action=api',
@@ -278,6 +281,7 @@ export const apiEndpoints = {
   create_material_requisition: '/Primary/?FlowAlias=bs_api_factory_create_material_requisition&action=api',
   update_material_requisition: '/Primary/?FlowAlias=bs_api_factory_update_material_requisition&action=api',
 
+
   //User Group
   get_user_group_list_by_page: '/Primary/?FlowAlias=bs_api_orgm_ugroup_get_user_group_list_by_page&action=api',
   get_user_group_detail: '/Primary/?FlowAlias=bs_api_orgm_ugroup_get_user_group_detail&action=api',
@@ -286,6 +290,16 @@ export const apiEndpoints = {
   update_user_group_account: '/Primary/?FlowAlias=bs_api_orgm_user_update_permistion_group&action=api',
   get_user_group_list: '/Primary/?FlowAlias=bs_api_orgm_ugroup_get_user_group_list_by_company&action=api',
   get_user_group_list_by_account: '/Primary/?FlowAlias=bs_api_ugroup_get_ugroup_list_by_account_id&action=api',
+
+  // Material Return
+  get_material_return_list: '/Primary/?FlowAlias=bs_api_factory_get_material_return_list&action=api',
+  get_material_return_detail: '/Primary/?FlowAlias=bs_api_factory_get_material_return_detail&action=api',
+  create_material_return: '/Primary/?FlowAlias=bs_api_factory_create_material_return&action=api',
+  update_material_return: '/Primary/?FlowAlias=bs_api_factory_update_material_return&action=api',
+  get_material_return_data: '/Primary/?FlowAlias=bs_api_factory_get_material_return_data&action=api',
+  get_material_broken_list: '/Primary/?FlowAlias=bs_api_factory_get_material_broken_list&action=api',
+  export_material_return: '/Primary/?FlowAlias=bs_api_factory_export_material_return&action=api',
+
 };
 
 export const apiDomain = 'https://upload.truebpm.vn';
@@ -394,8 +408,13 @@ export const productionDailyMaterialReceivedActions = {
 export const materialRequisitionActions = {
   list_material_requisition: 'TQT_MATERIAL_DEFAULT_OPEN_REQUISITION_NOT_WORKORDER_LIST',
 };
+
 export const accountPermissionAction= {
   list: 'TQT_ORGANISATION_DEFAULT_OPEN_USER_GROUP_PERMISSION_LIST',
+
+export const materialReturnActions = {
+  list_material_return: 'TQT_MATERIAL_DEFAULT_OPEN_MATERIAL_RETURN_LIST',
+
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -623,9 +642,20 @@ export const view = {
       create: 'TQT_MATERIAL_DEFAULT_REQUISITION_NOT_WORKORDER_CREATE_MENU_BUTTON',
     },
   },
+
   ugroup: {
     list: {
       create: 'TQT_ORGANISATION_DEFAULT_CREATE_USER_GROUP_MENU_BUTTON'
     }
   }
+
+  materialReturn: {
+    list: {
+      create: 'TQT_MATERIAL_DEFAULT_RETURN_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_MATERIAL_DEFAULT_RETURN_SAVE_FORM_BUTTON',
+    },
+  },
+
 };

@@ -28,13 +28,14 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.primary,
   },
   drawerPaperLight: {
-    width: drawerWidth,
+    // width: drawerWidth,
     borderRight: 'none',
     boxShadow: '0 0.15rem 1.75rem 0 rgba(33, 40, 50, 0.15)',
     top: '64px',
     [theme.breakpoints.down('sm')]: {
       top: 0,
     },
+    transition: 'all 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms !important',
   },
   menuCaption: {
     ...theme.typography.menuCaption,
@@ -45,6 +46,13 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+  },
+  openDrawer: {
+    [theme.breakpoints.up('md')]: {
+      '& > div': {
+        width: drawerWidth,
+      },
+    },
   },
   closeDrawer: {
     [theme.breakpoints.up('md')]: {
@@ -110,7 +118,7 @@ const MainLayout = (props) => {
         anchor="left"
         open={drawerOpen}
         onClose={drawerToggle}
-        className={drawerOpen ? '' : classes.closeDrawer}
+        className={drawerOpen ? classes.openDrawer : classes.closeDrawer}
         classes={{ paper: classes.drawerPaperLight }}
         ModalProps={{ keepMounted: true }}
         style={{}}

@@ -61,6 +61,7 @@ import { getDetailDailyMaterialRequisition } from './../../services/api/Producti
 import { getDetailMaterialPart } from '../../services/api/Material/MaterialPart';
 import { downloadFile } from './../../utils/helper';
 import { getUserGroupDetail} from '../../services/api/UserGroup/index';
+import { getDetailReturnMaterial } from './../../services/api/Material/Return';
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
     if (response.status === 200 && response.data.return === 200) return true;
@@ -169,6 +170,7 @@ export default function GeneralTable(props) {
   const buttonCreateMaterialRequisition = menuButtons.find((button) => button.name === view.materialRequisition.list.create);
   const buttonExportMaterial = menuButtons.find((button) => button.name === view.purchaseMaterial.list.export);
   const buttonCreateUGroup = menuButtons.find((button)=>button.name===view.ugroup.list.create)
+  const buttonCreateReturnMaterial = menuButtons.find((button) => button.name === view.materialReturn.list.create);
   const fetchDocument = (additionalQuery) => {
     const queries = { ...defaultQueries, ...additionalQuery };
     getDocuments(url, documentType, selectedProject?.id, selectedFolder?.id, queries);
@@ -419,6 +421,11 @@ export default function GeneralTable(props) {
         detailDocument = await getUserGroupDetail(selectedDocument.group_code, setView)
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType});
         dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true})
+      case 'returnMaterial':
+        detailDocument = await getDetailReturnMaterial(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, returnMaterialDocument: true });
+        break;
       default:
         break;
     }
@@ -488,9 +495,10 @@ export default function GeneralTable(props) {
       case 'materialRequisition':
         dispatch({ type: FLOATING_MENU_CHANGE, materialRequisitionDocument: true });
         break;
-        break;
       case 'usergroup':
         dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
+      case 'returnMaterial':
+        dispatch({ type: FLOATING_MENU_CHANGE, returnMaterialDocument: true });
         break;
       default:
         break;
@@ -862,8 +870,8 @@ export default function GeneralTable(props) {
   }, [process_role_code_selected]);
 
   useEffect(() => {
-    if (!selectedDocument) {
-      reloadCurrentDocuments();
+    if (selectedDocument === null && documents?.length > 0) {
+      reloadCurrentDocuments(page);
     }
   }, [selectedDocument]);
 
@@ -933,7 +941,7 @@ export default function GeneralTable(props) {
     buttonExportMaterial,
     handleExportMaterial,
     buttonCreateUGroup,
-  
+    buttonCreateReturnMaterial,
   };
 
   return (

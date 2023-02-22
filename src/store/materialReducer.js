@@ -37,7 +37,7 @@ const materialReducer = (state = initialState, action) => {
         ...state,
         material: null,
         materialBuy: [],
-        materialReducer: [],
+        materialReceived: [],
       };
     default:
       return state;

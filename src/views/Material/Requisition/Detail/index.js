@@ -146,10 +146,10 @@ const MaterialRequisitionModal = () => {
     try {
       if (selectedDocument?.id) {
         await updatePurchaseMaterial({ ...materialRequisitionData, order_detail: materialList });
-        handleOpenSnackbar('success', 'Cập nhật Đơn hàng thành công!');
+        handleOpenSnackbar('success', 'Cập nhật Đơn hàng mua vật tư thành công!');
       } else {
         await createPurchaseMaterial({ ...materialRequisitionData, order_detail: materialList });
-        handleOpenSnackbar('success', 'Tạo mới Đơn hàng thành công!');
+        handleOpenSnackbar('success', 'Tạo mới Đơn hàng mua vật tư thành công!');
       }
       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'materialRequisition' });
       handleCloseDialog();
@@ -280,7 +280,7 @@ const MaterialRequisitionModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              {selectedDocument?.id ? 'Cập nhật đơn hàng' : 'Tạo mới đơn hàng'}
+              {selectedDocument?.id ? 'Cập nhật Đơn hàng mua vật tư' : 'Tạo mới Đơn hàng mua vật tư'}
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>

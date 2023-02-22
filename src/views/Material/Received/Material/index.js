@@ -55,6 +55,17 @@ const MaterialModal = () => {
     }
   };
 
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      const newMaterial = materials.map((item) => {
+        return { ...item, material_order_id: item.requisition_id };
+      });
+      setMaterialSelected(newMaterial);
+    } else {
+      setMaterialSelected([]);
+    }
+  };
+
   const getMaterial = async (supplierID, warehouseID) => {
     try {
       const res = await getMaterialOrderList(supplierID, warehouseID);
@@ -90,7 +101,7 @@ const MaterialModal = () => {
         <Dialog open={true} fullScreen>
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              Nhập vật tư
+              Nhập vật tư từ đơn hàng
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent} style={{ background: '#f1f1f9' }}>
@@ -134,13 +145,19 @@ const MaterialModal = () => {
                                 <Table size="small" stickyHeader aria-label="sticky table">
                                   <TableHead>
                                     <TableRow>
-                                      <TableCell align="left">Chọn</TableCell>
-                                      <TableCell align="left">Ngày sản xuất</TableCell>
+                                      <TableCell align="left">
+                                        <Checkbox
+                                          checked={materialSelected?.length === materials?.length}
+                                          onChange={handleSelectAll}
+                                          inputProps={{ 'aria-label': 'primary checkbox' }}
+                                        />
+                                      </TableCell>
                                       <TableCell align="left">Mã Đơn hàng</TableCell>
                                       <TableCell align="left">Mã vật tư</TableCell>
                                       <TableCell align="left">Tên vật tư</TableCell>
                                       <TableCell align="left">Số lượng nhập</TableCell>
                                       <TableCell align="left">Đơn vị</TableCell>
+                                      <TableCell align="left">Ngày sản xuất</TableCell>
                                     </TableRow>
                                   </TableHead>
                                   <TableBody>
@@ -156,14 +173,14 @@ const MaterialModal = () => {
                                             inputProps={{ 'aria-label': 'primary checkbox' }}
                                           />
                                         </TableCell>
-                                        <TableCell align="left">
-                                          {material.order_date ? formatDate(new Date(material.order_date), 'dd/MM/yyyy') : ''}
-                                        </TableCell>
                                         <TableCell align="left">{material.order_code}</TableCell>
                                         <TableCell align="left">{material.part_code}</TableCell>
                                         <TableCell align="left">{material.part_name}</TableCell>
                                         <TableCell align="left">{material.quantity_in_piece}</TableCell>
                                         <TableCell align="left">{material.unit_name}</TableCell>
+                                        <TableCell align="left">
+                                          {material.order_date ? formatDate(new Date(material.order_date), 'dd/MM/yyyy') : ''}
+                                        </TableCell>
                                       </TableRow>
                                     ))}
                                   </TableBody>

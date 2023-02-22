@@ -38,9 +38,14 @@ import DailyMaterialReceivedModal from './../../views/Production/DailyMaterialRe
 import DailyMaterialRequisitionModal from './../../views/Production/DailyMaterialRequisition/Detail/index';
 import MaterialPartModal from '../../views/Material/MaterialPart/Detail';
 import MaterialRequisitionModal from './../../views/Material/Requisition/Detail/index';
+
 import UserGroupModal from '../../views/UserGroup/Detail';
 import UserGroupMenuItemModal from '../../views/UserGroupMenuItem/Detail';
 import AccountPermissionModal from '../../views/AccountPermission/Detail';
+
+import ReturnMaterialModal from './../../views/Material/Return/Detail/index';
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -164,6 +169,8 @@ const MainLayout = ({ children }) => {
         return <UserGroupModal/>
       case 'usergroupmenuitem':
         return <UserGroupMenuItemModal/>
+      case 'returnMaterial':
+        return <ReturnMaterialModal />;
       default:
         return null;
     }

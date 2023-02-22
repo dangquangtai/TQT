@@ -19,41 +19,33 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
   Tooltip,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AccountCircleOutlined as AccountCircleOutlinedIcon, Delete, Today as TodayIcon } from '@material-ui/icons';
+import { format as formatDate } from 'date-fns';
+import { AccountCircleOutlined as AccountCircleOutlinedIcon, Today as TodayIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import useStyles from './../../../../utils/classes';
 import useView from './../../../../hooks/useView';
-import useConfirmPopup from './../../../../hooks/useConfirmPopup';
 import { view } from './../../../../store/constant';
-import {
-  FLOATING_MENU_CHANGE,
-  SNACKBAR_OPEN,
-  DOCUMENT_CHANGE,
-  CONFIRM_CHANGE,
-  CLOSE_MODAL_MATERIAL,
-  SET_MATERIAL,
-} from './../../../../store/actions';
-import FirebaseUpload from './../../../FloatingMenu/FirebaseUpload/index';
+import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE } from './../../../../store/actions';
 import DatePicker from './../../../../component/DatePicker/index';
 import {
-  createPurchaseMaterial,
-  deletePurchaseMaterialDetail,
-  getPurchaseMaterialStatus,
-  updatePurchaseMaterial,
-} from './../../../../services/api/Material/Purchase';
-import { popupWindow } from '../../../../utils/helper.js';
-import { getSupplierListByWorkOrder } from './../../../../services/api/Partner/Supplier';
-import { format as formatDate } from 'date-fns';
+  createReturnMaterial,
+  updateReturnMaterial,
+  getReturnMaterialData,
+  getMaterialBrokenList,
+  exportReturnMaterial,
+} from './../../../../services/api/Material/Return';
+import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
+import BrokenModal from './../../../Dialog/Broken/index';
+import { downloadFile } from './../../../../utils/helper';
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -68,7 +60,6 @@ TabPanel.propTypes = {
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
 };
-
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -76,43 +67,36 @@ function a11yProps(index) {
   };
 }
 
-const PurchaseMaterialModal = () => {
+const ReturnMaterialModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { form_buttons: formButtons } = useView();
-  const { setConfirmPopup } = useConfirmPopup();
-  const { materialBuy } = useSelector((state) => state.material);
-  const saveButton = formButtons.find((button) => button.name === view.purchaseMaterial.detail.save);
-  const { purchaseMaterialDocument: openDialog } = useSelector((state) => state.floatingMenu);
+  const saveButton = formButtons.find((button) => button.name === view.materialReturn.detail.save);
+  const { returnMaterialDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
 
-  const [purchaseMaterialData, setPurchaseMaterialData] = useState({
+  const [returnMaterialData, setReturnMaterialData] = useState({
     order_date: new Date(),
-    delivery_date: new Date(),
-    is_workorer: true,
     notes: '',
   });
-  const [supplier, setSupplier] = useState([]);
+  const [returnDetailList, setReturnDetailList] = useState([]);
   const [statusList, setStatusList] = useState([]);
+  const [supplierList, setSupplierList] = useState([]);
   const [warehouseList, setWarehouseList] = useState([]);
-  const [tabIndex, setTabIndex] = React.useState(0);
-  const [dialogUpload, setDialogUpload] = useState({
+  const [brokenModal, setBrokenModal] = useState({
     open: false,
-    type: '',
+    list: [],
   });
 
-  const [materialList, setMaterialList] = useState([]);
+  const [tabIndex, setTabIndex] = React.useState(0);
+
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
 
-  const newWindow = React.useRef(null);
-
   const handleCloseDialog = () => {
     setDocumentToDefault();
-    dispatch({ type: FLOATING_MENU_CHANGE, purchaseMaterialDocument: false });
-    dispatch({ type: CLOSE_MODAL_MATERIAL });
-    if (newWindow.current) newWindow.current.close();
+    dispatch({ type: FLOATING_MENU_CHANGE, returnMaterialDocument: false });
   };
 
   const handleOpenSnackbar = (type, text) => {
@@ -126,155 +110,87 @@ const PurchaseMaterialModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    dispatch({ type: SET_MATERIAL, payload: [] });
-    setPurchaseMaterialData({ order_date: new Date(), delivery_date: new Date(), is_workorer: true });
-    setMaterialList([]);
+    setReturnMaterialData({ order_date: new Date(), notes: '' });
+    setReturnDetailList([]);
     setTabIndex(0);
-  };
-  const setURL = (image) => {
-    if (dialogUpload.type === 'image') {
-      setPurchaseMaterialData({ ...purchaseMaterialData, image_url: image });
-    } else if (dialogUpload.type === 'banner') {
-      setPurchaseMaterialData({ ...purchaseMaterialData, banner_url: image });
-    }
-  };
-
-  const handleOpenDiaLog = (type) => {
-    setDialogUpload({
-      open: true,
-      type: type,
-    });
-  };
-
-  const handleCloseDiaLog = () => {
-    setDialogUpload({
-      open: false,
-      type: '',
-    });
   };
 
   const handleSubmitForm = async () => {
     try {
       if (selectedDocument?.id) {
-        await updatePurchaseMaterial({ ...purchaseMaterialData, order_detail: materialList });
-        handleOpenSnackbar('success', 'Cập nhật Đơn hàng mua vật tư thành công!');
+        await updateReturnMaterial({ ...returnMaterialData, detail_list: returnDetailList });
+        handleOpenSnackbar('success', 'Cập nhật Phiếu hoàn trả vật tư!');
       } else {
-        await createPurchaseMaterial({ ...purchaseMaterialData, order_detail: materialList });
-        handleOpenSnackbar('success', 'Tạo mới Đơn hàng mua vật tư thành công!');
+        await createReturnMaterial({ ...returnMaterialData, detail_list: returnDetailList });
+        handleOpenSnackbar('success', 'Tạo mới Phiếu hoàn trả vật tư!');
       }
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'purchaseMaterial' });
+      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'returnMaterial' });
       handleCloseDialog();
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
     }
   };
 
-  const showConfirmPopup = ({ title = 'Thông báo', message = '', action = null, payload = null, onSuccess = null }) => {
-    setConfirmPopup({ type: CONFIRM_CHANGE, open: true, title, message, action, payload, onSuccess });
-  };
-
   const handleChanges = (e) => {
     const { name, value } = e.target;
-    setPurchaseMaterialData({ ...purchaseMaterialData, [name]: value });
+    setReturnMaterialData({ ...returnMaterialData, [name]: value });
   };
 
-  const handleChangeMaterial = (index, e) => {
-    const { name, value } = e.target;
-    const newMaterialList = [...materialList];
-    newMaterialList[index] = { ...newMaterialList[index], [name]: value };
-    setMaterialList(newMaterialList);
+  const handeCloseBroken = () => {
+    setBrokenModal({ open: false, list: [] });
   };
 
-  const handleDeleteMaterial = (index, id) => {
-    if (id) {
-      showConfirmPopup({
-        title: 'Xóa vật tư',
-        message: 'Bạn có chắc chắn muốn xóa vật tư này?',
-        action: deletePurchaseMaterialDetail,
-        payload: id,
-        onSuccess: () => {
-          const newMaterialList = [...materialList];
-          newMaterialList.splice(index, 1);
-          setMaterialList(newMaterialList);
-        },
-      });
-    } else {
-      const newMaterialList = [...materialList];
-      newMaterialList.splice(index, 1);
-      setMaterialList(newMaterialList);
-    }
+  const handleOpenBroken = (list) => {
+    setBrokenModal({ open: true, list });
   };
 
-  const handleOpenShortageDialog = () => {
-    if (!purchaseMaterialData.supplier_id) {
-      handleOpenSnackbar('error', 'Vui lòng chọn nhà cung cấp!');
+  const handleClickExport = async () => {
+    var url = await exportReturnMaterial(returnMaterialData.id);
+    if (!url) {
+      handleOpenSnackbar('error', 'Không tìm thấy file!');
       return;
     }
-    if (!purchaseMaterialData.warehouse_id) {
-      handleOpenSnackbar('error', 'Vui lòng chọn kho!');
-      return;
-    }
-    newWindow.current = popupWindow(
-      `/dashboard/material?supplier=${purchaseMaterialData.supplier_id}&warehouse=${purchaseMaterialData.warehouse_id}`,
-      'Vật tư thiếu'
-    );
-  };
-
-  const handleChangeSupplier = (e) => {
-    setMaterialList([]);
-    dispatch({ type: CLOSE_MODAL_MATERIAL });
+    downloadFile(url);
+    handleOpenSnackbar('success', 'Tải file thành công!');
   };
 
   useEffect(() => {
     if (!selectedDocument) return;
-    setPurchaseMaterialData({
-      ...purchaseMaterialData,
+    setReturnMaterialData({
+      ...returnMaterialData,
       ...selectedDocument,
     });
-    setMaterialList(selectedDocument?.order_detail);
-    dispatch({ type: SET_MATERIAL, payload: selectedDocument?.order_detail });
+    const returnDetail = selectedDocument?.detail_list;
+    setReturnDetailList(returnDetail);
   }, [selectedDocument]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const supplier = await getSupplierListByWorkOrder();
-      setSupplier(supplier);
-      const { warehouse_list, status_list } = await getPurchaseMaterialStatus();
-      setStatusList(status_list);
-      setWarehouseList(warehouse_list);
+      const { status, warehouses } = await getReturnMaterialData();
+      setStatusList(status);
+      setWarehouseList(warehouses);
+      const suppliers = await getAllSupplier();
+      setSupplierList(suppliers);
     };
     fetchData();
   }, []);
 
   useEffect(() => {
-    if (materialBuy === selectedDocument?.order_detail) return;
-    const newMaterial = materialBuy.map((item) => {
-      return {
-        ...item,
-        material_daily_requisition_id: item.id,
-        requisition_id: selectedDocument?.id || '',
-        id: '',
-        notes: '',
-      };
-    });
-    setMaterialList(newMaterial);
-  }, [materialBuy]);
-
-  useEffect(() => {
-    window.onbeforeunload = function (event) {
-      handleCloseDialog();
+    if (selectedDocument?.id) return;
+    if (!returnMaterialData.supplier_id) return;
+    if (!returnMaterialData.warehouse_id) return;
+    const fetchData = async () => {
+      const res = await getMaterialBrokenList(returnMaterialData.warehouse_id, returnMaterialData.supplier_id);
+      setReturnDetailList(res);
     };
-  }, []);
+    fetchData();
+  }, [returnMaterialData.supplier_id, returnMaterialData.warehouse_id]);
+
+  const isDisabled = !!returnMaterialData?.id;
 
   return (
     <React.Fragment>
-      <FirebaseUpload
-        open={dialogUpload.open || false}
-        onSuccess={setURL}
-        onClose={handleCloseDiaLog}
-        type="image"
-        folder="PurchaseMaterial"
-      />
+      <BrokenModal isOpen={brokenModal.open} handleSubmit={handeCloseBroken} handleClose={handeCloseBroken} list={brokenModal.list} />
       <Grid container>
         <Dialog
           open={openDialog || false}
@@ -290,7 +206,7 @@ const PurchaseMaterialModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              {selectedDocument?.id ? 'Cập nhật đơn hàng mua vật tư' : 'Tạo mới đơn hàng mua vật tư'}
+              {selectedDocument?.id ? 'Cập nhật Phiếu hoàn trả vật tư' : 'Tạo mới Phiếu hoàn trả vật tư'}
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -309,7 +225,7 @@ const PurchaseMaterialModal = () => {
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
                         <AccountCircleOutlinedIcon className={`${tabIndex === 0 ? classes.tabActiveIcon : ''}`} />
-                        Chi tiết Đơn hàng
+                        Chi tiết
                       </Typography>
                     }
                     value={0}
@@ -345,85 +261,41 @@ const PurchaseMaterialModal = () => {
                     <Grid item lg={12} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>Mua vật tư</div>
+                          <div className={classes.tabItemLabel}>Nhập vật tư</div>
                         </div>
                         <div className={classes.tabItemBody}>
-                          <Grid container spacing={3} className={classes.gridItemInfo}>
+                          <Grid container spacing={2} className={classes.gridItemInfo}>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Mã đơn hàng(*):</span>
+                              <span className={classes.tabItemLabelField}>Mã phiếu(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
                                 name="order_code"
                                 type="text"
                                 size="small"
-                                value={purchaseMaterialData.order_code || ''}
+                                value={returnMaterialData.order_code || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên đơn hàng(*):</span>
+                              <span className={classes.tabItemLabelField}>Tên phiếu(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
                                 name="title"
                                 type="text"
                                 size="small"
-                                value={purchaseMaterialData.title || ''}
+                                value={returnMaterialData.title || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày lập đơn hàng(*):</span>
+                              <span className={classes.tabItemLabelField}>Ngày xuất kho(*):</span>
                               <DatePicker
-                                date={purchaseMaterialData.order_date}
-                                onChange={(date) => setPurchaseMaterialData({ ...purchaseMaterialData, order_date: date })}
+                                disabled={isDisabled}
+                                date={returnMaterialData.return_date}
+                                onChange={(date) => setReturnMaterialData({ ...returnMaterialData, order_date: date })}
                               />
-                            </Grid>
-                            <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày giao hàng(*):</span>
-                              <DatePicker
-                                date={purchaseMaterialData.delivery_date}
-                                onChange={(date) => setPurchaseMaterialData({ ...purchaseMaterialData, delivery_date: date })}
-                              />
-                            </Grid>
-                            <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà cung cấp(*):</span>
-                              <Autocomplete
-                                id="combo-box-demo"
-                                options={supplier}
-                                getOptionLabel={(option) => option.title || ''}
-                                fullWidth
-                                size="small"
-                                value={supplier?.find((item) => item.id === purchaseMaterialData.supplier_id) || null}
-                                onChange={(event, newValue) => {
-                                  setPurchaseMaterialData({
-                                    ...purchaseMaterialData,
-                                    supplier_id: newValue?.id,
-                                    supplier_name: newValue?.title,
-                                  });
-                                  handleChangeSupplier();
-                                }}
-                                renderInput={(params) => <TextField {...params} variant="outlined" />}
-                              />
-                            </Grid>
-                            <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà kho(*):</span>
-                              <TextField
-                                fullWidth
-                                name="warehouse_id"
-                                variant="outlined"
-                                select
-                                size="small"
-                                value={purchaseMaterialData.warehouse_id || ''}
-                                onChange={handleChanges}
-                              >
-                                {warehouseList?.map((option) => (
-                                  <MenuItem key={option.id} value={option.id}>
-                                    {option.value}
-                                  </MenuItem>
-                                ))}
-                              </TextField>
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
                               <span className={classes.tabItemLabelField}>Trạng thái(*):</span>
@@ -433,7 +305,7 @@ const PurchaseMaterialModal = () => {
                                 variant="outlined"
                                 select
                                 size="small"
-                                value={purchaseMaterialData.status || ''}
+                                value={returnMaterialData.status || ''}
                                 onChange={handleChanges}
                               >
                                 {statusList?.map((option) => (
@@ -444,6 +316,43 @@ const PurchaseMaterialModal = () => {
                               </TextField>
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Nhà cung cấp(*):</span>
+                              <Autocomplete
+                                options={supplierList}
+                                size="small"
+                                disabled={isDisabled}
+                                getOptionLabel={(option) => option.title}
+                                onChange={(event, newValue) => {
+                                  setReturnMaterialData({
+                                    ...returnMaterialData,
+                                    supplier_id: newValue?.id || '',
+                                    supplier_name: newValue?.title || '',
+                                  });
+                                }}
+                                value={supplierList?.find((item) => item.id === returnMaterialData.supplier_id) || null}
+                                renderInput={(params) => <TextField {...params} variant="outlined" />}
+                              />
+                            </Grid>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Nhà kho(*):</span>
+                              <TextField
+                                fullWidth
+                                disabled={isDisabled}
+                                name="warehouse_id"
+                                variant="outlined"
+                                select
+                                size="small"
+                                value={returnMaterialData.warehouse_id || ''}
+                                onChange={handleChanges}
+                              >
+                                {warehouseList?.map((option) => (
+                                  <MenuItem key={option.id} value={option.id}>
+                                    {option.value}
+                                  </MenuItem>
+                                ))}
+                              </TextField>
+                            </Grid>
+                            {/* <Grid item lg={6} md={6} xs={6}>
                               <span className={classes.tabItemLabelField}>Ghi chú:</span>
                               <TextField
                                 fullWidth
@@ -453,10 +362,10 @@ const PurchaseMaterialModal = () => {
                                 name="notes"
                                 type="text"
                                 size="small"
-                                value={purchaseMaterialData.notes || ''}
+                                value={returnMaterialData.notes || ''}
                                 onChange={handleChanges}
                               />
-                            </Grid>
+                            </Grid> */}
                           </Grid>
                         </div>
                       </div>
@@ -465,69 +374,42 @@ const PurchaseMaterialModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>Danh sách vật tư</div>
-                          {/* <Tooltip title="Thêm vật tư">
-                            <IconButton onClick={handleAddMaterial}>
-                              <AddCircleOutline />
-                            </IconButton>
-                          </Tooltip> */}
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
-                            <Table className={classes.tableSmall} aria-label="simple table" stickyHeader>
+                            <Table aria-label="simple table" stickyHeader>
                               <TableHead>
                                 <TableRow>
-                                  <TableCell align="left">Mã đơn hàng</TableCell>
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
-                                  <TableCell align="left">SL mua</TableCell>
+                                  <TableCell align="left">SL hỏng</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
-                                  <TableCell align="left">Ngày sản xuất</TableCell>
-                                  <TableCell align="left">Ghi chú</TableCell>
-                                  <TableCell align="center">Xoá</TableCell>
+                                  <TableCell align="left">Chi tiết</TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {materialList?.map((row, index) => (
+                                {returnDetailList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '15%' }}>
-                                      {row?.order_code}
+                                    <TableCell align="left" style={{ width: '20%' }}>
+                                      {row.part_code}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '15%' }}>
-                                      <Tooltip title={row?.part_code}>
-                                        <span>{row?.part_code}</span>
-                                      </Tooltip>
-                                    </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '25%' }}>
+                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '50%' }}>
                                       <Tooltip title={row?.part_name}>
                                         <span>{row?.part_name}</span>
                                       </Tooltip>
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
-                                      {row.quantity_in_piece}
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '5%' }}>
-                                      {row.unit_name}
+                                      {row.total_broken_quantity_in_piece}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
-                                      {row.order_date ? formatDate(new Date(row.order_date), 'dd/MM/yyyy') : ''}
+                                      {row.unit_name}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '25%' }}>
-                                      <TextField
-                                        multiline
-                                        minRows={1}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="notes"
-                                        type="text"
-                                        size="small"
-                                        value={row.notes || ''}
-                                        onChange={(e) => handleChangeMaterial(index, e)}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="center" style={{ width: '5%' }}>
-                                      <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>
-                                        <Delete />
-                                      </IconButton>
+                                    <TableCell
+                                      align="left"
+                                      style={{ width: '10%', cursor: 'pointer', textDecoration: 'underline' }}
+                                      onClick={() => handleOpenBroken(row.broken_list)}
+                                    >
+                                      Chi tiết
                                     </TableCell>
                                   </TableRow>
                                 ))}
@@ -560,9 +442,11 @@ const PurchaseMaterialModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
-                <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleOpenShortageDialog}>
-                  Chi tiết vật tư thiếu
-                </Button>
+                {selectedDocument?.id && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleClickExport}>
+                    In phiếu
+                  </Button>
+                )}
                 {saveButton && selectedDocument?.id && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
                     {saveButton.text}
@@ -582,4 +466,4 @@ const PurchaseMaterialModal = () => {
   );
 };
 
-export default PurchaseMaterialModal;
+export default ReturnMaterialModal;

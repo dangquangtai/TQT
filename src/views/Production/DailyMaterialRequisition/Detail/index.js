@@ -105,7 +105,7 @@ const DailyMaterialRequisitionModal = () => {
   const handleSubmitForm = async () => {
     try {
       await updateDailyMaterialRequisition({ ...dailyMaterialRequisitionData, detail_list: RequisitionDetailList });
-      handleOpenSnackbar('success', 'Cập nhật Phiếu xuất vật tư thành công!');
+      handleOpenSnackbar('success', 'Cập nhật Phiếu xuất vật tư hàng ngày thành công!');
       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'dailyMaterialRequisition' });
       handleCloseDialog();
     } catch (error) {
@@ -130,7 +130,7 @@ const DailyMaterialRequisitionModal = () => {
   };
 
   const handleClickExport = async () => {
-    var url = await exportDailyMaterialRequisition(selectedDocument?.detail_list[0]?.daily_work_order_id || '');
+    var url = await exportDailyMaterialRequisition(dailyMaterialRequisitionData.daily_work_order_id || '');
     handleDownload(url);
   };
 
@@ -178,7 +178,7 @@ const DailyMaterialRequisitionModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              Phiếu xuất vật tư
+              Phiếu xuất vật tư theo lệnh sản xuất
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -264,6 +264,7 @@ const DailyMaterialRequisitionModal = () => {
                             <Grid item lg={3} md={3} xs={3}>
                               <span className={classes.tabItemLabelField}>Ngày nhập kho:</span>
                               <DatePicker
+                                disabled={true}
                                 date={dailyMaterialRequisitionData.order_date}
                                 onChange={(date) => setDailyMaterialRequisitionData({ ...dailyMaterialRequisitionData, order_date: date })}
                               />
@@ -335,8 +336,8 @@ const DailyMaterialRequisitionModal = () => {
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">Nhà cung cấp</TableCell>
-                                  <TableCell align="left">SL xuất</TableCell>
-                                  <TableCell align="left">SL dự phòng</TableCell>
+                                  <TableCell align="left">SL xuất theo KH</TableCell>
+                                  <TableCell align="left">SL xuất dự phòng</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
                                 </TableRow>
                               </TableHead>
