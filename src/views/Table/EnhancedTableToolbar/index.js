@@ -247,7 +247,7 @@ const EnhancedTableToolbar = (props) => {
                     </Button>
                   </Grid>
                 )}
-                {buttonCreateUGroup && (
+                {buttonCreateUGroup && documentType!=='usergroupmenuitem'&& (
                   <Grid item>
                     <Button variant="contained" color={'primary'} onClick={handleCreate}>
                       {buttonCreateUGroup.text}
