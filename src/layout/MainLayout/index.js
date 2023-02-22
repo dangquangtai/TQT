@@ -32,15 +32,19 @@ import WorkshopModal from './../../views/Setting/Workshop/Detail/index';
 import ProductWarehouseModal from './../../views/Product/Warehouse/Detail/index';
 import GoodsIssueModal from './../../views/Product/GoodsIssue/Detail/index';
 import GoodsReceiptModal from './../../views/Product/GoodsReceipt/Detail/index';
-
 import ProductionRequestModal from '../../views/Production/Detail';
-
 import DeliveryMaterialModal from '../../views/Material/DailyMaterialRequisition/Detail';
 import DailyMaterialReceivedModal from './../../views/Production/DailyMaterialReceived/Detail/index';
 import DailyMaterialRequisitionModal from './../../views/Production/DailyMaterialRequisition/Detail/index';
 import MaterialPartModal from '../../views/Material/MaterialPart/Detail';
 import MaterialRequisitionModal from './../../views/Material/Requisition/Detail/index';
+
+import UserGroupModal from '../../views/UserGroup/Detail';
+import UserGroupMenuItemModal from '../../views/UserGroupMenuItem/Detail';
+import AccountPermissionModal from '../../views/AccountPermission/Detail';
+
 import ReturnMaterialModal from './../../views/Material/Return/Detail/index';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -99,6 +103,8 @@ const MainLayout = ({ children }) => {
     switch (documentType) {
       case 'account':
         return <AccountModal />;
+      case 'accountpermission':
+        return <AccountPermissionModal />;
       case 'department':
         return <DepartmentModal />;
       case 'role':
@@ -159,6 +165,10 @@ const MainLayout = ({ children }) => {
         return <MaterialPartModal />;
       case 'materialRequisition':
         return <MaterialRequisitionModal />;
+      case 'usergroup':
+        return <UserGroupModal/>
+      case 'usergroupmenuitem':
+        return <UserGroupMenuItemModal/>
       case 'returnMaterial':
         return <ReturnMaterialModal />;
       default:

@@ -116,6 +116,23 @@ export const AccountProvider = ({ children }) => {
       return false;
     });
   };
+  const updatePermisstionGroup = async (id,permission_group, email_address,group_name_list) => {
+    return axiosInstance.post(apiEndpoints.update_user_group_account, {id: id, permission_group: permission_group, email_address: email_address, group_name_list: group_name_list})
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) return true;
+      return false;
+    });
+  };
+  const getPermisstionGroup = async (account_id) => {
+    return axiosInstance.post(apiEndpoints.get_user_group_list_by_account, {account_id:account_id})
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        const {data,list} = response.data
+        return {data,list}
+      }
+      return {}
+    });
+  };
 
   return (
     <AccountContext.Provider
@@ -130,6 +147,8 @@ export const AccountProvider = ({ children }) => {
         assignAccount,
         removeAccount,
         getAccount,
+        updatePermisstionGroup,
+        getPermisstionGroup
       }}
     >
       {children}

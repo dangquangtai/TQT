@@ -87,6 +87,7 @@ const EnhancedTableToolbar = (props) => {
     buttonCreateMaterialRequisition,
     buttonExportMaterial,
     handleExportMaterial,
+    buttonCreateUGroup
     buttonCreateReturnMaterial,
   } = props;
 
@@ -105,7 +106,6 @@ const EnhancedTableToolbar = (props) => {
     department_code: '',
     role_template_code: 'Member',
   });
-
   const handleCloseInput = () => {
     setFilter({ ...filter, search_text: '' });
     handleFilterChange({ ...filter, search_text: '' });
@@ -122,9 +122,12 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const handleSubmitAssign = () => {
-    handleAssignAccount(user);
+    user.forEach(element=>{
+      handleAssignAccount(element);
+    })
+    setUserSelected([])
   };
-  const [user, setUserSelected] = useState();
+  const [user, setUserSelected] = useState([]);
 
   const handleResetFilter = () => {
     setFilter((pre) => ({
@@ -208,15 +211,15 @@ const EnhancedTableToolbar = (props) => {
       <Grid container justifyContent="flex-end" spacing={gridSpacing}>
         <Grid
           item
-          lg={documentType === 'department' ? 6 : documentType === 'processrole' ? 12 : 4}
-          md={documentType === 'department' ? 6 : documentType === 'processrole' ? 12 : 4}
+          lg={(documentType === 'department' || documentType === 'processrole') ? 12 : 4}
+          md={(documentType === 'department' || documentType === 'processrole') ? 12 : 4}
           xs={12}
           className={classes.toolSearchWrap}
         >
           <Grid container spacing={gridSpacing}>
-            <Grid item xs={documentType === 'processrole' ? 4 : 12}>
+            <Grid item xs={(documentType === 'processrole' || documentType === 'department') ? 4 : 12}>
               <Grid container justifyContent="flex-start" spacing={gridSpacing}>
-                {btnCreateNewAccount && (
+                {btnCreateNewAccount&& documentType!='accountpermission' && (
                   <Grid item>
                     <Button variant="contained" color={'primary'} onClick={createNewAccount}>
                       {btnCreateNewAccount.text}
@@ -241,6 +244,13 @@ const EnhancedTableToolbar = (props) => {
                   <Grid item>
                     <Button variant="contained" color={'primary'} onClick={handleDeactiveDepartment}>
                       {buttondeactiveDepartment.text}
+                    </Button>
+                  </Grid>
+                )}
+                {buttonCreateUGroup && (
+                  <Grid item>
+                    <Button variant="contained" color={'primary'} onClick={handleCreate}>
+                      {buttonCreateUGroup.text}
                     </Button>
                   </Grid>
                 )}
@@ -435,6 +445,9 @@ const EnhancedTableToolbar = (props) => {
                     </Button>
                   </Grid>
                 )}
+
+
+
                 {buttonCreateReturnMaterial && (
                   <Grid item xs={6}>
                     <Button variant="contained" color={'primary'} onClick={handleCreate}>
@@ -442,9 +455,10 @@ const EnhancedTableToolbar = (props) => {
                     </Button>
                   </Grid>
                 )}
+
               </Grid>
             </Grid>
-            {(documentType === 'department' || documentType === 'processrole') && (
+            {(documentType === 'processrole') && (
               <Grid item xs={8}>
                 <Grid container justifyContent="flex-start" spacing={gridSpacing}>
                   {buttonAddDeptRole && (
@@ -461,6 +475,37 @@ const EnhancedTableToolbar = (props) => {
                       </Button>
                     </Grid>
                   )}
+
+                </Grid>
+              </Grid>
+            )}
+            {(documentType === 'department') && (
+              <Grid item xs={8}>
+                <Grid container justifyContent="flex-start" spacing={gridSpacing}>
+                  {buttonDeptAddUser && (
+                       <>
+                      <Grid item xs={10}>
+                        <Autocomplete
+                        
+                        size="small"
+                        fullWidth
+                        multiple
+                        value={user}
+                        options={userList}
+                        onChange={(e, u) => setUserSelected(u)}
+                        getOptionLabel={(option) => option.email_address}
+                        renderInput={(params) => <TextField label="Tài khoản" {...params} variant="outlined" />}
+                      /> 
+                       
+
+                      </Grid>
+                      <Grid item xs={2}>
+                          <Button variant="contained" color={'primary'} onClick={handleSubmitAssign}>
+                        {buttonDeptAddUser.text}
+                      </Button>
+                        </Grid>
+                        </>
+                  )}
                 </Grid>
               </Grid>
             )}
@@ -475,153 +520,114 @@ const EnhancedTableToolbar = (props) => {
             )}
           </Grid>
         )}
-        {documentType !== 'processrole' && (
-          <Grid item lg={6} md={6} xs={12} className={classes.toolSearchWrap}>
-            <Grid container justifyContent={'flex-start'} alignItems="center">
-              {documentType === 'department' && (
-                <>
-                  <span style={{ minWidth: 80, maxWidth: 80 }}>Chức danh: </span>
-                  <Select
-                    style={{ minWidth: 120, maxWidth: 120 }}
-                    className={classes.multpleSelectField}
-                    onChange={handleChangeFilter}
-                    defaultValue={'Member'}
-                    name="role_template_code"
-                    value={filter.role_template_code}
-                  >
-                    {roletemplateList &&
-                      roletemplateList.map((item) => (
-                        <MenuItem key={item.id} value={item.id}>
-                          {item.value}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                  <div className={classes.toolSearchWrap}>
-                    <Autocomplete
-                      style={{ minWidth: 240, maxWidth: 240, marginRight: 10 }}
-                      size="small"
-                      fullWidth
-                      options={userList}
-                      onChange={(e, u) => setUserSelected(u)}
-                      getOptionLabel={(option) => option.email_address}
-                      renderInput={(params) => <TextField label="Tài khoản" {...params} variant="outlined" />}
-                    />
+        {(documentType !== 'processrole' && documentType !== 'department') && (
+          <Grid item lg={6} md={6} xs={12} className={classes.toolSearchWrap} alignContent='flex-start'>
+            <Grid container spacing={gridSpacing}>
 
-                    {buttonDeptAddUser && (
-                      <>
-                        <Button variant="contained" color={'primary'} onClick={handleSubmitAssign}>
-                          {buttonDeptAddUser.text}
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                </>
-              )}
-              {documentType !== 'department' && documentType !== 'processrole' && (
-                <>
-                  <div className={classes.toolSearchWrap}>
-                    <SearchIcon />
-                    <input
-                      className={classes.toolSearchInput}
-                      value={filter.search_text}
-                      onChange={handleChangeSearch}
-                      onKeyUp={handleEnterSearch}
-                    />
-                    <Button className={classes.toolButtonSearch} onClick={handleCloseInput}>
-                      <ClearIcon className={classes.toolButtonIcon} />
-                    </Button>
-                  </div>
-                  <ClickAwayListener onClickAway={() => setIsOpenShowColumn(false)}>
-                    <div className={classes.toolButtonWrap}>
-                      <Tooltip title="View Columns">
-                        <Button
-                          className={`${classes.toolButton} ${isOpenShowColumn ? classes.toolButtonActive : ''}`}
-                          onClick={() => setIsOpenShowColumn(!isOpenShowColumn)}
-                        >
-                          <ViewColumnIcon className={classes.toolButtonIcon} />
-                        </Button>
-                      </Tooltip>
-
-                      {isOpenShowColumn && (
-                        <div className={classes.toolColumn}>
-                          <div className={classes.toolColumnTitle}>
-                            <div>Show Columns</div>
-                            <Button className={classes.toolButtonSearch} onClick={() => setIsOpenShowColumn(false)}>
-                              <ClearIcon className={classes.toolButtonIcon} />
-                            </Button>
-                          </div>
-                          <div className={classes.toolColumnBody}>
-                            {columnNames.map((columnName, index) => (
-                              <div key={columnName.id} className={classes.toolColumnNameWrap}>
-                                <Checkbox
-                                  checked={columnName.isSelected}
-                                  onChange={() => handleChangeColumnName(index, columnName.id)}
-                                  style={{ position: 'relative !important' }}
-                                />
-                                <span>{columnName.label}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </ClickAwayListener>
-                  <div ref={filterRef} className={classes.toolButtonWrap}>
-                    <Tooltip title="Filter Table">
-                      <Button className={classes.toolButton} onClick={() => setIsOpenFilter(!isOpenFilter)}>
-                        <FilterListIcon className={classes.toolButtonIcon} />
+              <>
+                <div className={classes.toolSearchWrap}>
+                  <SearchIcon />
+                  <input
+                    className={classes.toolSearchInput}
+                    value={filter.search_text}
+                    onChange={handleChangeSearch}
+                    onKeyUp={handleEnterSearch}
+                  />
+                  <Button className={classes.toolButtonSearch} onClick={handleCloseInput}>
+                    <ClearIcon className={classes.toolButtonIcon} />
+                  </Button>
+                </div>
+                <ClickAwayListener onClickAway={() => setIsOpenShowColumn(false)}>
+                  <div className={classes.toolButtonWrap}>
+                    <Tooltip title="View Columns">
+                      <Button
+                        className={`${classes.toolButton} ${isOpenShowColumn ? classes.toolButtonActive : ''}`}
+                        onClick={() => setIsOpenShowColumn(!isOpenShowColumn)}
+                      >
+                        <ViewColumnIcon className={classes.toolButtonIcon} />
                       </Button>
                     </Tooltip>
-                    {isOpenFilter && (
-                      <div className={`${classes.toolColumn} ${classes.toolFilter}`}>
-                        <div className={`${classes.toolColumnTitle} ${classes.toolFilterTitle}`}>
-                          <div className={classes.toolFilterTitleBlock}>
-                            <div>Filters</div>
-                            <Button className={`${classes.toolButtonSearch} ${classes.toolResetButton}`} onClick={handleResetFilter}>
-                              Reset
-                            </Button>
-                          </div>
-                          <Button className={classes.toolButtonSearch} onClick={() => setIsOpenFilter(false)}>
+
+                    {isOpenShowColumn && (
+                      <div className={classes.toolColumn}>
+                        <div className={classes.toolColumnTitle}>
+                          <div>Show Columns</div>
+                          <Button className={classes.toolButtonSearch} onClick={() => setIsOpenShowColumn(false)}>
                             <ClearIcon className={classes.toolButtonIcon} />
                           </Button>
                         </div>
-                        <div className={`${classes.toolColumnBody} ${classes.toolFilterBody}`}>
-                          <div className={classes.toolFilterItem}>
-                            {categories && (
-                              <FormControl fullWidth>
-                                <InputLabel shrink id="category-label">
-                                  Danh mục
-                                </InputLabel>
-                                <Select
-                                  labelId="category-label"
-                                  id="category_id"
-                                  onChange={handleChangeFilter}
-                                  displayEmpty
-                                  name="category_id"
-                                  value={filter.category_id}
-                                  defaultValue={''}
-                                >
-                                  <MenuItem value="">Tất cả</MenuItem>
-                                  {categories.map((item) => (
-                                    <MenuItem key={item.id} value={item.id}>
-                                      {item.category_name}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                              </FormControl>
-                            )}
-                          </div>
+                        <div className={classes.toolColumnBody}>
+                          {columnNames.map((columnName, index) => (
+                            <div key={columnName.id} className={classes.toolColumnNameWrap}>
+                              <Checkbox
+                                checked={columnName.isSelected}
+                                onChange={() => handleChangeColumnName(index, columnName.id)}
+                                style={{ position: 'relative !important' }}
+                              />
+                              <span>{columnName.label}</span>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     )}
                   </div>
-                  <Tooltip title="Refresh">
-                    <Button className={`${classes.toolButton} ${isOpenSearch ? classes.toolButtonActive : ''}`} onClick={handleRefresh}>
-                      <CachedIcon className={classes.toolButtonIcon} />
+                </ClickAwayListener>
+                <div ref={filterRef} className={classes.toolButtonWrap}>
+                  <Tooltip title="Filter Table">
+                    <Button className={classes.toolButton} onClick={() => setIsOpenFilter(!isOpenFilter)}>
+                      <FilterListIcon className={classes.toolButtonIcon} />
                     </Button>
                   </Tooltip>
-                </>
-              )}
+                  {isOpenFilter && (
+                    <div className={`${classes.toolColumn} ${classes.toolFilter}`}>
+                      <div className={`${classes.toolColumnTitle} ${classes.toolFilterTitle}`}>
+                        <div className={classes.toolFilterTitleBlock}>
+                          <div>Filters</div>
+                          <Button className={`${classes.toolButtonSearch} ${classes.toolResetButton}`} onClick={handleResetFilter}>
+                            Reset
+                          </Button>
+                        </div>
+                        <Button className={classes.toolButtonSearch} onClick={() => setIsOpenFilter(false)}>
+                          <ClearIcon className={classes.toolButtonIcon} />
+                        </Button>
+                      </div>
+                      <div className={`${classes.toolColumnBody} ${classes.toolFilterBody}`}>
+                        <div className={classes.toolFilterItem}>
+                          {categories && (
+                            <FormControl fullWidth>
+                              <InputLabel shrink id="category-label">
+                                Danh mục
+                              </InputLabel>
+                              <Select
+                                labelId="category-label"
+                                id="category_id"
+                                onChange={handleChangeFilter}
+                                displayEmpty
+                                name="category_id"
+                                value={filter.category_id}
+                                defaultValue={''}
+                              >
+                                <MenuItem value="">Tất cả</MenuItem>
+                                {categories.map((item) => (
+                                  <MenuItem key={item.id} value={item.id}>
+                                    {item.category_name}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <Tooltip title="Refresh">
+                  <Button className={`${classes.toolButton} ${isOpenSearch ? classes.toolButtonActive : ''}`} onClick={handleRefresh}>
+                    <CachedIcon className={classes.toolButtonIcon} />
+                  </Button>
+                </Tooltip>
+              </>
+
             </Grid>
           </Grid>
         )}

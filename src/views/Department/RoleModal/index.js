@@ -94,13 +94,13 @@ const RoleModal = ({ open, onSubmit, onClose }) => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await getRoletemplateByDept(data.department_code);
-      setRoleTemplate(result);
-    };
-    fetchData();
-  }, [data.department_code]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const result = await getRoletemplateByDept(data.department_code);
+  //     setRoleTemplate(result);
+  //   };
+  //   fetchData();
+  // }, [data.department_code]);
 
   return (
     <React.Fragment>

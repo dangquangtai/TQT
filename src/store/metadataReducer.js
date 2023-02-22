@@ -5,6 +5,7 @@ export const initialState = {
   materials: [],
   provinces: [],
   brokens: [],
+  genders: [],
 };
 
 const metadataReducer = (state = initialState, action) => {
@@ -16,6 +17,7 @@ const metadataReducer = (state = initialState, action) => {
         materials: action.materials,
         provinces: action.provinces,
         brokens: action.brokens,
+        genders: action.genders
       };
     default:
       return state;

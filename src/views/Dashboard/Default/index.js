@@ -38,6 +38,9 @@ import {
   productionDailyMaterialReceivedActions,
   productionDailyMaterialRequisitionActions,
   materialRequisitionActions,
+  usergroupAction,
+  usergroupItemAction,
+  accountPermissionAction,
   materialReturnActions,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
@@ -70,7 +73,13 @@ import ProductInventoryWrapper from './../../Product/Inventory/index';
 import DailyMaterialReceivedWrapper from './../../Production/DailyMaterialReceived/index';
 import DailyMaterialRequisitionWrapper from './../../Production/DailyMaterialRequisition/index';
 import MaterialRequisitionWrapper from './../../Material/Requisition/index';
+
+import UserGroupWrapper from '../../UserGroup';
+import UserGroupMenuItemWrapper from '../../UserGroupMenuItem';
+import AccountPermissionWrapper from '../../AccountPermission';
+
 import ReturnMaterialWrapper from './../../Material/Return/index';
+
 
 const Default = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
@@ -107,7 +116,13 @@ const Default = () => {
   const availableProductionDailyMaterialRequisitionEndpoint = Object.values(productionDailyMaterialRequisitionActions);
   const availableDeliveryMaterialEndpoint = Object.values(dailyDeliveryMateialActions);
   const availableMaterialRequisitionEndpoint = Object.values(materialRequisitionActions);
+
+  const availableUserGroupEndpoint = Object.values(usergroupAction);
+  const availableUserGroupMenuItemEndpoint = Object.values(usergroupItemAction);
+  const availableUserPermissionEndpoint = Object.values(accountPermissionAction)
+
   const availableMaterialReturnEndpoint = Object.values(materialReturnActions);
+
 
   if (!selectedApp?.id) {
     return <Redirect to="/dashboard/app" />;
@@ -149,6 +164,9 @@ const Default = () => {
           {availableProductionDailyMaterialReceivedEndpoint.includes(selectedFolder?.action) && <DailyMaterialReceivedWrapper />}
           {availableProductionDailyMaterialRequisitionEndpoint.includes(selectedFolder?.action) && <DailyMaterialRequisitionWrapper />}
           {availableMaterialRequisitionEndpoint.includes(selectedFolder?.action) && <MaterialRequisitionWrapper />}
+          {availableUserGroupEndpoint.includes(selectedFolder?.action) && <UserGroupWrapper />}
+          {availableUserGroupMenuItemEndpoint.includes(selectedFolder?.action) && <UserGroupMenuItemWrapper />}
+          {availableUserPermissionEndpoint.includes(selectedFolder?.action) && <AccountPermissionWrapper />}
           {availableMaterialReturnEndpoint.includes(selectedFolder?.action) && <ReturnMaterialWrapper />}
         </Grid>
       )}
