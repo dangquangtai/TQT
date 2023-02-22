@@ -27,7 +27,7 @@ export const apiEndpoints = {
   get_all_department_by_page: '/Primary/?FlowAlias=bs_api_dept_get_all_active_department_by_page&action=api',
   get_department_role_by_group: '/Primary/?FlowAlias=bs_api_dept_get_department_role_by_group_id&action=api',
   get_all_account_list: '/Primary/?FlowAlias=bs_api_orgm_user_get_all_account&action=api',
-
+  reset_password: '/Primary/?FlowAlias=bs_api_orgm_user_reset_password&action=api',
   //Role template
   get_all_active_role_template: '/Primary/?FlowAlias=bs_api_role_template_get_all_active_role_template_by_page&action=api',
   active_role_template: '/Primary/?FlowAlias=bs_api_role_template_active_role_template&action=api',
@@ -289,8 +289,9 @@ export const apiEndpoints = {
   create_user_group_detail: '/Primary/?FlowAlias=bs_api_orgm_ugroup_create_user_group&action=api',
   update_user_group_account: '/Primary/?FlowAlias=bs_api_orgm_user_update_permistion_group&action=api',
   get_user_group_list: '/Primary/?FlowAlias=bs_api_orgm_ugroup_get_user_group_list_by_company&action=api',
+  get_user_group_project_list_by_page: '/Primary/?FlowAlias=bs_api_orgm_get_user_group_project_list_by_page&action=api',
   get_user_group_list_by_account: '/Primary/?FlowAlias=bs_api_ugroup_get_ugroup_list_by_account_id&action=api',
-
+  set_hidden_user_group: '/Primary/?FlowAlias=bs_api_ugroup_set_active_user_group_by_group_code&action=api',
   // Material Return
   get_material_return_list: '/Primary/?FlowAlias=bs_api_factory_get_material_return_list&action=api',
   get_material_return_detail: '/Primary/?FlowAlias=bs_api_factory_get_material_return_detail&action=api',
@@ -299,6 +300,7 @@ export const apiEndpoints = {
   get_material_return_data: '/Primary/?FlowAlias=bs_api_factory_get_material_return_data&action=api',
   get_material_broken_list: '/Primary/?FlowAlias=bs_api_factory_get_material_broken_list&action=api',
   export_material_return: '/Primary/?FlowAlias=bs_api_factory_export_material_return&action=api',
+ 
 
 };
 
@@ -325,9 +327,11 @@ export const departmentDeactiveActions = {
 export const usergroupAction = {
   list: `${comanyCode}_ORGANISATION_${defaultProcess}_OPEN_USER_GROUP_LIST`,
   
+  
 }
 export const usergroupItemAction = {
-  list_role_item: `${comanyCode}_ORGANISATION_${defaultProcess}_OPEN_MENU_ITEM_LIST`
+  list_role_item: `${comanyCode}_ORGANISATION_${defaultProcess}_OPEN_MENU_ITEM_LIST`,
+  tree_view : 'TQT_ORGANISATION_DEFAULT_OPEN_TREE_VIEW_PROJECT_VIEW',
 };
 export const materialCategoryActions = {
   list_material_category: 'TQT_SETTING_DEFAULT_OPEN_MATERIAL_CATEGORY_LIST',
@@ -432,6 +436,7 @@ export const view = {
     },
     detail: {
       save: comanyCode + '_ORGANISATION_' + defaultProcess + '_UPDATE_USER_FORM_BUTTON',
+      reset_password: `${comanyCode}_ORGANISATION_${defaultProcess}_RESET_PASSWORD_FORM_BUTTON`,
     },
   },
   department: {

@@ -83,10 +83,12 @@ const TreeViewModal = (props) => {
         let data = await getDataTreeView();
         // formatDataTreeView(splitData(data), data);
         setData(data);
-      } else {
+      } else if (documentType==='department') {
         let data = await getRoleTree();
         setData(data);
         // formatDataTreeView(splitData(data), data);
+      } else {
+        setData(documents)
       }
     };
     fetch();
@@ -94,7 +96,7 @@ const TreeViewModal = (props) => {
   const handleClickOpen = (data) => {
     if (documentType === 'department') {
       setSelectedDepartment(data);
-    } else {
+    } else if(documentType==='processrole'){
       setSelectedProcessRole(data);
     }
   };
@@ -124,7 +126,7 @@ const TreeViewModal = (props) => {
             {data.children.map((data2) => renderItem(data2))}
           </TreeItem>
         );
-      } else {
+      } else if(documentType==='processrole') {
         return (
           <TreeItem
             nodeId={data.id}
@@ -135,6 +137,18 @@ const TreeViewModal = (props) => {
             {data.children.map((data2) => renderItem(data2))}
           </TreeItem>
         );
+      }
+      else {
+        return(
+          <TreeItem
+        nodeId={data.id}
+        label={data.name}
+        key={data.id}
+      >
+        {data.children.map((data2) => renderItem(data2))}
+      </TreeItem>
+        )
+        
       }
     }
   };
@@ -168,7 +182,7 @@ const TreeViewModal = (props) => {
       >
         {dataShow && (
           <TreeView
-            style={{ padding: 5, minHeight: 500, background: '#fff' }}
+            style={{ padding: 5, minHeight: 500, background: '#fff',maxHeight:500, overflowY: 'auto'}}
             aria-label="file system navigator"
             defaultCollapseIcon={<MinusSquare />}
             defaultExpandIcon={<PlusSquare />}

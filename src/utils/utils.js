@@ -148,7 +148,10 @@ export function getUrlByAction(selectedFolder) {
       return apiEndpoints.get_user_group_list_by_page;
     }
     case usergroupItemAction.list_role_item: {
-      return apiEndpoints.get_user_group_list_by_page;
+      return apiEndpoints.get_user_group_project_list_by_page;
+    }
+    case usergroupItemAction.tree_view: {
+      return apiEndpoints.get_menu_item_tree_view;
     }
     case accountPermissionAction.list: {
       return apiEndpoints.get_all_active_account;
