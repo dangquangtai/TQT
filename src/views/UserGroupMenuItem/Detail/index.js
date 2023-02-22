@@ -224,7 +224,7 @@ const UserGroupMenuItemModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              Thông tin nhóm người dùng
+              Thông tin cấu hình chức năng
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>

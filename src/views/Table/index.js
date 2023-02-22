@@ -837,12 +837,7 @@ export default function GeneralTable(props) {
 
   useEffect(() => {
     if (documentType === 'department' && department_code_selected !== '') {
-      // const fetchRoleList = async () => {
-      //   let data = await getRoletemplateByDept(department_code_selected);
-      //   setRoleList(data);
-      // };
-
-      // fetchRoleList();
+    
       reloadCurrentDocuments();
     }
   }, [department_code_selected]);
@@ -873,6 +868,9 @@ export default function GeneralTable(props) {
   useEffect(() => {
     if (selectedDocument === null && documents?.length > 0) {
       reloadCurrentDocuments(page);
+    }
+    if(documentType==='department'){
+      reloadCurrentDocuments();
     }
   }, [selectedDocument]);
 
