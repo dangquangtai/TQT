@@ -224,7 +224,7 @@ const UserGroupMenuItemModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              Thông tin user group
+              Thông tin nhóm người dùng
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -254,44 +254,18 @@ const UserGroupMenuItemModal = () => {
               <Grid item xs={12}>
                 <TabPanel value={tabIndex} index={0}>
                   <Grid container spacing={1}>
-
-                    <Grid item lg={6} md={6} xs={12}>
+                  <Grid item lg={7} md={7} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>
                             <AccountCircleOutlinedIcon />
-                            <span>Danh sách menu item</span>
-                          </div>
-                        </div>
-                        <div className={classes.tabItemBody}>
-                          <Grid container className={classes.gridItemInfo} alignItems="center">
-                            {dataShow && (
-                              <TreeView
-                                style={{ padding: 5, minHeight: 480, maxHeight: 480, background: '#fff', overflow: 'auto' }}
-                                aria-label="file system navigator"
-                                defaultCollapseIcon={<MinusSquare />}
-                                defaultExpandIcon={<PlusSquare />}
-                                sx={{ height: 264, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
-                              >
-                                <>{dataShow.map((data) => renderItem(data))}</>
-                              </TreeView>
-                            )}
-                          </Grid>
-                        </div>
-                      </div>
-                    </Grid>
-                    <Grid item lg={6} md={6} xs={12}>
-                      <div className={classes.tabItem}>
-                        <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>
-                            <AccountCircleOutlinedIcon />
-                            <span>Thông tin user group</span>
+                            <span>Thông tin nhóm người dùng</span>
                           </div>
                         </div>
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã user group: </span>
+                              <span className={classes.tabItemLabelField}>Mã: </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -306,7 +280,7 @@ const UserGroupMenuItemModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tên user group: </span>
+                              <span className={classes.tabItemLabelField}>Tên: </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -356,6 +330,33 @@ const UserGroupMenuItemModal = () => {
                         </div>
                       </div>
                     </Grid>
+                    <Grid item lg={5} md={5} xs={12}>
+                      <div className={classes.tabItem}>
+                        <div className={classes.tabItemTitle}>
+                          <div className={classes.tabItemLabel}>
+                            <AccountCircleOutlinedIcon />
+                            <span>Danh sách chức năng</span>
+                          </div>
+                        </div>
+                        <div className={classes.tabItemBody}>
+                          <Grid container className={classes.gridItemInfo} alignItems="center">
+                            {dataShow && (
+                              <TreeView
+                                style={{ padding: 5, minHeight: 480, maxHeight: 480, background: '#fff', overflow: 'auto', 
+                                maxWidth: 370, minWidth: 370, }}
+                                aria-label="file system navigator"
+                                defaultCollapseIcon={<MinusSquare />}
+                                defaultExpandIcon={<PlusSquare />}
+                                sx={{ height: 264, flexGrow: 1, maxWidth: 500, minWidth: 500, overflowY: 'auto' }}
+                              >
+                                <>{dataShow.map((data) => renderItem(data))}</>
+                              </TreeView>
+                            )}
+                          </Grid>
+                        </div>
+                      </div>
+                    </Grid>
+                  
                   </Grid>
                 </TabPanel>
               </Grid>

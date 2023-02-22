@@ -122,7 +122,11 @@ const AccountModal = () => {
   };
   const handleUpdateAccount = async () => {
     try {
-      if (!account.id) {
+      if(account.employee_code===''||account.email_address===''||account.full_name===''||account.dob===''){
+        handleOpenSnackbar(true, 'error', 'Vui lòng điền đầy đủ thông tin!');
+      }
+       else if (!account.id) {
+       
         let check = await createAccount({
           ...account,
           outputtype: 'RawJson',
@@ -138,9 +142,7 @@ const AccountModal = () => {
         let check = await updateAccount({
           ...account,
           outputtype: 'RawJson',
-        });
-        let group_name_list = groupNameList.map(item=> item.group_code)
-        await updatePermissionGroup(account.id, permissionGroup, group_name_list,account.email_address)
+        })
         if (check == true) {
           handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
           dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'account' });
@@ -261,47 +263,7 @@ const AccountModal = () => {
                           </div>
                         </div>
                       </div>
-                      <div className={classes.tabItem}>
-                        <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>
-                            <AccountCircleOutlinedIcon />
-                            <span>Permission Group</span>
-                          </div>
-                        </div>
-                        <div className={classes.tabItemBody}>
-                          <Grid container className={classes.gridItem} alignItems="center">
-                            <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Permission:</span>
-                            </Grid>
-                            <Grid item lg={8} md={8} xs={12}>
-                              <Autocomplete
-                              options={groupList}
-                              getOptionLabel={(option)=> option.group_code}
-                              fullWidth
-                              onChange={(e, value)=> setPermissionGroup(value.group_code)}
-                              size='small'
-                              renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
-                              />
-                            </Grid>
-                          </Grid>
-                          <Grid container className={classes.gridItem} alignItems="center">
-                            <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>User Group:</span>
-                            </Grid>
-                            <Grid item lg={8} md={8} xs={12}>
-                              <Autocomplete
-                              options={groupList}
-                              getOptionLabel={(option)=> option.group_code}
-                              fullWidth
-                              onChange={(e, value)=> setGroupNameList([...value])}
-                              multiple={true}
-                              size='small'
-                              renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
-                              />
-                            </Grid>
-                          </Grid>
-                        </div>
-                      </div>
+                   
                     </Grid>
                     
                    
@@ -316,7 +278,7 @@ const AccountModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã nhân viên: </span>
+                              <span className={classes.tabItemLabelField}>Mã nhân viên(*): </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -333,7 +295,7 @@ const AccountModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Họ và tên: </span>
+                              <span className={classes.tabItemLabelField}>Họ và tên(*): </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -351,7 +313,7 @@ const AccountModal = () => {
 
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Ngày sinh:</span>
+                              <span className={classes.tabItemLabelField}>Ngày sinh(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -367,7 +329,7 @@ const AccountModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Email: </span>
+                              <span className={classes.tabItemLabelField}>Email(*): </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -401,7 +363,7 @@ const AccountModal = () => {
                               />
                             </Grid>
                           </Grid>
-                          <Grid container className={classes.gridItem} alignItems="center">
+                          {/* <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
                               <span className={classes.tabItemLabelField}>Trình độ học vấn:</span>
                             </Grid>
@@ -422,9 +384,9 @@ const AccountModal = () => {
                                   ))}
                               </Select>
                             </Grid>
-                          </Grid>
+                          </Grid> */}
 
-                          <Grid container className={classes.gridItem} alignItems="center">
+                          {/* <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
                               <span className={classes.tabItemLabelField}>Ngành nghề:</span>
                             </Grid>
@@ -440,7 +402,7 @@ const AccountModal = () => {
                                 onChange={handleChange}
                               />
                             </Grid>
-                          </Grid>
+                          </Grid> */}
 
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>

@@ -682,9 +682,12 @@ export default function GeneralTable(props) {
   };
 
   const toggleSetActive = async (event, document, isActive) => {
-    event.stopPropagation();
-    await setActive(setActiveUrl, document.id, isActive);
-    fetchDocument();
+    if (documentType!=='usergroup'){
+      event.stopPropagation();
+      await setActive(setActiveUrl, document.id, isActive);
+      fetchDocument();
+    }
+   
   };
 
   const handleSyncRole = async () => {
@@ -825,12 +828,12 @@ export default function GeneralTable(props) {
 
   useEffect(() => {
     if (documentType === 'department' && department_code_selected !== '') {
-      const fetchRoleList = async () => {
-        let data = await getRoletemplateByDept(department_code_selected);
-        setRoleList(data);
-      };
+      // const fetchRoleList = async () => {
+      //   let data = await getRoletemplateByDept(department_code_selected);
+      //   setRoleList(data);
+      // };
 
-      fetchRoleList();
+      // fetchRoleList();
       reloadCurrentDocuments();
     }
   }, [department_code_selected]);

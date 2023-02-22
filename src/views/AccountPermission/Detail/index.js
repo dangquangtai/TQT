@@ -245,10 +245,10 @@ const AccountPermissionModal = () => {
                         </div>
                         <div className={`${classes.tabItemBody} ${classes.tabItemMentorAvatarBody}`}>
                           <img src={account.image_url} alt="" />
-                          <div>
+                          {/* <div>
                             <div>Upload/Change Image</div>
                             <Button onClick={() => handleOpenDiaLog('image')}>Chọn hình </Button>
-                          </div>
+                          </div> */}
                         </div>
                         <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
@@ -300,7 +300,7 @@ const AccountPermissionModal = () => {
                         <div className={classes.tabItemBody}>
                         <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Permission:</span>
+                              <span className={classes.tabItemLabelField}>Nhóm phân quyền:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={12}>
                               <Autocomplete
@@ -316,7 +316,7 @@ const AccountPermissionModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>User Group:</span>
+                              <span className={classes.tabItemLabelField}>Nhóm người dùng:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={12}>
                               <Autocomplete

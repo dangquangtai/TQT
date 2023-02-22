@@ -31,7 +31,7 @@ export const headCells = [
   { id: 'department_parent', numeric: false, disablePadding: false, label: 'Trực thuộc phòng ban', maxWidth: 150 },
   { id: 'number_member', numeric: false, disablePadding: false, label: 'Số thành viên', maxWidth: 150 },
   { id: 'account_id', numeric: false, disablePadding: false, label: 'ID', maxWidth: 50 },
-  { id: 'full_name', numeric: false, disablePadding: false, label: 'Tên', maxWidth: 150 },
+  { id: 'full_name', numeric: false, disablePadding: false, label: 'Tên', maxWidth: 100 },
   { id: 'email_address', numeric: false, disablePadding: false, label: 'Email', maxWidth: 100 },
   { id: 'description', numeric: false, disablePadding: false, label: 'Mô tả', maxWidth: 100 },
   { id: 'number_phone', numeric: false, disablePadding: false, label: 'SĐT', maxWidth: 100 },
@@ -66,5 +66,5 @@ export const headCells = [
   { id: 'user_group_number_member', numeric: false, disablePadding: false, label: 'Số người', maxWidth: 150 },
   { id: 'is_active', numeric: false, disablePadding: false, label: 'Hoạt động', maxWidth: 150 },
   { id: 'is_featured', numeric: false, disablePadding: false, label: 'Nổi bật', maxWidth: 150 },
-  { id: 'menuButtons', numeric: false, disablePadding: false, label: '', maxWidth: 150 },
+  { id: 'menuButtons', numeric: false, disablePadding: false, label: '', maxWidth: 50 },
 ];

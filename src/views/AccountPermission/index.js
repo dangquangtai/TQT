@@ -26,7 +26,7 @@ const AccountPermissionWrapper = () => {
   return (
     <React.Fragment>
       <AccountPermissionTable
-        tableTitle="Cấu hình permission group"
+        tableTitle="Quản lý cấu hình phân quyền"
         url={getUrlByAction(selectedFolder)}
         categories={categories}
         documentType="accountpermission"

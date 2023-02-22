@@ -103,16 +103,16 @@ const ProcessRoleDeptModal = () => {
   const [roletemplateList,setRoleList] = useState([]);
   const [roletemplate,setRoleTemplate] = useState([]);
   const [roleSelected,setRoleSelected] = useState();
-  useEffect(() => {
-    const fetchDeptList = async () => {
-      let data= await getRoletemplateByDept(department.department_code);
-       setRoleList(data);
-    }
-    if (!!department){
-      fetchDeptList();
-    }
+  // useEffect(() => {
+  //   const fetchDeptList = async () => {
+  //     let data= await getRoletemplateByDept(department.department_code);
+  //      setRoleList(data);
+  //   }
+  //   if (!!department){
+  //     fetchDeptList();
+  //   }
     
-  }, [department]);
+  // }, [department]);
 
   const handleCloseDialog = () => {
     setDocumentToDefault();

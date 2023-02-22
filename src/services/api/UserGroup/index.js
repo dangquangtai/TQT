@@ -110,3 +110,22 @@ export const updateMenuLookupList = (user_group, menu_list) =>{
                                     console.log(error)
                   })
 };
+export const getUserByDepart = (department_code) =>{
+                  return axiosServices
+                  .post(apiEndpoints.get_all_account_by_department_and_role_template,
+                                    {department_code: department_code,
+                                    page:1,
+                                    no_item_per_page:100,
+                                    search_text:'',
+                                    order_by:'',
+                                    order_type:''})
+                  .then((response)=>{
+                                    if (response.status===200 && response.data.return===200){
+                                                   return response.data.list;
+                                    }
+                                    return [];
+                  })
+                  .catch((error)=>{
+                                    console.log(error)
+                  })
+};

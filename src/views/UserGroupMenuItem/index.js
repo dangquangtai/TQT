@@ -26,7 +26,7 @@ const UserGroupMenuItemWrapper = () => {
   return (
     <React.Fragment>
       <UserGroupTable
-        tableTitle="Quản lý user group menu item"
+        tableTitle="Quản lý cấu hình chức năng"
         url={getUrlByAction(selectedFolder)}
         categories={categories}
         documentType="usergroupmenuitem"

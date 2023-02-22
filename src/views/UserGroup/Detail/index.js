@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Grid,
   Button,
@@ -36,7 +36,8 @@ import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../store/actions.js
 import { style } from '../../Table/style';
 import useAccount from '../../../hooks/useAccount.js';
 import { Autocomplete } from '@material-ui/lab';
-import {createUserGroupDetail,updateUserGroupDetail} from '../../../services/api/UserGroup/index'
+import useDepartment from '../../../hooks/useDepartment.js';
+import {createUserGroupDetail,updateUserGroupDetail ,getUserByDepart} from '../../../services/api/UserGroup/index'
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -80,6 +81,7 @@ const UserGroupModal = () => {
   };
   const { getAllUser } = useAccount();
   const [accountList , setAccountList] = useState([]);
+  const {getAllDepartment} = useDepartment();
   const { detailDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
   const [dialogUpload, setDialogUpload] = useState({
@@ -88,29 +90,39 @@ const UserGroupModal = () => {
   });
   const [usergroup, setUserGroup] = useState({ group_code: '', group_name: '' });
   const [rows, setRows] = useState([])
+  const [departmentList, setDepartmentList] = useState([])
+  const [departmentSelected, setDepartmentSelected] = useState([])
   const [ itemAdd, setAddItem] = useState([])
   useEffect(() => {
+    const fetch = async () => {
+      let data = await getAllUser();
+      setAccountList(data)
+      data = await getAllDepartment();
+      setDepartmentList(data)
+    }
+    fetch();
     if (!selectedDocument) return;
     setRows([...selectedDocument.user_list])
     setUserGroup({ ...selectedDocument })
   }, [selectedDocument]);
-  useEffect(() =>{
-    const fetch = async () => {
-      let data = await getAllUser();
-      setAccountList(data)
-    }
-    fetch();
-  },[])
+ 
   const handelRemoveItem = (item) => {
     let arrayFilter = rows.filter(itemarr => itemarr !== item)
     setRows([...arrayFilter])
-    
+    setAccountList([...accountList, item])
   }
-  const handleAddItem = () =>{
+ 
+  const handleAddItem =async  () =>{
     let arrayFilter = rows.filter(itemarr => itemAdd.includes(itemarr)===false)
     let arrayDrop = accountList.filter(itemarr=>itemarr !== itemAdd[0])
     setAccountList(arrayDrop)
-    setRows([...arrayFilter,...itemAdd])
+    let usserList = [];
+    for (let i = 0; i < departmentSelected.length; i++) {
+      let user = await getUserByDepart(departmentSelected[i].department_code)
+      usserList = [...usserList,...user]
+    }
+    setDepartmentSelected([])
+    setRows([...arrayFilter,...itemAdd,...usserList])
     setAddItem([])
   }
   const handleCloseDialog = () => {
@@ -196,7 +208,7 @@ const UserGroupModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              Thông tin user group
+              Thông tin nhóm người dùng
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -232,15 +244,15 @@ const UserGroupModal = () => {
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>
                             <AccountCircleOutlinedIcon />
-                            <span>Thông tin cá nhân</span>
+                            <span>Thông tin nhóm người dùng</span>
                           </div>
                         </div>
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
-                            <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã user group: </span>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Mã: </span>
                             </Grid>
-                            <Grid item lg={8} md={8} xs={8}>
+                            <Grid item lg={9} md={9} xs={9}>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -252,10 +264,10 @@ const UserGroupModal = () => {
                             </Grid>
                           </Grid>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
-                            <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tên user group: </span>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Tên: </span>
                             </Grid>
-                            <Grid item lg={8} md={8} xs={8}>
+                            <Grid item lg={9} md={9} xs={9}>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -267,10 +279,10 @@ const UserGroupModal = () => {
                             </Grid>
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center" spacing={1}>
-                            <Grid item lg={4} md={4} xs={12}>
+                            <Grid item lg={3} md={3} xs={12}>
                               <span className={classes.tabItemLabelField}>Danh sách tài khoản:</span>
                             </Grid>
-                            <Grid item lg={7} md={7} xs={12}>
+                            <Grid item lg={4} md={4} xs={12}>
                               <Autocomplete
                               options={accountList}
                               value={itemAdd}
@@ -279,6 +291,19 @@ const UserGroupModal = () => {
                               size='small'
                               onChange={(e, value)=>setAddItem(value)}
                               getOptionLabel={(option)=>option.email_address}
+                              fullWidth
+                              renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
+                              />
+                            </Grid>
+                            <Grid item lg={4} md={4} xs={12}>
+                              <Autocomplete
+                              options={departmentList}
+                              value={departmentSelected}
+                              blurOnSelect={true}
+                              multiple
+                              size='small'
+                              onChange={(e, value)=>setDepartmentSelected(value)}
+                              getOptionLabel={(option)=>option.department_name}
                               fullWidth
                               renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
                               />

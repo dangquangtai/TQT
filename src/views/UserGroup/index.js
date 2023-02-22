@@ -26,7 +26,7 @@ const UserGroupWrapper = () => {
   return (
     <React.Fragment>
       <UserGroupTable
-        tableTitle="Quản lý user group"
+        tableTitle="Quản lý nhóm người dùng"
         url={getUrlByAction(selectedFolder)}
         categories={categories}
         documentType="usergroup"

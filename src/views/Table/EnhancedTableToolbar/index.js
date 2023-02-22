@@ -105,7 +105,6 @@ const EnhancedTableToolbar = (props) => {
     department_code: '',
     role_template_code: 'Member',
   });
-
   const handleCloseInput = () => {
     setFilter({ ...filter, search_text: '' });
     handleFilterChange({ ...filter, search_text: '' });
@@ -122,9 +121,12 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const handleSubmitAssign = () => {
-    handleAssignAccount(user);
+    user.forEach(element=>{
+      handleAssignAccount(element);
+    })
+    setUserSelected([])
   };
-  const [user, setUserSelected] = useState();
+  const [user, setUserSelected] = useState([]);
 
   const handleResetFilter = () => {
     setFilter((pre) => ({
@@ -471,11 +473,13 @@ const EnhancedTableToolbar = (props) => {
                 <Grid container justifyContent="flex-start" spacing={gridSpacing}>
                   {buttonDeptAddUser && (
                        <>
-                      <Grid item xs={4}>
+                      <Grid item xs={10}>
                         <Autocomplete
-                        style={{ minWidth: 240, maxWidth: 240 }}
+                        
                         size="small"
                         fullWidth
+                        multiple
+                        value={user}
                         options={userList}
                         onChange={(e, u) => setUserSelected(u)}
                         getOptionLabel={(option) => option.email_address}
@@ -484,7 +488,7 @@ const EnhancedTableToolbar = (props) => {
                        
 
                       </Grid>
-                      <Grid item xs={6}>
+                      <Grid item xs={2}>
                           <Button variant="contained" color={'primary'} onClick={handleSubmitAssign}>
                         {buttonDeptAddUser.text}
                       </Button>

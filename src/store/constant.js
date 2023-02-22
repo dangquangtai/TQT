@@ -26,7 +26,7 @@ export const apiEndpoints = {
   get_all_task: '/Primary/?FlowAlias=hnn_api_booking_get_all_task&action=api',
   get_all_department_by_page: '/Primary/?FlowAlias=bs_api_dept_get_all_active_department_by_page&action=api',
   get_department_role_by_group: '/Primary/?FlowAlias=bs_api_dept_get_department_role_by_group_id&action=api',
-  get_all_account_list: '/Primary/?FlowAlias=bs_api_booking_user_get_all_account&action=api',
+  get_all_account_list: '/Primary/?FlowAlias=bs_api_orgm_user_get_all_account&action=api',
 
   //Role template
   get_all_active_role_template: '/Primary/?FlowAlias=bs_api_role_template_get_all_active_role_template_by_page&action=api',
@@ -63,8 +63,6 @@ export const apiEndpoints = {
 
   //EChart
   get_line_chart_data: '/Primary/?FlowAlias=bs_api_get_line_chart_data&action=api',
-  get_booking_data_by_career: '/Primary/?FlowAlias=bs_api_get_booking_data_by_career_for_chart&action=api',
-
   // Material Category
   get_material_category_list: '/Primary/?FlowAlias=bs_api_factory_get_list_material_category&action=api',
   get_material_category_detail: '/Primary/?FlowAlias=bs_api_factory_get_detail_material_category&action=api',
