@@ -152,7 +152,7 @@ export function getUrlByAction(selectedFolder) {
     }
     case accountPermissionAction.list: {
       return apiEndpoints.get_all_active_account;
-
+    }
     case materialReturnActions.list_material_return: {
       return apiEndpoints.get_material_return_list;
 

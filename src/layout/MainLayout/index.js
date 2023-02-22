@@ -166,9 +166,9 @@ const MainLayout = ({ children }) => {
       case 'materialRequisition':
         return <MaterialRequisitionModal />;
       case 'usergroup':
-        return <UserGroupModal/>
+        return <UserGroupModal/>;
       case 'usergroupmenuitem':
-        return <UserGroupMenuItemModal/>
+        return <UserGroupMenuItemModal/>;
       case 'returnMaterial':
         return <ReturnMaterialModal />;
       default:

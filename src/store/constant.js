@@ -411,6 +411,7 @@ export const materialRequisitionActions = {
 
 export const accountPermissionAction= {
   list: 'TQT_ORGANISATION_DEFAULT_OPEN_USER_GROUP_PERMISSION_LIST',
+};
 
 export const materialReturnActions = {
   list_material_return: 'TQT_MATERIAL_DEFAULT_OPEN_MATERIAL_RETURN_LIST',
@@ -647,7 +648,7 @@ export const view = {
     list: {
       create: 'TQT_ORGANISATION_DEFAULT_CREATE_USER_GROUP_MENU_BUTTON'
     }
-  }
+  },
 
   materialReturn: {
     list: {

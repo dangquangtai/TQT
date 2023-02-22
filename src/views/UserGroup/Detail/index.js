@@ -107,14 +107,15 @@ const UserGroupModal = () => {
   }, [selectedDocument]);
  
   const handelRemoveItem = (item) => {
-    let arrayFilter = rows.filter(itemarr => itemarr !== item)
-    setRows([...arrayFilter])
+    let arrayFilter = rows.filter((itemarr) => itemarr.email_address !== item.email_address)
+    setRows(arrayFilter)
     setAccountList([...accountList, item])
   }
  
-  const handleAddItem =async  () =>{
-    let arrayFilter = rows.filter(itemarr => itemAdd.includes(itemarr)===false)
-    let arrayDrop = accountList.filter(itemarr=>itemarr !== itemAdd[0])
+  const handleAddItem =async() =>{
+    const emailList = rows.map(object => object.email_address);
+    let arrayFilter = itemAdd.filter((item)=> emailList.includes(item.email_address)===false)
+    let arrayDrop = accountList.filter(itemarr=>itemAdd.includes(itemarr)===false)
     setAccountList(arrayDrop)
     let usserList = [];
     for (let i = 0; i < departmentSelected.length; i++) {
@@ -122,10 +123,12 @@ const UserGroupModal = () => {
       usserList = [...usserList,...user]
     }
     setDepartmentSelected([])
-    setRows([...arrayFilter,...itemAdd,...usserList])
+    const userList = usserList.filter((item)=> emailList.includes(item.email_address)===false)
+    setRows([...arrayFilter,...userList,...rows])
     setAddItem([])
   }
   const handleCloseDialog = () => {
+    setRows([])
     setDocumentToDefault();
     dispatch({ type: FLOATING_MENU_CHANGE, accountDocument: false });
   };
@@ -176,6 +179,8 @@ const UserGroupModal = () => {
   };
 
   const setDocumentToDefault = async () => {
+    setDepartmentSelected([]);
+    dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'usergroup' });
     setTabIndex(0);
   };
 

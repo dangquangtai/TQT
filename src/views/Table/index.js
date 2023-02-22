@@ -414,13 +414,14 @@ export default function GeneralTable(props) {
         break;
       case 'usergroup':
         detailDocument = await getUserGroupDetail(selectedDocument.group_code, setView)
-        console.log('data',detailDocument)
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType});
         dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true})
+        break;
       case 'usergroupmenuitem':
         detailDocument = await getUserGroupDetail(selectedDocument.group_code, setView)
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType});
         dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true})
+        break;
       case 'returnMaterial':
         detailDocument = await getDetailReturnMaterial(selectedDocument.id, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });

@@ -87,7 +87,7 @@ const EnhancedTableToolbar = (props) => {
     buttonCreateMaterialRequisition,
     buttonExportMaterial,
     handleExportMaterial,
-    buttonCreateUGroup
+    buttonCreateUGroup,
     buttonCreateReturnMaterial,
   } = props;
 
