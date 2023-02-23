@@ -976,7 +976,6 @@ export default function GeneralTable(props) {
                   {(documentType === 'usergroupmenutree' ) && (
                   <Grid item xs={12}>
                     <TreeViewModal
-                      
                       documents={documents}
                       documentType={documentType}
                     />

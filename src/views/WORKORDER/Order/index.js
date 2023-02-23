@@ -48,21 +48,28 @@ const OrderModal = () => {
     value: '',
     order_code: '',
   });
+  const [work_order_id,setWorkorderID] = useState('');
   const [orderDetail, setOrderDetail] = useState([]);
   const [orderList, setOrderList] = useState([]);
   const handleOrderChange = async (e, value) => {
-    const orderDetail = await getOrderProductDetail(value.id);
+    var orderDetail;
+    if(work_order_id !== ''){
+      orderDetail= await getDetailOrderByWorkOrder(value.id, work_order_id);
+    }
+    else {
+      orderDetail = await getOrderProductDetail(value.id);
+    }
     setOrderSelected(value);
     if (value) {
       setOrder({ ...value, order_code: orderDetail?.order_code, ...orderDetail });
       dispatch({
         type: ORDER_CHANGE,
-        order: { ...value, order_code: orderDetail?.order_code, change: false },
+        order: { ...value, order_code: orderDetail?.order_code, change: false, work_order_id: orderRedux?.work_order_id||'' },
         orderDetail: orderDetail.order_detail,
       });
       setOrderDetail(orderDetail.order_detail);
     } else {
-      dispatch({ type: ORDER_CHANGE, order: null, orderDetail: orderDetail });
+      dispatch({ type: ORDER_CHANGE, order: {work_order_id: orderRedux?.work_order_id||''}, orderDetail: orderDetail });
       setOrder({
         id: '',
         title: '',
@@ -77,10 +84,11 @@ const OrderModal = () => {
   const handleOrderChangeSelected = async (value) => {
     var orderDetailList = {};
     if (orderRedux?.work_order_id != '') {
-
       orderDetailList = await getDetailOrderByWorkOrder(value.id, orderRedux.work_order_id);
+      setWorkorderID(orderRedux.work_order_id)
     } else {
       orderDetailList = await getOrderProductDetail(value.id);
+      setWorkorderID('')
     }
     setOrderSelected(value);
     if (value) {
@@ -90,7 +98,6 @@ const OrderModal = () => {
         order: { ...value, order_code: orderDetailList.order_code, change: false, work_order_id: orderRedux.work_order_id },
         orderDetail: orderDetailList.order_detail,
         workorderDetail: orderRedux.workorderDetail
-
       });
       setOrderDetail(orderDetailList?.order_detail);
     } else {
@@ -117,12 +124,13 @@ const OrderModal = () => {
   };
 
   const handleClose = () => {
-    dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
+    dispatch({ type: ORDER_CHANGE, order: null , orderDetail: null });
     dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null });
     window.opener = null;
     window.open('', '_self');
     window.close();
   };
+ 
 
   useEffect(() => {
     const fetchData = async () => {
