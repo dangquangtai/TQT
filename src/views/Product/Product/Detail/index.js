@@ -23,6 +23,7 @@ import {
   TableBody,
   Tooltip,
   IconButton,
+  MenuItem,
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -36,6 +37,7 @@ import FirebaseUpload from '../../../FloatingMenu/FirebaseUpload/index.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { updateProduct } from '../../../../services/api/Product/Product.js';
 import { SNACKBAR_OPEN } from './../../../../store/actions';
+import { getMaterialLoadData } from '../../../../services/api/Material/MaterialPart';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -79,7 +81,7 @@ const ProductModal = () => {
   const { selectedDocument } = useSelector((state) => state.document);
   const [tabIndex, setTabIndex] = React.useState(0);
   const [openDialogUploadImage, setOpenDiaLogUploadImage] = React.useState(false);
-
+  const [dataUnitList, setDataUnitList] = useState([]);
   const [productData, setProductData] = useState({});
   const [partList, setPartList] = useState([]);
   const { materials } = useSelector((state) => state.metadata);
@@ -189,8 +191,16 @@ const ProductModal = () => {
       ...selectedDocument,
     });
     setPartList(selectedDocument?.part_list || []);
-  }, [selectedDocument]);
 
+  }, [selectedDocument]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const loadData = await getMaterialLoadData();
+      setDataUnitList(loadData?.data_unit_list);
+
+    }
+    fetchData()
+  }, [])
   return (
     <React.Fragment>
       <FirebaseUpload
@@ -206,7 +216,7 @@ const ProductModal = () => {
           TransitionComponent={Transition}
           keepMounted
           onClose={handleCloseDialog}
-          className={classes.useradddialog}
+          className={classes.partnerdialog}
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
@@ -251,7 +261,7 @@ const ProductModal = () => {
               <Grid item xs={12}>
                 <TabPanel value={tabIndex} index={0}>
                   <Grid container spacing={1}>
-                    <Grid item lg={6} md={6} xs={12}>
+                    <Grid item lg={12} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>
@@ -310,8 +320,6 @@ const ProductModal = () => {
                           </Grid>
                         </div>
                       </div>
-                    </Grid>
-                    <Grid item lg={6} md={6} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>
@@ -338,6 +346,28 @@ const ProductModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
+                              <span className={classes.tabItemLabelField}>Đơn vị:</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={8}>
+                              <TextField
+                                select
+                                fullWidth
+                                variant="outlined"
+                                name="unit_id"
+                                value={productData.unit_id || ''}
+                                size="small"
+                                onChange={handleChanges}
+                              >
+                                {dataUnitList.map((option) => (
+                                  <MenuItem key={option.id} value={option.id}>
+                                    {option.value}
+                                  </MenuItem>
+                                ))}
+                              </TextField>
+                            </Grid>
+                          </Grid>
+                          <Grid container className={classes.gridItem} alignItems="center">
+                            <Grid item lg={4} md={4} xs={4}>
                               <span className={classes.tabItemLabelField}>Năng suất 1 công nhân trong 8h:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
@@ -358,7 +388,7 @@ const ProductModal = () => {
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <Switch
-                                checked={productData.is_active || false}
+                                checked={productData.is_active || true}
                                 onChange={(e) => setProductData({ ...productData, is_active: e.target.checked })}
                                 color="primary"
                                 inputProps={{ 'aria-label': 'secondary checkbox' }}
@@ -368,6 +398,7 @@ const ProductModal = () => {
                         </div>
                       </div>
                     </Grid>
+
                   </Grid>
                 </TabPanel>
                 <TabPanel value={tabIndex} index={1}>

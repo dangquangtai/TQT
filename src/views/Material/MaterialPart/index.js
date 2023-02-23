@@ -31,7 +31,7 @@ const MaterialPartWrapper = () => {
         categories={categories}
         url={getUrlByAction(selectedFolder)}
         documentType="materialPart"
-        // setActiveUrl={apiEndpoints.active_material_Part}
+        setActiveUrl={apiEndpoints.set_active_material_part}
       />
     </React.Fragment>
   );

@@ -97,6 +97,7 @@ export const apiEndpoints = {
   get_material_load_data: '/Primary/?FlowAlias=bs_api_factory_get_load_data_material_part&action=api',
   create_material_part: '/Primary/?FlowAlias=bs_api_factory_create_material_part&action=api',
   update_material_part: '/Primary/?FlowAlias=bs_api_factory_update_material_part&action=api',
+  set_active_material_part: '/Primary/?FlowAlias=bs_api_factory_active_material_part&action=api',
 
   // Product
   get_product_list: '/Primary/?FlowAlias=bs_api_factory_get_list_product&action=api',
@@ -331,7 +332,7 @@ export const departmentDeactiveActions = {
 };
 export const usergroupAction = {
   list: `${comanyCode}_ORGANISATION_${defaultProcess}_OPEN_USER_GROUP_LIST`,
-  
+
 }
 export const usergroupItemAction = {
   list_role_item: `${comanyCode}_ORGANISATION_${defaultProcess}_OPEN_MENU_ITEM_LIST`
@@ -416,7 +417,7 @@ export const materialRequisitionActions = {
   list_material_requisition: 'TQT_MATERIAL_DEFAULT_OPEN_REQUISITION_NOT_WORKORDER_LIST',
 };
 
-export const accountPermissionAction= {
+export const accountPermissionAction = {
   list: 'TQT_ORGANISATION_DEFAULT_OPEN_USER_GROUP_PERMISSION_LIST',
 };
 
@@ -523,7 +524,7 @@ export const view = {
   },
   product: {
     list: {
-      create: 'TQT_PRODUCT_DEFAULT_CREATE_PRODUCT_MENU_BUTTON',
+      create: 'TQT_SETTING_DEFAULT_PRODUCT_CREATE_MENU_BUTTON',
     },
     detail: {
       save: 'TQT_SETTING_DEFAULT_PRODUCT_SAVE_FORM_BUTTON',

@@ -174,6 +174,7 @@ export default function GeneralTable(props) {
   const buttonCreateUGroup = menuButtons.find((button) => button.name === view.ugroup.list.create)
   const buttonCreateReturnMaterial = menuButtons.find((button) => button.name === view.materialReturn.list.create);
   const buttonCreateTemplateDocument = menuButtons.find((button) => button.name === view.templateDocument.list.create);
+  const buttonCreateProduct = menuButtons.find((button) => button.name === view.product.list.create);
 
   const fetchDocument = (additionalQuery) => {
     const queries = { ...defaultQueries, ...additionalQuery };

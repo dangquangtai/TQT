@@ -23,7 +23,12 @@ import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../../store/actions
 import { DescriptionOutlined as DescriptionOutlinedIcon } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import { SNACKBAR_OPEN } from './../../../../store/actions';
+import { createWorkshop, updateWorkshop } from './../../../../services/api/Setting/Workshop';
 import { createMaterialPart, getMaterialLoadData, updateMaterialPart } from '../../../../services/api/Material/MaterialPart';
+import { useStaticState } from '@material-ui/pickers';
+import { set } from 'lodash';
+
+
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -61,20 +66,12 @@ const MaterialPartModal = () => {
   const { selectedDocument } = useSelector((state) => state.document);
   const [tabIndex, setTabIndex] = React.useState(0);
 
+
   const [dataUnitList, setDataUnitList] = useState([]);
   const [dataSizeUnitList, setdataSizeUnitList] = useState([]);
   const [dataCategoryList, setdataCategoryList] = useState([]);
   const [dataColorList, setdataColorList] = useState([]);
-  const [materialPartDetailData, setMaterialPartDetailData] = useState({
-    size_depth: 0,
-    size_height: 0,
-    size_width: 0,
-    sewing_pattern: 0,
-    misa_code: '',
-    weight: 0,
-    size_unit_id: '',
-    color_id: '',
-  });
+  const [materialPartDetailData, setMaterialPartDetailData] = useState([]);
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
@@ -96,16 +93,7 @@ const MaterialPartModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setMaterialPartDetailData({
-      size_depth: 0,
-      size_height: 0,
-      size_width: 0,
-      sewing_pattern: 0,
-      misa_code: '',
-      weight: 0,
-      size_unit_id: '',
-      color_id: '',
-    });
+    setMaterialPartDetailData({});
     setTabIndex(0);
   };
 
@@ -115,6 +103,7 @@ const MaterialPartModal = () => {
   };
 
   const handleSubmit = async () => {
+
     try {
       if (selectedDocument?.id) {
         await updateMaterialPart({ ...materialPartDetailData });
@@ -144,10 +133,12 @@ const MaterialPartModal = () => {
       setDataUnitList(loadData?.data_unit_list);
       setdataCategoryList(loadData?.data_category_list);
       setdataSizeUnitList(loadData?.data_size_unit_list);
-      setdataColorList(loadData?.data_color_list);
-    };
-    fetchData();
-  }, []);
+      setdataColorList(loadData?.data_color_list)
+
+    }
+    fetchData()
+  }, [])
+
 
   return (
     <React.Fragment>
@@ -201,7 +192,7 @@ const MaterialPartModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã phụ tùng:</span>
+                              <span className={classes.tabItemLabelField}>Mã vật tư:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -217,7 +208,7 @@ const MaterialPartModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tên phụ tùng:</span>
+                              <span className={classes.tabItemLabelField}>Tên vật tư:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -320,7 +311,7 @@ const MaterialPartModal = () => {
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <Switch
-                                checked={materialPartDetailData.is_active}
+                                checked={materialPartDetailData.is_active || false}
                                 onChange={(e) => setMaterialPartDetailData({ ...materialPartDetailData, is_active: e.target.checked })}
                                 color="primary"
                               />
@@ -371,7 +362,7 @@ const MaterialPartModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Chiều sâu:</span>
+                              <span className={classes.tabItemLabelField}>Chiều ngang:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -440,6 +431,18 @@ const MaterialPartModal = () => {
                               />
                             </Grid>
                           </Grid>
+                          {/* <Grid container className={classes.gridItemInfo} alignItems="center">
+                                                        <Grid item lg={4} md={4} xs={4}>
+                                                            <span className={classes.tabItemLabelField}>In được:</span>
+                                                        </Grid>
+                                                        <Grid item lg={8} md={8} xs={8}>
+                                                            <Switch
+                                                                checked={workshopData.is_active || true}
+                                                                onChange={(e) => setWorkshopData({ ...workshopData, is_active: e.target.checked })}
+                                                                color="primary"
+                                                            />
+                                                        </Grid>
+                                                    </Grid> */}
                         </div>
                       </div>
                     </Grid>
@@ -450,7 +453,7 @@ const MaterialPartModal = () => {
           </DialogContent>
           <DialogActions>
             <Grid container justifyContent="space-between">
-              <Grid item className={classes.gridItemInfoButtonWrap}>
+              <Grid item>
                 <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }} onClick={() => handleCloseDialog()}>
                   Đóng
                 </Button>
