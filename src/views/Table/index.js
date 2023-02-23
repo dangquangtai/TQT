@@ -61,6 +61,7 @@ import { getDetailDailyMaterialRequisition } from './../../services/api/Producti
 import { getDetailMaterialPart } from '../../services/api/Material/MaterialPart';
 import { downloadFile } from './../../utils/helper';
 import { getDetailReturnMaterial } from './../../services/api/Material/Return';
+import { getDetailTemplateDocument } from '../../services/api/Setting/TemplateDocument';
 
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
@@ -170,6 +171,7 @@ export default function GeneralTable(props) {
   const buttonCreateMaterialRequisition = menuButtons.find((button) => button.name === view.materialRequisition.list.create);
   const buttonExportMaterial = menuButtons.find((button) => button.name === view.purchaseMaterial.list.export);
   const buttonCreateReturnMaterial = menuButtons.find((button) => button.name === view.materialReturn.list.create);
+  const buttonCreateTemplateDocument = menuButtons.find((button) => button.name === view.templateDocument.list.create);
 
   const fetchDocument = (additionalQuery) => {
     const queries = { ...defaultQueries, ...additionalQuery };
@@ -412,6 +414,11 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, returnMaterialDocument: true });
         break;
+      case 'templateDocument':
+        detailDocument = await getDetailTemplateDocument(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, excelTemplateDocument: true });
+        break;
       default:
         break;
     }
@@ -483,6 +490,9 @@ export default function GeneralTable(props) {
         break;
       case 'returnMaterial':
         dispatch({ type: FLOATING_MENU_CHANGE, returnMaterialDocument: true });
+        break;
+      case 'templateDocument':
+        dispatch({ type: FLOATING_MENU_CHANGE, excelTemplateDocument: true });
         break;
       default:
         break;
@@ -716,7 +726,7 @@ export default function GeneralTable(props) {
     handleOpenSnackbar('success', 'Tải file thành công!');
   };
 
-  const clickSuccess = () => {};
+  const clickSuccess = () => { };
 
   const getColor = (status) => {
     if (status?.includes('DRAFT')) return '#425466';
@@ -918,6 +928,7 @@ export default function GeneralTable(props) {
     buttonExportMaterial,
     handleExportMaterial,
     buttonCreateReturnMaterial,
+    buttonCreateTemplateDocument,
   };
 
   return (
@@ -963,7 +974,7 @@ export default function GeneralTable(props) {
                       }
                       aria-labelledby="tableTitle"
                       size={'medium'}
-                      // aria-label="enhanced table"
+                    // aria-label="enhanced table"
                     >
                       <EnhancedTableHead
                         classes={classes}

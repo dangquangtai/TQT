@@ -41,6 +41,7 @@ import DailyMaterialRequisitionModal from './../../views/Production/DailyMateria
 import MaterialPartModal from '../../views/Material/MaterialPart/Detail';
 import MaterialRequisitionModal from './../../views/Material/Requisition/Detail/index';
 import ReturnMaterialModal from './../../views/Material/Return/Detail/index';
+import TemplateDocumentModal from '../../views/Setting/DocumentTemplate/ExcelDocument/Detail';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -161,6 +162,8 @@ const MainLayout = ({ children }) => {
         return <MaterialRequisitionModal />;
       case 'returnMaterial':
         return <ReturnMaterialModal />;
+      case 'templateDocument':
+        return <TemplateDocumentModal />;
       default:
         return null;
     }

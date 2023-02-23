@@ -292,7 +292,15 @@ export const apiEndpoints = {
   get_material_return_data: '/Primary/?FlowAlias=bs_api_factory_get_material_return_data&action=api',
   get_material_broken_list: '/Primary/?FlowAlias=bs_api_factory_get_material_broken_list&action=api',
   export_material_return: '/Primary/?FlowAlias=bs_api_factory_export_material_return&action=api',
+
+  // Document Template
+  get_document_template_list: '/Primary/?FlowAlias=bs_api_process_get_document_template_list&action=api',
+  get_document_template_detail: '/Primary/?FlowAlias=bs_api_process_get_document_template_detail&action=api',
+  create_document_template: '/Primary/?FlowAlias=bs_api_process_create_new_document_template&action=api',
+  update_document_template: '/Primary/?FlowAlias=bs_api_process_update_document_template&action=api',
 };
+
+
 
 export const apiDomain = 'https://upload.truebpm.vn';
 // export const apiDomain = 'http://localhost:4000'
@@ -395,6 +403,9 @@ export const materialRequisitionActions = {
 };
 export const materialReturnActions = {
   list_material_return: 'TQT_MATERIAL_DEFAULT_OPEN_MATERIAL_RETURN_LIST',
+};
+export const templateDocumentActions = {
+  list_template_document: 'TQT_SETTING_DEFAULT_OPEN_DOCUMENT_LIST',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -628,6 +639,15 @@ export const view = {
     },
     detail: {
       save: 'TQT_MATERIAL_DEFAULT_RETURN_SAVE_FORM_BUTTON',
+    },
+  },
+  templateDocument: {
+    list: {
+      create: 'TQT_SETTING_DEFAULT_CREATE_EXCEL_DOCUMENT_TEMPLATE',
+    },
+    detail: {
+      save: 'TQT_SETTING_DEFAULT_EXCEL_TEMPLATE_SAVE_FORM_BUTTON',
+      import: 'TQT_SETTING_DEFAULT_EXCEL_TEMPLATE_IMPORT_FORM_BUTTON',
     },
   },
 };

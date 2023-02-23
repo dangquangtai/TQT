@@ -39,6 +39,7 @@ import {
   productionDailyMaterialRequisitionActions,
   materialRequisitionActions,
   materialReturnActions,
+  templateDocumentActions,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
 import { Redirect } from 'react-router-dom';
@@ -71,6 +72,7 @@ import DailyMaterialReceivedWrapper from './../../Production/DailyMaterialReceiv
 import DailyMaterialRequisitionWrapper from './../../Production/DailyMaterialRequisition/index';
 import MaterialRequisitionWrapper from './../../Material/Requisition/index';
 import ReturnMaterialWrapper from './../../Material/Return/index';
+import ExcelDocumentWrapper from '../../Setting/DocumentTemplate/ExcelDocument';
 
 const Default = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
@@ -108,6 +110,7 @@ const Default = () => {
   const availableDeliveryMaterialEndpoint = Object.values(dailyDeliveryMateialActions);
   const availableMaterialRequisitionEndpoint = Object.values(materialRequisitionActions);
   const availableMaterialReturnEndpoint = Object.values(materialReturnActions);
+  const availableTemplateDocumentEndpoint = Object.values(templateDocumentActions);
 
   if (!selectedApp?.id) {
     return <Redirect to="/dashboard/app" />;
@@ -150,6 +153,7 @@ const Default = () => {
           {availableProductionDailyMaterialRequisitionEndpoint.includes(selectedFolder?.action) && <DailyMaterialRequisitionWrapper />}
           {availableMaterialRequisitionEndpoint.includes(selectedFolder?.action) && <MaterialRequisitionWrapper />}
           {availableMaterialReturnEndpoint.includes(selectedFolder?.action) && <ReturnMaterialWrapper />}
+          {availableTemplateDocumentEndpoint.includes(selectedFolder?.action) && <ExcelDocumentWrapper />}
         </Grid>
       )}
     </Grid>
