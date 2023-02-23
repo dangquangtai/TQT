@@ -103,21 +103,10 @@ export const DepartmentProvider = ({ children }) => {
         } else return {};
       });
   };
-  const getAllDepartment = async (
-    page = 1,
-    no_item_per_page = 100,
-    search_text = '',
-    order_by = '',
-    order_type = ''
-  ) => {
+  const getAllDepartment = async () => {
     return axiosInstance
       .post(apiEndpoints.get_all_department_by_page, {
-        outputtype: 'RawJson',
-        page,
-        no_item_per_page,
-        search_text,
-        order_by,
-        order_type,
+       
       })
       .then((response) => {
         if (response.status === 200 && response.data.return === 200) {

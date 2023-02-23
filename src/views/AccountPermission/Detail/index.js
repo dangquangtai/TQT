@@ -63,7 +63,7 @@ function a11yProps(index) {
   };
 }
 
-const AccountModal = () => {
+const AccountPermissionModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [tabIndex, setTabIndex] = React.useState(0);
@@ -73,15 +73,16 @@ const AccountModal = () => {
     setTabIndex(newValue);
   };
   const [permissionGroup , setPermissionGroup] = useState('');
-  const [groupNameList, setGroupNameList] = useState('');
-  const { createAccount, updateAccount, updatePermissionGroup } = useAccount();
+  const [groupNameList, setGroupNameList] = useState([]);
+  const [groupAccountList, setGroupAccountList] = useState([]);
+  const {  updatePermisstionGroup , getPermisstionGroup } = useAccount();
   const { accountDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
   const [dialogUpload, setDialogUpload] = useState({
     open: false,
     type: '',
   });
-  const { provinces: provinceList, genders: genderList, degree: degreeList } = useSelector((state) => state.metadata);
+  
   const [account, setAccount] = React.useState({
     ...initAccount,
   });
@@ -92,6 +93,12 @@ const AccountModal = () => {
       ...account,
       ...selectedDocument,
     });
+    const fetch =async () =>{
+      let data = await getPermisstionGroup(selectedDocument.account_id)
+      setPermissionGroup(data.data)
+      setGroupAccountList(data.list)
+    }
+    fetch()
   }, [selectedDocument]);
   useEffect(() => {
     const fetch = async () =>{
@@ -122,35 +129,16 @@ const AccountModal = () => {
   };
   const handleUpdateAccount = async () => {
     try {
-      if(account.employee_code===''||account.email_address===''||account.full_name===''||account.dob===''){
-        handleOpenSnackbar(true, 'error', 'Vui lòng điền đầy đủ thông tin!');
-      }
-       else if (!account.id) {
-       
-        let check = await createAccount({
-          ...account,
-          outputtype: 'RawJson',
-        });
-        if (check == true) {
-          handleOpenSnackbar(true, 'success', 'Tạo mới thành công!');
-          dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'account' });
-          handleCloseDialog();
-        } else {
-          handleOpenSnackbar(true, 'error', 'Tài khoản đã tồn tại!');
-        }
-      } else {
-        let check = await updateAccount({
-          ...account,
-          outputtype: 'RawJson',
-        })
-        if (check == true) {
+        let group_name_list = groupAccountList.map(item=> item.group_code)
+        let check = await updatePermisstionGroup(account.id, permissionGroup.group_code,account.email_address, group_name_list)
+        if (check === true) {
           handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
-          dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'account' });
+          dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'accountpermission' });
           handleCloseDialog();
         } else {
-          handleOpenSnackbar(true, 'error', 'Tài khoản đã tồn tại!');
+          handleOpenSnackbar(true, 'error', 'Cập nhập thành công!');
         }
-      }
+      
     } catch (error) {
       handleOpenSnackbar(true, 'error', 'Vui lòng điền đầy đủ thông tin!');
     } finally {
@@ -257,28 +245,14 @@ const AccountModal = () => {
                         </div>
                         <div className={`${classes.tabItemBody} ${classes.tabItemMentorAvatarBody}`}>
                           <img src={account.image_url} alt="" />
-                          <div>
+                          {/* <div>
                             <div>Upload/Change Image</div>
                             <Button onClick={() => handleOpenDiaLog('image')}>Chọn hình </Button>
-                          </div>
+                          </div> */}
                         </div>
-                      </div>
-                   
-                    </Grid>
-                    
-                   
-                    <Grid item lg={6} md={6} xs={12}>
-                      <div className={classes.tabItem}>
-                        <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>
-                            <AccountCircleOutlinedIcon />
-                            <span>Thông tin cá nhân</span>
-                          </div>
-                        </div>
-                        <div className={classes.tabItemBody}>
-                          <Grid container className={classes.gridItemInfo} alignItems="center">
+                        <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã nhân viên(*): </span>
+                              <span className={classes.tabItemLabelField}>Mã nhân viên: </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -295,7 +269,7 @@ const AccountModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Họ và tên(*): </span>
+                              <span className={classes.tabItemLabelField}>Họ và tên: </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -310,167 +284,50 @@ const AccountModal = () => {
                               />
                             </Grid>
                           </Grid>
-
-                          <Grid container className={classes.gridItemInfo} alignItems="center">
-                            <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Ngày sinh(*):</span>
-                            </Grid>
-                            <Grid item lg={8} md={8} xs={8}>
-                              <TextField
-                                fullWidth
-                                type="date"
-                                variant="outlined"
-                                name="dob"
-                                value={account.dob}
-                                className={classes.inputField}
-                                onChange={handleChange}
-                              />
-                            </Grid>
-                          </Grid>
-                          <Grid container className={classes.gridItemInfo} alignItems="center">
-                            <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Email(*): </span>
-                            </Grid>
-                            <Grid item lg={8} md={8} xs={8}>
-                              <TextField
-                                fullWidth
-                                rows={1}
-                                rowsMax={1}
-                                variant="outlined"
-                                name="email_address"
-                                type="email"
-                                value={account.email_address || ''}
-                                className={classes.inputField}
-                                onChange={handleChange}
-                              />
-                            </Grid>
-                          </Grid>
-
-                          <Grid container className={classes.gridItem} alignItems="center">
+                      </div>
+                   
+                    </Grid>
+                    
+                   
+                    <Grid item lg={6} md={6} xs={12}>
+                      <div className={classes.tabItem}>
+                        <div className={classes.tabItemTitle}>
+                          <div className={classes.tabItemLabel}>
+                            <AccountCircleOutlinedIcon />
+                            <span>Thông tin cá nhân</span>
+                          </div>
+                        </div>
+                        <div className={classes.tabItemBody}>
+                        <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>SĐT:</span>
+                              <span className={classes.tabItemLabelField}>Nhóm phân quyền:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={12}>
-                              <TextField
-                                fullWidth
-                                rows={1}
-                                rowsMax={1}
-                                variant="outlined"
-                                name="phone_number"
-                                value={account?.phone_number}
-                                className={classes.inputField}
-                                onChange={handleChange}
-                              />
-                            </Grid>
-                          </Grid>
-                          {/* <Grid container className={classes.gridItem} alignItems="center">
-                            <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Trình độ học vấn:</span>
-                            </Grid>
-                            <Grid item lg={8} md={8} xs={12}>
-                              <Select
-                                className={classes.multpleSelectField}
-                                value={account.degree_id || ''}
-                                onChange={(event) => setAccount({ ...account, degree_id: event.target.value })}
-                              >
-                                <MenuItem value="">
-                                  <em>Không chọn</em>
-                                </MenuItem>
-                                {degreeList &&
-                                  degreeList.map((item) => (
-                                    <MenuItem key={item.id} value={item.id}>
-                                      {item.value}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </Grid>
-                          </Grid> */}
-
-                          {/* <Grid container className={classes.gridItem} alignItems="center">
-                            <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Ngành nghề:</span>
-                            </Grid>
-                            <Grid item lg={8} md={8} xs={12}>
-                              <TextField
-                                fullWidth
-                                rows={1}
-                                rowsMax={1}
-                                variant="outlined"
-                                name="major"
-                                value={account?.major}
-                                className={classes.inputField}
-                                onChange={handleChange}
-                              />
-                            </Grid>
-                          </Grid> */}
-
-                          <Grid container className={classes.gridItem} alignItems="center">
-                            <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Giới tính:</span>
-                            </Grid>
-                            <Grid item lg={8} md={8} xs={12}>
-                              <Select
-                                className={classes.multpleSelectField}
-                                value={account.gender_id || ''}
-                                onChange={(event) => setAccount({ ...account, gender_id: event.target.value })}
-                              >
-                                {genderList &&
-                                  genderList.map((item) => (
-                                    <MenuItem key={item.id} value={item.id}>
-                                      {item.value}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </Grid>
-                          </Grid>
-                          <Grid container className={classes.gridItem} alignItems="center">
-                            <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Tỉnh:</span>
-                            </Grid>
-                            <Grid item lg={8} md={8} xs={12}>
-                              <Select
-                                className={classes.multpleSelectField}
-                                value={account.province_id || ''}
-                                onChange={(event) => setAccount({ ...account, province_id: event.target.value })}
-                              >
-                                {provinceList &&
-                                  provinceList.map((item) => (
-                                    <MenuItem key={item.id} value={item.id}>
-                                      {item.value}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </Grid>
-                          </Grid>
-                          <Grid container className={classes.gridItem} alignItems="center">
-                            <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Địa chỉ:</span>
-                            </Grid>
-                            <Grid item lg={8} md={8} xs={12}>
-                              <TextField
-                                fullWidth
-                                rows={1}
-                                rowsMax={1}
-                                variant="outlined"
-                                name="address"
-                                value={account?.address}
-                                className={classes.inputField}
-                                onChange={handleChange}
+                              <Autocomplete
+                              value={permissionGroup}
+                              options={groupList}
+                              getOptionLabel={(option)=> option.group_code}
+                              fullWidth
+                              onChange={(e, value)=> setPermissionGroup(value)}
+                              size='small'
+                              renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
                               />
                             </Grid>
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Chức danh(*):</span>
+                              <span className={classes.tabItemLabelField}>Nhóm người dùng:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={12}>
-                              <TextField
-                                fullWidth
-                                variant="outlined"
-                                name="major"
-                                value={account?.major}
-                                className={classes.inputField}
-                                onChange={handleChange}
+                              <Autocomplete
+                              value={groupAccountList}
+                              options={groupList}
+                              getOptionLabel={(option)=> option.group_code}
+                              fullWidth
+                              onChange={(e, value)=> setGroupAccountList(value)}
+                              multiple={true}
+                              size='small'
+                              renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
                               />
                             </Grid>
                           </Grid>
@@ -524,4 +381,4 @@ const AccountModal = () => {
   );
 };
 
-export default AccountModal;
+export default AccountPermissionModal;

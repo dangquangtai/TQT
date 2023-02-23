@@ -274,7 +274,9 @@ const WorkorderModal = () => {
   const handleCreateWorkOrder = async (popup, getdate, button) => {
     try {
       if (productionDailyRequestList.length < 2) {
-        handleOpenSnackbar(true, 'fail', 'Số ngày kế hoạch không ther < 2 !');
+        handleOpenSnackbar(true, 'error', 'Số ngày kế hoạch không ther < 2 !');
+      } else if(workorder.order_code===''||workorder.title===''){
+        handleOpenSnackbar(true, 'error', 'Điền mã kế hoạch và tên kế hoạch!');
       } else {
         let WorkOrderID = workorder.id;
         if ((workorder.id === '')) {
@@ -1048,7 +1050,7 @@ const WorkorderModal = () => {
                             <Grid item lg={7} md={7} xs={12}>
                               <Grid container className={classes.gridItemInfo} alignItems="center" spacing={1} >
                                 <Grid item lg={3} md={3} xs={3}>
-                                  <span className={classes.tabItemLabelField}>Mã hoạch sản xuất: </span>
+                                  <span className={classes.tabItemLabelField}>Mã hoạch sản xuất(*): </span>
                                   <TextField
                                     fullWidth
                                     variant="outlined"
@@ -1061,7 +1063,7 @@ const WorkorderModal = () => {
                                 </Grid>
 
                                 <Grid item lg={6} md={6} xs={6}>
-                                  <span className={classes.tabItemLabelField}>Tên kế hoạch sản xuất: </span>
+                                  <span className={classes.tabItemLabelField}>Tên kế hoạch sản xuất(*): </span>
                                   <TextField
                                     fullWidth
                                     variant="outlined"
@@ -1243,7 +1245,8 @@ const WorkorderModal = () => {
                                               style={
                                                 (currentDate === item.work_order_date
                                                   ? { background: 'rgb(97, 42, 255)', color: 'white' } :
-                                                  item.work_order_date === dayCurrent ? { background: 'rgb(30 144 255)', color: 'white' } : {})
+                                                  item.work_order_date === dayCurrent ? { background: 'rgb(30 144 255)', color: 'white' } : 
+                                                  item.work_order_date < dayCurrent? { background: 'rgb(30 144 155)', color: 'white' }: {})
                                               }
                                               onClick={() =>
                                                 handleChangeDate(item.work_order_date, index + currentWeek * 7)

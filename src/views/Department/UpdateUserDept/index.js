@@ -103,13 +103,13 @@ export default function UserDepartModal({ isOpen, department_code, handleClose, 
   }
 
   useEffect(() => {
-    const fetchdata = async () => {
-      let data = await getRoletemplateByDept(department_code);
-      setRoleList(data);
-    }
-    if(!!department_code){
-      fetchdata();
-    }
+    // const fetchdata = async () => {
+    //   // let data = await getRoletemplateByDept(department_code);
+    //   // setRoleList(data);
+    // }
+    // if(!!department_code){
+    //   fetchdata();
+    // }
     setUserDeptSelected({
       department_code: '',
       role_template_code: '',

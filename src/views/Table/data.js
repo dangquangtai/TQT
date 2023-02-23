@@ -31,7 +31,7 @@ export const headCells = [
   { id: 'department_parent', numeric: false, disablePadding: false, label: 'Trực thuộc phòng ban', maxWidth: 150 },
   { id: 'number_member', numeric: false, disablePadding: false, label: 'Số thành viên', maxWidth: 150 },
   { id: 'account_id', numeric: false, disablePadding: false, label: 'ID', maxWidth: 50 },
-  { id: 'full_name', numeric: false, disablePadding: false, label: 'Tên', maxWidth: 150 },
+  { id: 'full_name', numeric: false, disablePadding: false, label: 'Tên', maxWidth: 100 },
   { id: 'email_address', numeric: false, disablePadding: false, label: 'Email', maxWidth: 100 },
   { id: 'description', numeric: false, disablePadding: false, label: 'Mô tả', maxWidth: 100 },
   { id: 'number_phone', numeric: false, disablePadding: false, label: 'SĐT', maxWidth: 100 },
@@ -52,8 +52,7 @@ export const headCells = [
   { id: 'created_date', numeric: false, disablePadding: false, label: 'Ngày tạo', maxWidth: 100 },
   { id: 'percent_production', numeric: false, disablePadding: false, label: '% đã SX', maxWidth: 100 },
   { id: 'percent_plan', numeric: false, disablePadding: false, label: '% đã lập KH', maxWidth: 100 },
-  { id: 'is_active', numeric: false, disablePadding: false, label: 'Hoạt động', maxWidth: 150 },
-  { id: 'is_featured', numeric: false, disablePadding: false, label: 'Nổi bật', maxWidth: 150 },
+
   { id: 'order__title', numeric: false, disablePadding: false, label: 'Tên kế hoạch', maxWidth: 150 },
   { id: 'from__date', numeric: false, disablePadding: false, label: 'Ngày bắt đầu', maxWidth: 150 },
   { id: 'to__date', numeric: false, disablePadding: false, label: 'Ngày kết thúc', maxWidth: 150 },
@@ -62,6 +61,10 @@ export const headCells = [
   { id: 'number_of_worker', numeric: false, disablePadding: false, label: 'Số người làm', maxWidth: 150 },
   { id: 'number_of_working_hour', numeric: false, disablePadding: false, label: 'Số giờ làm', maxWidth: 150 },
   { id: 'work_order_date_string', numeric: false, disablePadding: false, label: 'Ngày', maxWidth: 150 },
-
-  { id: 'menuButtons', numeric: false, disablePadding: false, label: '', maxWidth: 150 },
+  { id: 'user_group_code', numeric: false, disablePadding: false, label: 'Mã group', maxWidth: 150 },
+  { id: 'user_group_name', numeric: false, disablePadding: false, label: 'Tên group', maxWidth: 150 },
+  { id: 'user_group_number_member', numeric: false, disablePadding: false, label: 'Số người', maxWidth: 150 },
+  { id: 'is_active', numeric: false, disablePadding: false, label: 'Hoạt động', maxWidth: 150 },
+  { id: 'is_featured', numeric: false, disablePadding: false, label: 'Nổi bật', maxWidth: 150 },
+  { id: 'menuButtons', numeric: false, disablePadding: false, label: '', maxWidth: 50 },
 ];

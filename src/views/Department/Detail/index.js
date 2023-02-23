@@ -348,7 +348,7 @@ const DepartmentModal = () => {
                          
                             </Grid>
                             </Grid>
-                            <Grid container className={classes.gridItemInfo} alignItems="center">
+                            {/* <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
                                 <span className={classes.tabItemLabelField}>Chức vụ: </span>
                               </Grid>
@@ -373,7 +373,7 @@ const DepartmentModal = () => {
                                   </Select>
                          
                               </Grid>
-                          </Grid>
+                          </Grid> */}
                             <Grid container className={classes.gridItemInfo} alignItems="center">
                               <Grid item lg={4} md={4} xs={4}>
                                 <span className={classes.tabItemLabelField}>Mô tả: </span>

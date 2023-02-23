@@ -91,8 +91,8 @@ export const useStyles = makeStyles((theme) => ({
     },
   },
   table2: {
-    minWidth: 950,
-    maxWidth: 950,
+    minWidth: 850,
+    maxWidth: 850,
     borderSpacing: '0 10px',
     '& > thead': {
       background: '#FFFFFF',
