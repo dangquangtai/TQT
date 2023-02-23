@@ -42,6 +42,7 @@ import {
   usergroupItemAction,
   accountPermissionAction,
   materialReturnActions,
+  templateDocumentActions,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
 import { Redirect } from 'react-router-dom';
@@ -77,6 +78,7 @@ import UserGroupWrapper from '../../UserGroup';
 import UserGroupMenuItemWrapper from '../../UserGroupMenuItem';
 import AccountPermissionWrapper from '../../AccountPermission';
 import ReturnMaterialWrapper from './../../Material/Return/index';
+import ExcelDocumentWrapper from '../../Setting/DocumentTemplate/ExcelDocument';
 
 
 const Default = () => {
@@ -120,6 +122,7 @@ const Default = () => {
   const availableUserPermissionEndpoint = Object.values(accountPermissionAction)
 
   const availableMaterialReturnEndpoint = Object.values(materialReturnActions);
+  const availableTemplateDocumentEndpoint = Object.values(templateDocumentActions);
 
 
   if (!selectedApp?.id) {
@@ -166,6 +169,7 @@ const Default = () => {
           {availableUserGroupMenuItemEndpoint.includes(selectedFolder?.action) && <UserGroupMenuItemWrapper />}
           {availableUserPermissionEndpoint.includes(selectedFolder?.action) && <AccountPermissionWrapper />}
           {availableMaterialReturnEndpoint.includes(selectedFolder?.action) && <ReturnMaterialWrapper />}
+          {availableTemplateDocumentEndpoint.includes(selectedFolder?.action) && <ExcelDocumentWrapper />}
         </Grid>
       )}
     </Grid>

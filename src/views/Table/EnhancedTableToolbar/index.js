@@ -89,6 +89,7 @@ const EnhancedTableToolbar = (props) => {
     handleExportMaterial,
     buttonCreateUGroup,
     buttonCreateReturnMaterial,
+    buttonCreateTemplateDocument,
   } = props;
 
   const filterRef = useRef(null);
@@ -455,7 +456,13 @@ const EnhancedTableToolbar = (props) => {
                     </Button>
                   </Grid>
                 )}
-
+                {buttonCreateTemplateDocument && (
+                  <Grid item xs={6}>
+                    <Button variant="contained" color={'primary'} onClick={handleCreate}>
+                      {buttonCreateTemplateDocument.text}
+                    </Button>
+                  </Grid>
+                )}
               </Grid>
             </Grid>
             {(documentType === 'processrole') && (

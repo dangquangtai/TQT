@@ -44,6 +44,7 @@ import UserGroupMenuItemModal from '../../views/UserGroupMenuItem/Detail';
 import AccountPermissionModal from '../../views/AccountPermission/Detail';
 
 import ReturnMaterialModal from './../../views/Material/Return/Detail/index';
+import TemplateDocumentModal from '../../views/Setting/DocumentTemplate/ExcelDocument/Detail';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -171,6 +172,8 @@ const MainLayout = ({ children }) => {
         return <UserGroupMenuItemModal/>;
       case 'returnMaterial':
         return <ReturnMaterialModal />;
+      case 'templateDocument':
+        return <TemplateDocumentModal />;
       default:
         return null;
     }
