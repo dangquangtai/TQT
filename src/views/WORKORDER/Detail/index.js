@@ -255,7 +255,7 @@ const WorkorderModal = () => {
     dispatch({ type: ORDER_CHANGE, order: { close: true } });
     dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null });
     setDocumentToDefault();
-
+    dispatch({ type: ORDER_CHANGE, order: { close: false} });
 
   };
 
@@ -612,6 +612,7 @@ const WorkorderModal = () => {
   };
 
   const popupWindow = (url, title) => {
+    handleCreateWorkOrder(false,true,false)
     if (workorder.id === '') {
       dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
       dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null });

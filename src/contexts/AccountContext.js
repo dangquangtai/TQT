@@ -133,6 +133,16 @@ export const AccountProvider = ({ children }) => {
       return {}
     });
   };
+  const resetPassword = async (new_password,password,email_address) => {
+    return axiosInstance.post(apiEndpoints.reset_password, {email_address: email_address,new_password: new_password, password: password})
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+      
+        return true
+      }
+      return false
+    });
+  };
 
   return (
     <AccountContext.Provider
@@ -148,7 +158,8 @@ export const AccountProvider = ({ children }) => {
         removeAccount,
         getAccount,
         updatePermisstionGroup,
-        getPermisstionGroup
+        getPermisstionGroup,
+        resetPassword
       }}
     >
       {children}

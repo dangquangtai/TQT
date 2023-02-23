@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import UserGroupTable from '../Table';
 import { getUrlByAction } from '../../utils/utils';
 import { DOCUMENT_CHANGE } from '../../store/actions';
+import { usergroupItemAction } from '../../store/constant';
 // import axiosInstance from '../../services/axios';
 
 const UserGroupMenuItemWrapper = () => {
@@ -13,10 +14,16 @@ const UserGroupMenuItemWrapper = () => {
   const { projects } = useSelector((state) => state.project);
   const selectedProject = projects.find((project) => project.selected);
   const { selectedFolder } = useSelector((state) => state.folder);
-
+  const handleGetDocumentType = (selectedFolder) =>{
+    if(selectedFolder.action===usergroupItemAction.list_role_item){
+      return 'usergroupmenuitem'
+    }
+    return 'usergroupmenutree'
+  }
   useEffect(() => {
     async function fetchData() {
-      dispatch({ type: DOCUMENT_CHANGE, documentType: 'usergroupmenuitem' });
+      let documentType= handleGetDocumentType(selectedFolder)
+      dispatch({ type: DOCUMENT_CHANGE, documentType: documentType });
     }
     if (selectedProject) {
       fetchData();
@@ -29,7 +36,7 @@ const UserGroupMenuItemWrapper = () => {
         tableTitle="Quản lý cấu hình chức năng"
         url={getUrlByAction(selectedFolder)}
         categories={categories}
-        documentType="usergroupmenuitem"
+        documentType={handleGetDocumentType(selectedFolder)}
         // setFeaturedUrl={}
       />
     </React.Fragment>
