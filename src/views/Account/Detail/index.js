@@ -388,8 +388,7 @@ const AccountModal = () => {
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
-                                rows={1}
-                                rowsMax={1}
+                           
                                 variant="outlined"
                                 name="email_address"
                                 type="email"
@@ -407,8 +406,7 @@ const AccountModal = () => {
                             <Grid item lg={8} md={8} xs={12}>
                               <TextField
                                 fullWidth
-                                rows={1}
-                                rowsMax={1}
+                         
                                 variant="outlined"
                                 name="phone_number"
                                 value={account?.phone_number}
@@ -464,8 +462,7 @@ const AccountModal = () => {
                             <Grid item lg={8} md={8} xs={12}>
                               <TextField
                                 fullWidth
-                                rows={1}
-                                rowsMax={1}
+                              
                                 variant="outlined"
                                 name="address"
                                 value={account?.address}
