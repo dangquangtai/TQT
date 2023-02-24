@@ -23,7 +23,7 @@ export const apiEndpoints = {
   remove_account_from_dept: '/Primary/?FlowAlias=bs_api_user_api_remove_account_from_department&action=api',
   active_account: '/Primary/?FlowAlias=bs_api_user_active_account&action=api',
   get_account_list_by_process_role: '/Primary/?FlowAlias=bs_api_user_get_list_by_process_role&action=api',
-  get_all_task: '/Primary/?FlowAlias=hnn_api_booking_get_all_task&action=api',
+  get_all_task: '/Primary/?FlowAlias=bs_api_process_get_all_task_by_current_user&action=api',
   get_all_department_by_page: '/Primary/?FlowAlias=bs_api_dept_get_all_active_department_by_page&action=api',
   get_department_role_by_group: '/Primary/?FlowAlias=bs_api_dept_get_department_role_by_group_id&action=api',
   get_all_account_list: '/Primary/?FlowAlias=bs_api_orgm_user_get_all_account&action=api',

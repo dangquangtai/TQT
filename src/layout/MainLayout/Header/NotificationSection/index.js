@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   makeStyles,
   Button,
@@ -23,7 +22,7 @@ import NotificationsNoneTwoToneIcon from '@material-ui/icons/NotificationsNoneTw
 import { subHours } from 'date-fns';
 import QueryBuilderTwoToneIcon from '@material-ui/icons/QueryBuilderTwoTone';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
-
+import useAccount from '../../../../hooks/useAccount';
 const useStyles = makeStyles((theme) => ({
   grow: {
     flex: 1,
@@ -133,9 +132,9 @@ const NotificationSection = () => {
   const anchorRef = React.useRef(null);
   const dateToday = new Date().getDate();
   const [taskList, setTask] = React.useState([]);
-  const currentlyTasks = taskList.filter((task) => new Date(task.assigned_date).getDate() === dateToday);
-  const laterTasks = taskList.filter((task) => new Date(task.assigned_date) < subHours(new Date(), 1));
-
+  const [currentlyTasks, setCurrentTask] = React.useState([]);
+  const [laterTasks, setLateTask] = React.useState([]);
+  const { getAllTask } = useAccount();
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
     // getTask();
@@ -155,7 +154,21 @@ const NotificationSection = () => {
     }
     prevOpen.current = open;
   }, [open]);
-
+  React.useEffect(() => {
+    const fetch = async () => {
+      try {
+        let data = await getAllTask();
+        setTask(data);
+      } catch {
+        let data = await getAllTask();
+        setTask(data);
+      }
+    };
+    fetch();
+  }, []);
+  React.useEffect(() => {
+    setCurrentTask(taskList);
+  }, taskList);
   return (
     <React.Fragment>
       <Button className={classes.menuButton} color="inherit">
@@ -213,7 +226,7 @@ const NotificationSection = () => {
               <ClickAwayListener onClickAway={handleClose}>
                 <List className={classes.root}>
                   <PerfectScrollbar className={classes.ScrollHeight}>
-                    {currentlyTasks.map(
+                    {taskList.map(
                       (
                         {
                           assigned_date,
@@ -224,6 +237,7 @@ const NotificationSection = () => {
                           data_object_id,
                           due_date,
                           task_url,
+                          task_title,
                         },
                         index
                       ) => (
@@ -236,7 +250,7 @@ const NotificationSection = () => {
                             />
                           </ListItemAvatar>
                           <ListItemText
-                            primary={<Typography variant="subtitle1">{task_url}</Typography>}
+                            primary={<Typography variant="subtitle1">{task_title}</Typography>}
                             secondary={
                               <Typography variant="subtitle2">
                                 {customer_name} Ngày {assigned_date}
@@ -249,9 +263,7 @@ const NotificationSection = () => {
                                 <QueryBuilderTwoToneIcon className={classes.actionIcon} />
                               </Grid>
                               <Grid item>
-                                <Typography variant="caption" display="block" gutterBottom className={classes.actionColor}>
-                                  now
-                                </Typography>
+                                <Typography variant="caption" display="block" gutterBottom className={classes.actionColor}></Typography>
                               </Grid>
                             </Grid>
                           </ListItemSecondaryAction>

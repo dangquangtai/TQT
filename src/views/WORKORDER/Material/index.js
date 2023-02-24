@@ -49,14 +49,32 @@ export default function AlertDialogSlide() {
   const [detailPartList, setDetailPartList] = useState([]);
   const [supplierListAll, setSupplierListAll] = useState([]);
   const [supplierListDrop, setSupplierDropList] = useState([]);
+  const handleTatalMaterialWh = (data) => {
+    let data1 = supplierListAll.filter((x) => x.part_code === orderRedux.workorderDetail.part_list[indexColor].Part_Code);
+    let data2 = supplierListAll.filter((x) => x.part_code !== orderRedux.workorderDetail.part_list[indexColor].Part_Code);
+    let list = [...data2, ...supplierList];
+    const listFilter = list.filter(
+      (item) => item.supplier_id === data.Supplier_ID && item.part_code === data.Part_Code && item.quantity_in_wh != 0
+    );
+    let totalWh = 0;
+    listFilter.map((item) => {
+      totalWh = totalWh + item.quantity_in_piece;
+    });
+    return totalWh;
+  };
   const handleChangeRow = async (row, index) => {
     let data = await getMaterialInventoryList(detail.work_order_id, detail.part_list[indexColor].Part_Code, row.id);
+    data.Quantity_In_Piece = data.Quantity_In_Piece - handleTatalMaterialWh(data);
+    console.log(data.Quantity_In_Piece, detail.part_list[indexColor].Quantity_In_Piece);
     let total = totalPart.total;
     if (!!row) {
       const newProductList = [...supplierList];
       const newProduct = {
         supplier_name: data.Supplier_Name,
-        quantity_in_piece: detail.part_list[indexColor].Quantity_In_Piece,
+        quantity_in_piece:
+          data.Quantity_In_Piece >= detail.part_list[indexColor].Quantity_In_Piece || data.Quantity_In_Piece === 0
+            ? detail.part_list[indexColor].Quantity_In_Piece
+            : data.Quantity_In_Piece,
         supplier_id: data.Supplier_ID,
         part_code: data.Part_Code,
         part_id: data.Part_ID,
@@ -96,6 +114,7 @@ export default function AlertDialogSlide() {
     detail.part_list[indexColor].Quantity_In_Piece = total;
     setSupplierList([...newProductList]);
     setTotal({ total: total });
+    detail.part_list[indexColor].Quantity_In_Piece = total;
   };
   const handleAddRow = () => {
     if (totalPart.total === 0) return;
@@ -164,6 +183,9 @@ export default function AlertDialogSlide() {
     setSupplierList([...supplierList]);
   };
   const handleChangeNumber = (e, item) => {
+    console.log(detail.part_list[indexColor].Quantity_In_Piece, item.quantity_in_piece, e.target.value);
+    detail.part_list[indexColor].Quantity_In_Piece =
+      detail.part_list[indexColor].Quantity_In_Piece + item.quantity_in_piece - e.target.value;
     item.quantity_in_piece = e.target.value;
     handleChangeTotal();
   };

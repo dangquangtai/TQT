@@ -44,7 +44,7 @@ export const AccountProvider = ({ children }) => {
       .then((response) => {
         if (response.status === 200 && response.data.return === 200) {
           const { list: news, view } = response.data;
-          setView({ ...view, action: 'detail' });
+          // setView({ ...view, action: 'detail' });
           return news;
         } else return {};
       });
@@ -61,20 +61,20 @@ export const AccountProvider = ({ children }) => {
         } else return [];
       });
   };
-  const getAllUserByDept = async (department_code,role_template_code) => {
+  const getAllUserByDept = async (department_code, role_template_code) => {
     return axiosInstance
       .post(apiEndpoints.get_all_account_by_department_and_role_template, {
         department_code: department_code,
         role_template_code: role_template_code,
         outputtype: 'RawJson',
-        page:1,
-        no_item_per_page:100,
-        search_text:'',
+        page: 1,
+        no_item_per_page: 100,
+        search_text: '',
       })
       .then((response) => {
         if (response.status === 200 && response.data.return === 200) {
-          const { list,all_user } = response.data;
-          return {list , all_user};
+          const { list, all_user } = response.data;
+          return { list, all_user };
         } else return [];
       });
   };
@@ -96,52 +96,69 @@ export const AccountProvider = ({ children }) => {
       });
   };
   const updateAccount = async (account) => {
-    return axiosInstance.post(apiEndpoints.update_account, {
-      ...account, outputtype: 'RawJson',}).then((response) => {
-      if (response.status === 200 && response.data.return === 200) return true;
-      return false;
-    });
+    return axiosInstance
+      .post(apiEndpoints.update_account, {
+        ...account,
+        outputtype: 'RawJson',
+      })
+      .then((response) => {
+        if (response.status === 200 && response.data.return === 200) return true;
+        return false;
+      });
   };
   const assignAccount = async (account) => {
-    return axiosInstance.post(apiEndpoints.assign_account_to_dept, {
-      ...account ,outputtype: 'RawJson'}).then((response) => {
-      if (response.status === 200 && response.data.return === 200) return true;
-      return false;
-    });
+    return axiosInstance
+      .post(apiEndpoints.assign_account_to_dept, {
+        ...account,
+        outputtype: 'RawJson',
+      })
+      .then((response) => {
+        if (response.status === 200 && response.data.return === 200) return true;
+        return false;
+      });
   };
   const removeAccount = async (account) => {
-    return axiosInstance.post(apiEndpoints.remove_account_from_dept, {
-      ...account, outputtype: 'RawJson',}).then((response) => {
-      if (response.status === 200 && response.data.return === 200) return true;
-      return false;
-    });
+    return axiosInstance
+      .post(apiEndpoints.remove_account_from_dept, {
+        ...account,
+        outputtype: 'RawJson',
+      })
+      .then((response) => {
+        if (response.status === 200 && response.data.return === 200) return true;
+        return false;
+      });
   };
-  const updatePermisstionGroup = async (id,permission_group, email_address,group_name_list) => {
-    return axiosInstance.post(apiEndpoints.update_user_group_account, {id: id, permission_group: permission_group, email_address: email_address, group_name_list: group_name_list})
-    .then((response) => {
-      if (response.status === 200 && response.data.return === 200) return true;
-      return false;
-    });
+  const updatePermisstionGroup = async (id, permission_group, email_address, group_name_list) => {
+    return axiosInstance
+      .post(apiEndpoints.update_user_group_account, {
+        id: id,
+        permission_group: permission_group,
+        email_address: email_address,
+        group_name_list: group_name_list,
+      })
+      .then((response) => {
+        if (response.status === 200 && response.data.return === 200) return true;
+        return false;
+      });
   };
   const getPermisstionGroup = async (account_id) => {
-    return axiosInstance.post(apiEndpoints.get_user_group_list_by_account, {account_id:account_id})
-    .then((response) => {
+    return axiosInstance.post(apiEndpoints.get_user_group_list_by_account, { account_id: account_id }).then((response) => {
       if (response.status === 200 && response.data.return === 200) {
-        const {data,list} = response.data
-        return {data,list}
+        const { data, list } = response.data;
+        return { data, list };
       }
-      return {}
+      return {};
     });
   };
-  const resetPassword = async (new_password,password,email_address) => {
-    return axiosInstance.post(apiEndpoints.reset_password, {email_address: email_address,new_password: new_password, password: password})
-    .then((response) => {
-      if (response.status === 200 && response.data.return === 200) {
-      
-        return true
-      }
-      return false
-    });
+  const resetPassword = async (new_password, password, email_address) => {
+    return axiosInstance
+      .post(apiEndpoints.reset_password, { email_address: email_address, new_password: new_password, password: password })
+      .then((response) => {
+        if (response.status === 200 && response.data.return === 200) {
+          return true;
+        }
+        return false;
+      });
   };
 
   return (
@@ -159,7 +176,7 @@ export const AccountProvider = ({ children }) => {
         getAccount,
         updatePermisstionGroup,
         getPermisstionGroup,
-        resetPassword
+        resetPassword,
       }}
     >
       {children}
