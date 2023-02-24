@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import UserGroupTable from '../Table';
 import { getUrlByAction } from '../../utils/utils';
 import { DOCUMENT_CHANGE } from '../../store/actions';
+import { apiEndpoints } from '../../store/constant';
 // import axiosInstance from '../../services/axios';
 
 const UserGroupWrapper = () => {
@@ -30,7 +31,7 @@ const UserGroupWrapper = () => {
         url={getUrlByAction(selectedFolder)}
         categories={categories}
         documentType="usergroup"
-        setActiveUrl={'cxzcxz'}
+        setActiveUrl={apiEndpoints.set_hidden_user_group}
       />
     </React.Fragment>
   );

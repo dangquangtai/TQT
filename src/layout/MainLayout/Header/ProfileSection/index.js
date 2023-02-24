@@ -101,7 +101,8 @@ const ProfileSection = () => {
         onClick={handleToggle}
         color="inherit"
       >
-        <AccountCircleTwoToneIcon className={classes.menuIcon} />
+        {/* <AccountCircleTwoToneIcon className={classes.menuIcon} /> */}
+        <img src={account?.avatar_url} style={{maxWidth:30,minWidth:30, borderRadius:100, maxHeight:30, minHeight:30}}></img>
       </Button>
       <Popper
         placement="bottom-end"

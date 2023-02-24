@@ -718,7 +718,11 @@ export default function GeneralTable(props) {
       await setActive(setActiveUrl, document.id, isActive);
       fetchDocument();
     }
-
+    else {
+      event.stopPropagation();
+      await setActive(setActiveUrl, document.group_code, isActive);
+      fetchDocument();
+    }
   };
 
   const handleSyncRole = async () => {
@@ -829,7 +833,7 @@ export default function GeneralTable(props) {
       work_order_date_string: tableColumns.includes('work_order_date_string'),
       percent_production: tableColumns.includes('percent_production'),
       percent_plan: tableColumns.includes('percent_plan'),
-
+      user_group_number_item: tableColumns.includes('user_group_number_item'),
     };
     setDisplayOptions(initOptions);
   }, [tableColumns, selectedFolder]);
@@ -874,7 +878,7 @@ export default function GeneralTable(props) {
       };
       fetchUserList();
     }
-  }, []);
+  }, [documentType]);
 
   useEffect(() => {
     if (process_role_code_selected !== '' && documentType === 'processrole') {
@@ -991,6 +995,14 @@ export default function GeneralTable(props) {
                     />
                   </Grid>
                 )}
+                  {(documentType === 'usergroupmenutree' ) && (
+                  <Grid item xs={12}>
+                    <TreeViewModal
+                      documents={documents}
+                      documentType={documentType}
+                    />
+                  </Grid>
+                )}
                 {documentType === 'processrole' && (
                   <Grid item xs={4}>
                     <ProcessRoleDeptModal
@@ -1001,6 +1013,7 @@ export default function GeneralTable(props) {
                     />
                   </Grid>
                 )}
+                {documentType!=='usergroupmenutree'&&(
                 <Grid item xs={documentType === 'department' ? 8 : documentType === 'processrole' ? 4 : 12}>
                   <TableContainer>
                     <Table
@@ -1320,6 +1333,7 @@ export default function GeneralTable(props) {
                                   {row.order_title}
                                 </TableCell>
                               )}
+                             
                               {displayOptions.number_of_worker && (
                                 <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
                                   {row.number_of_worker}
@@ -1360,6 +1374,11 @@ export default function GeneralTable(props) {
                                   className={classes.tableItemName}
                                 >
                                   {row.number_member}
+                                </TableCell>
+                              )}
+                               {displayOptions.user_group_number_item && (
+                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                  {row.number_project}
                                 </TableCell>
                               )}
                               {displayOptions.is_active && (
@@ -1443,10 +1462,10 @@ export default function GeneralTable(props) {
                                     {buttonDeptRemoveUser && (
                                       <Tooltip title={buttonDeptRemoveUser.text}>
                                         <Button
-                                          className={`${classes.handleButton} ${classes.handleButtonNote}`}
+                                          // className={`${classes.handleButton} ${classes.handleButtonNote}`}
                                           onClick={() => handleRemoveAccount(row.email_address)}
                                         >
-                                          <RemoveCircleOutlineIcon className={classes.noteButtonIcon} />
+                                          <RemoveCircleOutlineIcon />
                                         </Button>
                                       </Tooltip>
                                     )}
@@ -1480,6 +1499,7 @@ export default function GeneralTable(props) {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </Grid>
+               </Grid> )}
               </Grid>
             </Paper>
           </Card>

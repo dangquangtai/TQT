@@ -31,6 +31,7 @@ import { initAccount } from '../../../store/constants/initial.js';
 import {getUserGroupList} from '../../../services/api/UserGroup/index';
 import { useStaticState } from '@material-ui/pickers';
 import { Autocomplete } from '@material-ui/lab';
+import { ResetTvRounded } from '@mui/icons-material';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -69,12 +70,12 @@ const AccountModal = () => {
   const [tabIndex, setTabIndex] = React.useState(0);
   const { form_buttons: formButtons } = useView();
   const buttonSave = formButtons.find((button) => button.name === view.user.detail.save);
+  const buttonResetPass = formButtons.find((button)=> button.name=== view.user.detail.reset_password);
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
-  const [permissionGroup , setPermissionGroup] = useState('');
-  const [groupNameList, setGroupNameList] = useState('');
-  const { createAccount, updateAccount, updatePermissionGroup } = useAccount();
+ 
+  const { createAccount, updateAccount,  resetPassword } = useAccount();
   const { accountDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
   const [dialogUpload, setDialogUpload] = useState({
@@ -85,7 +86,6 @@ const AccountModal = () => {
   const [account, setAccount] = React.useState({
     ...initAccount,
   });
-  const [groupList, setGroupList] = useState([]);
   useEffect(() => {
     if (!selectedDocument) return;
     setAccount({
@@ -93,13 +93,7 @@ const AccountModal = () => {
       ...selectedDocument,
     });
   }, [selectedDocument]);
-  useEffect(() => {
-    const fetch = async () =>{
-      let list = await getUserGroupList();
-      setGroupList(list)
-    }
-    fetch()
-  }, []);
+  
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
@@ -122,7 +116,7 @@ const AccountModal = () => {
   };
   const handleUpdateAccount = async () => {
     try {
-      if(account.employee_code===''||account.email_address===''||account.full_name===''||account.dob===''){
+      if(account.employee_code===''||account.email_address===''||account.full_name===''){
         handleOpenSnackbar(true, 'error', 'Vui lòng điền đầy đủ thông tin!');
       }
        else if (!account.id) {
@@ -156,6 +150,25 @@ const AccountModal = () => {
     } finally {
     }
   };
+  const handleResetPasswordAccount = async () => {
+    try {
+      if(!account.new_password || !account.password){
+        handleOpenSnackbar(true, 'error', 'Vui lòng điền đầy đủ thông tin!');
+      }
+       else {
+        let check = await resetPassword(account.new_password,account.password,account.email_address)
+        if (check == true) {
+          handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
+        } else {
+          handleOpenSnackbar(true, 'error', 'Tài khoản đã tồn tại!');
+        }
+      }
+    } catch (error) {
+      handleOpenSnackbar(true, 'error', 'Vui lòng điền đầy đủ thông tin!');
+    } finally {
+    }
+  };
+
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -263,7 +276,48 @@ const AccountModal = () => {
                           </div>
                         </div>
                       </div>
-                   
+                      {!!selectedDocument &&(
+                         <div className={classes.tabItem}>
+                         <div className={classes.tabItemTitle}>
+                           <div className={classes.tabItemLabel}>
+                             <span>Thay đổi mật khẩu</span>
+                           </div>
+                         </div>
+                         <div className={`${classes.tabItemBody}`}>
+                         <Grid container className={classes.gridItemInfo} alignItems="center">
+                             <Grid item lg={4} md={4} xs={4}>
+                               <span className={classes.tabItemLabelField}>Mật khẩu cũ(*): </span>
+                             </Grid>
+                             <Grid item lg={8} md={8} xs={8}>
+                               <TextField
+                                 fullWidth
+                               
+                                 variant="outlined"
+                                 name="password"
+                                 value={account.password || ''}
+                                 className={classes.inputField}
+                                 onChange={handleChange}
+                               />
+                             </Grid>
+                           </Grid>
+                           <Grid container className={classes.gridItemInfo} alignItems="center">
+                             <Grid item lg={4} md={4} xs={4}>
+                               <span className={classes.tabItemLabelField}>Mật khẩu mới(*): </span>
+                             </Grid>
+                             <Grid item lg={8} md={8} xs={8}>
+                               <TextField
+                                 fullWidth
+                                 variant="outlined"
+                                 name="new_password"
+                                 value={account.new_password || ''}
+                                 className={classes.inputField}
+                                 onChange={handleChange}
+                               />
+                             </Grid>
+                           </Grid>
+                         </div>
+                       </div>
+                      )}
                     </Grid>
                     
                    
@@ -313,7 +367,7 @@ const AccountModal = () => {
 
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Ngày sinh(*):</span>
+                              <span className={classes.tabItemLabelField}>Ngày sinh:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -334,8 +388,7 @@ const AccountModal = () => {
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
-                                rows={1}
-                                rowsMax={1}
+                           
                                 variant="outlined"
                                 name="email_address"
                                 type="email"
@@ -353,8 +406,7 @@ const AccountModal = () => {
                             <Grid item lg={8} md={8} xs={12}>
                               <TextField
                                 fullWidth
-                                rows={1}
-                                rowsMax={1}
+                         
                                 variant="outlined"
                                 name="phone_number"
                                 value={account?.phone_number}
@@ -363,46 +415,7 @@ const AccountModal = () => {
                               />
                             </Grid>
                           </Grid>
-                          {/* <Grid container className={classes.gridItem} alignItems="center">
-                            <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Trình độ học vấn:</span>
-                            </Grid>
-                            <Grid item lg={8} md={8} xs={12}>
-                              <Select
-                                className={classes.multpleSelectField}
-                                value={account.degree_id || ''}
-                                onChange={(event) => setAccount({ ...account, degree_id: event.target.value })}
-                              >
-                                <MenuItem value="">
-                                  <em>Không chọn</em>
-                                </MenuItem>
-                                {degreeList &&
-                                  degreeList.map((item) => (
-                                    <MenuItem key={item.id} value={item.id}>
-                                      {item.value}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </Grid>
-                          </Grid> */}
-
-                          {/* <Grid container className={classes.gridItem} alignItems="center">
-                            <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Ngành nghề:</span>
-                            </Grid>
-                            <Grid item lg={8} md={8} xs={12}>
-                              <TextField
-                                fullWidth
-                                rows={1}
-                                rowsMax={1}
-                                variant="outlined"
-                                name="major"
-                                value={account?.major}
-                                className={classes.inputField}
-                                onChange={handleChange}
-                              />
-                            </Grid>
-                          </Grid> */}
+                      
 
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
@@ -449,8 +462,7 @@ const AccountModal = () => {
                             <Grid item lg={8} md={8} xs={12}>
                               <TextField
                                 fullWidth
-                                rows={1}
-                                rowsMax={1}
+                              
                                 variant="outlined"
                                 name="address"
                                 value={account?.address}
@@ -461,7 +473,7 @@ const AccountModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Chức danh(*):</span>
+                              <span className={classes.tabItemLabelField}>Chức danh:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={12}>
                               <TextField
@@ -484,7 +496,7 @@ const AccountModal = () => {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Grid container justifyContent="space-between">
+            <Grid container justifyContent="space-between" spacing={3}>
               <Grid item>
                 <Button
                   variant="contained"
@@ -505,17 +517,26 @@ const AccountModal = () => {
                   </Button>
                 </Grid>
               )}
-              {buttonSave && !!account.id && (
-                <Grid item>
+              <Grid item>
+              {buttonResetPass && !!selectedDocument &&(
+                  <Button
+                    variant="contained"
+                    style={{ background: 'rgb(97, 42, 255)', marginRight: 10 }}
+                    onClick={() => handleResetPasswordAccount()}
+                  >
+                    {buttonResetPass.text}
+                  </Button>
+              )}
+              {buttonSave && !!selectedDocument &&(
                   <Button
                     variant="contained"
                     style={{ background: 'rgb(97, 42, 255)' }}
                     onClick={() => handleUpdateAccount()}
                   >
-                    Lưu
+                    {buttonSave.text}
                   </Button>
-                </Grid>
               )}
+               </Grid>
             </Grid>
           </DialogActions>
         </Dialog>
