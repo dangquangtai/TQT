@@ -31,7 +31,6 @@ import {
   removeRequisitionDaily,
   getSupplierList,
 } from '../../../services/api/Workorder';
-import useStyles from '../Detail/classes';
 import { MATERIAL_CHANGE } from '../../../store/actions.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -50,8 +49,8 @@ export default function AlertDialogSlide() {
   const [supplierListAll, setSupplierListAll] = useState([]);
   const [supplierListDrop, setSupplierDropList] = useState([]);
   const handleTatalMaterialWh = (data) => {
-    let data1 = supplierListAll.filter((x) => x.part_code === orderRedux.workorderDetail.part_list[indexColor].Part_Code);
-    let data2 = supplierListAll.filter((x) => x.part_code !== orderRedux.workorderDetail.part_list[indexColor].Part_Code);
+    let data1 = supplierListAll.filter((x) => x.part_code === orderRedux.workorderDetail.part_list[indexColor].Part_Code && x.is_new);
+    let data2 = supplierListAll.filter((x) => x.part_code !== orderRedux.workorderDetail.part_list[indexColor].Part_Code && x.is_new);
     let list = [...data2, ...supplierList];
     const listFilter = list.filter(
       (item) => item.supplier_id === data.Supplier_ID && item.part_code === data.Part_Code && item.quantity_in_wh != 0
@@ -64,7 +63,9 @@ export default function AlertDialogSlide() {
   };
   const handleChangeRow = async (row, index) => {
     let data = await getMaterialInventoryList(detail.work_order_id, detail.part_list[indexColor].Part_Code, row.id);
-    data.Quantity_In_Piece = data.Quantity_In_Piece - handleTatalMaterialWh(data);
+    if (data >= data.Quantity_In_Piece - handleTatalMaterialWh(data)) {
+      data.Quantity_In_Piece = data.Quantity_In_Piece - handleTatalMaterialWh(data);
+    }
     console.log(data.Quantity_In_Piece, detail.part_list[indexColor].Quantity_In_Piece);
     let total = totalPart.total;
     if (!!row) {
@@ -89,6 +90,7 @@ export default function AlertDialogSlide() {
         is_disable: false,
         status_display: data.Quantity_In_Piece === 0 ? 'Đặt mua' : 'Có sẵn',
         line: supplierList.length + 1,
+        is_new: true,
       };
       newProductList[index] = { ...newProductList[index], ...newProduct };
       let totalCa = total - newProductList[index].quantity_in_piece;
@@ -207,6 +209,7 @@ export default function AlertDialogSlide() {
             is_enough: true,
             quantity: 0,
             is_disable: true,
+            is_new: false,
           },
         ];
         let date2 = orderRedux.workorderDetail.part_list.findIndex((x) => x.Part_Code === row.part_code);
@@ -226,6 +229,7 @@ export default function AlertDialogSlide() {
                 ? row.quantity_in_piece - row.quantity_in_wh
                 : row.quantity_in_wh - row.quantity_in_piece,
             is_disable: true,
+            is_new: false,
           },
         ];
         let date2 = orderRedux.workorderDetail.part_list.findIndex((x) => x.Part_Code === row.part_code);
@@ -362,7 +366,7 @@ export default function AlertDialogSlide() {
                         <TableCell>SL thiếu</TableCell>
                         <TableCell>Trạng thái</TableCell>
                         <TableCell>
-                          <IconButton disabled={orderRedux.workorderDetail.is_disable} onClick={handleAddRow}>
+                          <IconButton disabled={orderRedux.workorderDetail?.is_disable || false} onClick={handleAddRow}>
                             <AddCircleOutline />
                           </IconButton>{' '}
                         </TableCell>
