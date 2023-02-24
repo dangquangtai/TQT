@@ -73,7 +73,6 @@ const DailyMaterialReceivedModal = () => {
   const { selectedDocument } = useSelector((state) => state.document);
 
   const [dailyMaterialReceivedData, setDailyMaterialReceivedData] = useState({
-    order_date: new Date(),
     notes: '',
   });
 
@@ -109,7 +108,7 @@ const DailyMaterialReceivedModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setDailyMaterialReceivedData({ order_date: new Date() });
+    setDailyMaterialReceivedData({ notes: '' });
     setReceivedDetailList([]);
     setTabIndex(0);
   };

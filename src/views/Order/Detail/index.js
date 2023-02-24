@@ -77,7 +77,7 @@ const OrderModal = () => {
   const { orderDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
 
-  const [orderData, setOrderData] = useState({ order_date: new Date() });
+  const [orderData, setOrderData] = useState({ order_date: new Date(), notes: '' });
   const [customer, setCustomer] = useState([]);
   const [statusList, setStatusList] = useState([]);
   const [tabIndex, setTabIndex] = React.useState(0);
@@ -108,7 +108,7 @@ const OrderModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setOrderData({ order_date: new Date() });
+    setOrderData({ order_date: new Date(), notes: '' });
     setProductList([]);
     setTabIndex(0);
   };

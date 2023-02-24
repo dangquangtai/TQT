@@ -80,6 +80,7 @@ const DeliveryMaterialModal = () => {
 
   const [deliveryMaterialData, setDeliveryMaterialData] = useState({
     order_date: new Date(),
+    notes: '',
   });
   const [materialOrderDetailList, setMaterialOrderDetailList] = useState([]);
   const [deliveryDetailList, setDeliveryDetailList] = useState([]);
@@ -111,7 +112,7 @@ const DeliveryMaterialModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setDeliveryMaterialData({ order_date: new Date() });
+    setDeliveryMaterialData({ order_date: new Date(), notes: '' });
     setDeliveryDetailList([]);
     setMaterialOrderDetailList([]);
     setTabIndex(0);

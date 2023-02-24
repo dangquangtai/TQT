@@ -127,7 +127,7 @@ const PurchaseMaterialModal = () => {
 
   const setDocumentToDefault = async () => {
     dispatch({ type: SET_MATERIAL, payload: [] });
-    setPurchaseMaterialData({ order_date: new Date(), delivery_date: new Date(), is_workorer: true });
+    setPurchaseMaterialData({ order_date: new Date(), delivery_date: new Date(), is_workorer: true, notes: '' });
     setMaterialList([]);
     setTabIndex(0);
   };

@@ -82,7 +82,7 @@ const InventoryCheckModal = () => {
   const { selectedDocument } = useSelector((state) => state.document);
   const [tabIndex, setTabIndex] = React.useState(0);
 
-  const [inventoryCheckData, setInventoryCheckData] = useState({});
+  const [inventoryCheckData, setInventoryCheckData] = useState({ notes: '' });
   const [inventoryCheck, setInventoryCheck] = useState({
     categories: [],
     status: [],
@@ -114,7 +114,7 @@ const InventoryCheckModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setInventoryCheckData({});
+    setInventoryCheckData({ notes: '' });
     setTabIndex(0);
   };
 

@@ -69,7 +69,9 @@ const DailyMaterialRequisitionModal = () => {
   const { dailyWMaterialRequisitionDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
 
-  const [dailyMaterialRequisitionData, setDailyMaterialRequisitionData] = useState({});
+  const [dailyMaterialRequisitionData, setDailyMaterialRequisitionData] = useState({
+    notes: '',
+  });
 
   const [RequisitionDetailList, setRequisitionDetailList] = useState([]);
   const [statusList, setStatusList] = useState([]);
@@ -97,7 +99,7 @@ const DailyMaterialRequisitionModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setDailyMaterialRequisitionData({});
+    setDailyMaterialRequisitionData({ notes: '' });
     setRequisitionDetailList([]);
     setTabIndex(0);
   };
