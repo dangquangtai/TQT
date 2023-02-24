@@ -17,6 +17,7 @@ export const initAccount = {
   province_id: '',
   password: '',
   id: '',
+  address: '',
 };
 
 export const initCategory = {
