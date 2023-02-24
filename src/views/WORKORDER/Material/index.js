@@ -3,7 +3,6 @@ import {
   Slide,
   Button,
   Dialog,
-  DialogTitle,
   DialogContent,
   DialogActions,
   DialogContentText,
@@ -17,7 +16,6 @@ import {
   Toolbar,
   IconButton,
   Typography,
-  Paper,
   TextField,
   Tooltip,
   Grid
@@ -29,7 +27,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { getMaterialInventoryList, createMaterialRequisition, removeRequisitionDaily, getSupplierList } from '../../../services/api/Workorder';
 import useStyles from '../Detail/classes';
-import { FLOATING_MENU_CHANGE, ORDER_DETAIL_CHANGE, DOCUMENT_CHANGE, MATERIAL_CHANGE } from '../../../store/actions.js';
+import { MATERIAL_CHANGE } from '../../../store/actions.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -110,8 +108,8 @@ export default function AlertDialogSlide() {
 
   };
   const handleSubmit = async () => {
-    let data = supplierList.filter((x) => (x.part_id !== '' && !x.id && x.quantity_in_piece != 0))
-    let data2 = supplierListAll.filter((x) => (x.part_id !== '' && !x.id && x.quantity_in_piece != 0))
+    let data = supplierList.filter((x) => (x.part_id != '' && !x.id && x.quantity_in_piece != 0))
+    let data2 = supplierListAll.filter((x) => (x.part_id != '' && !x.id && x.quantity_in_piece != 0))
     if (data.length > 0 || data2.length > 0)
       await createMaterialRequisition({
         order_date: detail.order_date,
@@ -146,7 +144,7 @@ export default function AlertDialogSlide() {
     setIndexColor(index)
     setTotal({ total: orderRedux.workorderDetail.part_list[index].Quantity_In_Piece })
     let data = supplierListAll.filter((x) => x.part_code === orderRedux.workorderDetail.part_list[index].Part_Code)
-    let data2 = supplierListAll.filter((x) => x.part_code !== orderRedux.workorderDetail.part_list[index].Part_Code)
+    let data2 = supplierListAll.filter((x) => x.part_code != orderRedux.workorderDetail.part_list[index].Part_Code)
     setSupplierListAll([...data2, ...supplierList])
     setSupplierList([...data])
     fetchDataDropList()
@@ -400,7 +398,8 @@ export default function AlertDialogSlide() {
                             />
                           </TableCell>
                           <TableCell >
-                            {(item.quantity?.toLocaleString())}
+                            {/* {(item.quantity?.toLocaleString())} */}
+                            {item.quantity_in_piece-item.quantity_in_wh>=0 ? (item.quantity_in_piece-item.quantity_in_wh).toLocaleString() : 0 }
                           </TableCell>
                           <TableCell align='center'>
                             <Typography style={{
