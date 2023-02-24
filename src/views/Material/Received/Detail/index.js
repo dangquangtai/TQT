@@ -236,10 +236,10 @@ const ReceivedMaterialModal = () => {
 
   const handleChangeQuantity = (index, value) => {
     const newReceivedDetailList = [...receivedDetailList];
-    if (value > newReceivedDetailList[index].quantity_in_piece) {
-      handleOpenSnackbar('error', 'Số lượng nhập không được lớn hơn số lượng đặt!');
-      return;
-    }
+    // if (value > newReceivedDetailList[index].quantity_in_piece) {
+    //   handleOpenSnackbar('error', 'Số lượng nhập không được lớn hơn số lượng đặt!');
+    //   return;
+    // }
     newReceivedDetailList[index].received_quantity_in_piece = value;
     setReceivedDetailList(newReceivedDetailList);
   };
@@ -518,7 +518,7 @@ const ReceivedMaterialModal = () => {
                                     <TableCell align="left" style={{ width: '20%' }}>
                                       {row.part_code}
                                     </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '35%' }}>
+                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '30%' }}>
                                       <Tooltip title={row?.part_name}>
                                         <span>{row?.part_name}</span>
                                       </Tooltip>
@@ -526,7 +526,7 @@ const ReceivedMaterialModal = () => {
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       {row.quantity_in_piece}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
+                                    <TableCell align="left" style={{ width: '15%' }}>
                                       <TextField
                                         InputProps={{
                                           inputProps: { min: 0 },
