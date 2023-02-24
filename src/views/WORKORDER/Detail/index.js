@@ -337,21 +337,19 @@ const WorkorderModal = () => {
         type: 'info',
         text: 'Vui lòng chờ trong giây lát. Báo cáo đang được tải xuống',
       });
-      let link = await getLink(productionDailyRequestList[indexDate].id);
-      let link2 = await exportDailyMaterialReceived(productionDailyRequestList[indexDate].id);
-      let link3 = await exportDailyMaterialRequisition(productionDailyRequestList[indexDate].id);
-      let link4 = await exportGoodsReceiptByWorkOrder(productionDailyRequestList[indexDate].id);
-
-      downloadFile(link4);
-      downloadFile(link);
-      downloadFile(link3);
-      downloadFile(link2);
-      // setSnackbarStatus({
-      //   isOpen: true,
-      //   type: 'success',
-      //   text: 'Tải xuống báo cáo thành công',
-      // });
-      handleOpenSnackbar(true, 'success', 'Tải file thành công');
+      try {
+        let link = await getLink(productionDailyRequestList[indexDate].id);
+        let link2 = await exportDailyMaterialReceived(productionDailyRequestList[indexDate].id);
+        let link3 = await exportDailyMaterialRequisition(productionDailyRequestList[indexDate].id);
+        let link4 = await exportGoodsReceiptByWorkOrder(productionDailyRequestList[indexDate].id);
+        if (!link) downloadFile(link);
+        if (!link2) downloadFile(link2);
+        if (!link3) downloadFile(link3);
+        if (!link4) downloadFile(link4);
+        handleOpenSnackbar(true, 'success', 'Tải file thành công');
+      } catch {
+        handleOpenSnackbar(true, 'error', 'Tải file thất bại');
+      }
     } catch {
       setSnackbarStatus({
         isOpen: true,

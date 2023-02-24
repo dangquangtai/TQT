@@ -94,9 +94,7 @@ export const getLink = (daily_work_order_id) => {
       }
       return '';
     })
-    .catch((error) => {
-      console.log(error);
-    });
+    .catch((error) => {});
 };
 export const createMaterialRequisition = (data) => {
   return axiosServices.post(apiEndpoints.create_material_requisition_request_daily, data).then((response) => {
@@ -127,13 +125,15 @@ export const updateWorkorOrder = (data) => {
   });
 };
 
-export const checkMaterial = (data,data2) => {
-  return axiosServices.post(apiEndpoints.check_daily_workorder_material_avaiability, {work_order_id: data,work_order_request_id: data2}).then((response) => {
-    if (response.status === 200 && response.data.return === 200) {
-      return response.data.list;
-    }
-    return [];
-  });
+export const checkMaterial = (data, data2) => {
+  return axiosServices
+    .post(apiEndpoints.check_daily_workorder_material_avaiability, { work_order_id: data, work_order_request_id: data2 })
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return response.data.list;
+      }
+      return [];
+    });
 };
 export const getWorkOrderRequest = (id) => {
   return axiosServices.post(apiEndpoints.get_work_order_daiy_request, { id: id }).then((response) => {
