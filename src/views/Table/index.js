@@ -171,7 +171,7 @@ export default function GeneralTable(props) {
   const buttonCreateMaterialPart = menuButtons.find((button) => button.name === view.materialPart.list.create);
   const buttonCreateMaterialRequisition = menuButtons.find((button) => button.name === view.materialRequisition.list.create);
   const buttonExportMaterial = menuButtons.find((button) => button.name === view.purchaseMaterial.list.export);
-  const buttonCreateUGroup = menuButtons.find((button) => button.name === view.ugroup.list.create)
+  const buttonCreateUGroup = menuButtons.find((button) => button.name === view.ugroup.list.create);
   const buttonCreateReturnMaterial = menuButtons.find((button) => button.name === view.materialReturn.list.create);
   const buttonCreateTemplateDocument = menuButtons.find((button) => button.name === view.templateDocument.list.create);
   const buttonCreateProduct = menuButtons.find((button) => button.name === view.product.list.create);
@@ -418,14 +418,14 @@ export default function GeneralTable(props) {
         dispatch({ type: FLOATING_MENU_CHANGE, materialRequisitionDocument: true });
         break;
       case 'usergroup':
-        detailDocument = await getUserGroupDetail(selectedDocument.group_code, setView)
+        detailDocument = await getUserGroupDetail(selectedDocument.group_code, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
-        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true })
+        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
         break;
       case 'usergroupmenuitem':
-        detailDocument = await getUserGroupDetail(selectedDocument.group_code, setView)
+        detailDocument = await getUserGroupDetail(selectedDocument.group_code, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
-        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true })
+        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
         break;
       case 'returnMaterial':
         detailDocument = await getDetailReturnMaterial(selectedDocument.id, setView);
@@ -436,11 +436,6 @@ export default function GeneralTable(props) {
         detailDocument = await getDetailTemplateDocument(selectedDocument.id, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, excelTemplateDocument: true });
-        break;
-      case 'production':
-        detailDocument = await getDetailWorkorOrderRequest(selectedDocument.id, setView);
-        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
-        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
         break;
       default:
         break;
@@ -717,8 +712,7 @@ export default function GeneralTable(props) {
       event.stopPropagation();
       await setActive(setActiveUrl, document.id, isActive);
       fetchDocument();
-    }
-    else {
+    } else {
       event.stopPropagation();
       await setActive(setActiveUrl, document.group_code, isActive);
       fetchDocument();
@@ -762,7 +756,7 @@ export default function GeneralTable(props) {
     handleOpenSnackbar('success', 'Tải file thành công!');
   };
 
-  const clickSuccess = () => { };
+  const clickSuccess = () => {};
 
   const getColor = (status) => {
     if (status?.includes('DRAFT')) return '#425466';
@@ -863,7 +857,6 @@ export default function GeneralTable(props) {
 
   useEffect(() => {
     if (documentType === 'department' && department_code_selected !== '') {
-
       reloadCurrentDocuments();
     }
   }, [department_code_selected]);
@@ -995,12 +988,9 @@ export default function GeneralTable(props) {
                     />
                   </Grid>
                 )}
-                  {(documentType === 'usergroupmenutree' ) && (
+                {documentType === 'usergroupmenutree' && (
                   <Grid item xs={12}>
-                    <TreeViewModal
-                      documents={documents}
-                      documentType={documentType}
-                    />
+                    <TreeViewModal documents={documents} documentType={documentType} />
                   </Grid>
                 )}
                 {documentType === 'processrole' && (
@@ -1013,499 +1003,502 @@ export default function GeneralTable(props) {
                     />
                   </Grid>
                 )}
-                {documentType!=='usergroupmenutree'&&(
-                <Grid item xs={documentType === 'department' ? 8 : documentType === 'processrole' ? 4 : 12}>
-                  <TableContainer>
-                    <Table
-                      stickyHeader
-                      className={
-                        documentType === 'department' ? classes.table2 : documentType === 'processrole' ? classes.table3 : classes.table
-                      }
-                      aria-labelledby="tableTitle"
-                      size={'medium'}
-                    // aria-label="enhanced table"
-                    >
-                      <EnhancedTableHead
-                        classes={classes}
-                        numSelected={selected.length}
-                        order={order_type}
-                        orderBy={order_by}
-                        onSelectAllClick={handleSelectAllClick}
-                        onRequestSort={handleRequestSort}
-                        rowCount={documents?.length}
-                        displayOptions={displayOptions}
-                        documentType={documentType}
-                      />
-                      <TableBody>
-                        {stableSort(documents || [], getComparator(order, orderBy)).map((row, index) => {
-                          const isItemSelected = isSelected(row.id);
-                          const labelId = `enhanced-table-checkbox-${index}`;
-                          return (
-                            <TableRow
-                              className={classes.tableRow}
-                              hover
-                              aria-checked={isItemSelected}
-                              tabIndex={-1}
-                              key={row.id || row.account_id || row.department_code || row.role_template_id}
-                              selected={isItemSelected}
-                            >
-                              {documentType !== 'department' && documentType !== 'processrole' && (
-                                <TableCell padding="checkbox">
-                                  <Checkbox
-                                    onClick={(event) => handleClick(event, row.id)}
-                                    checked={isItemSelected}
-                                    inputProps={{ 'aria-labelledby': labelId }}
-                                  />
-                                </TableCell>
-                              )}
-                              {displayOptions.image_url && (
-                                <TableCell align="left">
-                                  <img alt="" src={row.image_url} style={style.tableUserAvatar} />
-                                </TableCell>
-                              )}
+                {documentType !== 'usergroupmenutree' && (
+                  <Grid item xs={documentType === 'department' ? 8 : documentType === 'processrole' ? 4 : 12}>
+                    <TableContainer>
+                      <Table
+                        stickyHeader
+                        className={
+                          documentType === 'department' ? classes.table2 : documentType === 'processrole' ? classes.table3 : classes.table
+                        }
+                        aria-labelledby="tableTitle"
+                        size={'medium'}
+                        // aria-label="enhanced table"
+                      >
+                        <EnhancedTableHead
+                          classes={classes}
+                          numSelected={selected.length}
+                          order={order_type}
+                          orderBy={order_by}
+                          onSelectAllClick={handleSelectAllClick}
+                          onRequestSort={handleRequestSort}
+                          rowCount={documents?.length}
+                          displayOptions={displayOptions}
+                          documentType={documentType}
+                        />
+                        <TableBody>
+                          {stableSort(documents || [], getComparator(order, orderBy)).map((row, index) => {
+                            const isItemSelected = isSelected(row.id);
+                            const labelId = `enhanced-table-checkbox-${index}`;
+                            return (
+                              <TableRow
+                                className={classes.tableRow}
+                                hover
+                                aria-checked={isItemSelected}
+                                tabIndex={-1}
+                                key={row.id || row.account_id || row.department_code || row.role_template_id}
+                                selected={isItemSelected}
+                              >
+                                {documentType !== 'department' && documentType !== 'processrole' && (
+                                  <TableCell padding="checkbox">
+                                    <Checkbox
+                                      onClick={(event) => handleClick(event, row.id)}
+                                      checked={isItemSelected}
+                                      inputProps={{ 'aria-labelledby': labelId }}
+                                    />
+                                  </TableCell>
+                                )}
+                                {displayOptions.image_url && (
+                                  <TableCell align="left">
+                                    <img alt="" src={row.image_url} style={style.tableUserAvatar} />
+                                  </TableCell>
+                                )}
 
-                              {displayOptions.fullname && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
-                                  {row.fullname}
-                                </TableCell>
-                              )}
-                              {displayOptions.received_code && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
-                                  {row.received_code}
-                                </TableCell>
-                              )}
-                              {displayOptions.order_code && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
-                                  {row.order_code}
-                                </TableCell>
-                              )}
-                              {displayOptions.part_code && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
-                                  {row.part_code}
-                                </TableCell>
-                              )}
-                              {displayOptions.product_code && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
-                                  {row.product_code}
-                                </TableCell>
-                              )}
-                              {displayOptions.customer_code && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
-                                  {row.customer_code}
-                                </TableCell>
-                              )}
-                              {displayOptions.supplier_code && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
-                                  {row.supplier_code}
-                                </TableCell>
-                              )}
-                              {displayOptions.inventory_check_code && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
-                                  {row.inventory_check_code}
-                                </TableCell>
-                              )}
-                              {displayOptions.title && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.textOverflow450}
-                                >
-                                  {row.title}
-                                </TableCell>
-                              )}
-                              {displayOptions.part_name && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.textOverflow450}
-                                >
-                                  {row.part_name || row.title}
-                                </TableCell>
-                              )}
-                              {displayOptions.product_name && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.textOverflow450}
-                                >
-                                  {row.product_name || row.title}
-                                </TableCell>
-                              )}
-                              {displayOptions.customer_name && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
-                                  {row.customer_name || row.title}
-                                </TableCell>
-                              )}
-                              {displayOptions.supplier_name && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
-                                  {row.supplier_name || row.title}
-                                </TableCell>
-                              )}
+                                {displayOptions.fullname && (
+                                  <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                    {row.fullname}
+                                  </TableCell>
+                                )}
+                                {displayOptions.received_code && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.tableItemName}
+                                  >
+                                    {row.received_code}
+                                  </TableCell>
+                                )}
+                                {displayOptions.order_code && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.tableItemName}
+                                  >
+                                    {row.order_code}
+                                  </TableCell>
+                                )}
+                                {displayOptions.part_code && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.tableItemName}
+                                  >
+                                    {row.part_code}
+                                  </TableCell>
+                                )}
+                                {displayOptions.product_code && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.tableItemName}
+                                  >
+                                    {row.product_code}
+                                  </TableCell>
+                                )}
+                                {displayOptions.customer_code && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.tableItemName}
+                                  >
+                                    {row.customer_code}
+                                  </TableCell>
+                                )}
+                                {displayOptions.supplier_code && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.tableItemName}
+                                  >
+                                    {row.supplier_code}
+                                  </TableCell>
+                                )}
+                                {displayOptions.inventory_check_code && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.tableItemName}
+                                  >
+                                    {row.inventory_check_code}
+                                  </TableCell>
+                                )}
+                                {displayOptions.title && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.textOverflow450}
+                                  >
+                                    {row.title}
+                                  </TableCell>
+                                )}
+                                {displayOptions.part_name && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.textOverflow450}
+                                  >
+                                    {row.part_name || row.title}
+                                  </TableCell>
+                                )}
+                                {displayOptions.product_name && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.textOverflow450}
+                                  >
+                                    {row.product_name || row.title}
+                                  </TableCell>
+                                )}
+                                {displayOptions.customer_name && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.tableItemName}
+                                  >
+                                    {row.customer_name || row.title}
+                                  </TableCell>
+                                )}
+                                {displayOptions.supplier_name && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.tableItemName}
+                                  >
+                                    {row.supplier_name || row.title}
+                                  </TableCell>
+                                )}
 
-                              {displayOptions.warehouse_name && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.textOverflow450}
-                                >
-                                  {row.warehouse_name}
-                                </TableCell>
-                              )}
-                              {displayOptions.workshop_name && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.textOverflow450}
-                                >
-                                  {row.workshop_name}
-                                </TableCell>
-                              )}
-                              {displayOptions.province_name && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.textOverflow450}
-                                >
-                                  {row.province_name}
-                                </TableCell>
-                              )}
-                              {displayOptions.category_name && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.textOverflow450}
-                                >
-                                  {row.category_name}
-                                </TableCell>
-                              )}
-                              {/* {displayOptions.customer_name && <TableCell align="left">{row.customer_name}</TableCell>} */}
-                              {displayOptions.product_customer_code && <TableCell align="left">{row.product_customer_code}</TableCell>}
-                              {displayOptions.no_piece_per_box && <TableCell align="left">{row.no_piece_per_box}</TableCell>}
-                              {displayOptions.productivity_per_worker && <TableCell align="left">{row.productivity_per_worker}</TableCell>}
-                              {displayOptions.order_date && (
-                                <TableCell align="left">
-                                  {row.order_date ? formatDate(new Date(row.order_date), 'dd/MM/yyyy') : ''}
-                                </TableCell>
-                              )}
-                              {displayOptions.inventory_check_date && (
-                                <TableCell align="left">
-                                  {row.inventory_check_date ? formatDate(new Date(row.inventory_check_date), 'dd/MM/yyyy') : ''}
-                                </TableCell>
-                              )}
-                              {displayOptions.expected_deliver_date && (
-                                <TableCell align="left">
-                                  {row.expected_deliver_date ? formatDate(new Date(row.expected_deliver_date), 'dd/MM/yyyy') : ''}
-                                </TableCell>
-                              )}
-                              {displayOptions.received_date && (
-                                <TableCell align="left">
-                                  {row.received_date ? formatDate(new Date(row.received_date), 'dd/MM/yyyy') : ''}
-                                </TableCell>
-                              )}
-                              {displayOptions.account_id && (
-                                <TableCell
-                                  align="left"
-                                  className={classes.tableItemName}
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                >
-                                  {row.account_id}
-                                </TableCell>
-                              )}
-                              {displayOptions.department_name && <TableCell align="left">{row.department_name}</TableCell>}
-                              {displayOptions.department_parent && <TableCell align="left">{row.parent_department_name}</TableCell>}
-                              {displayOptions.number_member && <TableCell align="left">{row.number_member}</TableCell>}
-                              {displayOptions.full_name && (
-                                <TableCell
-                                  align="left"
-                                  className={classes.tableItemName}
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                >
-                                  {row.full_name}
-                                </TableCell>
-                              )}
-                              {displayOptions.email_address && <TableCell align="left">{row.email_address || ''}</TableCell>}
-                              {displayOptions.number_phone && <TableCell align="left">{row.number_phone || ''}</TableCell>}
-                              {displayOptions.role_template_name && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
-                                  {row.role_template_name}
-                                </TableCell>
-                              )}
-                              {displayOptions.apply_to_department_type && row.apply_to_department_type && (
-                                <TableCell align="left">{row.apply_to_department_type.join(', ')}</TableCell>
-                              )}
+                                {displayOptions.warehouse_name && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.textOverflow450}
+                                  >
+                                    {row.warehouse_name}
+                                  </TableCell>
+                                )}
+                                {displayOptions.workshop_name && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.textOverflow450}
+                                  >
+                                    {row.workshop_name}
+                                  </TableCell>
+                                )}
+                                {displayOptions.province_name && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.textOverflow450}
+                                  >
+                                    {row.province_name}
+                                  </TableCell>
+                                )}
+                                {displayOptions.category_name && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.textOverflow450}
+                                  >
+                                    {row.category_name}
+                                  </TableCell>
+                                )}
+                                {/* {displayOptions.customer_name && <TableCell align="left">{row.customer_name}</TableCell>} */}
+                                {displayOptions.product_customer_code && <TableCell align="left">{row.product_customer_code}</TableCell>}
+                                {displayOptions.no_piece_per_box && <TableCell align="left">{row.no_piece_per_box}</TableCell>}
+                                {displayOptions.productivity_per_worker && (
+                                  <TableCell align="left">{row.productivity_per_worker}</TableCell>
+                                )}
+                                {displayOptions.order_date && (
+                                  <TableCell align="left">
+                                    {row.order_date ? formatDate(new Date(row.order_date), 'dd/MM/yyyy') : ''}
+                                  </TableCell>
+                                )}
+                                {displayOptions.inventory_check_date && (
+                                  <TableCell align="left">
+                                    {row.inventory_check_date ? formatDate(new Date(row.inventory_check_date), 'dd/MM/yyyy') : ''}
+                                  </TableCell>
+                                )}
+                                {displayOptions.expected_deliver_date && (
+                                  <TableCell align="left">
+                                    {row.expected_deliver_date ? formatDate(new Date(row.expected_deliver_date), 'dd/MM/yyyy') : ''}
+                                  </TableCell>
+                                )}
+                                {displayOptions.received_date && (
+                                  <TableCell align="left">
+                                    {row.received_date ? formatDate(new Date(row.received_date), 'dd/MM/yyyy') : ''}
+                                  </TableCell>
+                                )}
+                                {displayOptions.account_id && (
+                                  <TableCell
+                                    align="left"
+                                    className={classes.tableItemName}
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                  >
+                                    {row.account_id}
+                                  </TableCell>
+                                )}
+                                {displayOptions.department_name && <TableCell align="left">{row.department_name}</TableCell>}
+                                {displayOptions.department_parent && <TableCell align="left">{row.parent_department_name}</TableCell>}
+                                {displayOptions.number_member && <TableCell align="left">{row.number_member}</TableCell>}
+                                {displayOptions.full_name && (
+                                  <TableCell
+                                    align="left"
+                                    className={classes.tableItemName}
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                  >
+                                    {row.full_name}
+                                  </TableCell>
+                                )}
+                                {displayOptions.email_address && <TableCell align="left">{row.email_address || ''}</TableCell>}
+                                {displayOptions.number_phone && <TableCell align="left">{row.number_phone || ''}</TableCell>}
+                                {displayOptions.role_template_name && (
+                                  <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                    {row.role_template_name}
+                                  </TableCell>
+                                )}
+                                {displayOptions.apply_to_department_type && row.apply_to_department_type && (
+                                  <TableCell align="left">{row.apply_to_department_type.join(', ')}</TableCell>
+                                )}
 
-                              {displayOptions.visible_for_selection && (
-                                <TableCell align="left">
-                                  <>
-                                    <FormControlLabel control={<Switch color="primary" checked={row.is_approval_role} />} />
-                                  </>
-                                </TableCell>
-                              )}
-                              {displayOptions.is_part_list_available && (
-                                <TableCell align="left">
-                                  {row.is_part_list_available ? (
-                                    <Chip label="Có" color="primary" />
-                                  ) : (
-                                    <Chip label="Không" color="secondary" />
-                                  )}
-                                </TableCell>
-                              )}
-                              {displayOptions.approval_role && (
-                                <TableCell align="left">
-                                  <>
-                                    <FormControlLabel control={<Switch color="primary" checked={row.is_visible_for_selection} />} />
-                                  </>
-                                </TableCell>
-                              )}
-                              {displayOptions.amount && <TableCell align="left">{row.amount || ''}</TableCell>}
-                              {displayOptions.quantity_in_piece && <TableCell align="left">{row.quantity_in_piece}</TableCell>}
-                              {displayOptions.quantity_in_box && <TableCell align="left">{row.quantity_in_box}</TableCell>}
-                              {displayOptions.broken_quantity_in_piece && (
-                                <TableCell align="left">{row.broken_quantity_in_piece}</TableCell>
-                              )}
-                              {displayOptions.created_by && <TableCell align="left">{row.created_by || ''}</TableCell>}
-                              {displayOptions.created_date && (
-                                <TableCell align="left">
-                                  {row.created_date ? formatDate(new Date(row.created_date), 'dd/MM/yyyy') : ''}
-                                </TableCell>
-                              )}
-                              {displayOptions.percent_production && <TableCell align="left">{row.percent_production || '0'}%</TableCell>}
-                              {displayOptions.percent_plan && <TableCell align="left">{row.percent_plan || '0'}%</TableCell>}
-                              {displayOptions.order__title && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
-                                  {row.order_title}{' '}
-                                </TableCell>
-                              )}
-                              {displayOptions.from__date && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
-                                  {row.from_date}
-                                </TableCell>
-                              )}
-                              {displayOptions.to__date && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
-                                  {row.to_date}
-                                </TableCell>
-                              )}
-                              {displayOptions.status__display && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
-                                  <Chip label={row.status_display} style={{ backgroundColor: getColor(row?.status), color: 'white' }} />
-                                  {/* {row.status_display} */}
-                                </TableCell>
-                              )}
-                              {displayOptions.order_title && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
-                                  {row.order_title}
-                                </TableCell>
-                              )}
-                             
-                              {displayOptions.number_of_worker && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
-                                  {row.number_of_worker}
-                                </TableCell>
-                              )}
-                              {displayOptions.number_of_working_hour && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
-                                  {row.number_of_working_hour}
-                                </TableCell>
-                              )}
-                              {displayOptions.work_order_date_string && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
-                                  {row.work_order_date_string}
-                                </TableCell>
-                              )}
-                              {displayOptions.user_group_code && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
-                                  {row.group_code}
-                                </TableCell>
-                              )}
-                              {displayOptions.user_group_name && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
-                                  {row.group_name}
-                                </TableCell>
-                              )}
-                              {displayOptions.user_group_number_member && (
-                                <TableCell
-                                  align="left"
-                                  onClick={(event) => openDetailDocument(event, row)}
-                                  className={classes.tableItemName}
-                                >
-                                  {row.number_member}
-                                </TableCell>
-                              )}
-                               {displayOptions.user_group_number_item && (
-                                <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
-                                  {row.number_project}
-                                </TableCell>
-                              )}
-                              {displayOptions.is_active && (
-                                <TableCell align="left">
-                                  <FormControlLabel
-                                    control={
-                                      <Switch
-                                        checked={row.is_active}
-                                        onClick={(event) => toggleSetActive(event, row, event.target.checked)}
-                                      />
-                                    }
-                                  />
-                                </TableCell>
-                              )}
-                              {displayOptions.is_featured && (
-                                <TableCell align="left">
-                                  <FormControlLabel
-                                    control={
-                                      <Switch
-                                        checked={row.is_featured}
-                                        onClick={(event) => toggleSetFeatured(event, row, event.target.checked)}
-                                      />
-                                    }
-                                  />
-                                </TableCell>
-                              )}
-                              {displayOptions.active && (
-                                <TableCell align="left">
-                                  <>
-                                    {(() => {
-                                      // eslint-disable-next-line default-case
-                                      switch (documentType) {
-                                        case 'account':
-                                          return (
-                                            <FormControlLabel
-                                              control={
-                                                <Switch
-                                                  color="primary"
-                                                  checked={row.is_active}
-                                                  onClick={(event) =>
-                                                    toggleSetActiveAccount(event, row.email_address, event.target.checked)
-                                                  }
-                                                />
-                                              }
-                                            />
-                                          );
-                                        case 'departmentList':
-                                          return (
-                                            <FormControlLabel
-                                              control={
-                                                <Switch
-                                                  color="primary"
-                                                  checked={row.is_active}
-                                                  onClick={(event) => toggleSetDepartment(event, row.department_code, event.target.checked)}
-                                                />
-                                              }
-                                            />
-                                          );
-                                        case 'role':
-                                          return (
-                                            <FormControlLabel
-                                              control={
-                                                <Switch
-                                                  color="primary"
-                                                  checked={row.is_active}
-                                                  onClick={(event) =>
-                                                    toggleSetActiveRole(event, row.role_template_id, event.target.checked)
-                                                  }
-                                                />
-                                              }
-                                            />
-                                          );
+                                {displayOptions.visible_for_selection && (
+                                  <TableCell align="left">
+                                    <>
+                                      <FormControlLabel control={<Switch color="primary" checked={row.is_approval_role} />} />
+                                    </>
+                                  </TableCell>
+                                )}
+                                {displayOptions.is_part_list_available && (
+                                  <TableCell align="left">
+                                    {row.is_part_list_available ? (
+                                      <Chip label="Có" color="primary" />
+                                    ) : (
+                                      <Chip label="Không" color="secondary" />
+                                    )}
+                                  </TableCell>
+                                )}
+                                {displayOptions.approval_role && (
+                                  <TableCell align="left">
+                                    <>
+                                      <FormControlLabel control={<Switch color="primary" checked={row.is_visible_for_selection} />} />
+                                    </>
+                                  </TableCell>
+                                )}
+                                {displayOptions.amount && <TableCell align="left">{row.amount || ''}</TableCell>}
+                                {displayOptions.quantity_in_piece && <TableCell align="left">{row.quantity_in_piece}</TableCell>}
+                                {displayOptions.quantity_in_box && <TableCell align="left">{row.quantity_in_box}</TableCell>}
+                                {displayOptions.broken_quantity_in_piece && (
+                                  <TableCell align="left">{row.broken_quantity_in_piece}</TableCell>
+                                )}
+                                {displayOptions.created_by && <TableCell align="left">{row.created_by || ''}</TableCell>}
+                                {displayOptions.created_date && (
+                                  <TableCell align="left">
+                                    {row.created_date ? formatDate(new Date(row.created_date), 'dd/MM/yyyy') : ''}
+                                  </TableCell>
+                                )}
+                                {displayOptions.percent_production && <TableCell align="left">{row.percent_production || '0'}%</TableCell>}
+                                {displayOptions.percent_plan && <TableCell align="left">{row.percent_plan || '0'}%</TableCell>}
+                                {displayOptions.order__title && (
+                                  <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                    {row.order_title}{' '}
+                                  </TableCell>
+                                )}
+                                {displayOptions.from__date && (
+                                  <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                    {row.from_date}
+                                  </TableCell>
+                                )}
+                                {displayOptions.to__date && (
+                                  <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                    {row.to_date}
+                                  </TableCell>
+                                )}
+                                {displayOptions.status__display && (
+                                  <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                    <Chip label={row.status_display} style={{ backgroundColor: getColor(row?.status), color: 'white' }} />
+                                    {/* {row.status_display} */}
+                                  </TableCell>
+                                )}
+                                {displayOptions.order_title && (
+                                  <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                    {row.order_title}
+                                  </TableCell>
+                                )}
+
+                                {displayOptions.number_of_worker && (
+                                  <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                    {row.number_of_worker}
+                                  </TableCell>
+                                )}
+                                {displayOptions.number_of_working_hour && (
+                                  <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                    {row.number_of_working_hour}
+                                  </TableCell>
+                                )}
+                                {displayOptions.work_order_date_string && (
+                                  <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                    {row.work_order_date_string}
+                                  </TableCell>
+                                )}
+                                {displayOptions.user_group_code && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.tableItemName}
+                                  >
+                                    {row.group_code}
+                                  </TableCell>
+                                )}
+                                {displayOptions.user_group_name && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.tableItemName}
+                                  >
+                                    {row.group_name}
+                                  </TableCell>
+                                )}
+                                {displayOptions.user_group_number_member && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.tableItemName}
+                                  >
+                                    {row.number_member}
+                                  </TableCell>
+                                )}
+                                {displayOptions.user_group_number_item && (
+                                  <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
+                                    {row.number_project}
+                                  </TableCell>
+                                )}
+                                {displayOptions.is_active && (
+                                  <TableCell align="left">
+                                    <FormControlLabel
+                                      control={
+                                        <Switch
+                                          checked={row.is_active}
+                                          onClick={(event) => toggleSetActive(event, row, event.target.checked)}
+                                        />
                                       }
-                                    })()}
-                                  </>
-                                </TableCell>
-                              )}
-                              {displayOptions.menuButtons && (
-                                <TableCell align="left">
-                                  <div className={classes.handleButtonWrap}>
-                                    {buttonDeptRemoveUser && (
-                                      <Tooltip title={buttonDeptRemoveUser.text}>
-                                        <Button
-                                          // className={`${classes.handleButton} ${classes.handleButtonNote}`}
-                                          onClick={() => handleRemoveAccount(row.email_address)}
-                                        >
-                                          <RemoveCircleOutlineIcon />
-                                        </Button>
-                                      </Tooltip>
-                                    )}
-                                    {buttonRemoveAccountRole && (
-                                      <Tooltip title={buttonRemoveAccountRole.text}>
-                                        <Button
-                                          className={`${classes.handleButton} ${classes.handleButtonNote}`}
-                                          onClick={() => handleRemoveAccountToRole(row.email_address)}
-                                        >
-                                          <RemoveCircleOutlineIcon className={classes.noteButtonIcon} />
-                                        </Button>
-                                      </Tooltip>
-                                    )}
-                                  </div>
-                                </TableCell>
-                              )}
-                            </TableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <TablePagination
-                    rowsPerPageOptions={[10, 15, 20]}
-                    component="div"
-                    rowsPerPage={no_item_per_page}
-                    labelRowsPerPage="Số tài liệu mỗi trang"
-                    count={count}
-                    page={page - 1}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                  />
-                </Grid>
-               </Grid> )}
+                                    />
+                                  </TableCell>
+                                )}
+                                {displayOptions.is_featured && (
+                                  <TableCell align="left">
+                                    <FormControlLabel
+                                      control={
+                                        <Switch
+                                          checked={row.is_featured}
+                                          onClick={(event) => toggleSetFeatured(event, row, event.target.checked)}
+                                        />
+                                      }
+                                    />
+                                  </TableCell>
+                                )}
+                                {displayOptions.active && (
+                                  <TableCell align="left">
+                                    <>
+                                      {(() => {
+                                        // eslint-disable-next-line default-case
+                                        switch (documentType) {
+                                          case 'account':
+                                            return (
+                                              <FormControlLabel
+                                                control={
+                                                  <Switch
+                                                    color="primary"
+                                                    checked={row.is_active}
+                                                    onClick={(event) =>
+                                                      toggleSetActiveAccount(event, row.email_address, event.target.checked)
+                                                    }
+                                                  />
+                                                }
+                                              />
+                                            );
+                                          case 'departmentList':
+                                            return (
+                                              <FormControlLabel
+                                                control={
+                                                  <Switch
+                                                    color="primary"
+                                                    checked={row.is_active}
+                                                    onClick={(event) =>
+                                                      toggleSetDepartment(event, row.department_code, event.target.checked)
+                                                    }
+                                                  />
+                                                }
+                                              />
+                                            );
+                                          case 'role':
+                                            return (
+                                              <FormControlLabel
+                                                control={
+                                                  <Switch
+                                                    color="primary"
+                                                    checked={row.is_active}
+                                                    onClick={(event) =>
+                                                      toggleSetActiveRole(event, row.role_template_id, event.target.checked)
+                                                    }
+                                                  />
+                                                }
+                                              />
+                                            );
+                                        }
+                                      })()}
+                                    </>
+                                  </TableCell>
+                                )}
+                                {displayOptions.menuButtons && (
+                                  <TableCell align="left">
+                                    <div className={classes.handleButtonWrap}>
+                                      {buttonDeptRemoveUser && (
+                                        <Tooltip title={buttonDeptRemoveUser.text}>
+                                          <Button
+                                            // className={`${classes.handleButton} ${classes.handleButtonNote}`}
+                                            onClick={() => handleRemoveAccount(row.email_address)}
+                                          >
+                                            <RemoveCircleOutlineIcon />
+                                          </Button>
+                                        </Tooltip>
+                                      )}
+                                      {buttonRemoveAccountRole && (
+                                        <Tooltip title={buttonRemoveAccountRole.text}>
+                                          <Button
+                                            className={`${classes.handleButton} ${classes.handleButtonNote}`}
+                                            onClick={() => handleRemoveAccountToRole(row.email_address)}
+                                          >
+                                            <RemoveCircleOutlineIcon className={classes.noteButtonIcon} />
+                                          </Button>
+                                        </Tooltip>
+                                      )}
+                                    </div>
+                                  </TableCell>
+                                )}
+                              </TableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    <TablePagination
+                      rowsPerPageOptions={[10, 15, 20]}
+                      component="div"
+                      rowsPerPage={no_item_per_page}
+                      labelRowsPerPage="Số tài liệu mỗi trang"
+                      count={count}
+                      page={page - 1}
+                      onPageChange={handleChangePage}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                  </Grid>
+                )}
               </Grid>
             </Paper>
           </Card>
         </Grid>
       </Grid>
-
     </React.Fragment>
   );
 }

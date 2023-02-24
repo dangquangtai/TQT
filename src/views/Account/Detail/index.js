@@ -28,10 +28,6 @@ import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../store/actions.js
 import useAccount from '../../../hooks/useAccount.js';
 import FirebaseUpload from '../../FloatingMenu/FirebaseUpload/index.js';
 import { initAccount } from '../../../store/constants/initial.js';
-import {getUserGroupList} from '../../../services/api/UserGroup/index';
-import { useStaticState } from '@material-ui/pickers';
-import { Autocomplete } from '@material-ui/lab';
-import { ResetTvRounded } from '@mui/icons-material';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -40,13 +36,7 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && <Box p={0}>{children}</Box>}
     </div>
   );
@@ -70,19 +60,19 @@ const AccountModal = () => {
   const [tabIndex, setTabIndex] = React.useState(0);
   const { form_buttons: formButtons } = useView();
   const buttonSave = formButtons.find((button) => button.name === view.user.detail.save);
-  const buttonResetPass = formButtons.find((button)=> button.name=== view.user.detail.reset_password);
+  const buttonResetPass = formButtons.find((button) => button.name === view.user.detail.reset_password);
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
- 
-  const { createAccount, updateAccount,  resetPassword } = useAccount();
+
+  const { createAccount, updateAccount, resetPassword } = useAccount();
   const { accountDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
   const [dialogUpload, setDialogUpload] = useState({
     open: false,
     type: '',
   });
-  const { provinces: provinceList, genders: genderList, degree: degreeList } = useSelector((state) => state.metadata);
+  const { provinces: provinceList, genders: genderList } = useSelector((state) => state.metadata);
   const [account, setAccount] = React.useState({
     ...initAccount,
   });
@@ -93,7 +83,6 @@ const AccountModal = () => {
       ...selectedDocument,
     });
   }, [selectedDocument]);
-  
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
@@ -116,16 +105,14 @@ const AccountModal = () => {
   };
   const handleUpdateAccount = async () => {
     try {
-      if(account.employee_code===''||account.email_address===''||account.full_name===''){
+      if (account.employee_code === '' || account.email_address === '' || account.full_name === '') {
         handleOpenSnackbar(true, 'error', 'Vui lòng điền đầy đủ thông tin!');
-      }
-       else if (!account.id) {
-       
+      } else if (!account.id) {
         let check = await createAccount({
           ...account,
           outputtype: 'RawJson',
         });
-        if (check == true) {
+        if (check) {
           handleOpenSnackbar(true, 'success', 'Tạo mới thành công!');
           dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'account' });
           handleCloseDialog();
@@ -136,8 +123,8 @@ const AccountModal = () => {
         let check = await updateAccount({
           ...account,
           outputtype: 'RawJson',
-        })
-        if (check == true) {
+        });
+        if (check) {
           handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
           dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'account' });
           handleCloseDialog();
@@ -152,12 +139,11 @@ const AccountModal = () => {
   };
   const handleResetPasswordAccount = async () => {
     try {
-      if(!account.new_password || !account.password){
+      if (!account.new_password || !account.password) {
         handleOpenSnackbar(true, 'error', 'Vui lòng điền đầy đủ thông tin!');
-      }
-       else {
-        let check = await resetPassword(account.new_password,account.password,account.email_address)
-        if (check == true) {
+      } else {
+        let check = await resetPassword(account.new_password, account.password, account.email_address);
+        if (check) {
           handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
         } else {
           handleOpenSnackbar(true, 'error', 'Tài khoản đã tồn tại!');
@@ -168,7 +154,6 @@ const AccountModal = () => {
     } finally {
     }
   };
-
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -254,7 +239,6 @@ const AccountModal = () => {
                     value={0}
                     {...a11yProps(0)}
                   />
-              
                 </Tabs>
               </Grid>
               <Grid item xs={12}>
@@ -276,51 +260,49 @@ const AccountModal = () => {
                           </div>
                         </div>
                       </div>
-                      {!!selectedDocument &&(
-                         <div className={classes.tabItem}>
-                         <div className={classes.tabItemTitle}>
-                           <div className={classes.tabItemLabel}>
-                             <span>Thay đổi mật khẩu</span>
-                           </div>
-                         </div>
-                         <div className={`${classes.tabItemBody}`}>
-                         <Grid container className={classes.gridItemInfo} alignItems="center">
-                             <Grid item lg={4} md={4} xs={4}>
-                               <span className={classes.tabItemLabelField}>Mật khẩu cũ(*): </span>
-                             </Grid>
-                             <Grid item lg={8} md={8} xs={8}>
-                               <TextField
-                                 fullWidth
-                               
-                                 variant="outlined"
-                                 name="password"
-                                 value={account.password || ''}
-                                 className={classes.inputField}
-                                 onChange={handleChange}
-                               />
-                             </Grid>
-                           </Grid>
-                           <Grid container className={classes.gridItemInfo} alignItems="center">
-                             <Grid item lg={4} md={4} xs={4}>
-                               <span className={classes.tabItemLabelField}>Mật khẩu mới(*): </span>
-                             </Grid>
-                             <Grid item lg={8} md={8} xs={8}>
-                               <TextField
-                                 fullWidth
-                                 variant="outlined"
-                                 name="new_password"
-                                 value={account.new_password || ''}
-                                 className={classes.inputField}
-                                 onChange={handleChange}
-                               />
-                             </Grid>
-                           </Grid>
-                         </div>
-                       </div>
+                      {!!selectedDocument && (
+                        <div className={classes.tabItem}>
+                          <div className={classes.tabItemTitle}>
+                            <div className={classes.tabItemLabel}>
+                              <span>Thay đổi mật khẩu</span>
+                            </div>
+                          </div>
+                          <div className={`${classes.tabItemBody}`}>
+                            <Grid container className={classes.gridItemInfo} alignItems="center">
+                              <Grid item lg={4} md={4} xs={4}>
+                                <span className={classes.tabItemLabelField}>Mật khẩu cũ(*): </span>
+                              </Grid>
+                              <Grid item lg={8} md={8} xs={8}>
+                                <TextField
+                                  fullWidth
+                                  variant="outlined"
+                                  name="password"
+                                  value={account.password || ''}
+                                  className={classes.inputField}
+                                  onChange={handleChange}
+                                />
+                              </Grid>
+                            </Grid>
+                            <Grid container className={classes.gridItemInfo} alignItems="center">
+                              <Grid item lg={4} md={4} xs={4}>
+                                <span className={classes.tabItemLabelField}>Mật khẩu mới(*): </span>
+                              </Grid>
+                              <Grid item lg={8} md={8} xs={8}>
+                                <TextField
+                                  fullWidth
+                                  variant="outlined"
+                                  name="new_password"
+                                  value={account.new_password || ''}
+                                  className={classes.inputField}
+                                  onChange={handleChange}
+                                />
+                              </Grid>
+                            </Grid>
+                          </div>
+                        </div>
                       )}
                     </Grid>
-                    
-                   
+
                     <Grid item lg={6} md={6} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
@@ -388,7 +370,6 @@ const AccountModal = () => {
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
-                           
                                 variant="outlined"
                                 name="email_address"
                                 type="email"
@@ -406,7 +387,6 @@ const AccountModal = () => {
                             <Grid item lg={8} md={8} xs={12}>
                               <TextField
                                 fullWidth
-                         
                                 variant="outlined"
                                 name="phone_number"
                                 value={account?.phone_number}
@@ -415,7 +395,6 @@ const AccountModal = () => {
                               />
                             </Grid>
                           </Grid>
-                      
 
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
@@ -462,7 +441,6 @@ const AccountModal = () => {
                             <Grid item lg={8} md={8} xs={12}>
                               <TextField
                                 fullWidth
-                              
                                 variant="outlined"
                                 name="address"
                                 value={account?.address}
@@ -491,34 +469,25 @@ const AccountModal = () => {
                     </Grid>
                   </Grid>
                 </TabPanel>
-                
               </Grid>
             </Grid>
           </DialogContent>
           <DialogActions>
             <Grid container justifyContent="space-between" spacing={3}>
               <Grid item>
-                <Button
-                  variant="contained"
-                  style={{ background: 'rgb(70, 81, 105)' }}
-                  onClick={() => handleCloseDialog()}
-                >
+                <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }} onClick={() => handleCloseDialog()}>
                   Đóng
                 </Button>
               </Grid>
               {!account.id && (
                 <Grid item>
-                  <Button
-                    variant="contained"
-                    style={{ background: 'rgb(97, 42, 255)' }}
-                    onClick={() => handleUpdateAccount()}
-                  >
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={() => handleUpdateAccount()}>
                     {'Tạo mới'}
                   </Button>
                 </Grid>
               )}
               <Grid item>
-              {buttonResetPass && !!selectedDocument &&(
+                {buttonResetPass && !!selectedDocument && (
                   <Button
                     variant="contained"
                     style={{ background: 'rgb(97, 42, 255)', marginRight: 10 }}
@@ -526,17 +495,13 @@ const AccountModal = () => {
                   >
                     {buttonResetPass.text}
                   </Button>
-              )}
-              {buttonSave && !!selectedDocument &&(
-                  <Button
-                    variant="contained"
-                    style={{ background: 'rgb(97, 42, 255)' }}
-                    onClick={() => handleUpdateAccount()}
-                  >
+                )}
+                {buttonSave && !!selectedDocument && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={() => handleUpdateAccount()}>
                     {buttonSave.text}
                   </Button>
-              )}
-               </Grid>
+                )}
+              </Grid>
             </Grid>
           </DialogActions>
         </Dialog>

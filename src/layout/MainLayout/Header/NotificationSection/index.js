@@ -9,7 +9,6 @@ import {
   Grid,
   Paper,
   Popper,
-  Avatar,
   List,
   ListItem,
   ListItemAvatar,
@@ -23,8 +22,8 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import NotificationsNoneTwoToneIcon from '@material-ui/icons/NotificationsNoneTwoTone';
 import { subHours } from 'date-fns';
 import QueryBuilderTwoToneIcon from '@material-ui/icons/QueryBuilderTwoTone';
-import { DOCUMENT_CHANGE, FLOATING_MENU_CHANGE } from '../../../../store/actions';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+
 const useStyles = makeStyles((theme) => ({
   grow: {
     flex: 1,
@@ -127,19 +126,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const tasks = [
-  {
-   
-  },
-];
-
 const NotificationSection = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const dateToday = new Date().getDate();
-  const [taskList, setTask] = React.useState(tasks);
+  const [taskList, setTask] = React.useState([]);
   const currentlyTasks = taskList.filter((task) => new Date(task.assigned_date).getDate() === dateToday);
   const laterTasks = taskList.filter((task) => new Date(task.assigned_date) < subHours(new Date(), 1));
 
@@ -177,20 +170,22 @@ const NotificationSection = () => {
         color="inherit"
       >
         <AssignmentIndIcon></AssignmentIndIcon>
-        <span>
-          <sup
-            style={{
-              backgroundColor: 'red',
-              padding: '3px',
-              borderTopRightRadius: '5px',
-              borderBottomRightRadius: '5px',
-              borderStartStartRadius: '10px',
-              borderEndEndRadius: '5px',
-            }}
-          >
-            {taskList.length}
-          </sup>
-        </span>
+        {taskList?.length > 0 && (
+          <span>
+            <sup
+              style={{
+                backgroundColor: 'red',
+                padding: '3px',
+                borderTopRightRadius: '5px',
+                borderBottomRightRadius: '5px',
+                borderStartStartRadius: '10px',
+                borderEndEndRadius: '5px',
+              }}
+            >
+              {taskList?.length}
+            </sup>
+          </span>
+        )}
       </Button>
       <Popper
         placement="bottom-end"
@@ -254,12 +249,7 @@ const NotificationSection = () => {
                                 <QueryBuilderTwoToneIcon className={classes.actionIcon} />
                               </Grid>
                               <Grid item>
-                                <Typography
-                                  variant="caption"
-                                  display="block"
-                                  gutterBottom
-                                  className={classes.actionColor}
-                                >
+                                <Typography variant="caption" display="block" gutterBottom className={classes.actionColor}>
                                   now
                                 </Typography>
                               </Grid>
@@ -268,7 +258,7 @@ const NotificationSection = () => {
                         </ListItem>
                       )
                     )}
-                    {laterTasks.length>0 && (
+                    {laterTasks.length > 0 && (
                       <ListSubheader disableSticky>
                         <Chip size="small" variant="outlined" label="EARLIER" />
                       </ListSubheader>
@@ -307,12 +297,7 @@ const NotificationSection = () => {
                             <Grid container justifyContent="flex-end">
                               <Grid item></Grid>
                               <Grid item>
-                                <Typography
-                                  variant="caption"
-                                  display="block"
-                                  gutterBottom
-                                  className={classes.actionColor}
-                                ></Typography>
+                                <Typography variant="caption" display="block" gutterBottom className={classes.actionColor}></Typography>
                               </Grid>
                             </Grid>
                           </ListItemSecondaryAction>

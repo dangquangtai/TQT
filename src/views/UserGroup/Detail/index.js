@@ -22,7 +22,7 @@ import {
   TableBody,
   Table,
   TableHead,
-  IconButton
+  IconButton,
 } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
@@ -37,7 +37,7 @@ import { style } from '../../Table/style';
 import useAccount from '../../../hooks/useAccount.js';
 import { Autocomplete } from '@material-ui/lab';
 import useDepartment from '../../../hooks/useDepartment.js';
-import {createUserGroupDetail,updateUserGroupDetail ,getUserByDepart} from '../../../services/api/UserGroup/index'
+import { createUserGroupDetail, updateUserGroupDetail, getUserByDepart } from '../../../services/api/UserGroup/index';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -46,13 +46,7 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && <Box p={0}>{children}</Box>}
     </div>
   );
@@ -80,8 +74,8 @@ const UserGroupModal = () => {
     setTabIndex(newValue);
   };
   const { getAllUser } = useAccount();
-  const [accountList , setAccountList] = useState([]);
-  const {getAllDepartment} = useDepartment();
+  const [accountList, setAccountList] = useState([]);
+  const { getAllDepartment } = useDepartment();
   const { detailDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
   const [dialogUpload, setDialogUpload] = useState({
@@ -89,46 +83,46 @@ const UserGroupModal = () => {
     type: '',
   });
   const [usergroup, setUserGroup] = useState({ group_code: '', group_name: '' });
-  const [rows, setRows] = useState([])
-  const [departmentList, setDepartmentList] = useState([])
-  const [departmentSelected, setDepartmentSelected] = useState([])
-  const [ itemAdd, setAddItem] = useState([])
+  const [rows, setRows] = useState([]);
+  const [departmentList, setDepartmentList] = useState([]);
+  const [departmentSelected, setDepartmentSelected] = useState([]);
+  const [itemAdd, setAddItem] = useState([]);
   useEffect(() => {
     const fetch = async () => {
       let data = await getAllUser();
-      setAccountList(data)
+      setAccountList(data);
       data = await getAllDepartment();
-      setDepartmentList(data)
-    }
+      setDepartmentList(data);
+    };
     fetch();
     if (!selectedDocument) return;
-    setRows([...selectedDocument.user_list])
-    setUserGroup({ ...selectedDocument })
+    setRows([...selectedDocument.user_list]);
+    setUserGroup({ ...selectedDocument });
   }, [selectedDocument]);
- 
+
   const handelRemoveItem = (item) => {
-    let arrayFilter = rows.filter((itemarr) => itemarr.email_address !== item.email_address)
-    setRows(arrayFilter)
-    setAccountList([...accountList, item])
-  }
- 
-  const handleAddItem =async() =>{
-    const emailList = rows.map(object => object.email_address);
-    let arrayFilter = itemAdd.filter((item)=> emailList.includes(item.email_address)===false)
-    let arrayDrop = accountList.filter(itemarr=>itemAdd.includes(itemarr)===false)
-    setAccountList(arrayDrop)
+    let arrayFilter = rows.filter((itemarr) => itemarr.email_address !== item.email_address);
+    setRows(arrayFilter);
+    setAccountList([...accountList, item]);
+  };
+
+  const handleAddItem = async () => {
+    const emailList = rows.map((object) => object.email_address);
+    let arrayFilter = itemAdd.filter((item) => emailList.includes(item.email_address) === false);
+    let arrayDrop = accountList.filter((itemarr) => itemAdd.includes(itemarr) === false);
+    setAccountList(arrayDrop);
     let usserList = [];
     for (let i = 0; i < departmentSelected.length; i++) {
-      let user = await getUserByDepart(departmentSelected[i].department_code)
-      usserList = [...usserList,...user]
+      let user = await getUserByDepart(departmentSelected[i].department_code);
+      usserList = [...usserList, ...user];
     }
-    setDepartmentSelected([])
-    const userList = usserList.filter((item)=> emailList.includes(item.email_address)===false)
-    setRows([...arrayFilter,...userList,...rows])
-    setAddItem([])
-  }
+    setDepartmentSelected([]);
+    const userList = usserList.filter((item) => emailList.includes(item.email_address) === false);
+    setRows([...arrayFilter, ...userList, ...rows]);
+    setAddItem([]);
+  };
   const handleCloseDialog = () => {
-    setRows([])
+    setRows([]);
     setDocumentToDefault();
     dispatch({ type: FLOATING_MENU_CHANGE, accountDocument: false });
   };
@@ -147,9 +141,9 @@ const UserGroupModal = () => {
   const handleUpdateAccount = async () => {
     try {
       if (!selectedDocument) {
-        let email_list = rows.map(item=>item.email_address)
+        let email_list = rows.map((item) => item.email_address);
         let check = await createUserGroupDetail(usergroup.group_code, usergroup.group_name, email_list);
-        if (check == true) {
+        if (check) {
           handleOpenSnackbar(true, 'success', 'Tạo mới thành công!');
           dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'usergroup' });
           handleCloseDialog();
@@ -157,9 +151,9 @@ const UserGroupModal = () => {
           handleOpenSnackbar(true, 'error', 'Tạo mới lỗi!');
         }
       } else {
-        let email_list = rows.map(item=>item.email_address)
-        let check = await updateUserGroupDetail(usergroup.group_code, usergroup.group_name, email_list, selectedDocument.group_code)
-        if (check == true) {
+        let email_list = rows.map((item) => item.email_address);
+        let check = await updateUserGroupDetail(usergroup.group_code, usergroup.group_name, email_list, selectedDocument.group_code);
+        if (check) {
           handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
           dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'usergroup' });
           handleCloseDialog();
@@ -175,8 +169,7 @@ const UserGroupModal = () => {
 
   const handleChange = (e) => {
     const value = e.target.value;
-    setUserGroup({...usergroup,
-                  [e.target.name]: e.target.value})
+    setUserGroup({ ...usergroup, [e.target.name]: e.target.value });
   };
 
   const setDocumentToDefault = async () => {
@@ -244,7 +237,6 @@ const UserGroupModal = () => {
               <Grid item xs={12}>
                 <TabPanel value={tabIndex} index={0}>
                   <Grid container spacing={1}>
-
                     <Grid item lg={12} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
@@ -290,43 +282,39 @@ const UserGroupModal = () => {
                             </Grid>
                             <Grid item lg={4} md={4} xs={12}>
                               <Autocomplete
-                              options={accountList}
-                              value={itemAdd}
-                              blurOnSelect={true}
-                              multiple
-                              size='small'
-                              onChange={(e, value)=>setAddItem(value)}
-                              getOptionLabel={(option)=>option.email_address}
-                              fullWidth
-                              renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
+                                options={accountList}
+                                value={itemAdd}
+                                blurOnSelect={true}
+                                multiple
+                                size="small"
+                                onChange={(e, value) => setAddItem(value)}
+                                getOptionLabel={(option) => option.email_address}
+                                fullWidth
+                                renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
                               />
                             </Grid>
                             <Grid item lg={4} md={4} xs={12}>
                               <Autocomplete
-                              options={departmentList}
-                              value={departmentSelected}
-                              blurOnSelect={true}
-                              multiple
-                              size='small'
-                              onChange={(e, value)=>setDepartmentSelected(value)}
-                              getOptionLabel={(option)=>option.department_name}
-                              fullWidth
-                              renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
+                                options={departmentList}
+                                value={departmentSelected}
+                                blurOnSelect={true}
+                                multiple
+                                size="small"
+                                onChange={(e, value) => setDepartmentSelected(value)}
+                                getOptionLabel={(option) => option.department_name}
+                                fullWidth
+                                renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
                               />
                             </Grid>
                             <Grid item lg={1} md={1} xs={12}>
-                            <Button
-                              variant="contained"
-                              style={{ background: 'rgb(97, 42, 255)' }}
-                              onClick ={handleAddItem} 
-                            >
-                              {'Thêm'}
-                            </Button>
+                              <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleAddItem}>
+                                {'Thêm'}
+                              </Button>
                             </Grid>
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <TableContainer component={Paper} style={{ maxHeight: 300 }}>
-                              <Table  aria-label="simple table">
+                              <Table aria-label="simple table">
                                 <TableHead>
                                   <TableRow>
                                     <TableCell></TableCell>
@@ -337,17 +325,14 @@ const UserGroupModal = () => {
                                 </TableHead>
                                 <TableBody>
                                   {rows.map((row) => (
-                                    <TableRow
-                                      key={row.email_address}
-                                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                    >
+                                    <TableRow key={row.email_address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                       <TableCell component="th" scope="row">
                                         <img alt="" src={row.image_url} style={style.tableUserAvatar} />
                                       </TableCell>
                                       <TableCell align="left">{row.email_address}</TableCell>
                                       <TableCell align="left">{row.full_name}</TableCell>
                                       <TableCell align="right">
-                                        <IconButton onClick={() => handelRemoveItem(row)} >
+                                        <IconButton onClick={() => handelRemoveItem(row)}>
                                           <Delete />
                                         </IconButton>
                                       </TableCell>
@@ -368,32 +353,20 @@ const UserGroupModal = () => {
           <DialogActions>
             <Grid container justifyContent="space-between">
               <Grid item>
-                <Button
-                  variant="contained"
-                  style={{ background: 'rgb(70, 81, 105)' }}
-                  onClick={() => handleCloseDialog()}
-                >
+                <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }} onClick={() => handleCloseDialog()}>
                   Đóng
                 </Button>
               </Grid>
               {!selectedDocument && (
                 <Grid item>
-                  <Button
-                    variant="contained"
-                    style={{ background: 'rgb(97, 42, 255)' }}
-                    onClick={() => handleUpdateAccount()}
-                  >
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={() => handleUpdateAccount()}>
                     {'Tạo mới'}
                   </Button>
                 </Grid>
               )}
               {!!selectedDocument && (
                 <Grid item>
-                  <Button
-                    variant="contained"
-                    style={{ background: 'rgb(97, 42, 255)' }}
-                    onClick={() => handleUpdateAccount()}
-                  >
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={() => handleUpdateAccount()}>
                     Lưu
                   </Button>
                 </Grid>

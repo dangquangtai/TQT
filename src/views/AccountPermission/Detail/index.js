@@ -11,8 +11,6 @@ import {
   Box,
   Typography,
   Tab,
-  Select,
-  MenuItem,
   TextField,
   Snackbar,
 } from '@material-ui/core';
@@ -28,8 +26,7 @@ import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../store/actions.js
 import useAccount from '../../../hooks/useAccount.js';
 import FirebaseUpload from '../../FloatingMenu/FirebaseUpload/index.js';
 import { initAccount } from '../../../store/constants/initial.js';
-import {getUserGroupList} from '../../../services/api/UserGroup/index';
-import { useStaticState } from '@material-ui/pickers';
+import { getUserGroupList } from '../../../services/api/UserGroup/index';
 import { Autocomplete } from '@material-ui/lab';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -39,13 +36,7 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && <Box p={0}>{children}</Box>}
     </div>
   );
@@ -72,17 +63,16 @@ const AccountPermissionModal = () => {
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
-  const [permissionGroup , setPermissionGroup] = useState('');
-  const [groupNameList, setGroupNameList] = useState([]);
+  const [permissionGroup, setPermissionGroup] = useState('');
   const [groupAccountList, setGroupAccountList] = useState([]);
-  const {  updatePermisstionGroup , getPermisstionGroup } = useAccount();
+  const { updatePermisstionGroup, getPermisstionGroup } = useAccount();
   const { accountDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
   const [dialogUpload, setDialogUpload] = useState({
     open: false,
     type: '',
   });
-  
+
   const [account, setAccount] = React.useState({
     ...initAccount,
   });
@@ -93,19 +83,19 @@ const AccountPermissionModal = () => {
       ...account,
       ...selectedDocument,
     });
-    const fetch =async () =>{
-      let data = await getPermisstionGroup(selectedDocument.account_id)
-      setPermissionGroup(data.data)
-      setGroupAccountList(data.list)
-    }
-    fetch()
+    const fetch = async () => {
+      let data = await getPermisstionGroup(selectedDocument.account_id);
+      setPermissionGroup(data.data);
+      setGroupAccountList(data.list);
+    };
+    fetch();
   }, [selectedDocument]);
   useEffect(() => {
-    const fetch = async () =>{
+    const fetch = async () => {
       let list = await getUserGroupList();
-      setGroupList(list)
-    }
-    fetch()
+      setGroupList(list);
+    };
+    fetch();
   }, []);
 
   const handleCloseDialog = () => {
@@ -129,16 +119,15 @@ const AccountPermissionModal = () => {
   };
   const handleUpdateAccount = async () => {
     try {
-        let group_name_list = groupAccountList.map(item=> item.group_code)
-        let check = await updatePermisstionGroup(account.id, permissionGroup.group_code,account.email_address, group_name_list)
-        if (check === true) {
-          handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
-          dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'accountpermission' });
-          handleCloseDialog();
-        } else {
-          handleOpenSnackbar(true, 'error', 'Cập nhập thành công!');
-        }
-      
+      let group_name_list = groupAccountList.map((item) => item.group_code);
+      let check = await updatePermisstionGroup(account.id, permissionGroup.group_code, account.email_address, group_name_list);
+      if (check) {
+        handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'accountpermission' });
+        handleCloseDialog();
+      } else {
+        handleOpenSnackbar(true, 'error', 'Cập nhập thành công!');
+      }
     } catch (error) {
       handleOpenSnackbar(true, 'error', 'Vui lòng điền đầy đủ thông tin!');
     } finally {
@@ -229,7 +218,6 @@ const AccountPermissionModal = () => {
                     value={0}
                     {...a11yProps(0)}
                   />
-              
                 </Tabs>
               </Grid>
               <Grid item xs={12}>
@@ -251,44 +239,42 @@ const AccountPermissionModal = () => {
                           </div> */}
                         </div>
                         <Grid container className={classes.gridItemInfo} alignItems="center">
-                            <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã nhân viên: </span>
-                            </Grid>
-                            <Grid item lg={8} md={8} xs={8}>
-                              <TextField
-                                fullWidth
-                                rows={1}
-                                rowsMax={1}
-                                variant="outlined"
-                                name="employee_code"
-                                value={account.employee_code || ''}
-                                className={classes.inputField}
-                                onChange={handleChange}
-                              />
-                            </Grid>
+                          <Grid item lg={4} md={4} xs={4}>
+                            <span className={classes.tabItemLabelField}>Mã nhân viên: </span>
                           </Grid>
-                          <Grid container className={classes.gridItemInfo} alignItems="center">
-                            <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Họ và tên: </span>
-                            </Grid>
-                            <Grid item lg={8} md={8} xs={8}>
-                              <TextField
-                                fullWidth
-                                rows={1}
-                                rowsMax={1}
-                                variant="outlined"
-                                name="full_name"
-                                value={account.full_name || ''}
-                                className={classes.inputField}
-                                onChange={handleChange}
-                              />
-                            </Grid>
+                          <Grid item lg={8} md={8} xs={8}>
+                            <TextField
+                              fullWidth
+                              rows={1}
+                              rowsMax={1}
+                              variant="outlined"
+                              name="employee_code"
+                              value={account.employee_code || ''}
+                              className={classes.inputField}
+                              onChange={handleChange}
+                            />
                           </Grid>
+                        </Grid>
+                        <Grid container className={classes.gridItemInfo} alignItems="center">
+                          <Grid item lg={4} md={4} xs={4}>
+                            <span className={classes.tabItemLabelField}>Họ và tên: </span>
+                          </Grid>
+                          <Grid item lg={8} md={8} xs={8}>
+                            <TextField
+                              fullWidth
+                              rows={1}
+                              rowsMax={1}
+                              variant="outlined"
+                              name="full_name"
+                              value={account.full_name || ''}
+                              className={classes.inputField}
+                              onChange={handleChange}
+                            />
+                          </Grid>
+                        </Grid>
                       </div>
-                   
                     </Grid>
-                    
-                   
+
                     <Grid item lg={6} md={6} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
@@ -298,19 +284,19 @@ const AccountPermissionModal = () => {
                           </div>
                         </div>
                         <div className={classes.tabItemBody}>
-                        <Grid container className={classes.gridItem} alignItems="center">
+                          <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
                               <span className={classes.tabItemLabelField}>Nhóm phân quyền:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={12}>
                               <Autocomplete
-                              value={permissionGroup}
-                              options={groupList}
-                              getOptionLabel={(option)=> option.group_code}
-                              fullWidth
-                              onChange={(e, value)=> setPermissionGroup(value)}
-                              size='small'
-                              renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
+                                value={permissionGroup}
+                                options={groupList}
+                                getOptionLabel={(option) => option.group_code}
+                                fullWidth
+                                onChange={(e, value) => setPermissionGroup(value)}
+                                size="small"
+                                renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
                               />
                             </Grid>
                           </Grid>
@@ -320,14 +306,14 @@ const AccountPermissionModal = () => {
                             </Grid>
                             <Grid item lg={8} md={8} xs={12}>
                               <Autocomplete
-                              value={groupAccountList}
-                              options={groupList}
-                              getOptionLabel={(option)=> option.group_code}
-                              fullWidth
-                              onChange={(e, value)=> setGroupAccountList(value)}
-                              multiple={true}
-                              size='small'
-                              renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
+                                value={groupAccountList}
+                                options={groupList}
+                                getOptionLabel={(option) => option.group_code}
+                                fullWidth
+                                onChange={(e, value) => setGroupAccountList(value)}
+                                multiple={true}
+                                size="small"
+                                renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
                               />
                             </Grid>
                           </Grid>
@@ -336,39 +322,26 @@ const AccountPermissionModal = () => {
                     </Grid>
                   </Grid>
                 </TabPanel>
-                
               </Grid>
             </Grid>
           </DialogContent>
           <DialogActions>
             <Grid container justifyContent="space-between">
               <Grid item>
-                <Button
-                  variant="contained"
-                  style={{ background: 'rgb(70, 81, 105)' }}
-                  onClick={() => handleCloseDialog()}
-                >
+                <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }} onClick={() => handleCloseDialog()}>
                   Đóng
                 </Button>
               </Grid>
               {!account.id && (
                 <Grid item>
-                  <Button
-                    variant="contained"
-                    style={{ background: 'rgb(97, 42, 255)' }}
-                    onClick={() => handleUpdateAccount()}
-                  >
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={() => handleUpdateAccount()}>
                     {'Tạo mới'}
                   </Button>
                 </Grid>
               )}
               {buttonSave && !!account.id && (
                 <Grid item>
-                  <Button
-                    variant="contained"
-                    style={{ background: 'rgb(97, 42, 255)' }}
-                    onClick={() => handleUpdateAccount()}
-                  >
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={() => handleUpdateAccount()}>
                     Lưu
                   </Button>
                 </Grid>

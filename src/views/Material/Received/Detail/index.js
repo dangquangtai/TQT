@@ -28,7 +28,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { format as formatDate } from 'date-fns';
 import { AccountCircleOutlined as AccountCircleOutlinedIcon, Delete, Today as TodayIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
-import { AddCircleOutline } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import useView from './../../../../hooks/useView';
 import useConfirmPopup from './../../../../hooks/useConfirmPopup';
@@ -43,7 +42,6 @@ import {
   getReceivedMaterialStatus,
   updateReceivedMaterial,
 } from './../../../../services/api/Material/Received';
-import { getPurchaseMaterialByOrder, getPurchaseMaterialList } from '../../../../services/api/Material/Purchase.js';
 import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
 import { downloadFile, popupWindow } from './../../../../utils/helper';
 
@@ -76,7 +74,6 @@ const ReceivedMaterialModal = () => {
   const dispatch = useDispatch();
   const { form_buttons: formButtons } = useView();
   const { setConfirmPopup } = useConfirmPopup();
-  const { materials } = useSelector((state) => state.metadata);
   const saveButton = formButtons.find((button) => button.name === view.receivedMaterial.detail.save);
   const exportButton = formButtons.find((button) => button.name === view.receivedMaterial.detail.export);
   const { receivedMaterialDocument: openDialog } = useSelector((state) => state.floatingMenu);

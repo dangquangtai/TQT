@@ -36,13 +36,7 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && <Box p={0}>{children}</Box>}
     </div>
   );
@@ -131,7 +125,7 @@ const RoleModal = () => {
           outputtype: 'RawJson',
         });
 
-        if (check == true) {
+        if (check) {
           handleOpenSnackbar(true, 'success', 'Tạo mới thành công!');
           dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'role' });
           handleCloseDialog();
@@ -144,7 +138,7 @@ const RoleModal = () => {
           outputtype: 'RawJson',
         });
 
-        if (check == true) {
+        if (check) {
           handleOpenSnackbar(true, 'success', 'Cập nhật thành công!');
           dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'role' });
           handleCloseDialog();
@@ -324,9 +318,7 @@ const RoleModal = () => {
                             <Grid item lg={6} md={6} xs={6}>
                               <Checkbox
                                 checked={role.is_visible_for_selection}
-                                onChange={(event) =>
-                                  setRole({ ...role, is_visible_for_selection: event.target.checked })
-                                }
+                                onChange={(event) => setRole({ ...role, is_visible_for_selection: event.target.checked })}
                                 inputProps={{ 'aria-label': 'controlled' }}
                               />
                               Hiển thị trong danh sách chọn
@@ -343,32 +335,20 @@ const RoleModal = () => {
           <DialogActions>
             <Grid container justifyContent="space-between">
               <Grid item>
-                <Button
-                  variant="contained"
-                  style={{ background: 'rgb(70, 81, 105)' }}
-                  onClick={() => handleCloseDialog()}
-                >
+                <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }} onClick={() => handleCloseDialog()}>
                   Đóng
                 </Button>
               </Grid>
               {buttonSave && (
                 <Grid item>
-                  <Button
-                    variant="contained"
-                    style={{ background: 'rgb(97, 42, 255)' }}
-                    onClick={() => handleUpdateRole()}
-                  >
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={() => handleUpdateRole()}>
                     {buttonSave.text}
                   </Button>
                 </Grid>
               )}
               {!buttonSave && (
                 <Grid item>
-                  <Button
-                    variant="contained"
-                    style={{ background: 'rgb(97, 42, 255)' }}
-                    onClick={() => handleUpdateRole()}
-                  >
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={() => handleUpdateRole()}>
                     Lưu
                   </Button>
                 </Grid>
