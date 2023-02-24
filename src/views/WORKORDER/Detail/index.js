@@ -232,21 +232,23 @@ const WorkorderModal = () => {
       virtuoso.current.scrollIntoView({ block: 'end' });
     } catch { }
   };
-  const handleDeleteRow = (index, id) => {
+  const handleDeleteRow =async (index, id) => {
     try {
 
       if (productList[index].id != '') {
         let orderDetail = order?.orderDetail;
         orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder -= productList[index].quantity_in_box;
         dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
-        deleteWorkOrderDetail(id);
-
+        
       }
     } catch { }
-
+    if (productList[index].id != '') {
+    await deleteWorkOrderDetail(id);
+    }
     productList.splice(index, 1);
     setProductList([...productList]);
-    updateDataDailyRequest(productList);
+    // updateDataDailyRequest(productList);
+    // handleGetWorkOrderRequest(workorderRequest.i)
   };
 
   const handleCloseDialog = () => {

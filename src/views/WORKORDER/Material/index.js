@@ -75,6 +75,7 @@ export default function AlertDialogSlide() {
         line: indexColor,
         is_disable: false,
         status_display: data.Quantity_In_Piece===0? 'Đặt mua': 'Có sẵn',
+        line: supplierList.length + 1,
       };
       newProductList[index] = { ...newProductList[index], ...newProduct };
       let totalCa = total - newProductList[index].quantity_in_piece;
