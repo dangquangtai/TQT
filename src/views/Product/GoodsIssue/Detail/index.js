@@ -67,7 +67,6 @@ const GoodsIssueModal = () => {
   const dispatch = useDispatch();
   const { form_buttons: formButtons } = useView();
   const { setConfirmPopup } = useConfirmPopup();
-  const { products } = useSelector((state) => state.metadata);
   const saveButton = formButtons.find((button) => button.name === view.goodsIssue.detail.save);
   const { goodsIssueDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
@@ -120,13 +119,6 @@ const GoodsIssueModal = () => {
     }
   };
 
-  const handleOpenDiaLog = (type) => {
-    setDialogUpload({
-      open: true,
-      type: type,
-    });
-  };
-
   const handleCloseDiaLog = () => {
     setDialogUpload({
       open: false,
@@ -144,10 +136,10 @@ const GoodsIssueModal = () => {
           handleOpenSnackbar('error', 'Vui lòng chọn thành phẩm!');
           return;
         }
-        // if (issueDetailList?.some((item) => item.status === 'Thiếu')) {
-        //   handleOpenSnackbar('error', 'Thành phẩm không đủ số lượng!');
-        //   return;
-        // }
+        if (issueDetailList?.some((item) => item.status === 'Thiếu')) {
+          handleOpenSnackbar('error', 'Thành phẩm không đủ số lượng!');
+          return;
+        }
         await createGoodsIssue({ ...goodsIssueData, issue_detail: issueDetailList });
         handleOpenSnackbar('success', 'Tạo mới Phiếu xuất thành phẩm thành công!');
       }

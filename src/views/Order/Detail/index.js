@@ -23,7 +23,6 @@ import {
   IconButton,
   Tooltip,
 } from '@material-ui/core';
-import Alert from '../../../component/Alert';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -33,7 +32,6 @@ import { view } from '../../../store/constant';
 import useStyles from './../../../utils/classes';
 import FirebaseUpload from './../../FloatingMenu/FirebaseUpload/index';
 import useConfirmPopup from './../../../hooks/useConfirmPopup';
-import { format as formatDate } from 'date-fns';
 import { AccountCircleOutlined as AccountCircleOutlinedIcon, Delete, Today as TodayIcon } from '@material-ui/icons';
 import { getCustomerList } from './../../../services/api/Partner/Customer';
 import { getStatusList, updateOrder } from '../../../services/api/Order/index.js';

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Grid,
   Button,
@@ -11,8 +11,6 @@ import {
   Box,
   Typography,
   Tab,
-  Select,
-  MenuItem,
   TextField,
   Snackbar,
   TableContainer,
@@ -78,15 +76,12 @@ const UserGroupModal = () => {
   const { getAllDepartment } = useDepartment();
   const { detailDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
-  const [dialogUpload, setDialogUpload] = useState({
-    open: false,
-    type: '',
-  });
   const [usergroup, setUserGroup] = useState({ group_code: '', group_name: '' });
   const [rows, setRows] = useState([]);
   const [departmentList, setDepartmentList] = useState([]);
   const [departmentSelected, setDepartmentSelected] = useState([]);
   const [itemAdd, setAddItem] = useState([]);
+
   useEffect(() => {
     const fetch = async () => {
       let data = await getAllUser();
@@ -168,7 +163,6 @@ const UserGroupModal = () => {
   };
 
   const handleChange = (e) => {
-    const value = e.target.value;
     setUserGroup({ ...usergroup, [e.target.name]: e.target.value });
   };
 

@@ -1,5 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Modal, Grid, TextField, MenuItem, Snackbar, Select, Table, TableContainer, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  Modal,
+  Grid,
+  MenuItem,
+  Snackbar,
+  Select,
+  Table,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+} from '@material-ui/core';
 import useStyles from '../Tree_View/classes';
 import Alert from '../../../component/Alert/index.js';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -37,29 +51,30 @@ const style = {
   },
 };
 
-
-export default function UserDepartModal({ isOpen, department_code, handleClose, }) {
+export default function UserDepartModal({ isOpen, department_code, handleClose }) {
   const classes = useStyles();
-  const [formData, setFormData] = useState({ email: '', number_phone: '' });
-  const { getAllUserByDept,   assignAccount, removeAccount, } = useAccount();
-  const { getRoletemplateByDept } = useRole();
+  const { getAllUserByDept, assignAccount, removeAccount } = useAccount();
   const [roletemplateList, setRoleList] = useState([]);
   const [useDeptList, setUserDeptList] = useState([]);
-  const [userSelectionList , setUserSelection] = useState([]);
+  const [userSelectionList, setUserSelection] = useState([]);
   const [userDepart, setUserDeptSelected] = useState({
     department_code: '',
     role_template_code: '',
     email_address: '',
-  })
+  });
   const [snackbarStatus, setSnackbarStatus] = useState({
     isOpen: false,
     type: '',
     text: '',
   });
 
-  const handleAssignAccount= async () => {
-    let data = await assignAccount({email_address: userDepart.email_address,department_code: department_code, role_template_code: userDepart.role_template_code}); 
-    if (data){
+  const handleAssignAccount = async () => {
+    let data = await assignAccount({
+      email_address: userDepart.email_address,
+      department_code: department_code,
+      role_template_code: userDepart.role_template_code,
+    });
+    if (data) {
       setSnackbarStatus({
         isOpen: true,
         type: 'success',
@@ -76,9 +91,13 @@ export default function UserDepartModal({ isOpen, department_code, handleClose, 
       });
     }
   };
-  const handleRemoveAccount= async (email_address) => {
-    let data = await removeAccount({email_address: email_address,department_code: department_code, role_template_code: userDepart.role_template_code}) ;
-    if (data){
+  const handleRemoveAccount = async (email_address) => {
+    let data = await removeAccount({
+      email_address: email_address,
+      department_code: department_code,
+      role_template_code: userDepart.role_template_code,
+    });
+    if (data) {
       setSnackbarStatus({
         isOpen: true,
         type: 'success',
@@ -96,30 +115,23 @@ export default function UserDepartModal({ isOpen, department_code, handleClose, 
     }
   };
   const handleChangeRole = async (e) => {
-    setUserDeptSelected({ ...userDepart, role_template_code: e.target.value, department_code: department_code })
+    setUserDeptSelected({ ...userDepart, role_template_code: e.target.value, department_code: department_code });
     let data = await getAllUserByDept(department_code, e.target.value);
     setUserDeptList(data.list);
     setUserSelection(data.all_user);
-  }
+  };
 
   useEffect(() => {
-    // const fetchdata = async () => {
-    //   // let data = await getRoletemplateByDept(department_code);
-    //   // setRoleList(data);
-    // }
-    // if(!!department_code){
-    //   fetchdata();
-    // }
     setUserDeptSelected({
       department_code: '',
       role_template_code: '',
       email_address: '',
-    })
+    });
   }, [isOpen]);
 
   return (
     <div>
-       {snackbarStatus.isOpen && (
+      {snackbarStatus.isOpen && (
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           open={snackbarStatus.isOpen}
@@ -135,24 +147,17 @@ export default function UserDepartModal({ isOpen, department_code, handleClose, 
           </Alert>
         </Snackbar>
       )}
-      <Modal
-        open={isOpen}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+      <Modal open={isOpen} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box className={`${classes.editBox} ${''}`}>
           <div id="modal-modal-title" style={style.title} variant="h6" component="h2">
             <div>{'Cập nhật danh sách tài khoản cuản phòng ban'}</div>
             <div>
-              <Button style={style.closeButton} onClick={()=> handleClose()}>
+              <Button style={style.closeButton} onClick={() => handleClose()}>
                 <ClearIcon />
               </Button>
             </div>
           </div>
           <div id="modal-modal-description" sx={{ mt: 2 }}>
-
-
-
             <Grid container className={classes.gridItem} alignItems="center">
               <Grid item lg={2} md={2} xs={12}>
                 <span className={classes.tabItemLabelField}>Chức danh:</span>
@@ -178,7 +183,7 @@ export default function UserDepartModal({ isOpen, department_code, handleClose, 
                 <Select
                   className={classes.multpleSelectField}
                   value={userDepart.email_address || ''}
-                onChange={(event) => setUserDeptSelected({...userDepart, email_address: event.target.value})}
+                  onChange={(event) => setUserDeptSelected({ ...userDepart, email_address: event.target.value })}
                 >
                   {userSelectionList &&
                     userSelectionList.map((item) => (
@@ -189,7 +194,7 @@ export default function UserDepartModal({ isOpen, department_code, handleClose, 
                 </Select>
               </Grid>
               <Grid item lg={2} md={2} xs={12}>
-                <Button type="button" variant="contained" style={style.buttonCancel} onClick={()=> handleAssignAccount()}>
+                <Button type="button" variant="contained" style={style.buttonCancel} onClick={() => handleAssignAccount()}>
                   Thêm
                 </Button>
               </Grid>
@@ -201,89 +206,57 @@ export default function UserDepartModal({ isOpen, department_code, handleClose, 
                   className={classes.table}
                   aria-labelledby="tableTitle"
                   size={'medium'}
-                // aria-label="enhanced table"
+                  // aria-label="enhanced table"
                 >
                   <TableHead>
                     <TableRow>
-                      <TableCell padding="checkbox">
-                        Email
-                      </TableCell>
-                      <TableCell padding="checkbox">
-                        Tên
-                      </TableCell>
-                      <TableCell padding="checkbox">
-                        SDT
-                      </TableCell>
-                      <TableCell padding="checkbox">
-                        
-                      </TableCell>
+                      <TableCell padding="checkbox">Email</TableCell>
+                      <TableCell padding="checkbox">Tên</TableCell>
+                      <TableCell padding="checkbox">SDT</TableCell>
+                      <TableCell padding="checkbox"></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {useDeptList && useDeptList.map((row, index) => {
-
-                      const labelId = `enhanced-table-checkbox-${index}`;
-                      return (
-                        <TableRow
-                          className={classes.tableRow}
-                          hover
-                          tabIndex={-1}
-                          key={row.id}
-
-                        >
-                          <TableCell padding="checkbox">
-                            <>
-                              <span
-                                className={classes.tableItemName}
-
+                    {useDeptList &&
+                      useDeptList.map((row, index) => {
+                        const labelId = `enhanced-table-checkbox-${index}`;
+                        return (
+                          <TableRow className={classes.tableRow} hover tabIndex={-1} key={row.id}>
+                            <TableCell padding="checkbox">
+                              <>
+                                <span className={classes.tableItemName}>{row.email_address}</span>
+                              </>
+                            </TableCell>
+                            <TableCell padding="checkbox">
+                              <>
+                                <span className={classes.tableItemName}>{row.full_name}</span>
+                              </>
+                            </TableCell>
+                            <TableCell padding="checkbox">
+                              <>
+                                <span className={classes.tableItemName}>{row.phone_number}</span>
+                              </>
+                            </TableCell>
+                            <TableCell>
+                              <Button
+                                type="button"
+                                variant="contained"
+                                className={classes.handleButton}
+                                onClick={() => handleRemoveAccount(row.email_address)}
                               >
-                                {row.email_address}
-                              </span>
-                            </>
-                          </TableCell>
-                          <TableCell padding="checkbox">
-                            <>
-                              <span
-                                className={classes.tableItemName}
-
-                              >
-                                {row.full_name}
-                              </span>
-                            </>
-                          </TableCell>
-                          <TableCell padding="checkbox">
-                            <>
-                              <span
-                                className={classes.tableItemName}
-
-                              >
-                                {row.phone_number}
-                              </span>
-                            
-                            </>
-                          </TableCell>
-                          <TableCell>
-                          <Button type="button" variant="contained" className={classes.handleButton} onClick={()=> handleRemoveAccount(row.email_address)}>
-                                    <DeleteForeverIcon className={classes.noteButtonIcon} />
-                            </Button>
-                          </TableCell>
-                           
-                     
-
-                        </TableRow>
-                      );
-                    })}
+                                <DeleteForeverIcon className={classes.noteButtonIcon} />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                   </TableBody>
                 </Table>
               </TableContainer>
-
             </Grid>
-
-
           </div>
           <div id="modal-modal-footer" sx={{ mt: 2 }}>
             <div style={style.buttonWrap}>
-            
               {/*             
                 <Button
                   disabled={isDisabledSaving}
@@ -294,7 +267,6 @@ export default function UserDepartModal({ isOpen, department_code, handleClose, 
                 >
                   Lưu
                 </Button> */}
-
             </div>
           </div>
         </Box>

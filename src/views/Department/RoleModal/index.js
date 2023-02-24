@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Box, Modal, FormControl, MenuItem, TextField, Snackbar, Grid } from '@material-ui/core';
+import { Button, Box, Modal, FormControl, MenuItem, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import useDepartment from './../../../hooks/useDepartment';
 import useRole from './../../../hooks/useRole';
@@ -62,7 +62,6 @@ const style = {
 
 const RoleModal = ({ open, onSubmit, onClose }) => {
   const { getAllDepartment } = useDepartment();
-  const { getRoletemplateByDept } = useRole();
 
   const [data, setData] = useState({
     department_code: '',
@@ -94,22 +93,9 @@ const RoleModal = ({ open, onSubmit, onClose }) => {
     fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const result = await getRoletemplateByDept(data.department_code);
-  //     setRoleTemplate(result);
-  //   };
-  //   fetchData();
-  // }, [data.department_code]);
-
   return (
     <React.Fragment>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+      <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box style={style.box}>
           <div id="modal-modal-title" style={style.title} variant="h6" component="h2">
             Thêm mới

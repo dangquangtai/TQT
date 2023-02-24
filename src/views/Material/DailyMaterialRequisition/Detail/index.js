@@ -25,7 +25,6 @@ import {
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { format as formatDate } from 'date-fns';
 import { AccountCircleOutlined as AccountCircleOutlinedIcon, Delete, Today as TodayIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { AddCircleOutline } from '@material-ui/icons';
@@ -36,9 +35,6 @@ import { view } from './../../../../store/constant';
 import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CONFIRM_CHANGE } from './../../../../store/actions';
 import FirebaseUpload from './../../../FloatingMenu/FirebaseUpload/index';
 import DatePicker from './../../../../component/DatePicker/index';
-import { createReceivedMaterial, deleteReceivedMaterialDetail, updateReceivedMaterial } from './../../../../services/api/Material/Received';
-import { getPurchaseMaterialByOrder, getPurchaseMaterialList } from '../../../../services/api/Material/Purchase.js';
-import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
 import {
   createDeliveryMaterial,
   deleteDeliveryMaterialDetail,
@@ -85,13 +81,10 @@ const DeliveryMaterialModal = () => {
   const [deliveryMaterialData, setDeliveryMaterialData] = useState({
     order_date: new Date(),
   });
-  const [materialOrderList, setMaterialOrderList] = useState([]);
   const [materialOrderDetailList, setMaterialOrderDetailList] = useState([]);
   const [deliveryDetailList, setDeliveryDetailList] = useState([]);
   const [statusList, setStatusList] = useState([]);
   const [warehouseList, setWarehouseList] = useState([]);
-  const [inventoryList, setInventoryList] = useState([]);
-  const [supplierList, setSupplierList] = useState([]);
   const [tabIndex, setTabIndex] = React.useState(0);
   const [dialogUpload, setDialogUpload] = useState({
     open: false,
@@ -129,13 +122,6 @@ const DeliveryMaterialModal = () => {
     } else if (dialogUpload.type === 'banner') {
       setDeliveryMaterialData({ ...deliveryMaterialData, banner_url: image });
     }
-  };
-
-  const handleOpenDiaLog = (type) => {
-    setDialogUpload({
-      open: true,
-      type: type,
-    });
   };
 
   const handleCloseDiaLog = () => {
@@ -250,12 +236,7 @@ const DeliveryMaterialModal = () => {
     }
     setMaterialOrderDetailList(newMaterialOrderDetailList);
   };
-  const handleChangeMaterial = (index, e) => {
-    const { name, value } = e.target;
-    const newdeliveryDetailList = [...deliveryDetailList];
-    newdeliveryDetailList[index] = { ...newdeliveryDetailList[index], [name]: value };
-    setDeliveryDetailList(newdeliveryDetailList);
-  };
+
   const handleChangeQuantityDelivery = (index, e) => {
     const { name, value } = e.target;
     const newdeliveryDetailList = [...deliveryDetailList];
@@ -324,18 +305,10 @@ const DeliveryMaterialModal = () => {
       const { status, warehouses } = await getDeliveryMaterialData();
       setStatusList(status);
       setWarehouseList(warehouses);
-      const suppliers = await getAllSupplier();
-      setSupplierList(suppliers);
     };
     fetchData();
   }, []);
-  // useEffect(() => {
-  //     const fetchData = async () => {
-  //         const { inventoryList } = await getInventoryBySupplier(deliveryMaterialData.supplier_id);
-  //         setInventoryList(inventoryList)
-  //     };
-  //     fetchData();
-  // }, []);
+
   return (
     <React.Fragment>
       <FirebaseUpload
@@ -557,24 +530,6 @@ const DeliveryMaterialModal = () => {
                                         renderInput={(params) => <TextField {...params} variant="outlined" />}
                                       />
                                     </TableCell>
-                                    {/* <Grid item lg={3} md={3} xs={3}>
-                                                            <span className={classes.tabItemLabelField}>Nhà cung cấp:</span>
-                                                            <Autocomplete
-                                                                options={supplierList}
-                                                                size="small"
-                                                                getOptionLabel={(option) => option.title}
-                                                                onChange={(event, newValue) => {
-                                                                    setDeliveryMaterialData({
-                                                                        ...deliveryMaterialData,
-                                                                        supplier_id: newValue?.id || '',
-                                                                        supplier_name: newValue?.title || '',
-                                                                    });
-                                                                }}
-                                                                value={supplierList?.find((item) => item.id === deliveryMaterialData.supplier_id) || null}
-                                                                renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                                            />
-                                                        </Grid> */}
-
                                     <TableCell align="left" className={classes.maxWidthCell} style={{ width: '35%' }}>
                                       <Tooltip title={row?.part_name}>
                                         <span>{row?.part_name}</span>

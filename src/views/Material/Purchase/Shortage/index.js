@@ -17,7 +17,7 @@ import {
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import useStyles from './../../../../utils/classes';
-import { ADD_MATERIAL, REMOVE_MATERIAL, SET_MATERIAL } from './../../../../store/actions';
+import { SET_MATERIAL } from './../../../../store/actions';
 import { useLocation } from 'react-router';
 import { getMaterialDailyRequisitionList } from '../../../../services/api/Workorder/index.js';
 import { format as formatDate } from 'date-fns';

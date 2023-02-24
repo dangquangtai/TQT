@@ -23,12 +23,7 @@ import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../../store/actions
 import { DescriptionOutlined as DescriptionOutlinedIcon } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import { SNACKBAR_OPEN } from './../../../../store/actions';
-import { createWorkshop, updateWorkshop } from './../../../../services/api/Setting/Workshop';
 import { createMaterialPart, getMaterialLoadData, updateMaterialPart } from '../../../../services/api/Material/MaterialPart';
-import { useStaticState } from '@material-ui/pickers';
-import { set } from 'lodash';
-
-
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -66,7 +61,6 @@ const MaterialPartModal = () => {
   const { selectedDocument } = useSelector((state) => state.document);
   const [tabIndex, setTabIndex] = React.useState(0);
 
-
   const [dataUnitList, setDataUnitList] = useState([]);
   const [dataSizeUnitList, setdataSizeUnitList] = useState([]);
   const [dataCategoryList, setdataCategoryList] = useState([]);
@@ -103,7 +97,6 @@ const MaterialPartModal = () => {
   };
 
   const handleSubmit = async () => {
-
     try {
       if (selectedDocument?.id) {
         await updateMaterialPart({ ...materialPartDetailData });
@@ -133,12 +126,10 @@ const MaterialPartModal = () => {
       setDataUnitList(loadData?.data_unit_list);
       setdataCategoryList(loadData?.data_category_list);
       setdataSizeUnitList(loadData?.data_size_unit_list);
-      setdataColorList(loadData?.data_color_list)
-
-    }
-    fetchData()
-  }, [])
-
+      setdataColorList(loadData?.data_color_list);
+    };
+    fetchData();
+  }, []);
 
   return (
     <React.Fragment>

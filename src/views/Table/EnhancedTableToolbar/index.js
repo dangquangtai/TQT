@@ -124,10 +124,10 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const handleSubmitAssign = () => {
-    user.forEach(element => {
+    user.forEach((element) => {
       handleAssignAccount(element);
-    })
-    setUserSelected([])
+    });
+    setUserSelected([]);
   };
   const [user, setUserSelected] = useState([]);
 
@@ -213,15 +213,15 @@ const EnhancedTableToolbar = (props) => {
       <Grid container justifyContent="flex-end" spacing={gridSpacing}>
         <Grid
           item
-          lg={(documentType === 'department' || documentType === 'processrole') ? 12 : 4}
-          md={(documentType === 'department' || documentType === 'processrole') ? 12 : 4}
+          lg={documentType === 'department' || documentType === 'processrole' ? 12 : 4}
+          md={documentType === 'department' || documentType === 'processrole' ? 12 : 4}
           xs={12}
           className={classes.toolSearchWrap}
         >
           <Grid container spacing={gridSpacing}>
-            <Grid item xs={(documentType === 'processrole' || documentType === 'department') ? 4 : 12}>
+            <Grid item xs={documentType === 'processrole' || documentType === 'department' ? 4 : 12}>
               <Grid container justifyContent="flex-start" spacing={gridSpacing}>
-                {btnCreateNewAccount && documentType != 'accountpermission' && (
+                {btnCreateNewAccount && documentType !== 'accountpermission' && (
                   <Grid item>
                     <Button variant="contained" color={'primary'} onClick={createNewAccount}>
                       {btnCreateNewAccount.text}
@@ -455,8 +455,6 @@ const EnhancedTableToolbar = (props) => {
                   </Grid>
                 )}
 
-
-
                 {buttonCreateReturnMaterial && (
                   <Grid item xs={6}>
                     <Button variant="contained" color={'primary'} onClick={handleCreate}>
@@ -473,7 +471,7 @@ const EnhancedTableToolbar = (props) => {
                 )}
               </Grid>
             </Grid>
-            {(documentType === 'processrole') && (
+            {documentType === 'processrole' && (
               <Grid item xs={8}>
                 <Grid container justifyContent="flex-start" spacing={gridSpacing}>
                   {buttonAddDeptRole && (
@@ -490,18 +488,16 @@ const EnhancedTableToolbar = (props) => {
                       </Button>
                     </Grid>
                   )}
-
                 </Grid>
               </Grid>
             )}
-            {(documentType === 'department') && (
+            {documentType === 'department' && (
               <Grid item xs={8}>
                 <Grid container justifyContent="flex-start" spacing={gridSpacing}>
                   {buttonDeptAddUser && (
                     <>
                       <Grid item xs={10}>
                         <Autocomplete
-
                           size="small"
                           fullWidth
                           multiple
@@ -511,8 +507,6 @@ const EnhancedTableToolbar = (props) => {
                           getOptionLabel={(option) => option.email_address}
                           renderInput={(params) => <TextField label="Tài khoản" {...params} variant="outlined" />}
                         />
-
-
                       </Grid>
                       <Grid item xs={2}>
                         <Button variant="contained" color={'primary'} onClick={handleSubmitAssign}>
@@ -535,10 +529,9 @@ const EnhancedTableToolbar = (props) => {
             )}
           </Grid>
         )}
-        {(documentType !== 'processrole' && documentType !== 'department') && (
-          <Grid item lg={6} md={6} xs={12} className={classes.toolSearchWrap} alignContent='flex-start'>
+        {documentType !== 'processrole' && documentType !== 'department' && (
+          <Grid item lg={6} md={6} xs={12} className={classes.toolSearchWrap} alignContent="flex-start">
             <Grid container spacing={gridSpacing}>
-
               <>
                 <div className={classes.toolSearchWrap}>
                   <SearchIcon />
@@ -642,7 +635,6 @@ const EnhancedTableToolbar = (props) => {
                   </Button>
                 </Tooltip>
               </>
-
             </Grid>
           </Grid>
         )}

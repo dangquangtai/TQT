@@ -1,5 +1,4 @@
 import {
-  Snackbar,
   Box,
   Button,
   Dialog,
@@ -15,14 +14,13 @@ import {
   Switch,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useView from './../../hooks/useView';
 import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE, SNACKBAR_OPEN } from './../../store/actions.js';
 import { view } from './../../store/constant';
 import useStyles from './../../utils/classes';
 import { DescriptionOutlined as DescriptionOutlinedIcon, InfoOutlined as InfoOutlinedIcon } from '@material-ui/icons';
-import Alert from './../../component/Alert/index';
 import { initCategory } from '../../store/constants/initial.js';
 import { createMaterialCategory, updateMaterialCategory } from './../../services/api/Setting/MaterialCategory';
 import { createSupplierCategory, updateSupplierCategory } from './../../services/api/Setting/SupplierCategory';
@@ -38,13 +36,7 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && <Box p={0}>{children}</Box>}
     </div>
   );
@@ -75,9 +67,7 @@ const CategoryModal = () => {
   const buttonUpdateSupplierCategory = formButtons.find((button) => button.name === view.supplierCategory.detail.save);
   const buttonUpdateCustomerCategory = formButtons.find((button) => button.name === view.customerCategory.detail.save);
   const buttonUpdateProductCategory = formButtons.find((button) => button.name === view.productCategory.detail.save);
-  const buttonUpdateWarehouseCategory = formButtons.find(
-    (button) => button.name === view.warehouseCategory.detail.save
-  );
+  const buttonUpdateWarehouseCategory = formButtons.find((button) => button.name === view.warehouseCategory.detail.save);
   const [tabIndex, setTabIndex] = React.useState(0);
   const [categoryData, setCategoryData] = React.useState(initCategory);
 
@@ -273,11 +263,7 @@ const CategoryModal = () => {
           <DialogActions>
             <Grid container justifyContent="space-between">
               <Grid item className={classes.gridItemInfoButtonWrap}>
-                <Button
-                  variant="contained"
-                  style={{ background: 'rgb(70, 81, 105)' }}
-                  onClick={() => handleCloseDialog()}
-                >
+                <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }} onClick={() => handleCloseDialog()}>
                   Đóng
                 </Button>
               </Grid>

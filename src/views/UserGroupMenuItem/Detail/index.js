@@ -20,7 +20,7 @@ import {
   TableBody,
   TableRow,
   TableHead,
-  TableCell
+  TableCell,
 } from '@material-ui/core';
 import { TreeView } from '@material-ui/lab';
 import TreeItem from '@material-ui/lab/TreeItem';
@@ -43,13 +43,7 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && <Box p={0}>{children}</Box>}
     </div>
   );
@@ -96,21 +90,20 @@ const UserGroupMenuItemModal = () => {
     });
   };
   const handleChecked = (value) => {
-    let check = listChecked.some(item => item === value)
+    let check = listChecked.some((item) => item === value);
     if (check) {
-      let filterarray = listChecked.filter(item => item !== value)
-      setListChecked([...filterarray])
+      let filterarray = listChecked.filter((item) => item !== value);
+      setListChecked([...filterarray]);
     } else {
-      setListChecked([...listChecked, value])
+      setListChecked([...listChecked, value]);
     }
-
-  }
+  };
   const handleUpdateAccount = async () => {
     try {
-      let check = await updateMenuLookupList(selectedDocument.group_code, listChecked)
+      await updateMenuLookupList(selectedDocument.group_code, listChecked);
       handleOpenSnackbar(true, 'success', 'Cập nhật thành công!');
       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'usergroupmenuitem' });
-      handleCloseDialog()
+      handleCloseDialog();
     } catch (error) {
       handleOpenSnackbar(true, 'error', 'Cập nhật thất bại!');
     } finally {
@@ -130,11 +123,11 @@ const UserGroupMenuItemModal = () => {
   useEffect(() => {
     if (!selectedDocument) return;
     const fetch = async () => {
-      let list = await getMenuLookupList(selectedDocument.group_code)
-      setListChecked([...list])
-    }
-    fetch()
-  }, [selectedDocument])
+      let list = await getMenuLookupList(selectedDocument.group_code);
+      setListChecked([...list]);
+    };
+    fetch();
+  }, [selectedDocument]);
 
   const renderItem = (data) => {
     if (data.children.length === 0) {
@@ -142,14 +135,16 @@ const UserGroupMenuItemModal = () => {
         <>
           <TreeItem
             nodeId={data.id}
-            label={<><Checkbox
-              checked={listChecked?.some(
-                (item) =>
-                  item === data.id
-              )}
-              onChange={(e) => handleChecked(data.id)}
-              inputProps={{ 'aria-label': 'primary checkbox' }}
-            />{data.name}</>}
+            label={
+              <>
+                <Checkbox
+                  checked={listChecked?.some((item) => item === data.id)}
+                  onChange={(e) => handleChecked(data.id)}
+                  inputProps={{ 'aria-label': 'primary checkbox' }}
+                />
+                {data.name}
+              </>
+            }
             key={data.id}
             // onClick={(event) => handleClickOpen(data.id)}
             className={TreeItemClassKey.MuiTreeItemlabel}
@@ -160,21 +155,22 @@ const UserGroupMenuItemModal = () => {
       return (
         <TreeItem
           nodeId={data.id}
-          label={<><Checkbox
-            checked={listChecked?.some(
-              (item) =>
-                item === data.id
-            )}
-            onChange={(e) => handleChecked(data.id)}
-            inputProps={{ 'aria-label': 'primary checkbox' }}
-          />{data.name}</>}
+          label={
+            <>
+              <Checkbox
+                checked={listChecked?.some((item) => item === data.id)}
+                onChange={(e) => handleChecked(data.id)}
+                inputProps={{ 'aria-label': 'primary checkbox' }}
+              />
+              {data.name}
+            </>
+          }
           key={data.id}
-        // onClick={(event) => handleClickOpen(data.id)}
+          // onClick={(event) => handleClickOpen(data.id)}
         >
           {data.children.map((data2) => renderItem(data2))}
         </TreeItem>
       );
-
     }
   };
 
@@ -193,7 +189,6 @@ const UserGroupMenuItemModal = () => {
       </SvgIcon>
     );
   }
-
 
   return (
     <React.Fragment>
@@ -254,7 +249,7 @@ const UserGroupMenuItemModal = () => {
               <Grid item xs={12}>
                 <TabPanel value={tabIndex} index={0}>
                   <Grid container spacing={1}>
-                  <Grid item lg={7} md={7} xs={12}>
+                    <Grid item lg={7} md={7} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>
@@ -296,7 +291,7 @@ const UserGroupMenuItemModal = () => {
 
                           <Grid container className={classes.gridItem} alignItems="center">
                             <TableContainer component={Paper} style={{ maxHeight: 300 }}>
-                              <Table  aria-label="simple table">
+                              <Table aria-label="simple table">
                                 <TableHead>
                                   <TableRow>
                                     <TableCell></TableCell>
@@ -306,18 +301,19 @@ const UserGroupMenuItemModal = () => {
                                 </TableHead>
                                 <TableBody>
                                   {selectedDocument?.user_list.map((row) => (
-                                    <TableRow
-                                      key={row.email_address}
-                                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                    >
+                                    <TableRow key={row.email_address} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                       <TableCell component="th" scope="row">
-                                        <img alt="" src={row.image_url} style={{
-                                          height: '50px',
-                                          width: '50px',
-                                          objectFit: 'cover',
-                                          boxShadow: 'rgb(50 50 93 / 25%) 0px 2px 5px -1px, rgb(0 0 0 / 30%) 0px 1px 3px -1px',
-                                          borderRadius: '4px',
-                                        }} />
+                                        <img
+                                          alt=""
+                                          src={row.image_url}
+                                          style={{
+                                            height: '50px',
+                                            width: '50px',
+                                            objectFit: 'cover',
+                                            boxShadow: 'rgb(50 50 93 / 25%) 0px 2px 5px -1px, rgb(0 0 0 / 30%) 0px 1px 3px -1px',
+                                            borderRadius: '4px',
+                                          }}
+                                        />
                                       </TableCell>
                                       <TableCell align="left">{row.email_address}</TableCell>
                                       <TableCell align="left">{row.full_name}</TableCell>
@@ -342,8 +338,15 @@ const UserGroupMenuItemModal = () => {
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             {dataShow && (
                               <TreeView
-                                style={{ padding: 5, minHeight: 480, maxHeight: 480, background: '#fff', overflow: 'auto', 
-                                maxWidth: 370, minWidth: 370, }}
+                                style={{
+                                  padding: 5,
+                                  minHeight: 480,
+                                  maxHeight: 480,
+                                  background: '#fff',
+                                  overflow: 'auto',
+                                  maxWidth: 370,
+                                  minWidth: 370,
+                                }}
                                 aria-label="file system navigator"
                                 defaultCollapseIcon={<MinusSquare />}
                                 defaultExpandIcon={<PlusSquare />}
@@ -356,7 +359,6 @@ const UserGroupMenuItemModal = () => {
                         </div>
                       </div>
                     </Grid>
-                  
                   </Grid>
                 </TabPanel>
               </Grid>
@@ -365,32 +367,20 @@ const UserGroupMenuItemModal = () => {
           <DialogActions>
             <Grid container justifyContent="space-between">
               <Grid item>
-                <Button
-                  variant="contained"
-                  style={{ background: 'rgb(70, 81, 105)' }}
-                  onClick={() => handleCloseDialog()}
-                >
+                <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }} onClick={() => handleCloseDialog()}>
                   Đóng
                 </Button>
               </Grid>
               {!selectedDocument && (
                 <Grid item>
-                  <Button
-                    variant="contained"
-                    style={{ background: 'rgb(97, 42, 255)' }}
-                    onClick={() => handleUpdateAccount()}
-                  >
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={() => handleUpdateAccount()}>
                     {'Tạo mới'}
                   </Button>
                 </Grid>
               )}
               {!!selectedDocument && (
                 <Grid item>
-                  <Button
-                    variant="contained"
-                    style={{ background: 'rgb(97, 42, 255)' }}
-                    onClick={() => handleUpdateAccount()}
-                  >
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={() => handleUpdateAccount()}>
                     Lưu
                   </Button>
                 </Grid>

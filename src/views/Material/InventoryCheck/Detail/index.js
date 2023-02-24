@@ -17,7 +17,6 @@ import {
   Table,
   TableHead,
   TableRow,
-  TableCell,
   TableBody,
   MenuItem,
 } from '@material-ui/core';

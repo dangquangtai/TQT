@@ -30,7 +30,6 @@ import PropTypes from 'prop-types';
 import { view } from '../../../../store/constant';
 import useView from '../../../../hooks/useView';
 import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../../store/actions';
-import Alert from '../../../../component/Alert';
 import { History, DescriptionOutlined as DescriptionOutlinedIcon, AddCircleOutline, Delete } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import FirebaseUpload from '../../../FloatingMenu/FirebaseUpload/index.js';
@@ -47,13 +46,7 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && <Box p={0}>{children}</Box>}
     </div>
   );
@@ -191,25 +184,18 @@ const ProductModal = () => {
       ...selectedDocument,
     });
     setPartList(selectedDocument?.part_list || []);
-
   }, [selectedDocument]);
+
   useEffect(() => {
     const fetchData = async () => {
       const loadData = await getMaterialLoadData();
       setDataUnitList(loadData?.data_unit_list);
-
-    }
-    fetchData()
-  }, [])
+    };
+    fetchData();
+  }, []);
   return (
     <React.Fragment>
-      <FirebaseUpload
-        open={openDialogUploadImage}
-        onSuccess={setURL}
-        onClose={handleCloseDiaLog}
-        type="image"
-        folder="Podcast"
-      />
+      <FirebaseUpload open={openDialogUploadImage} onSuccess={setURL} onClose={handleCloseDiaLog} type="image" folder="Podcast" />
       <Grid container>
         <Dialog
           open={openDialog || false}
@@ -398,7 +384,6 @@ const ProductModal = () => {
                         </div>
                       </div>
                     </Grid>
-
                   </Grid>
                 </TabPanel>
                 <TabPanel value={tabIndex} index={1}>
@@ -442,10 +427,7 @@ const ProductModal = () => {
                                         renderInput={(params) => <TextField {...params} variant="outlined" />}
                                       />
                                     </TableCell>
-                                    <TableCell
-                                      align="left"
-                                      style={{ width: '40%', overflow: 'hidden', textOverflow: 'ellipsis' }}
-                                    >
+                                    <TableCell align="left" style={{ width: '40%', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                       <Tooltip title={row?.part_name || ''}>
                                         <span>{row?.part_name || ''}</span>
                                       </Tooltip>
@@ -487,11 +469,7 @@ const ProductModal = () => {
           <DialogActions>
             <Grid container justifyContent="space-between">
               <Grid item>
-                <Button
-                  variant="contained"
-                  style={{ background: 'rgb(70, 81, 105)' }}
-                  onClick={() => handleCloseDialog()}
-                >
+                <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }} onClick={() => handleCloseDialog()}>
                   Đóng
                 </Button>
               </Grid>

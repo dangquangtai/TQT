@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Grid,
   Button,
-  Slide,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -17,22 +16,14 @@ import {
   Paper,
   IconButton,
   Typography,
-  Tooltip
+  Tooltip,
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { Autocomplete } from '@material-ui/lab';
 import useStyles from './../../../utils/classes';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { ORDER_CHANGE, ORDER_DETAIL_CHANGE } from './../../../store/actions';
-import {
-  getOrderCompletedList,
-  getOrderProductDetail,
-  getDetailOrderByWorkOrder,
-} from '../../../services/api/Order/index.js';
-import { testAPI } from '../../../services/api/Workorder';
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="bottom" ref={ref} {...props} />;
-});
+import { getOrderCompletedList, getOrderProductDetail, getDetailOrderByWorkOrder } from '../../../services/api/Order/index.js';
 
 const OrderModal = () => {
   const classes = useStyles();
@@ -48,15 +39,14 @@ const OrderModal = () => {
     value: '',
     order_code: '',
   });
-  const [work_order_id,setWorkorderID] = useState('');
+  const [work_order_id, setWorkorderID] = useState('');
   const [orderDetail, setOrderDetail] = useState([]);
   const [orderList, setOrderList] = useState([]);
   const handleOrderChange = async (e, value) => {
     var orderDetail;
-    if(work_order_id !== ''){
-      orderDetail= await getDetailOrderByWorkOrder(value.id, work_order_id);
-    }
-    else {
+    if (work_order_id !== '') {
+      orderDetail = await getDetailOrderByWorkOrder(value.id, work_order_id);
+    } else {
       orderDetail = await getOrderProductDetail(value.id);
     }
     setOrderSelected(value);
@@ -64,12 +54,12 @@ const OrderModal = () => {
       setOrder({ ...value, order_code: orderDetail?.order_code, ...orderDetail });
       dispatch({
         type: ORDER_CHANGE,
-        order: { ...value, order_code: orderDetail?.order_code, change: false, work_order_id: orderRedux?.work_order_id||'' },
+        order: { ...value, order_code: orderDetail?.order_code, change: false, work_order_id: orderRedux?.work_order_id || '' },
         orderDetail: orderDetail.order_detail,
       });
       setOrderDetail(orderDetail.order_detail);
     } else {
-      dispatch({ type: ORDER_CHANGE, order: {work_order_id: orderRedux?.work_order_id||''}, orderDetail: orderDetail });
+      dispatch({ type: ORDER_CHANGE, order: { work_order_id: orderRedux?.work_order_id || '' }, orderDetail: orderDetail });
       setOrder({
         id: '',
         title: '',
@@ -83,12 +73,12 @@ const OrderModal = () => {
 
   const handleOrderChangeSelected = async (value) => {
     var orderDetailList = {};
-    if (orderRedux?.work_order_id != '') {
+    if (orderRedux?.work_order_id !== '') {
       orderDetailList = await getDetailOrderByWorkOrder(value.id, orderRedux.work_order_id);
-      setWorkorderID(orderRedux.work_order_id)
+      setWorkorderID(orderRedux.work_order_id);
     } else {
       orderDetailList = await getOrderProductDetail(value.id);
-      setWorkorderID('')
+      setWorkorderID('');
     }
     setOrderSelected(value);
     if (value) {
@@ -97,7 +87,7 @@ const OrderModal = () => {
         type: ORDER_CHANGE,
         order: { ...value, order_code: orderDetailList.order_code, change: false, work_order_id: orderRedux.work_order_id },
         orderDetail: orderDetailList.order_detail,
-        workorderDetail: orderRedux.workorderDetail
+        workorderDetail: orderRedux.workorderDetail,
       });
       setOrderDetail(orderDetailList?.order_detail);
     } else {
@@ -124,25 +114,22 @@ const OrderModal = () => {
   };
 
   const handleClose = () => {
-    dispatch({ type: ORDER_CHANGE, order: null , orderDetail: null });
+    dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
     dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null });
     window.opener = null;
     window.open('', '_self');
     window.close();
   };
- 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-
         let data = await getOrderCompletedList();
         setOrderList(data);
       } catch (error) {
         let data = await getOrderCompletedList();
         setOrderList(data);
       }
-
     };
 
     fetchData();
@@ -156,23 +143,22 @@ const OrderModal = () => {
     if (!orderList || orderList.length === 0) return;
     if (!orderRedux) return;
     if (!orderRedux.id) return;
-    let value = orderList.find(x => x.id === orderRedux.id)
-    handleOrderChangeSelected(value)
+    let value = orderList.find((x) => x.id === orderRedux.id);
+    handleOrderChangeSelected(value);
   }, [orderList]);
   useEffect(() => {
-
     if (orderRedux?.close) {
-      handleClose()
+      handleClose();
     }
     if (!orderRedux.orderDetail) {
       if (orderRedux?.change) {
-        var orderInList = orderList.find((x) => x.id === orderRedux.id)
-        if (!orderInList) return
-        handleOrderChangeSelected(orderInList)
+        var orderInList = orderList.find((x) => x.id === orderRedux.id);
+        if (!orderInList) return;
+        handleOrderChangeSelected(orderInList);
       }
       return;
     }
-    setOrderDetail(orderRedux.orderDetail)
+    setOrderDetail(orderRedux.orderDetail);
   }, [orderRedux]);
 
   return (
@@ -211,9 +197,7 @@ const OrderModal = () => {
                                       value={order}
                                       getOptionLabel={(option) => option.value}
                                       onChange={handleOrderChange}
-                                      renderInput={(params) => (
-                                        <TextField {...params} variant="outlined" size="small" fullWidth />
-                                      )}
+                                      renderInput={(params) => <TextField {...params} variant="outlined" size="small" fullWidth />}
                                     />
                                   </Grid>
                                 </Grid>
@@ -224,13 +208,7 @@ const OrderModal = () => {
                                     <Typography variant="h6">Tên đơn hàng</Typography>
                                   </Grid>
                                   <Grid item lg={12} md={12} xs={12}>
-                                    <TextField
-                                      disabled
-                                      variant="outlined"
-                                      size="small"
-                                      fullWidth
-                                      value={order?.title}
-                                    />
+                                    <TextField disabled variant="outlined" size="small" fullWidth value={order?.title} />
                                   </Grid>
                                 </Grid>
                               </Grid>
@@ -240,13 +218,7 @@ const OrderModal = () => {
                                     <Typography variant="h6">Tên khách hàng</Typography>
                                   </Grid>
                                   <Grid item lg={12} md={12} xs={12}>
-                                    <TextField
-                                      disabled
-                                      variant="outlined"
-                                      size="small"
-                                      fullWidth
-                                      value={order?.customer_name}
-                                    />
+                                    <TextField disabled variant="outlined" size="small" fullWidth value={order?.customer_name} />
                                   </Grid>
                                 </Grid>
                               </Grid>
@@ -256,13 +228,7 @@ const OrderModal = () => {
                                     <Typography variant="h6">Ngày đặt hàng</Typography>
                                   </Grid>
                                   <Grid item lg={12} md={12} xs={12}>
-                                    <TextField
-                                      disabled
-                                      variant="outlined"
-                                      size="small"
-                                      fullWidth
-                                      value={order?.expected_deliver_date}
-                                    />
+                                    <TextField disabled variant="outlined" size="small" fullWidth value={order?.expected_deliver_date} />
                                   </Grid>
                                 </Grid>
                               </Grid>
@@ -314,9 +280,7 @@ const OrderModal = () => {
                                         <TableCell align="left">{item.product_customer_code}</TableCell>
                                         <TableCell align="left" style={{ maxWidth: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                           <Tooltip title={item.product_name}>
-                                            <span>
-                                              {item.product_name}
-                                            </span>
+                                            <span>{item.product_name}</span>
                                           </Tooltip>
                                         </TableCell>
                                         <TableCell align="center">{item.quantity_in_box.toLocaleString()}</TableCell>

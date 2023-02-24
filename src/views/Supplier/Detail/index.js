@@ -1,5 +1,4 @@
 import {
-  Snackbar,
   Box,
   Button,
   Dialog,
@@ -15,7 +14,6 @@ import {
   MenuItem,
   Switch,
 } from '@material-ui/core';
-import Alert from '../../../component/Alert';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,7 +23,6 @@ import { view } from '../../../store/constant';
 import useStyles from './../../../utils/classes';
 import FirebaseUpload from './../../FloatingMenu/FirebaseUpload/index';
 import useConfirmPopup from './../../../hooks/useConfirmPopup';
-import { format as formatDate } from 'date-fns';
 import { AccountCircleOutlined as AccountCircleOutlinedIcon, Today as TodayIcon } from '@material-ui/icons';
 import { createSupplier, updateSupplier } from '../../../services/api/Partner/Supplier.js';
 import { getAllSupplierCategory } from '../../../services/api/Setting/SupplierCategory.js';
@@ -39,13 +36,7 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
       {value === index && <Box p={0}>{children}</Box>}
     </div>
   );
@@ -167,13 +158,7 @@ const SupplierModal = () => {
 
   return (
     <React.Fragment>
-      <FirebaseUpload
-        open={dialogUpload.open || false}
-        onSuccess={setURL}
-        onClose={handleCloseDiaLog}
-        type="image"
-        folder="Supplier"
-      />
+      <FirebaseUpload open={dialogUpload.open || false} onSuccess={setURL} onClose={handleCloseDiaLog} type="image" folder="Supplier" />
       <Grid container>
         <Dialog
           open={openDialog || false}
@@ -342,11 +327,7 @@ const SupplierModal = () => {
           <DialogActions>
             <Grid container justifyContent="space-between">
               <Grid item className={classes.gridItemInfoButtonWrap}>
-                <Button
-                  variant="contained"
-                  style={{ background: 'rgb(70, 81, 105)' }}
-                  onClick={() => handleCloseDialog()}
-                >
+                <Button variant="contained" style={{ background: 'rgb(70, 81, 105)' }} onClick={() => handleCloseDialog()}>
                   Đóng
                 </Button>
               </Grid>

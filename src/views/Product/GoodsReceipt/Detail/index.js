@@ -19,14 +19,13 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
   Tooltip,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { format as formatDate } from 'date-fns';
-import { AccountCircleOutlined as AccountCircleOutlinedIcon, Delete, Today as TodayIcon, AddCircleOutline } from '@material-ui/icons';
+import { AccountCircleOutlined as AccountCircleOutlinedIcon, Today as TodayIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import useStyles from './../../../../utils/classes';
 import useView from './../../../../hooks/useView';
@@ -35,14 +34,8 @@ import { view } from './../../../../store/constant';
 import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CONFIRM_CHANGE } from './../../../../store/actions';
 import FirebaseUpload from './../../../FloatingMenu/FirebaseUpload/index';
 import DatePicker from './../../../../component/DatePicker/index';
-import {
-  createGoodsReceipt,
-  deleteGoodsReceiptDetail,
-  exportGoodsReceipt,
-  getGoodsReceiptData,
-  updateGoodsReceipt,
-} from './../../../../services/api/Product/GoodsReceipt.js';
-import { getWorkOrderRequest, getDailyWorkOrderList } from './../../../../services/api/Workorder/index';
+import { exportGoodsReceipt, getGoodsReceiptData, updateGoodsReceipt } from './../../../../services/api/Product/GoodsReceipt.js';
+import { getDailyWorkOrderList } from './../../../../services/api/Workorder/index';
 import { downloadFile } from './../../../../utils/helper';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -74,7 +67,6 @@ const GoodsReceiptModal = () => {
   const dispatch = useDispatch();
   const { form_buttons: formButtons } = useView();
   const { setConfirmPopup } = useConfirmPopup();
-  const { products } = useSelector((state) => state.metadata);
   const saveButton = formButtons.find((button) => button.name === view.goodsReceipt.detail.save);
   const { goodsReceiptDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
@@ -126,13 +118,6 @@ const GoodsReceiptModal = () => {
     } else if (dialogUpload.type === 'banner') {
       setGoodsReceiptData({ ...goodsReceiptData, banner_url: image });
     }
-  };
-
-  const handleOpenDiaLog = (type) => {
-    setDialogUpload({
-      open: true,
-      type: type,
-    });
   };
 
   const handleCloseDiaLog = () => {
