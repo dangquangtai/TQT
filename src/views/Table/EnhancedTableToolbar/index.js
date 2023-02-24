@@ -90,6 +90,7 @@ const EnhancedTableToolbar = (props) => {
     buttonCreateUGroup,
     buttonCreateReturnMaterial,
     buttonCreateTemplateDocument,
+    buttonCreateProduct,
   } = props;
 
   const filterRef = useRef(null);
@@ -123,7 +124,7 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const handleSubmitAssign = () => {
-    user.forEach(element=>{
+    user.forEach(element => {
       handleAssignAccount(element);
     })
     setUserSelected([])
@@ -220,7 +221,7 @@ const EnhancedTableToolbar = (props) => {
           <Grid container spacing={gridSpacing}>
             <Grid item xs={(documentType === 'processrole' || documentType === 'department') ? 4 : 12}>
               <Grid container justifyContent="flex-start" spacing={gridSpacing}>
-                {btnCreateNewAccount&& documentType!='accountpermission' && (
+                {btnCreateNewAccount && documentType != 'accountpermission' && (
                   <Grid item>
                     <Button variant="contained" color={'primary'} onClick={createNewAccount}>
                       {btnCreateNewAccount.text}
@@ -248,7 +249,7 @@ const EnhancedTableToolbar = (props) => {
                     </Button>
                   </Grid>
                 )}
-                {buttonCreateUGroup && documentType!=='usergroupmenuitem'&& (
+                {buttonCreateUGroup && documentType !== 'usergroupmenuitem' && (
                   <Grid item>
                     <Button variant="contained" color={'primary'} onClick={handleCreate}>
                       {buttonCreateUGroup.text}
@@ -446,6 +447,13 @@ const EnhancedTableToolbar = (props) => {
                     </Button>
                   </Grid>
                 )}
+                {buttonCreateProduct && (
+                  <Grid item xs={6}>
+                    <Button variant="contained" color={'primary'} onClick={handleCreate}>
+                      {buttonCreateProduct.text}
+                    </Button>
+                  </Grid>
+                )}
 
 
 
@@ -490,28 +498,28 @@ const EnhancedTableToolbar = (props) => {
               <Grid item xs={8}>
                 <Grid container justifyContent="flex-start" spacing={gridSpacing}>
                   {buttonDeptAddUser && (
-                       <>
+                    <>
                       <Grid item xs={10}>
                         <Autocomplete
-                        
-                        size="small"
-                        fullWidth
-                        multiple
-                        value={user}
-                        options={userList}
-                        onChange={(e, u) => setUserSelected(u)}
-                        getOptionLabel={(option) => option.email_address}
-                        renderInput={(params) => <TextField label="Tài khoản" {...params} variant="outlined" />}
-                      /> 
-                       
+
+                          size="small"
+                          fullWidth
+                          multiple
+                          value={user}
+                          options={userList}
+                          onChange={(e, u) => setUserSelected(u)}
+                          getOptionLabel={(option) => option.email_address}
+                          renderInput={(params) => <TextField label="Tài khoản" {...params} variant="outlined" />}
+                        />
+
 
                       </Grid>
                       <Grid item xs={2}>
-                          <Button variant="contained" color={'primary'} onClick={handleSubmitAssign}>
-                        {buttonDeptAddUser.text}
-                      </Button>
-                        </Grid>
-                        </>
+                        <Button variant="contained" color={'primary'} onClick={handleSubmitAssign}>
+                          {buttonDeptAddUser.text}
+                        </Button>
+                      </Grid>
+                    </>
                   )}
                 </Grid>
               </Grid>

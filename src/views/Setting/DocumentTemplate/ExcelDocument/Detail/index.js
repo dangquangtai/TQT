@@ -280,7 +280,9 @@ const TemplateDocumentModal = () => {
                                                                     <div>
 
                                                                         <div> <a href={excelDocumentTemplate.file_url} target='__blank'>{excelDocumentTemplate.file_url ? 'Tải xuống' : undefined}</a></div>
-                                                                        <Button onClick={() => handleOpenDiaLog()}>Chọn mẫu tài liệu </Button>
+                                                                        <div> <Button onClick={() => handleOpenDiaLog()}>Chọn mẫu tài liệu </Button>
+
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>

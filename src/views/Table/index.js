@@ -60,7 +60,7 @@ import { getDetailDailyMaterialReceived } from './../../services/api/Production/
 import { getDetailDailyMaterialRequisition } from './../../services/api/Production/MaterialRequisition';
 import { getDetailMaterialPart } from '../../services/api/Material/MaterialPart';
 import { downloadFile } from './../../utils/helper';
-import { getUserGroupDetail} from '../../services/api/UserGroup/index';
+import { getUserGroupDetail } from '../../services/api/UserGroup/index';
 import { getDetailReturnMaterial } from './../../services/api/Material/Return';
 import { getDetailTemplateDocument } from '../../services/api/Setting/TemplateDocument';
 
@@ -171,9 +171,10 @@ export default function GeneralTable(props) {
   const buttonCreateMaterialPart = menuButtons.find((button) => button.name === view.materialPart.list.create);
   const buttonCreateMaterialRequisition = menuButtons.find((button) => button.name === view.materialRequisition.list.create);
   const buttonExportMaterial = menuButtons.find((button) => button.name === view.purchaseMaterial.list.export);
-  const buttonCreateUGroup = menuButtons.find((button)=>button.name===view.ugroup.list.create)
+  const buttonCreateUGroup = menuButtons.find((button) => button.name === view.ugroup.list.create)
   const buttonCreateReturnMaterial = menuButtons.find((button) => button.name === view.materialReturn.list.create);
   const buttonCreateTemplateDocument = menuButtons.find((button) => button.name === view.templateDocument.list.create);
+  const buttonCreateProduct = menuButtons.find((button) => button.name === view.product.list.create);
 
   const fetchDocument = (additionalQuery) => {
     const queries = { ...defaultQueries, ...additionalQuery };
@@ -418,13 +419,13 @@ export default function GeneralTable(props) {
         break;
       case 'usergroup':
         detailDocument = await getUserGroupDetail(selectedDocument.group_code, setView)
-        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType});
-        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true})
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true })
         break;
       case 'usergroupmenuitem':
         detailDocument = await getUserGroupDetail(selectedDocument.group_code, setView)
-        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType});
-        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true})
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true })
         break;
       case 'returnMaterial':
         detailDocument = await getDetailReturnMaterial(selectedDocument.id, setView);
@@ -435,6 +436,11 @@ export default function GeneralTable(props) {
         detailDocument = await getDetailTemplateDocument(selectedDocument.id, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, excelTemplateDocument: true });
+        break;
+      case 'production':
+        detailDocument = await getDetailWorkorOrderRequest(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, detailDocument: true });
         break;
       default:
         break;
@@ -513,6 +519,9 @@ export default function GeneralTable(props) {
         break;
       case 'templateDocument':
         dispatch({ type: FLOATING_MENU_CHANGE, excelTemplateDocument: true });
+        break;
+      case 'product':
+        dispatch({ type: FLOATING_MENU_CHANGE, productDocument: true });
         break;
       default:
         break;
@@ -704,7 +713,7 @@ export default function GeneralTable(props) {
   };
 
   const toggleSetActive = async (event, document, isActive) => {
-    if (documentType!=='usergroup'){
+    if (documentType !== 'usergroup') {
       event.stopPropagation();
       await setActive(setActiveUrl, document.id, isActive);
       fetchDocument();
@@ -714,7 +723,6 @@ export default function GeneralTable(props) {
       await setActive(setActiveUrl, document.group_code, isActive);
       fetchDocument();
     }
-   
   };
 
   const handleSyncRole = async () => {
@@ -825,7 +833,7 @@ export default function GeneralTable(props) {
       work_order_date_string: tableColumns.includes('work_order_date_string'),
       percent_production: tableColumns.includes('percent_production'),
       percent_plan: tableColumns.includes('percent_plan'),
-      user_group_number_item: tableColumns.includes('user_group_number_item')
+      user_group_number_item: tableColumns.includes('user_group_number_item'),
     };
     setDisplayOptions(initOptions);
   }, [tableColumns, selectedFolder]);
@@ -855,7 +863,7 @@ export default function GeneralTable(props) {
 
   useEffect(() => {
     if (documentType === 'department' && department_code_selected !== '') {
-    
+
       reloadCurrentDocuments();
     }
   }, [department_code_selected]);
@@ -887,7 +895,7 @@ export default function GeneralTable(props) {
     if (selectedDocument === null && documents?.length > 0) {
       reloadCurrentDocuments(page);
     }
-    if(documentType==='department'){
+    if (documentType === 'department') {
       reloadCurrentDocuments();
     }
   }, [selectedDocument]);
@@ -960,6 +968,7 @@ export default function GeneralTable(props) {
     buttonCreateUGroup,
     buttonCreateReturnMaterial,
     buttonCreateTemplateDocument,
+    buttonCreateProduct,
   };
 
   return (
@@ -1168,7 +1177,7 @@ export default function GeneralTable(props) {
                                   {row.supplier_name || row.title}
                                 </TableCell>
                               )}
-                            
+
                               {displayOptions.warehouse_name && (
                                 <TableCell
                                   align="left"
@@ -1340,7 +1349,7 @@ export default function GeneralTable(props) {
                                   {row.work_order_date_string}
                                 </TableCell>
                               )}
-                                {displayOptions.user_group_code && (
+                              {displayOptions.user_group_code && (
                                 <TableCell
                                   align="left"
                                   onClick={(event) => openDetailDocument(event, row)}
@@ -1489,13 +1498,14 @@ export default function GeneralTable(props) {
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                   />
+                </Grid>
                </Grid> )}
               </Grid>
             </Paper>
           </Card>
         </Grid>
       </Grid>
-      
+
     </React.Fragment>
   );
 }
