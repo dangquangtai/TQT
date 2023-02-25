@@ -366,7 +366,10 @@ export default function AlertDialogSlide() {
                         <TableCell>SL thiếu</TableCell>
                         <TableCell>Trạng thái</TableCell>
                         <TableCell>
-                          <IconButton disabled={orderRedux.workorderDetail?.is_disable || false} onClick={handleAddRow}>
+                          <IconButton
+                            // disabled={orderRedux.workorderDetail?.is_disable || false}
+                            onClick={handleAddRow}
+                          >
                             <AddCircleOutline />
                           </IconButton>{' '}
                         </TableCell>
@@ -380,7 +383,7 @@ export default function AlertDialogSlide() {
                             <Autocomplete
                               value={{ id: item.supplier_id, value: item.supplier_name }}
                               size="small"
-                              disabled={item.is_disable}
+                              // disabled={item.is_disable}
                               disableClearable
                               options={supplierListDrop}
                               fullWidth
@@ -396,7 +399,7 @@ export default function AlertDialogSlide() {
                               type="number"
                               style={{ minWidth: 120, maxWidth: 120 }}
                               variant="outlined"
-                              disabled={item.is_disable}
+                              // disabled={item.is_disable}
                               InputProps={{ inputProps: { min: 1, max: item.maxValue } }}
                               value={item.quantity_in_piece}
                               size="small"
@@ -419,7 +422,10 @@ export default function AlertDialogSlide() {
                             </Typography>
                           </TableCell>
                           <TableCell align="left">
-                            <IconButton disabled={orderRedux.workorderDetail.is_disable} onClick={() => handleDeleteRow(index)}>
+                            <IconButton
+                              //  disabled={orderRedux.workorderDetail.is_disable}
+                              onClick={() => handleDeleteRow(index)}
+                            >
                               <Delete />
                             </IconButton>
                           </TableCell>

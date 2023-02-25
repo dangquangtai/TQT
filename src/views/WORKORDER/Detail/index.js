@@ -355,7 +355,6 @@ const WorkorderModal = () => {
       return;
     }
     window.open(url, '_blank', 'noreferrer');
-
     handleOpenSnackbar(true, 'success', 'Tải file thành công');
   };
   const handleUpdateWorkOrder = async (product, index) => {
@@ -895,7 +894,7 @@ const WorkorderModal = () => {
               size="small"
               disableClearable
               options={dropdownData}
-              disabled={disableComponent}
+              // disabled={disableComponent}
               fullWidth
               onChange={(e, u) => handleChangeRow(u, index)}
               getOptionLabel={(option) => option.product_code}
@@ -916,7 +915,7 @@ const WorkorderModal = () => {
               type="number"
               style={{ minWidth: 80, maxWidth: 80 }}
               variant="outlined"
-              disabled={disableComponent}
+              // disabled={disableComponent}
               InputProps={{ inputProps: { min: 1 } }}
               value={item.quantity_in_box}
               size="small"
@@ -938,7 +937,10 @@ const WorkorderModal = () => {
           </TableCell>
           <TableCell align="center"> {calculateQuantity(item, index)}</TableCell>
           <TableCell align="right">
-            <IconButton onClick={() => handleDeleteRow(index, item.id)} disabled={disableComponent}>
+            <IconButton
+              onClick={() => handleDeleteRow(index, item.id)}
+              //  disabled={disableComponent}
+            >
               <Delete />
             </IconButton>
           </TableCell>
@@ -1279,7 +1281,7 @@ const WorkorderModal = () => {
                                         <TextField
                                           style={{ marginLeft: '10px' }}
                                           type="number"
-                                          disabled={disableComponent}
+                                          // disabled={disableComponent}
                                           variant="outlined"
                                           name="number_of_worker"
                                           InputProps={{ inputProps: { min: 1 } }}
@@ -1298,7 +1300,7 @@ const WorkorderModal = () => {
                                         <TextField
                                           type="number"
                                           variant="outlined"
-                                          disabled={disableComponent}
+                                          // disabled={disableComponent}
                                           name="number_of_working_hour"
                                           InputProps={{ inputProps: { min: 1 } }}
                                           value={workorderRequest?.number_of_working_hour}
