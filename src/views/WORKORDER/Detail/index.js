@@ -331,34 +331,35 @@ const WorkorderModal = () => {
     } catch {}
   };
   const handleGetlink = async () => {
-    try {
-      setSnackbarStatus({
-        isOpen: true,
-        type: 'info',
-        text: 'Vui lòng chờ trong giây lát. Báo cáo đang được tải xuống',
-      });
-      try {
-        let link = await getLink(productionDailyRequestList[indexDate].id);
-        let link2 = await exportDailyMaterialReceived(productionDailyRequestList[indexDate].id);
-        let link3 = await exportDailyMaterialRequisition(productionDailyRequestList[indexDate].id);
-        let link4 = await exportGoodsReceiptByWorkOrder(productionDailyRequestList[indexDate].id);
-        if (!link) downloadFile(link);
-        if (!link2) downloadFile(link2);
-        if (!link3) downloadFile(link3);
-        if (!link4) downloadFile(link4);
-        handleOpenSnackbar(true, 'success', 'Tải file thành công');
-      } catch {
-        handleOpenSnackbar(true, 'error', 'Tải file thất bại');
-      }
-    } catch {
-      setSnackbarStatus({
-        isOpen: true,
-        type: 'error',
-        text: 'Tải xuống báo cáo thất bại',
-      });
-    }
+    setSnackbarStatus({
+      isOpen: true,
+      type: 'info',
+      text: 'Vui lòng chờ trong giây lát. Báo cáo đang được tải xuống',
+    });
+
+    let link = await getLink(productionDailyRequestList[indexDate].id);
+    let link2 = await exportDailyMaterialReceived(productionDailyRequestList[indexDate].id);
+    let link3 = await exportDailyMaterialRequisition(productionDailyRequestList[indexDate].id);
+    let link4 = await exportGoodsReceiptByWorkOrder(productionDailyRequestList[indexDate].id);
+
+    handleDownload(link);
+    handleDownload(link2);
+    handleDownload(link3);
+    handleDownload(link4);
 
     ///
+  };
+  const handleDownload = (url) => {
+    if (!url) {
+      handleOpenSnackbar(true, 'error', 'Tải file thất bại');
+      return;
+    }
+    const link = document.createElement('a');
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    handleOpenSnackbar(true, 'success', 'Tải file thành công');
   };
   const handleUpdateWorkOrder = async (product, index) => {
     try {
