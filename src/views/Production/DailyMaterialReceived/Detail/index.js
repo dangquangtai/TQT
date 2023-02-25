@@ -470,12 +470,10 @@ const DailyMaterialReceivedModal = () => {
                                       {row?.total_broken_quantity_in_piece || '0'}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '5%' }}>
-                                      {Math.abs(
-                                        row.consumed_quantity_in_piece +
-                                          row.total_return_quantity_in_piece +
-                                          row.total_broken_quantity_in_piece -
-                                          row.quantity_in_piece
-                                      )}
+                                      {row.consumed_quantity_in_piece +
+                                        row.total_return_quantity_in_piece +
+                                        row.total_broken_quantity_in_piece -
+                                        row.quantity_in_piece}
                                     </TableCell>
                                     <TableCell
                                       align="left"
