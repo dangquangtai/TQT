@@ -18,16 +18,15 @@ import {
 } from '@material-ui/core';
 import { ImageOutlined as ImageIcon } from '@material-ui/icons';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
-import Alert from '../../../component/Alert/index.js';
+import Alert from '../../../../component/Alert/index.js';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { view } from '../../../store/constant.js';
-import useView from '../../../hooks/useView';
-import useStyles from './classes.js';
-import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../store/actions.js';
-import useAccount from '../../../hooks/useAccount.js';
-import FirebaseUpload from '../../FloatingMenu/FirebaseUpload/index.js';
-import { initAccount } from '../../../store/constants/initial.js';
+
+import useStyles from '../../../../views/Account/Detail/classes';
+import { DOCUMENT_CHANGE } from '../../../../store/actions.js';
+import useAccount from '../../../../hooks/useAccount.js';
+import FirebaseUpload from '../../../../views/FloatingMenu/FirebaseUpload/index';
+import { initAccount } from '../../../../store/constants/initial.js';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -54,20 +53,17 @@ function a11yProps(index) {
   };
 }
 
-const AccountModal = () => {
+const ProfileModal = (props) => {
+  const { openDialog, setOpenDialog, id } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
   const [tabIndex, setTabIndex] = React.useState(0);
-  const { form_buttons: formButtons } = useView();
-  const buttonSave = formButtons.find((button) => button.name === view.user.detail.save);
-  const buttonResetPass = formButtons.find((button) => button.name === view.user.detail.reset_password);
+
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
-
-  const { createAccount, updateAccount, resetPassword } = useAccount();
-  const { accountDocument: openDialog } = useSelector((state) => state.floatingMenu);
-  const { selectedDocument } = useSelector((state) => state.document);
+  const { createAccount, updateAccount, resetPassword, getAccount } = useAccount();
+  const [selectedDocument, setSelectedDocument] = useState();
   const [dialogUpload, setDialogUpload] = useState({
     open: false,
     type: '',
@@ -85,11 +81,11 @@ const AccountModal = () => {
   }, [selectedDocument]);
 
   const handleCloseDialog = () => {
+    setOpenDialog(false);
     setDocumentToDefault();
     setAccount({
       ...initAccount,
     });
-    dispatch({ type: FLOATING_MENU_CHANGE, accountDocument: false });
   };
   const [snackbarStatus, setSnackbarStatus] = useState({
     isOpen: false,
@@ -107,18 +103,6 @@ const AccountModal = () => {
     try {
       if (account.employee_code === '' || account.email_address === '' || account.full_name === '') {
         handleOpenSnackbar(true, 'error', 'Vui lòng điền đầy đủ thông tin!');
-      } else if (!account.id) {
-        let check = await createAccount({
-          ...account,
-          outputtype: 'RawJson',
-        });
-        if (check) {
-          handleOpenSnackbar(true, 'success', 'Tạo mới thành công!');
-          dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'account' });
-          handleCloseDialog();
-        } else {
-          handleOpenSnackbar(true, 'error', 'Tài khoản đã tồn tại!');
-        }
       } else {
         let check = await updateAccount({
           ...account,
@@ -126,10 +110,10 @@ const AccountModal = () => {
         });
         if (check) {
           handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
-          dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'account' });
           handleCloseDialog();
         } else {
           handleOpenSnackbar(true, 'error', 'Tài khoản đã tồn tại!');
+          handleCloseDialog();
         }
       }
     } catch (error) {
@@ -143,10 +127,13 @@ const AccountModal = () => {
         handleOpenSnackbar(true, 'error', 'Vui lòng điền đầy đủ thông tin!');
       } else {
         let check = await resetPassword(account.new_password, account.password, account.email_address);
+
         if (check) {
           handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
+          handleCloseDialog();
         } else {
-          handleOpenSnackbar(true, 'error', 'Cập nhập không thành công!');
+          handleOpenSnackbar(true, 'error', 'Cập nhật mật khẩu không thành công!');
+          handleCloseDialog(false);
         }
       }
     } catch (error) {
@@ -179,6 +166,15 @@ const AccountModal = () => {
   const handleCloseDiaLog = () => {
     setDialogUpload({ open: false, type: 'image' });
   };
+  useEffect(() => {
+    if (openDialog) {
+      const fetch = async () => {
+        let data = await getAccount(id);
+        setSelectedDocument(data);
+      };
+      fetch();
+    }
+  }, [openDialog]);
   return (
     <React.Fragment>
       {snackbarStatus.isOpen && (
@@ -275,9 +271,9 @@ const AccountModal = () => {
                               <Grid item lg={8} md={8} xs={8}>
                                 <TextField
                                   fullWidth
+                                  type="password"
                                   variant="outlined"
                                   name="password"
-                                  type="password"
                                   value={account.password || ''}
                                   className={classes.inputField}
                                   onChange={handleChange}
@@ -481,28 +477,17 @@ const AccountModal = () => {
                   Đóng
                 </Button>
               </Grid>
-              {!account.id && (
-                <Grid item>
-                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={() => handleUpdateAccount()}>
-                    {'Tạo mới'}
-                  </Button>
-                </Grid>
-              )}
               <Grid item>
-                {buttonResetPass && !!selectedDocument && (
-                  <Button
-                    variant="contained"
-                    style={{ background: 'rgb(97, 42, 255)', marginRight: 10 }}
-                    onClick={() => handleResetPasswordAccount()}
-                  >
-                    {buttonResetPass.text}
-                  </Button>
-                )}
-                {buttonSave && !!selectedDocument && (
-                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={() => handleUpdateAccount()}>
-                    {buttonSave.text}
-                  </Button>
-                )}
+                <Button
+                  variant="contained"
+                  style={{ background: 'rgb(97, 42, 255)', marginRight: 10 }}
+                  onClick={() => handleResetPasswordAccount()}
+                >
+                  {'Thay đổi mật khẩu'}
+                </Button>
+                <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={() => handleUpdateAccount()}>
+                  {'Cập nhật thông tin'}
+                </Button>
               </Grid>
             </Grid>
           </DialogActions>
@@ -512,4 +497,4 @@ const AccountModal = () => {
   );
 };
 
-export default AccountModal;
+export default ProfileModal;

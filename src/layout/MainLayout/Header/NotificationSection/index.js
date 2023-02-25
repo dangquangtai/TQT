@@ -29,17 +29,17 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     width: '100%',
-    maxWidth: '500px',
-    minWidth: '500px',
+    maxWidth: '300px',
+    minWidth: '300px',
     backgroundColor: theme.palette.background.paper,
     paddingBottom: 0,
     borderRadius: '10px',
     [theme.breakpoints.down('lg')]: {
-      minWidth: '500px',
+      minWidth: '300px',
       maxHeight: '500px',
     },
     [theme.breakpoints.down('xs')]: {
-      maxWidth: '350px',
+      maxWidth: '300px',
       minWidth: '300px',
       maxHeight: '700px',
     },
@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
       top: '55px !important',
       marginLeft: 'auto',
       marginRight: 'auto',
-      width: '80%',
+      width: '50%',
       transform: 'none !important',
     },
   },
@@ -226,65 +226,47 @@ const NotificationSection = () => {
               <ClickAwayListener onClickAway={handleClose}>
                 <List className={classes.root}>
                   <PerfectScrollbar className={classes.ScrollHeight}>
-                    {taskList.map(
-                      (
-                        {
-                          assigned_date,
-                          assigned_date_time,
-                          assignment_id,
-                          case_object_id,
-                          customer_name,
-                          data_object_id,
-                          due_date,
-                          task_url,
-                          task_title,
-                        },
-                        index
-                      ) => (
-                        <ListItem button alignItems="flex-start" className={classes.pT0} key={index}>
-                          <ListItemAvatar>
-                            <AssignmentIndIcon
-                              style={{
-                                fontSize: '40px',
-                              }}
-                            />
-                          </ListItemAvatar>
-                          <ListItemText
-                            primary={<Typography variant="subtitle1">{task_title}</Typography>}
-                            secondary={
-                              <Typography variant="subtitle2">
-                                {customer_name} Ngày {assigned_date}
-                              </Typography>
-                            }
+                    {taskList.map(({ assigned_date, customer_name, task_title }, index) => (
+                      <ListItem button alignItems="flex-start" className={classes.pT0} key={index}>
+                        <ListItemAvatar>
+                          <AssignmentIndIcon
+                            style={{
+                              fontSize: '40px',
+                            }}
                           />
-                          <ListItemSecondaryAction className={classes.listAction}>
-                            <Grid container justifyContent="flex-end">
-                              <Grid item>
-                                <QueryBuilderTwoToneIcon className={classes.actionIcon} />
-                              </Grid>
-                              <Grid item>
-                                <Typography variant="caption" display="block" gutterBottom className={classes.actionColor}></Typography>
-                              </Grid>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={<Typography variant="subtitle1">{task_title}</Typography>}
+                          secondary={
+                            <Typography variant="subtitle2">
+                              {customer_name} Ngày {assigned_date}
+                            </Typography>
+                          }
+                        />
+                        <ListItemSecondaryAction className={classes.listAction}>
+                          <Grid container justifyContent="flex-end">
+                            <Grid item>
+                              <QueryBuilderTwoToneIcon className={classes.actionIcon} />
                             </Grid>
-                          </ListItemSecondaryAction>
-                        </ListItem>
-                      )
-                    )}
-                    {laterTasks.length > 0 && (
+                            <Grid item>
+                              <Typography variant="caption" display="block" gutterBottom className={classes.actionColor}></Typography>
+                            </Grid>
+                          </Grid>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                    ))}
+                    {/* {laterTasks.length > 0 && (
                       <ListSubheader disableSticky>
                         <Chip size="small" variant="outlined" label="EARLIER" />
                       </ListSubheader>
-                    )}
-                    {laterTasks.map(
+                    )} */}
+                    {/* {laterTasks.map(
                       (
                         {
                           assigned_date,
-                          assigned_date_time,
-                          assignment_id,
-                          case_object_id,
+                       
                           customer_name,
-                          data_object_id,
-                          due_date,
+                        
                           task_url,
                         },
                         index
@@ -315,7 +297,7 @@ const NotificationSection = () => {
                           </ListItemSecondaryAction>
                         </ListItem>
                       )
-                    )}
+                    )} */}
                   </PerfectScrollbar>
                 </List>
               </ClickAwayListener>

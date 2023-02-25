@@ -1,22 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import {
-  makeStyles,
-  Fade,
-  Button,
-  ClickAwayListener,
-  Paper,
-  Popper,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-} from '@material-ui/core';
-import AccountCircleTwoToneIcon from '@material-ui/icons/AccountCircleTwoTone';
+import { makeStyles, Fade, Button, ClickAwayListener, Paper, Popper, List, ListItem, ListItemText, ListItemIcon } from '@material-ui/core';
 import MeetingRoomTwoToneIcon from '@material-ui/icons/MeetingRoomTwoTone';
 import PersonTwoToneIcon from '@material-ui/icons/PersonTwoTone';
 import useAuth from '../../../../hooks/useAuth';
-
+import ProfileModal from './profile';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -76,7 +64,7 @@ const ProfileSection = () => {
 
     setOpen(false);
   };
-
+  const [openProfile, setOpenProfile] = useState(false);
   const prevOpen = React.useRef(open);
   React.useEffect(() => {
     if (prevOpen.current === true && open === false) {
@@ -93,6 +81,7 @@ const ProfileSection = () => {
             >
                 { user ? user.fullname : '' }
             </span> */}
+
       <Button
         className={classes.menuButton}
         ref={anchorRef}
@@ -102,8 +91,9 @@ const ProfileSection = () => {
         color="inherit"
       >
         {/* <AccountCircleTwoToneIcon className={classes.menuIcon} /> */}
-        <img src={account?.avatar_url} style={{maxWidth:30,minWidth:30, borderRadius:100, maxHeight:30, minHeight:30}}></img>
+        <img src={account?.avatar_url} style={{ maxWidth: 30, minWidth: 30, borderRadius: 100, maxHeight: 30, minHeight: 30 }}></img>
       </Button>
+
       <Popper
         placement="bottom-end"
         open={open}
@@ -126,13 +116,14 @@ const ProfileSection = () => {
         {({ TransitionProps, placement }) => (
           <Fade {...TransitionProps}>
             <Paper>
+              {openProfile && <ProfileModal openDialog={openProfile} id={account?.id} setOpenDialog={setOpenProfile} />}
               <ClickAwayListener onClickAway={handleClose}>
                 <List component="nav" className={classes.root}>
                   <ListItem button>
                     <ListItemIcon>
                       <PersonTwoToneIcon />
                     </ListItemIcon>
-                    <ListItemText primary={account ? account.fullname : ''} />
+                    <ListItemText primary={account ? account.fullname : ''} onClick={() => setOpenProfile(true)} />
                   </ListItem>
                   <ListItem button selected={selectedIndex === 4} onClick={handleLogout}>
                     <ListItemIcon>

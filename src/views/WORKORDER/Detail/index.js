@@ -331,36 +331,32 @@ const WorkorderModal = () => {
     } catch {}
   };
   const handleGetlink = async () => {
-    try {
-      setSnackbarStatus({
-        isOpen: true,
-        type: 'info',
-        text: 'Vui lòng chờ trong giây lát. Báo cáo đang được tải xuống',
-      });
-      let link = await getLink(productionDailyRequestList[indexDate].id);
-      let link2 = await exportDailyMaterialReceived(productionDailyRequestList[indexDate].id);
-      let link3 = await exportDailyMaterialRequisition(productionDailyRequestList[indexDate].id);
-      let link4 = await exportGoodsReceiptByWorkOrder(productionDailyRequestList[indexDate].id);
+    setSnackbarStatus({
+      isOpen: true,
+      type: 'info',
+      text: 'Vui lòng chờ trong giây lát. Báo cáo đang được tải xuống',
+    });
 
-      downloadFile(link4);
-      downloadFile(link);
-      downloadFile(link3);
-      downloadFile(link2);
-      // setSnackbarStatus({
-      //   isOpen: true,
-      //   type: 'success',
-      //   text: 'Tải xuống báo cáo thành công',
-      // });
-      handleOpenSnackbar(true, 'success', 'Tải file thành công');
-    } catch {
-      setSnackbarStatus({
-        isOpen: true,
-        type: 'error',
-        text: 'Tải xuống báo cáo thất bại',
-      });
-    }
+    let link = await getLink(productionDailyRequestList[indexDate].id);
+    let link2 = await exportDailyMaterialReceived(productionDailyRequestList[indexDate].id);
+    let link3 = await exportDailyMaterialRequisition(productionDailyRequestList[indexDate].id);
+    let link4 = await exportGoodsReceiptByWorkOrder(productionDailyRequestList[indexDate].id);
+
+    handleDownload(link);
+    handleDownload(link2);
+    handleDownload(link3);
+    handleDownload(link4);
 
     ///
+  };
+  const handleDownload = (url) => {
+    if (!url) {
+      handleOpenSnackbar(true, 'error', 'Tải file thất bại');
+      return;
+    }
+    window.open(url, '_blank', 'noreferrer');
+
+    handleOpenSnackbar(true, 'success', 'Tải file thành công');
   };
   const handleUpdateWorkOrder = async (product, index) => {
     try {

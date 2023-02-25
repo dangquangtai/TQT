@@ -45,7 +45,5 @@ export const exportDailyMaterialReceived = (id) => {
       }
       return '';
     })
-    .catch((error) => {
-      console.log(error);
-    });
+    .catch((error) => {});
 };
