@@ -135,34 +135,36 @@ const DailyMaterialReceivedModal = () => {
 
   const handleChangeProduct = (index, e) => {
     const newreceivedDetailList = [...receivedDetailList];
-    const { name, value } = e.target;
+    var { name, value } = e.target;
+    var number = parseInt(value);
+    // if (name === 'consumed_quantity_in_piece') {
+    //   const check =
+    //     number + newreceivedDetailList[index].total_return_quantity_in_piece + newreceivedDetailList[index].total_broken_quantity_in_piece;
 
-    const quantity = +newreceivedDetailList[index].quantity_in_piece;
-    const consumed_quantity = +newreceivedDetailList[index].consumed_quantity_in_piece;
-    const broken_quantity = +newreceivedDetailList[index].total_broken_quantity_in_piece;
-    const return_quantity = +newreceivedDetailList[index].total_return_quantity_in_piece;
-
-    if (name === 'consumed_quantity_in_piece') {
-      if (value > quantity) {
-        handleOpenSnackbar('error', 'Số lượng sử dụng không được lớn hơn số lượng trong kế hoạch!');
-        return;
-      }
-      if (+value + return_quantity + broken_quantity > quantity) {
-        handleOpenSnackbar('error', 'Số lượng không được lớn hơn số lượng trong kế hoạch!');
-        return;
-      }
-    }
-    if (name === 'total_return_quantity_in_piece') {
-      if (value > quantity) {
-        handleOpenSnackbar('error', 'Số lượng hoàn trả không được lớn hơn số lượng trong kế hoạch!');
-        return;
-      }
-      if (+value + consumed_quantity + broken_quantity > quantity) {
-        handleOpenSnackbar('error', 'Số lượng không được lớn hơn số lượng trong kế hoạch!');
-        return;
-      }
-    }
-    newreceivedDetailList[index] = { ...newreceivedDetailList[index], [name]: value };
+    //   if (check > newreceivedDetailList[index].quantity_in_piece) {
+    //     number =
+    //       newreceivedDetailList[index].quantity_in_piece -
+    //       (newreceivedDetailList[index].consumed_quantity_in_piece +
+    //         newreceivedDetailList[index].total_return_quantity_in_piece +
+    //         newreceivedDetailList[index].total_broken_quantity_in_piece) -
+    //       newreceivedDetailList[index].consumed_quantity_in_piece;
+    //     return;
+    //   }
+    // }
+    // if (name === 'total_return_quantity_in_piece') {
+    //   const check =
+    //     newreceivedDetailList[index].consumed_quantity_in_piece + number + newreceivedDetailList[index].total_broken_quantity_in_piece;
+    //   if (check > newreceivedDetailList[index].quantity_in_piece) {
+    //     number =
+    //       newreceivedDetailList[index].quantity_in_piece -
+    //       (newreceivedDetailList[index].consumed_quantity_in_piece +
+    //         newreceivedDetailList[index].total_return_quantity_in_piece +
+    //         newreceivedDetailList[index].total_broken_quantity_in_piece) +
+    //       newreceivedDetailList[index].total_return_quantity_in_piece;
+    //     return;
+    //   }
+    // }
+    newreceivedDetailList[index] = { ...newreceivedDetailList[index], [name]: number };
     setReceivedDetailList(newreceivedDetailList);
   };
 
@@ -468,10 +470,12 @@ const DailyMaterialReceivedModal = () => {
                                       {row?.total_broken_quantity_in_piece || '0'}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '5%' }}>
-                                      {row.quantity_in_piece -
-                                        row.consumed_quantity_in_piece -
-                                        row.total_return_quantity_in_piece -
-                                        row.total_broken_quantity_in_piece}
+                                      {Math.abs(
+                                        row.consumed_quantity_in_piece +
+                                          row.total_return_quantity_in_piece +
+                                          row.total_broken_quantity_in_piece -
+                                          row.quantity_in_piece
+                                      )}
                                     </TableCell>
                                     <TableCell
                                       align="left"
