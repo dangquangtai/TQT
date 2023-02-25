@@ -354,11 +354,8 @@ const WorkorderModal = () => {
       handleOpenSnackbar(true, 'error', 'Tải file thất bại');
       return;
     }
-    const link = document.createElement('a');
-    link.href = url;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    window.open(url, '_blank', 'noreferrer');
+
     handleOpenSnackbar(true, 'success', 'Tải file thành công');
   };
   const handleUpdateWorkOrder = async (product, index) => {
