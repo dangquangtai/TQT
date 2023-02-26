@@ -367,6 +367,7 @@ const DailyMaterialRequisitionModal = () => {
                                         InputProps={{
                                           inputProps: { min: 0 },
                                         }}
+                                        disabled={selectedDocument?.status === 'STATUS_COMPLETED' ? true : false}
                                         fullWidth
                                         variant="outlined"
                                         name="contingency_quantity_in_piece"

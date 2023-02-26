@@ -4,7 +4,8 @@ import { makeStyles, Fade, Button, ClickAwayListener, Paper, Popper, List, ListI
 import MeetingRoomTwoToneIcon from '@material-ui/icons/MeetingRoomTwoTone';
 import PersonTwoToneIcon from '@material-ui/icons/PersonTwoTone';
 import useAuth from '../../../../hooks/useAuth';
-import ProfileModal from './profile';
+import { DOCUMENT_CHANGE, FLOATING_MENU_CHANGE } from '../../../../store/actions';
+import { useDispatch } from 'react-redux';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -37,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ProfileSection = () => {
   const classes = useStyles();
-
+  const dispatch = useDispatch();
   const [selectedIndex] = React.useState(1);
   const { logout } = useAuth();
   const [open, setOpen] = React.useState(false);
@@ -64,7 +65,10 @@ const ProfileSection = () => {
 
     setOpen(false);
   };
-  const [openProfile, setOpenProfile] = useState(false);
+  const handleOpenProfile = () => {
+    dispatch({ type: DOCUMENT_CHANGE, selectedDocument: account });
+    dispatch({ type: FLOATING_MENU_CHANGE, profileDocument: true });
+  };
   const prevOpen = React.useRef(open);
   React.useEffect(() => {
     if (prevOpen.current === true && open === false) {
@@ -116,14 +120,16 @@ const ProfileSection = () => {
         {({ TransitionProps, placement }) => (
           <Fade {...TransitionProps}>
             <Paper>
-              {openProfile && <ProfileModal openDialog={openProfile} id={account?.id} setOpenDialog={setOpenProfile} />}
               <ClickAwayListener onClickAway={handleClose}>
                 <List component="nav" className={classes.root}>
                   <ListItem button>
                     <ListItemIcon>
                       <PersonTwoToneIcon />
                     </ListItemIcon>
-                    <ListItemText primary={account ? account.fullname : ''} onClick={() => setOpenProfile(true)} />
+                    <ListItemText
+                      primary={account ? (account.fullname === '' ? 'No Name' : account.fullname) : 'No Name'}
+                      onClick={handleOpenProfile}
+                    />
                   </ListItem>
                   <ListItem button selected={selectedIndex === 4} onClick={handleLogout}>
                     <ListItemIcon>

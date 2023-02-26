@@ -448,6 +448,7 @@ const DailyMaterialReceivedModal = () => {
                                         name="consumed_quantity_in_piece"
                                         type="number"
                                         size="small"
+                                        disabled={selectedDocument?.status === 'STATUS_COMPLETED' ? true : false}
                                         value={row?.consumed_quantity_in_piece || ''}
                                         onChange={(e) => handleChangeProduct(index, e)}
                                       />
@@ -462,6 +463,7 @@ const DailyMaterialReceivedModal = () => {
                                         name="total_return_quantity_in_piece"
                                         type="number"
                                         size="small"
+                                        disabled={selectedDocument?.status === 'STATUS_COMPLETED' ? true : false}
                                         value={row?.total_return_quantity_in_piece || ''}
                                         onChange={(e) => handleChangeProduct(index, e)}
                                       />

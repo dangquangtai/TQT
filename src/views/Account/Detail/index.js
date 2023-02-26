@@ -139,14 +139,20 @@ const AccountModal = () => {
   };
   const handleResetPasswordAccount = async () => {
     try {
-      if (!account.new_password || !account.password) {
+      if (!account.new_password || !account.password || !account.new_password_confirm) {
         handleOpenSnackbar(true, 'error', 'Vui lòng điền đầy đủ thông tin!');
       } else {
-        let check = await resetPassword(account.new_password, account.password, account.email_address);
-        if (check) {
-          handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
+        if (account.new_password === account.new_password_confirm) {
+          handleOpenSnackbar(true, 'error', 'Mật khẩu mới không đúng!');
         } else {
-          handleOpenSnackbar(true, 'error', 'Cập nhập không thành công!');
+          let check = await resetPassword(account.new_password, account.password, account.email_address);
+          if (check) {
+            handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
+            handleCloseDialog();
+          } else {
+            handleOpenSnackbar(true, 'error', 'Cập nhật mật khẩu không thành công!');
+            handleCloseDialog(false);
+          }
         }
       }
     } catch (error) {
@@ -295,6 +301,22 @@ const AccountModal = () => {
                                   name="new_password"
                                   type="password"
                                   value={account.new_password || ''}
+                                  className={classes.inputField}
+                                  onChange={handleChange}
+                                />
+                              </Grid>
+                            </Grid>
+                            <Grid container className={classes.gridItemInfo} alignItems="center">
+                              <Grid item lg={4} md={4} xs={4}>
+                                <span className={classes.tabItemLabelField}>Nhập lại mật khẩu mới(*): </span>
+                              </Grid>
+                              <Grid item lg={8} md={8} xs={8}>
+                                <TextField
+                                  fullWidth
+                                  variant="outlined"
+                                  name="new_password_confirm"
+                                  type="password"
+                                  value={account.new_password_confirm || ''}
                                   className={classes.inputField}
                                   onChange={handleChange}
                                 />
