@@ -55,17 +55,17 @@ function a11yProps(index) {
 }
 
 const ProfileModal = (props) => {
+  const { openDialog, setOpenDialog, selectedDocument } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
   const [tabIndex, setTabIndex] = React.useState(0);
-  const { profileDocument: openDialog } = useSelector((state) => state.floatingMenu);
+
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
-  const vertical = 'bottom';
-  const horizontal = 'right';
+
   const { updateAccount, resetPassword, getAccount } = useAccount();
-  const { selectedDocument } = useSelector((state) => state.document);
+
   const [dialogUpload, setDialogUpload] = useState({
     open: false,
     type: '',
@@ -83,8 +83,7 @@ const ProfileModal = (props) => {
   }, [selectedDocument]);
 
   const handleCloseDialog = () => {
-    dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null });
-    dispatch({ type: FLOATING_MENU_CHANGE, profileDocument: false });
+    setOpenDialog(false);
     setDocumentToDefault();
     setAccount({
       ...initAccount,
@@ -116,7 +115,6 @@ const ProfileModal = (props) => {
           handleCloseDialog();
         } else {
           handleOpenSnackbar(true, 'error', 'Tài khoản đã tồn tại!');
-          handleCloseDialog();
         }
       }
     } catch (error) {
@@ -131,15 +129,13 @@ const ProfileModal = (props) => {
       } else {
         if (account.new_password != account.new_password_confirm) {
           handleOpenSnackbar(true, 'error', 'Mật khẩu mới không đúng!');
-          handleCloseDialog();
         } else {
           let check = await resetPassword(account.new_password, account.password, account.email_address);
           if (check) {
             handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
-            handleCloseDialog();
+            handleCloseDiaLog();
           } else {
             handleOpenSnackbar(true, 'error', 'Cập nhật mật khẩu không thành công!');
-            handleCloseDialog(false);
           }
         }
       }

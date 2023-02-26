@@ -88,7 +88,7 @@ const Header = (props) => {
           </Grid>
         </Grid>
       </Box>
-      <ProfileModal />
+
       <CompanySelectionSection />
       <div className={classes.grow} />
       <NotificationSection />

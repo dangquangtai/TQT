@@ -6,6 +6,7 @@ import PersonTwoToneIcon from '@material-ui/icons/PersonTwoTone';
 import useAuth from '../../../../hooks/useAuth';
 import { DOCUMENT_CHANGE, FLOATING_MENU_CHANGE } from '../../../../store/actions';
 import { useDispatch } from 'react-redux';
+import ProfileModal from './profile';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -65,10 +66,7 @@ const ProfileSection = () => {
 
     setOpen(false);
   };
-  const handleOpenProfile = () => {
-    dispatch({ type: DOCUMENT_CHANGE, selectedDocument: account });
-    dispatch({ type: FLOATING_MENU_CHANGE, profileDocument: true });
-  };
+  const [openDialog, setOpenDialog] = useState(false);
   const prevOpen = React.useRef(open);
   React.useEffect(() => {
     if (prevOpen.current === true && open === false) {
@@ -97,6 +95,9 @@ const ProfileSection = () => {
         {/* <AccountCircleTwoToneIcon className={classes.menuIcon} /> */}
         <img src={account?.avatar_url} style={{ maxWidth: 30, minWidth: 30, borderRadius: 100, maxHeight: 30, minHeight: 30 }}></img>
       </Button>
+      <div style={{ display: 'none' }}>
+        <ProfileModal openDialog={openDialog} selectedDocument={account} setOpenDialog={setOpenDialog} />
+      </div>
 
       <Popper
         placement="bottom-end"
@@ -128,7 +129,7 @@ const ProfileSection = () => {
                     </ListItemIcon>
                     <ListItemText
                       primary={account ? (account.fullname === '' ? 'No Name' : account.fullname) : 'No Name'}
-                      onClick={handleOpenProfile}
+                      onClick={() => setOpenDialog(true)}
                     />
                   </ListItem>
                   <ListItem button selected={selectedIndex === 4} onClick={handleLogout}>
