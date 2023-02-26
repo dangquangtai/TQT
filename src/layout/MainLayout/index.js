@@ -42,10 +42,9 @@ import MaterialRequisitionModal from './../../views/Material/Requisition/Detail/
 import UserGroupModal from '../../views/UserGroup/Detail';
 import UserGroupMenuItemModal from '../../views/UserGroupMenuItem/Detail';
 import AccountPermissionModal from '../../views/AccountPermission/Detail';
-
+import ProfileModal from './Header/ProfileSection/profile';
 import ReturnMaterialModal from './../../views/Material/Return/Detail/index';
 import TemplateDocumentModal from '../../views/Setting/DocumentTemplate/ExcelDocument/Detail';
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -167,9 +166,9 @@ const MainLayout = ({ children }) => {
       case 'materialRequisition':
         return <MaterialRequisitionModal />;
       case 'usergroup':
-        return <UserGroupModal/>;
+        return <UserGroupModal />;
       case 'usergroupmenuitem':
-        return <UserGroupMenuItemModal/>;
+        return <UserGroupMenuItemModal />;
       case 'returnMaterial':
         return <ReturnMaterialModal />;
       case 'templateDocument':
@@ -201,6 +200,7 @@ const MainLayout = ({ children }) => {
         <div className={classes.main}>{children}</div>
         <FloatingMenu />
         <UploadFile />
+
         {renderDetailDialog()}
       </main>
       {loading && <Loading />}

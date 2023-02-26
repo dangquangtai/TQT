@@ -15,13 +15,14 @@ import {
   MenuItem,
   TextField,
   Snackbar,
+  Portal,
 } from '@material-ui/core';
 import { ImageOutlined as ImageIcon } from '@material-ui/icons';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import Alert from '../../../../component/Alert/index.js';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-
+import { FLOATING_MENU_CHANGE } from '../../../../store/actions.js';
 import useStyles from '../../../../views/Account/Detail/classes';
 import { DOCUMENT_CHANGE } from '../../../../store/actions.js';
 import useAccount from '../../../../hooks/useAccount.js';
@@ -54,16 +55,17 @@ function a11yProps(index) {
 }
 
 const ProfileModal = (props) => {
-  const { openDialog, setOpenDialog, id } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
   const [tabIndex, setTabIndex] = React.useState(0);
-
+  const { profileDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
-  const { createAccount, updateAccount, resetPassword, getAccount } = useAccount();
-  const [selectedDocument, setSelectedDocument] = useState();
+  const vertical = 'bottom';
+  const horizontal = 'right';
+  const { updateAccount, resetPassword, getAccount } = useAccount();
+  const { selectedDocument } = useSelector((state) => state.document);
   const [dialogUpload, setDialogUpload] = useState({
     open: false,
     type: '',
@@ -81,7 +83,8 @@ const ProfileModal = (props) => {
   }, [selectedDocument]);
 
   const handleCloseDialog = () => {
-    setOpenDialog(false);
+    dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null });
+    dispatch({ type: FLOATING_MENU_CHANGE, profileDocument: false });
     setDocumentToDefault();
     setAccount({
       ...initAccount,
@@ -123,17 +126,21 @@ const ProfileModal = (props) => {
   };
   const handleResetPasswordAccount = async () => {
     try {
-      if (!account.new_password || !account.password) {
+      if (!account.new_password || !account.password || !account.new_password_confirm) {
         handleOpenSnackbar(true, 'error', 'Vui lòng điền đầy đủ thông tin!');
       } else {
-        let check = await resetPassword(account.new_password, account.password, account.email_address);
-
-        if (check) {
-          handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
+        if (account.new_password != account.new_password_confirm) {
+          handleOpenSnackbar(true, 'error', 'Mật khẩu mới không đúng!');
           handleCloseDialog();
         } else {
-          handleOpenSnackbar(true, 'error', 'Cập nhật mật khẩu không thành công!');
-          handleCloseDialog(false);
+          let check = await resetPassword(account.new_password, account.password, account.email_address);
+          if (check) {
+            handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
+            handleCloseDialog();
+          } else {
+            handleOpenSnackbar(true, 'error', 'Cập nhật mật khẩu không thành công!');
+            handleCloseDialog(false);
+          }
         }
       }
     } catch (error) {
@@ -166,11 +173,12 @@ const ProfileModal = (props) => {
   const handleCloseDiaLog = () => {
     setDialogUpload({ open: false, type: 'image' });
   };
+
   useEffect(() => {
     if (openDialog) {
       const fetch = async () => {
-        let data = await getAccount(id);
-        setSelectedDocument(data);
+        let data = await getAccount(selectedDocument.account_id);
+        setAccount(data);
       };
       fetch();
     }
@@ -178,20 +186,22 @@ const ProfileModal = (props) => {
   return (
     <React.Fragment>
       {snackbarStatus.isOpen && (
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          open={snackbarStatus.isOpen}
-          autoHideDuration={3000}
-          onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-        >
-          <Alert
+        <Portal>
+          <Snackbar
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            open={snackbarStatus.isOpen}
+            autoHideDuration={3000}
             onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
-            severity={snackbarStatus.type}
-            sx={{ width: '100%' }}
           >
-            {snackbarStatus.text}
-          </Alert>
-        </Snackbar>
+            <Alert
+              onClose={() => setSnackbarStatus({ ...snackbarStatus, isOpen: false })}
+              severity={snackbarStatus.type}
+              sx={{ width: '100%' }}
+            >
+              {snackbarStatus.text}
+            </Alert>
+          </Snackbar>
+        </Portal>
       )}
       <FirebaseUpload
         open={dialogUpload.open || false}
@@ -296,6 +306,22 @@ const ProfileModal = (props) => {
                                 />
                               </Grid>
                             </Grid>
+                            <Grid container className={classes.gridItemInfo} alignItems="center">
+                              <Grid item lg={4} md={4} xs={4}>
+                                <span className={classes.tabItemLabelField}>Nhập lại mật khẩu mới(*): </span>
+                              </Grid>
+                              <Grid item lg={8} md={8} xs={8}>
+                                <TextField
+                                  fullWidth
+                                  variant="outlined"
+                                  name="new_password_confirm"
+                                  type="password"
+                                  value={account.new_password_confirm || ''}
+                                  className={classes.inputField}
+                                  onChange={handleChange}
+                                />
+                              </Grid>
+                            </Grid>
                           </div>
                         </div>
                       )}
@@ -334,8 +360,6 @@ const ProfileModal = (props) => {
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
-                                rows={1}
-                                rowsMax={1}
                                 variant="outlined"
                                 name="full_name"
                                 value={account.full_name || ''}

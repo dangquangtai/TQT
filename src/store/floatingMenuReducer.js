@@ -20,6 +20,7 @@ export const initialState = {
   purchaseMaterialDocument: false,
   dailyMaterialDocument: false,
   workOrderDocument: false,
+  profileDocument: false,
 };
 
 const floatingMenuReducer = (state = initialState, action) => {
@@ -31,6 +32,7 @@ const floatingMenuReducer = (state = initialState, action) => {
         document: action.document,
         detailDocument: action.detailDocument,
         accountDocument: action.accountDocument,
+        profileDocument: action.profileDocument,
         departmentDocument: action.departmentDocument,
         processDeptDocument: action.processDeptDocument,
         processUserDocument: action.processUserDocument,

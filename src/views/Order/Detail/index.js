@@ -416,7 +416,10 @@ const OrderModal = () => {
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>Sản phẩm</div>
                           <Tooltip title="Thêm sản phẩm">
-                            <IconButton onClick={handleAddProduct}>
+                            <IconButton
+                              onClick={handleAddProduct}
+                              disabled={selectedDocument?.status === 'STATUS_OPEN' ? false : !selectedDocument ? false : true}
+                            >
                               <AddCircleOutline />
                             </IconButton>
                           </Tooltip>
@@ -445,6 +448,7 @@ const OrderModal = () => {
                                         getOptionLabel={(option) => option.product_code || ''}
                                         fullWidth
                                         size="small"
+                                        disabled={selectedDocument?.status === 'STATUS_OPEN' ? false : !selectedDocument ? false : true}
                                         value={products.find((item) => item.product_code === row.product_code) || null}
                                         onChange={(event, newValue) => handleChangeProductCode(index, newValue)}
                                         renderInput={(params) => <TextField {...params} variant="outlined" />}
@@ -466,6 +470,7 @@ const OrderModal = () => {
                                         name="quantity_in_box"
                                         type="number"
                                         size="small"
+                                        disabled={selectedDocument?.status === 'STATUS_OPEN' ? false : !selectedDocument ? false : true}
                                         value={row?.quantity_in_box || ''}
                                         onChange={(e) => handleChangeProduct(index, e)}
                                       />
@@ -478,7 +483,10 @@ const OrderModal = () => {
                                     <TableCell align="left">{row.unit_name}</TableCell>
                                     {/* {selectedDocument?.id && <TableCell align="left">{row.status_display}</TableCell>} */}
                                     <TableCell align="center">
-                                      <IconButton onClick={() => handleDeleteProduct(index, row.id)}>
+                                      <IconButton
+                                        onClick={() => handleDeleteProduct(index, row.id)}
+                                        disabled={selectedDocument?.status === 'STATUS_OPEN' ? false : !selectedDocument ? false : true}
+                                      >
                                         <Delete />
                                       </IconButton>
                                     </TableCell>

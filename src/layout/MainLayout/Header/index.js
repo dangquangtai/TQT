@@ -9,7 +9,7 @@ import logo from '../../../assets/svgs/logo.png';
 import { Link as RouterLink } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { FOLDER_CHANGE, PROJECT_CHANGE, SELECTED_APP_CHANGE } from './../../../store/actions';
-
+import ProfileModal from './ProfileSection/profile';
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
@@ -88,6 +88,7 @@ const Header = (props) => {
           </Grid>
         </Grid>
       </Box>
+      <ProfileModal />
       <CompanySelectionSection />
       <div className={classes.grow} />
       <NotificationSection />
