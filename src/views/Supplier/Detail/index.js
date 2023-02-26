@@ -63,7 +63,7 @@ const SupplierModal = () => {
   const { supplierDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
 
-  const [supplierData, setSupplierData] = useState({ notes: '' });
+  const [supplierData, setSupplierData] = useState({ notes: '', is_active: true });
   const [categories, setCategories] = useState([]);
   const [tabIndex, setTabIndex] = React.useState(0);
   const [dialogUpload, setDialogUpload] = useState({
@@ -91,7 +91,7 @@ const SupplierModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setSupplierData({});
+    setSupplierData({ is_active: true, notes: '' });
     setTabIndex(0);
   };
   const setURL = (image) => {
@@ -219,23 +219,7 @@ const SupplierModal = () => {
                           <Grid container spacing={1}>
                             <Grid container className={classes.gridItemInfo} alignItems="center">
                               <Grid item lg={4} md={4} xs={4}>
-                                <span className={classes.tabItemLabelField}>Tên nhà cung cấp:</span>
-                              </Grid>
-                              <Grid item lg={8} md={8} xs={8}>
-                                <TextField
-                                  fullWidth
-                                  variant="outlined"
-                                  name="title"
-                                  type="text"
-                                  size="small"
-                                  value={supplierData.title || ''}
-                                  onChange={handleChanges}
-                                />
-                              </Grid>
-                            </Grid>
-                            <Grid container className={classes.gridItemInfo} alignItems="center">
-                              <Grid item lg={4} md={4} xs={4}>
-                                <span className={classes.tabItemLabelField}>Mã nhà cung cấp:</span>
+                                <span className={classes.tabItemLabelField}>Mã nhà cung cấp(*):</span>
                               </Grid>
                               <Grid item lg={8} md={8} xs={8}>
                                 <TextField
@@ -251,7 +235,23 @@ const SupplierModal = () => {
                             </Grid>
                             <Grid container className={classes.gridItemInfo} alignItems="center">
                               <Grid item lg={4} md={4} xs={4}>
-                                <span className={classes.tabItemLabelField}>Danh mục:</span>
+                                <span className={classes.tabItemLabelField}>Tên nhà cung cấp(*):</span>
+                              </Grid>
+                              <Grid item lg={8} md={8} xs={8}>
+                                <TextField
+                                  fullWidth
+                                  variant="outlined"
+                                  name="title"
+                                  type="text"
+                                  size="small"
+                                  value={supplierData.title || ''}
+                                  onChange={handleChanges}
+                                />
+                              </Grid>
+                            </Grid>
+                            <Grid container className={classes.gridItemInfo} alignItems="center">
+                              <Grid item lg={4} md={4} xs={4}>
+                                <span className={classes.tabItemLabelField}>Danh mục(*):</span>
                               </Grid>
                               <Grid item lg={8} md={8} xs={8}>
                                 <TextField

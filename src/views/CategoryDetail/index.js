@@ -210,23 +210,7 @@ const CategoryModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tên danh mục:</span>
-                            </Grid>
-                            <Grid item lg={8} md={8} xs={8}>
-                              <TextField
-                                fullWidth
-                                type="text"
-                                variant="outlined"
-                                name="category_name"
-                                value={categoryData.category_name}
-                                size="small"
-                                onChange={handleChanges}
-                              />
-                            </Grid>
-                          </Grid>
-                          <Grid container className={classes.gridItemInfo} alignItems="center">
-                            <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã danh mục:</span>
+                              <span className={classes.tabItemLabelField}>Mã danh mục(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -235,6 +219,22 @@ const CategoryModal = () => {
                                 variant="outlined"
                                 name="category_code"
                                 value={categoryData.category_code}
+                                size="small"
+                                onChange={handleChanges}
+                              />
+                            </Grid>
+                          </Grid>
+                          <Grid container className={classes.gridItemInfo} alignItems="center">
+                            <Grid item lg={4} md={4} xs={4}>
+                              <span className={classes.tabItemLabelField}>Tên danh mục(*):</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={8}>
+                              <TextField
+                                fullWidth
+                                type="text"
+                                variant="outlined"
+                                name="category_name"
+                                value={categoryData.category_name}
                                 size="small"
                                 onChange={handleChanges}
                               />

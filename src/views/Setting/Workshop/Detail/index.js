@@ -61,7 +61,7 @@ const WorkshopModal = () => {
   const { selectedDocument } = useSelector((state) => state.document);
   const [tabIndex, setTabIndex] = React.useState(0);
 
-  const [workshopData, setWorkshopData] = useState({});
+  const [workshopData, setWorkshopData] = useState({ is_active: true, address: '' });
   const { provinces } = useSelector((state) => state.metadata);
 
   const handleCloseDialog = () => {
@@ -84,7 +84,7 @@ const WorkshopModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setWorkshopData({});
+    setWorkshopData({ is_active: true, address: '' });
     setTabIndex(0);
   };
 
@@ -168,7 +168,7 @@ const WorkshopModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã xưởng:</span>
+                              <span className={classes.tabItemLabelField}>Mã xưởng(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -184,7 +184,7 @@ const WorkshopModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tên xưởng:</span>
+                              <span className={classes.tabItemLabelField}>Tên xưởng(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -200,7 +200,7 @@ const WorkshopModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Số người làm:</span>
+                              <span className={classes.tabItemLabelField}>Số người làm(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -217,7 +217,7 @@ const WorkshopModal = () => {
 
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Số giờ làm:</span>
+                              <span className={classes.tabItemLabelField}>Số giờ làm(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -251,7 +251,7 @@ const WorkshopModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tỉnh thành:</span>
+                              <span className={classes.tabItemLabelField}>Tỉnh thành(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField

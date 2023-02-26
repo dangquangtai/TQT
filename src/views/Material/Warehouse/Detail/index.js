@@ -61,7 +61,7 @@ const MaterialWarehouseModal = () => {
   const { selectedDocument } = useSelector((state) => state.document);
   const [tabIndex, setTabIndex] = React.useState(0);
 
-  const [materialWarehouseData, setMaterialWarehouseData] = useState({});
+  const [materialWarehouseData, setMaterialWarehouseData] = useState({ address: '', is_active: true });
   const { provinces } = useSelector((state) => state.metadata);
 
   const handleCloseDialog = () => {
@@ -84,7 +84,7 @@ const MaterialWarehouseModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setMaterialWarehouseData({});
+    setMaterialWarehouseData({ address: '', is_active: true });
     setTabIndex(0);
   };
 
@@ -168,7 +168,7 @@ const MaterialWarehouseModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tên kho:</span>
+                              <span className={classes.tabItemLabelField}>Tên kho(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -202,7 +202,7 @@ const MaterialWarehouseModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tỉnh thành:</span>
+                              <span className={classes.tabItemLabelField}>Tỉnh thành(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField

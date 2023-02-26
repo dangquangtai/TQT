@@ -280,7 +280,7 @@ const GoodsIssueModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={2} className={classes.gridItemInfo}>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Mã phiếu:</span>
+                              <span className={classes.tabItemLabelField}>Mã phiếu(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -292,7 +292,7 @@ const GoodsIssueModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên phiếu nhập:</span>
+                              <span className={classes.tabItemLabelField}>Tên phiếu nhập(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -304,7 +304,7 @@ const GoodsIssueModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày xuất kho:</span>
+                              <span className={classes.tabItemLabelField}>Ngày xuất kho(*):</span>
                               <DatePicker
                                 disabled={isDisabled}
                                 date={goodsIssueData.order_date}
@@ -312,7 +312,7 @@ const GoodsIssueModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà kho:</span>
+                              <span className={classes.tabItemLabelField}>Nhà kho(*):</span>
                               <TextField
                                 fullWidth
                                 disabled={isDisabled}
@@ -331,7 +331,7 @@ const GoodsIssueModal = () => {
                               </TextField>
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Đơn hàng:</span>
+                              <span className={classes.tabItemLabelField}>Đơn hàng(*):</span>
                               {isDisabled ? (
                                 <TextField
                                   fullWidth
@@ -358,7 +358,7 @@ const GoodsIssueModal = () => {
                               )}
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Trạng thái:</span>
+                              <span className={classes.tabItemLabelField}>Trạng thái(*):</span>
                               <TextField
                                 fullWidth
                                 name="status"
