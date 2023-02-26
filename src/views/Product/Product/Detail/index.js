@@ -37,6 +37,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { updateProduct } from '../../../../services/api/Product/Product.js';
 import { SNACKBAR_OPEN } from './../../../../store/actions';
 import { getMaterialLoadData } from '../../../../services/api/Material/MaterialPart';
+import { getAllMaterialPart } from './../../../../services/api/Material/MaterialPart';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -79,7 +80,8 @@ const ProductModal = () => {
     is_active: true,
   });
   const [partList, setPartList] = useState([]);
-  const { materials } = useSelector((state) => state.metadata);
+  // const { materials } = useSelector((state) => state.metadata);
+  const [materials, setMaterials] = useState([]);
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
@@ -192,6 +194,8 @@ const ProductModal = () => {
     const fetchData = async () => {
       const loadData = await getMaterialLoadData();
       setDataUnitList(loadData?.data_unit_list);
+      const materialList = await getAllMaterialPart();
+      setMaterials(materialList);
     };
     fetchData();
   }, []);
@@ -204,7 +208,7 @@ const ProductModal = () => {
           TransitionComponent={Transition}
           keepMounted
           onClose={handleCloseDialog}
-          className={classes.partnerdialog}
+          className={classes.useradddialog}
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
@@ -417,7 +421,7 @@ const ProductModal = () => {
                               <TableBody>
                                 {partList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" component="th" scope="row" style={{ width: '25%' }}>
+                                    <TableCell align="left" component="th" scope="row" style={{ width: '30%' }}>
                                       <Autocomplete
                                         size="small"
                                         options={materials}
@@ -448,7 +452,7 @@ const ProductModal = () => {
                                       />
                                     </TableCell>
                                     <TableCell align="left">{row.unit_name}</TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
+                                    <TableCell align="left" style={{ width: '5%' }}>
                                       <Tooltip title="Xóa">
                                         <IconButton onClick={() => handleDeletePart(index)}>
                                           <Delete />
