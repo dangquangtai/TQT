@@ -55,18 +55,12 @@ export const importInventoryCheck = (data) => {
 
 export const applyInventoryCheck = (id) => {
   return axiosServices.post(apiEndpoints.apply_material_inventory_check, { id }).then((response) => {
-    if (response.status === 200 && response.data.return === 200) {
-      return true;
-    }
-    return false;
+    if (response.status === 200) return response.data;
   });
 };
 
 export const removeInventoryCheck = (id) => {
   return axiosServices.post(apiEndpoints.remove_material_inventory_check, { id }).then((response) => {
-    if (response.status === 200 && response.data.return === 200) {
-      return true;
-    }
-    return false;
+    if (response.status === 200) return response.data;
   });
 };

@@ -150,8 +150,8 @@ const InventoryCheckModal = () => {
         file_url: image,
         inventory_check_code: inventoryCheckData.inventory_check_code,
       });
-      if (res.return === 200) {
-        handleOpenSnackbar('success', 'Nhập thành công!');
+      if (res.code === 200) {
+        handleOpenSnackbar('success', res.message);
       } else {
         handleOpenSnackbar('error', res.message);
       }
@@ -172,8 +172,12 @@ const InventoryCheckModal = () => {
 
   const actionApply = async (id) => {
     try {
-      await applyInventoryCheck(id);
-      handleOpenSnackbar('success', 'Áp dụng thành công!');
+      const res = await applyInventoryCheck(id);
+      if (res.code === 200) {
+        handleOpenSnackbar('success', res.message);
+      } else {
+        handleOpenSnackbar('error', res.message);
+      }
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
     }
@@ -191,8 +195,12 @@ const InventoryCheckModal = () => {
 
   const actionRemove = async (id) => {
     try {
-      await removeInventoryCheck(inventoryCheckData.id);
-      handleOpenSnackbar('success', 'Xóa thành công!');
+      const res = await removeInventoryCheck(inventoryCheckData.id);
+      if (res.code === 200) {
+        handleOpenSnackbar('success', res.message);
+      } else {
+        handleOpenSnackbar('error', res.message);
+      }
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
     }
