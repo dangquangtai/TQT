@@ -65,7 +65,16 @@ const MaterialPartModal = () => {
   const [dataSizeUnitList, setdataSizeUnitList] = useState([]);
   const [dataCategoryList, setdataCategoryList] = useState([]);
   const [dataColorList, setdataColorList] = useState([]);
-  const [materialPartDetailData, setMaterialPartDetailData] = useState([]);
+  const [materialPartDetailData, setMaterialPartDetailData] = useState({
+    size_depth: 0,
+    size_width: 0,
+    size_height: 0,
+    misa_code: '',
+    sewing_pattern: '',
+    weight: 0,
+    size_unit_id: '',
+    is_active: true,
+  });
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
@@ -87,7 +96,16 @@ const MaterialPartModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setMaterialPartDetailData({});
+    setMaterialPartDetailData({
+      size_depth: 0,
+      size_width: 0,
+      size_height: 0,
+      misa_code: '',
+      sewing_pattern: '',
+      weight: 0,
+      size_unit_id: '',
+      is_active: true,
+    });
     setTabIndex(0);
   };
 
@@ -183,7 +201,7 @@ const MaterialPartModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã vật tư:</span>
+                              <span className={classes.tabItemLabelField}>Mã vật tư(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -199,7 +217,7 @@ const MaterialPartModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tên vật tư:</span>
+                              <span className={classes.tabItemLabelField}>Tên vật tư(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -215,7 +233,7 @@ const MaterialPartModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Danh mục:</span>
+                              <span className={classes.tabItemLabelField}>Danh mục(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -235,26 +253,31 @@ const MaterialPartModal = () => {
                               </TextField>
                             </Grid>
                           </Grid>
-
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mẫu may:</span>
+                              <span className={classes.tabItemLabelField}>Màu sắc(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
+                                select
                                 fullWidth
                                 variant="outlined"
-                                name="sewing_pattern"
+                                name="color_id"
+                                value={materialPartDetailData.color_id || ''}
                                 size="small"
-                                type="text"
-                                value={materialPartDetailData.sewing_pattern || ''}
                                 onChange={handleChanges}
-                              />
+                              >
+                                {dataColorList.map((option) => (
+                                  <MenuItem key={option.id} value={option.id}>
+                                    {option.value}
+                                  </MenuItem>
+                                ))}
+                              </TextField>
                             </Grid>
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Đơn vị:</span>
+                              <span className={classes.tabItemLabelField}>Đơn vị(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -383,27 +406,20 @@ const MaterialPartModal = () => {
                               />
                             </Grid>
                           </Grid>
-
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Màu sắc:</span>
+                              <span className={classes.tabItemLabelField}>Mẫu may:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
-                                select
                                 fullWidth
                                 variant="outlined"
-                                name="color_id"
-                                value={materialPartDetailData.color_id || ''}
+                                name="sewing_pattern"
                                 size="small"
+                                type="text"
+                                value={materialPartDetailData.sewing_pattern || ''}
                                 onChange={handleChanges}
-                              >
-                                {dataColorList.map((option) => (
-                                  <MenuItem key={option.id} value={option.id}>
-                                    {option.value}
-                                  </MenuItem>
-                                ))}
-                              </TextField>
+                              />
                             </Grid>
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
@@ -422,18 +438,6 @@ const MaterialPartModal = () => {
                               />
                             </Grid>
                           </Grid>
-                          {/* <Grid container className={classes.gridItemInfo} alignItems="center">
-                                                        <Grid item lg={4} md={4} xs={4}>
-                                                            <span className={classes.tabItemLabelField}>In được:</span>
-                                                        </Grid>
-                                                        <Grid item lg={8} md={8} xs={8}>
-                                                            <Switch
-                                                                checked={workshopData.is_active || true}
-                                                                onChange={(e) => setWorkshopData({ ...workshopData, is_active: e.target.checked })}
-                                                                color="primary"
-                                                            />
-                                                        </Grid>
-                                                    </Grid> */}
                         </div>
                       </div>
                     </Grid>

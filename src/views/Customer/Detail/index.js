@@ -63,7 +63,7 @@ const CustomerModal = () => {
   const { customerDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
 
-  const [customerData, setCustomerData] = useState({ notes: '', contact_person: '' });
+  const [customerData, setCustomerData] = useState({ notes: '', contact_person: '', is_active: true, address: '' });
   const [categories, setCategories] = useState([]);
   const [tabIndex, setTabIndex] = React.useState(0);
   const [dialogUpload, setDialogUpload] = useState({
@@ -91,7 +91,7 @@ const CustomerModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setCustomerData({});
+    setCustomerData({ is_active: true, notes: '', contact_person: '', address: '' });
     setTabIndex(0);
   };
   const setURL = (image) => {
@@ -219,23 +219,7 @@ const CustomerModal = () => {
                           <Grid container spacing={1}>
                             <Grid container className={classes.gridItemInfo} alignItems="center">
                               <Grid item lg={4} md={4} xs={4}>
-                                <span className={classes.tabItemLabelField}>Tên khách hàng:</span>
-                              </Grid>
-                              <Grid item lg={8} md={8} xs={8}>
-                                <TextField
-                                  fullWidth
-                                  variant="outlined"
-                                  name="title"
-                                  type="text"
-                                  size="small"
-                                  value={customerData.title || ''}
-                                  onChange={handleChanges}
-                                />
-                              </Grid>
-                            </Grid>
-                            <Grid container className={classes.gridItemInfo} alignItems="center">
-                              <Grid item lg={4} md={4} xs={4}>
-                                <span className={classes.tabItemLabelField}>Mã khách hàng:</span>
+                                <span className={classes.tabItemLabelField}>Mã khách hàng(*):</span>
                               </Grid>
                               <Grid item lg={8} md={8} xs={8}>
                                 <TextField
@@ -251,7 +235,23 @@ const CustomerModal = () => {
                             </Grid>
                             <Grid container className={classes.gridItemInfo} alignItems="center">
                               <Grid item lg={4} md={4} xs={4}>
-                                <span className={classes.tabItemLabelField}>Danh mục:</span>
+                                <span className={classes.tabItemLabelField}>Tên khách hàng(*):</span>
+                              </Grid>
+                              <Grid item lg={8} md={8} xs={8}>
+                                <TextField
+                                  fullWidth
+                                  variant="outlined"
+                                  name="title"
+                                  type="text"
+                                  size="small"
+                                  value={customerData.title || ''}
+                                  onChange={handleChanges}
+                                />
+                              </Grid>
+                            </Grid>
+                            <Grid container className={classes.gridItemInfo} alignItems="center">
+                              <Grid item lg={4} md={4} xs={4}>
+                                <span className={classes.tabItemLabelField}>Danh mục(*):</span>
                               </Grid>
                               <Grid item lg={8} md={8} xs={8}>
                                 <TextField
@@ -273,7 +273,7 @@ const CustomerModal = () => {
                             </Grid>
                             <Grid container className={classes.gridItemInfo} alignItems="center">
                               <Grid item lg={4} md={4} xs={4}>
-                                <span className={classes.tabItemLabelField}>Email:</span>
+                                <span className={classes.tabItemLabelField}>Email(*):</span>
                               </Grid>
                               <Grid item lg={8} md={8} xs={8}>
                                 <TextField
@@ -289,7 +289,7 @@ const CustomerModal = () => {
                             </Grid>
                             <Grid container className={classes.gridItemInfo} alignItems="center">
                               <Grid item lg={4} md={4} xs={4}>
-                                <span className={classes.tabItemLabelField}>Số điện thoại:</span>
+                                <span className={classes.tabItemLabelField}>Số điện thoại(*):</span>
                               </Grid>
                               <Grid item lg={8} md={8} xs={8}>
                                 <TextField

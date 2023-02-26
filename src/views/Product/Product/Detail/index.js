@@ -75,7 +75,9 @@ const ProductModal = () => {
   const [tabIndex, setTabIndex] = React.useState(0);
   const [openDialogUploadImage, setOpenDiaLogUploadImage] = React.useState(false);
   const [dataUnitList, setDataUnitList] = useState([]);
-  const [productData, setProductData] = useState({});
+  const [productData, setProductData] = useState({
+    is_active: true,
+  });
   const [partList, setPartList] = useState([]);
   const { materials } = useSelector((state) => state.metadata);
 
@@ -99,7 +101,7 @@ const ProductModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setProductData({});
+    setProductData({ is_active: true });
     setTabIndex(0);
   };
   const setURL = (image) => {
@@ -256,9 +258,25 @@ const ProductModal = () => {
                           </div>
                         </div>
                         <div className={classes.tabItemBody}>
+                          <Grid container className={classes.gridItem} alignItems="center">
+                            <Grid item lg={4} md={4} xs={4}>
+                              <span className={classes.tabItemLabelField}>Mã thành phẩm(*):</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={8}>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="product_code"
+                                size="small"
+                                type="text"
+                                value={productData.product_code}
+                                onChange={handleChanges}
+                              />
+                            </Grid>
+                          </Grid>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tên thành phẩm:</span>
+                              <span className={classes.tabItemLabelField}>Tên thành phẩm(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -274,23 +292,7 @@ const ProductModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã thành phẩm:</span>
-                            </Grid>
-                            <Grid item lg={8} md={8} xs={8}>
-                              <TextField
-                                fullWidth
-                                variant="outlined"
-                                name="product_code"
-                                size="small"
-                                type="text"
-                                value={productData.product_code}
-                                onChange={handleChanges}
-                              />
-                            </Grid>
-                          </Grid>
-                          <Grid container className={classes.gridItem} alignItems="center">
-                            <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã khách hàng:</span>
+                              <span className={classes.tabItemLabelField}>Mã khách hàng(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -316,7 +318,7 @@ const ProductModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Số lượng thành phẩm/thùng:</span>
+                              <span className={classes.tabItemLabelField}>Số lượng thành phẩm/thùng(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -332,7 +334,7 @@ const ProductModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Đơn vị:</span>
+                              <span className={classes.tabItemLabelField}>Đơn vị(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -354,7 +356,7 @@ const ProductModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Năng suất 1 công nhân trong 8h:</span>
+                              <span className={classes.tabItemLabelField}>Năng suất 1 công nhân trong 8h(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
