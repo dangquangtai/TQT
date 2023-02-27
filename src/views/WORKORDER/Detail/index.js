@@ -49,6 +49,7 @@ import {
   getMaterialWHSList,
   getProductWHSList,
   checkMaterial,
+  generateDailyOrder,
 } from '../../../services/api/Workorder/index.js';
 import { exportDailyMaterialReceived } from '../../../services/api/Production/MaterialReceived';
 import { exportGoodsReceiptByWorkOrder } from '../../../services/api/Product/GoodsReceipt';
@@ -329,6 +330,13 @@ const WorkorderModal = () => {
         if (getdate) return handleGetWorkOrderRequest(IdWorkorderRequest, -1);
       }
     } catch {}
+  };
+  const handleGenerate = async () => {
+    handleCreateWorkOrder(false, true, false);
+    if (currentDate <= dayCurrent) {
+      await generateDailyOrder(workorder.id, workorderRequest.id);
+      setSnackbarStatus(true, 'success', 'Cập nhật lệnh thành công');
+    }
   };
   const handleGetlink = async () => {
     setSnackbarStatus({
@@ -1437,6 +1445,14 @@ const WorkorderModal = () => {
                           In lệnh sản xuất
                         </Button>
                       </Grid>
+                      {currentDate <= dayCurrent && (
+                        <Grid item>
+                          <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleGenerate}>
+                            Cập nhật lệnh
+                          </Button>
+                        </Grid>
+                      )}
+
                       <Grid item>
                         <Button
                           variant="contained"

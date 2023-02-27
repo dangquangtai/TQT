@@ -78,6 +78,7 @@ const ProductModal = () => {
   const [dataUnitList, setDataUnitList] = useState([]);
   const [productData, setProductData] = useState({
     is_active: true,
+    id: '',
   });
   const [partList, setPartList] = useState([]);
   // const { materials } = useSelector((state) => state.metadata);
@@ -117,6 +118,10 @@ const ProductModal = () => {
   const handleChanges = (e) => {
     const { name, value } = e.target;
     setProductData({ ...productData, [name]: value });
+    if (name === 'unit_id') {
+      const unit = dataUnitList.find((item) => item.id);
+      setProductData({ ...productData, [name]: value, unit_name: unit.value });
+    }
   };
 
   const handleAddPart = () => {
@@ -479,7 +484,13 @@ const ProductModal = () => {
                   Đóng
                 </Button>
               </Grid>
+
               <Grid item className={classes.gridItemInfoButtonWrap}>
+                {!selectedDocument && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmit}>
+                    {'Tạo mới'}
+                  </Button>
+                )}
                 {selectedDocument?.id && buttonSave && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmit}>
                     {buttonSave.text}

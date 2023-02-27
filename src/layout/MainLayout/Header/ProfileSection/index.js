@@ -128,7 +128,7 @@ const ProfileSection = () => {
                       <PersonTwoToneIcon />
                     </ListItemIcon>
                     <ListItemText
-                      primary={account ? (account.fullname === '' ? 'No Name' : account.fullname) : 'No Name'}
+                      primary={account ? (account.fullname === '' || !account.fullname ? 'No Name' : account.fullname) : 'No Name'}
                       onClick={() => setOpenDialog(true)}
                     />
                   </ListItem>
