@@ -234,3 +234,13 @@ export const getSupplierList = () => {
     return [];
   });
 };
+export const generateDailyOrder = (work_order_id, daily_work_order_id) => {
+  return axiosServices
+    .post(apiEndpoints.generate_daily_material, { work_order_id: work_order_id, daily_work_order_id: daily_work_order_id })
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return true;
+      }
+      return false;
+    });
+};
