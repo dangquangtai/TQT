@@ -781,10 +781,19 @@ const WorkorderModal = () => {
         }
       }
       let daycurrent = new Date();
-      setDateCurrent(daycurrent.getFullYear() + '-' + month[daycurrent.getMonth()] + '-' + daycurrent.getDate());
-      let indexCurrentDate = date.findIndex(
-        (x) => x.work_order_date === daycurrent.getFullYear() + '-' + month[daycurrent.getMonth()] + '-' + daycurrent.getDate()
-      );
+      let indexCurrentDate;
+      if (daycurrent.getDate() < 10) {
+        setDateCurrent(daycurrent.getFullYear() + '-' + month[daycurrent.getMonth()] + '-0' + daycurrent.getDate());
+        indexCurrentDate = date.findIndex(
+          (x) => x.work_order_date === daycurrent.getFullYear() + '-' + month[daycurrent.getMonth()] + '-0' + daycurrent.getDate()
+        );
+      } else {
+        setDateCurrent(daycurrent.getFullYear() + '-' + month[daycurrent.getMonth()] + '-' + daycurrent.getDate());
+        indexCurrentDate = date.findIndex(
+          (x) => x.work_order_date === daycurrent.getFullYear() + '-' + month[daycurrent.getMonth()] + '-' + daycurrent.getDate()
+        );
+      }
+
       if (indexCurrentDate === -1) indexCurrentDate = 0;
       let week = 0;
       if (Math.ceil(indexCurrentDate / 7) - 1 > 0) {
@@ -1218,7 +1227,7 @@ const WorkorderModal = () => {
                                                   ? { background: 'rgb(97, 42, 255)', color: 'white' }
                                                   : item.work_order_date === dayCurrent
                                                   ? { background: 'rgb(30 144 255)', color: 'white' }
-                                                  : item.work_order_date < dayCurrent
+                                                  : new Date(item.work_order_date) < new Date(dayCurrent)
                                                   ? { background: 'rgb(30 144 155)', color: 'white' }
                                                   : {}
                                               }
@@ -1445,7 +1454,7 @@ const WorkorderModal = () => {
                           In lệnh sản xuất
                         </Button>
                       </Grid>
-                      {currentDate <= dayCurrent && (
+                      {new Date(currentDate) <= new Date(dayCurrent) && (
                         <Grid item>
                           <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleGenerate}>
                             Cập nhật lệnh
