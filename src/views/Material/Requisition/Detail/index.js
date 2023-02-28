@@ -25,7 +25,7 @@ import {
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AccountCircleOutlined as AccountCircleOutlinedIcon, Delete, Today as TodayIcon } from '@material-ui/icons';
+import { Delete, History, AttachFileOutlined, DescriptionOutlined } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { AddCircleOutline } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
@@ -296,7 +296,7 @@ const MaterialRequisitionModal = () => {
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <AccountCircleOutlinedIcon className={`${tabIndex === 0 ? classes.tabActiveIcon : ''}`} />
+                        <DescriptionOutlined />
                         Chi tiết Đơn hàng
                       </Typography>
                     }
@@ -307,7 +307,7 @@ const MaterialRequisitionModal = () => {
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <AccountCircleOutlinedIcon className={`${tabIndex === 1 ? classes.tabActiveIcon : ''}`} />
+                        <AttachFileOutlined />
                         File đính kèm
                       </Typography>
                     }
@@ -318,7 +318,7 @@ const MaterialRequisitionModal = () => {
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <TodayIcon className={`${tabIndex === 2 ? classes.tabActiveIcon : ''}`} />
+                        <History />
                         Lịch sử thay đổi
                       </Typography>
                     }

@@ -25,7 +25,13 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { format as formatDate } from 'date-fns';
-import { AccountCircleOutlined as AccountCircleOutlinedIcon, Today as TodayIcon } from '@material-ui/icons';
+import {
+  AccountCircleOutlinedasAccountCircleOutlinedIcon,
+  TodayasTodayIcon,
+  DescriptionOutlined,
+  AttachFileOutlined,
+  History,
+} from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import useStyles from './../../../../utils/classes';
 import useView from './../../../../hooks/useView';
@@ -236,7 +242,7 @@ const GoodsReceiptModal = () => {
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <AccountCircleOutlinedIcon className={`${tabIndex === 0 ? classes.tabActiveIcon : ''}`} />
+                        <DescriptionOutlined />
                         Chi tiết
                       </Typography>
                     }
@@ -247,7 +253,7 @@ const GoodsReceiptModal = () => {
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <AccountCircleOutlinedIcon className={`${tabIndex === 1 ? classes.tabActiveIcon : ''}`} />
+                        <AttachFileOutlined />
                         File đính kèm
                       </Typography>
                     }
@@ -258,7 +264,7 @@ const GoodsReceiptModal = () => {
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <TodayIcon className={`${tabIndex === 2 ? classes.tabActiveIcon : ''}`} />
+                        <History />
                         Lịch sử thay đổi
                       </Typography>
                     }
