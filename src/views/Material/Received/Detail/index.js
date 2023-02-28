@@ -244,6 +244,13 @@ const ReceivedMaterialModal = () => {
     setReceivedDetailList(newReceivedDetailList);
   };
 
+  const handleChangeMaterial = (index, e) => {
+    const { name, value } = e.target;
+    const newReceivedDetailList = [...receivedDetailList];
+    newReceivedDetailList[index][name] = value;
+    setReceivedDetailList(newReceivedDetailList);
+  };
+
   useEffect(() => {
     if (!selectedDocument) return;
     setReceivedMaterialData({
@@ -264,6 +271,8 @@ const ReceivedMaterialModal = () => {
     };
     fetchData();
   }, []);
+
+  const isDisabled = !!selectedDocument?.id;
 
   useEffect(() => {
     if (materialReceived === selectedDocument?.order_detail) return;
@@ -392,6 +401,7 @@ const ReceivedMaterialModal = () => {
                               <DatePicker
                                 date={receivedMaterialData.received_date}
                                 onChange={(date) => setReceivedMaterialData({ ...receivedMaterialData, received_date: date })}
+                                disabled={isDisabled}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
@@ -419,6 +429,7 @@ const ReceivedMaterialModal = () => {
                                     supplier_name: newValue?.title || '',
                                   });
                                 }}
+                                disabled={isDisabled}
                                 value={supplierList?.find((item) => item.id === receivedMaterialData.supplier_id) || null}
                                 renderInput={(params) => <TextField {...params} variant="outlined" />}
                               />
@@ -430,6 +441,7 @@ const ReceivedMaterialModal = () => {
                                 name="warehouse_id"
                                 variant="outlined"
                                 select
+                                disabled={isDisabled}
                                 size="small"
                                 value={receivedMaterialData.warehouse_id || ''}
                                 onChange={handleChanges}
@@ -496,7 +508,7 @@ const ReceivedMaterialModal = () => {
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
-                            <Table aria-label="simple table" stickyHeader>
+                            <Table size="small" stickyHeader>
                               <TableHead>
                                 <TableRow>
                                   <TableCell align="left">Mã đơn hàng</TableCell>
@@ -506,19 +518,20 @@ const ReceivedMaterialModal = () => {
                                   <TableCell align="left">SL nhập</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
                                   <TableCell align="left">Ngày sản xuất</TableCell>
+                                  <TableCell align="left">Ghi chú</TableCell>
                                   <TableCell align="center">Xoá</TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
                                 {receivedDetailList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '15%' }}>
+                                    <TableCell align="left" style={{ width: '10%' }}>
                                       {row.customer_order_code}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '20%' }}>
+                                    <TableCell align="left" style={{ width: '12%' }}>
                                       {row.part_code}
                                     </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '30%' }}>
+                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '23%' }}>
                                       <Tooltip title={row?.part_name}>
                                         <span>{row?.part_name}</span>
                                       </Tooltip>
@@ -526,7 +539,7 @@ const ReceivedMaterialModal = () => {
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       {row.quantity_in_piece}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '15%' }}>
+                                    <TableCell align="left" style={{ width: '10%' }}>
                                       <TextField
                                         InputProps={{
                                           inputProps: { min: 0 },
@@ -544,7 +557,20 @@ const ReceivedMaterialModal = () => {
                                       {row.unit_name}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
-                                      {row.order_date ? formatDate(new Date(row.customer_order_date), 'dd/MM/yyyy') : ''}
+                                      {row.customer_order_date ? formatDate(new Date(row.customer_order_date), 'dd/MM/yyyy') : ''}
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '15%' }}>
+                                      <TextField
+                                        multiline
+                                        minRows={1}
+                                        fullWidth
+                                        variant="outlined"
+                                        name="notes"
+                                        type="text"
+                                        size="small"
+                                        value={row.notes || ''}
+                                        onChange={(e) => handleChangeMaterial(index, e)}
+                                      />
                                     </TableCell>
                                     <TableCell align="center" style={{ width: '5%' }}>
                                       <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>

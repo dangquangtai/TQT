@@ -762,7 +762,8 @@ export default function GeneralTable(props) {
     if (status?.includes('DRAFT')) return '#425466';
     if (status?.includes('INPROGRESS')) return '#FF9400';
     if (status?.includes('COMPLETED')) return '#0FAD00';
-    return '#425466';
+    if (status?.includes('DRAFT')) return '#425466';
+    return '#0077b6';
   };
 
   useEffect(() => {

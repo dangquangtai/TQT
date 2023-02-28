@@ -332,7 +332,7 @@ const DailyMaterialRequisitionModal = () => {
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
-                            <Table aria-label="simple table" stickyHeader>
+                            <Table aria-label="simple table" stickyHeader size="small">
                               <TableHead>
                                 <TableRow>
                                   <TableCell align="left">Mã vật tư</TableCell>

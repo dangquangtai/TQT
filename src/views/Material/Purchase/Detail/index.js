@@ -266,6 +266,8 @@ const PurchaseMaterialModal = () => {
     };
   }, []);
 
+  const isDisabled = !!selectedDocument?.id;
+
   return (
     <React.Fragment>
       <FirebaseUpload
@@ -378,6 +380,7 @@ const PurchaseMaterialModal = () => {
                               <DatePicker
                                 date={purchaseMaterialData.order_date}
                                 onChange={(date) => setPurchaseMaterialData({ ...purchaseMaterialData, order_date: date })}
+                                disabled={isDisabled}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
@@ -389,23 +392,33 @@ const PurchaseMaterialModal = () => {
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
                               <span className={classes.tabItemLabelField}>Nhà cung cấp(*):</span>
-                              <Autocomplete
-                                id="combo-box-demo"
-                                options={supplier}
-                                getOptionLabel={(option) => option.title || ''}
-                                fullWidth
-                                size="small"
-                                value={supplier?.find((item) => item.id === purchaseMaterialData.supplier_id) || null}
-                                onChange={(event, newValue) => {
-                                  setPurchaseMaterialData({
-                                    ...purchaseMaterialData,
-                                    supplier_id: newValue?.id,
-                                    supplier_name: newValue?.title,
-                                  });
-                                  handleChangeSupplier();
-                                }}
-                                renderInput={(params) => <TextField {...params} variant="outlined" />}
-                              />
+                              {isDisabled ? (
+                                <TextField
+                                  fullWidth
+                                  variant="outlined"
+                                  size="small"
+                                  value={purchaseMaterialData.supplier_name || ''}
+                                  disabled
+                                />
+                              ) : (
+                                <Autocomplete
+                                  id="combo-box-demo"
+                                  options={supplier}
+                                  getOptionLabel={(option) => option.title || ''}
+                                  fullWidth
+                                  size="small"
+                                  value={supplier?.find((item) => item.id === purchaseMaterialData.supplier_id) || null}
+                                  onChange={(event, newValue) => {
+                                    setPurchaseMaterialData({
+                                      ...purchaseMaterialData,
+                                      supplier_id: newValue?.id,
+                                      supplier_name: newValue?.title,
+                                    });
+                                    handleChangeSupplier();
+                                  }}
+                                  renderInput={(params) => <TextField {...params} variant="outlined" />}
+                                />
+                              )}
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
                               <span className={classes.tabItemLabelField}>Nhà kho(*):</span>
@@ -414,6 +427,7 @@ const PurchaseMaterialModal = () => {
                                 name="warehouse_id"
                                 variant="outlined"
                                 select
+                                disabled={isDisabled}
                                 size="small"
                                 value={purchaseMaterialData.warehouse_id || ''}
                                 onChange={handleChanges}
@@ -473,7 +487,7 @@ const PurchaseMaterialModal = () => {
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
-                            <Table className={classes.tableSmall} aria-label="simple table" stickyHeader>
+                            <Table size="small" stickyHeader>
                               <TableHead>
                                 <TableRow>
                                   <TableCell align="left">Mã đơn hàng</TableCell>
@@ -483,16 +497,17 @@ const PurchaseMaterialModal = () => {
                                   <TableCell align="left">Đơn vị</TableCell>
                                   <TableCell align="left">Ngày sản xuất</TableCell>
                                   <TableCell align="left">Ghi chú</TableCell>
+                                  <TableCell align="left">Trạng thái</TableCell>
                                   <TableCell align="center">Xoá</TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
                                 {materialList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '15%' }}>
+                                    <TableCell align="left" style={{ width: '10%' }}>
                                       {row?.order_code}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '15%' }}>
+                                    <TableCell align="left" style={{ width: '12%' }}>
                                       <Tooltip title={row?.part_code}>
                                         <span>{row?.part_code}</span>
                                       </Tooltip>
@@ -502,7 +517,7 @@ const PurchaseMaterialModal = () => {
                                         <span>{row?.part_name}</span>
                                       </Tooltip>
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
+                                    <TableCell align="left" style={{ width: '8%' }}>
                                       {row.quantity_in_piece}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '5%' }}>
@@ -511,7 +526,7 @@ const PurchaseMaterialModal = () => {
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       {row.order_date ? formatDate(new Date(row.order_date), 'dd/MM/yyyy') : ''}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '25%' }}>
+                                    <TableCell align="left" style={{ width: '20%' }}>
                                       <TextField
                                         multiline
                                         minRows={1}
@@ -523,6 +538,9 @@ const PurchaseMaterialModal = () => {
                                         value={row.notes || ''}
                                         onChange={(e) => handleChangeMaterial(index, e)}
                                       />
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '5%' }}>
+                                      {row.status_display}
                                     </TableCell>
                                     <TableCell align="center" style={{ width: '5%' }}>
                                       <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>
@@ -560,9 +578,11 @@ const PurchaseMaterialModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
-                <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleOpenShortageDialog}>
-                  Chi tiết vật tư thiếu
-                </Button>
+                {!isDisabled && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleOpenShortageDialog}>
+                    Chi tiết vật tư thiếu
+                  </Button>
+                )}
                 {saveButton && selectedDocument?.id && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
                     {saveButton.text}
