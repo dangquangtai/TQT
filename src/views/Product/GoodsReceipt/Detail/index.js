@@ -218,7 +218,7 @@ const GoodsReceiptModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              {selectedDocument?.id ? 'Cập nhật Phiếu xuất thành phẩm' : 'Tạo mới Phiếu xuất thành phẩm'}
+              {selectedDocument?.id ? 'Cập nhật Phiếu nhập thành phẩm' : 'Tạo mới Phiếu xuất thành phẩm'}
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -457,7 +457,7 @@ const GoodsReceiptModal = () => {
                                       {row.unit_name}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
-                                      {row.status_display}
+                                      {row?.daily_quantity_in_box <= row?.quantity_in_box ? 'Đủ' : 'Thiếu'}
                                     </TableCell>
                                   </TableRow>
                                 ))}
