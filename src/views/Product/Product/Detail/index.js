@@ -290,6 +290,8 @@ const ProductModal = () => {
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
+                                multiline
+                                minRows={2}
                                 variant="outlined"
                                 name="title"
                                 value={productData.title}
