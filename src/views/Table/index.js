@@ -45,7 +45,7 @@ import { getDetailWorkorOrder } from './../../services/api/Workorder/index';
 import { getDetailCustomer } from '../../services/api/Partner/Customer.js';
 import { getDetailSupplier } from './../../services/api/Partner/Supplier';
 import { getDetailWarehouseCategory } from './../../services/api/Setting/WHSCategory';
-import { getDetailInventory } from './../../services/api/Material/Inventory';
+import { getDetailInventory, exportMaterialInventory } from './../../services/api/Material/Inventory';
 import { getDetailInventoryCheck } from './../../services/api/Material/InventoryCheck';
 import { exportMaterial, getDetailPurchaseMaterial } from './../../services/api/Material/Purchase';
 import { getDetailReceivedMaterial } from './../../services/api/Material/Received';
@@ -175,6 +175,7 @@ export default function GeneralTable(props) {
   const buttonCreateReturnMaterial = menuButtons.find((button) => button.name === view.materialReturn.list.create);
   const buttonCreateTemplateDocument = menuButtons.find((button) => button.name === view.templateDocument.list.create);
   const buttonCreateProduct = menuButtons.find((button) => button.name === view.product.list.create);
+  const buttonExportMaterialInventory = menuButtons.find((button) => button.name === view.materialInventory.list.export);
 
   const fetchDocument = (additionalQuery) => {
     const queries = { ...defaultQueries, ...additionalQuery };
@@ -747,6 +748,16 @@ export default function GeneralTable(props) {
     });
   };
 
+  const handleExportMaterialInventory = async () => {
+    showConfirmPopup({
+      title: 'Xuất vật tư tồn kho',
+      message: 'Bạn có chắc chắn muốn xuất file tổng hợp tất cả vật tư tồn kho?',
+      action: exportMaterialInventory,
+      payload: null,
+      onSuccess: (url) => handleDownload(url),
+    });
+  };
+
   const handleDownload = (url) => {
     if (!url) {
       handleOpenSnackbar('error', 'Không tìm thấy file!');
@@ -963,6 +974,8 @@ export default function GeneralTable(props) {
     buttonCreateReturnMaterial,
     buttonCreateTemplateDocument,
     buttonCreateProduct,
+    buttonExportMaterialInventory,
+    handleExportMaterialInventory,
   };
 
   return (
