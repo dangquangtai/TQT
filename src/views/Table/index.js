@@ -63,6 +63,7 @@ import { downloadFile } from './../../utils/helper';
 import { getUserGroupDetail } from '../../services/api/UserGroup/index';
 import { getDetailReturnMaterial } from './../../services/api/Material/Return';
 import { getDetailTemplateDocument } from '../../services/api/Setting/TemplateDocument';
+import { getDetailProductInventory } from './../../services/api/Product/Inventory';
 
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
@@ -437,6 +438,11 @@ export default function GeneralTable(props) {
         detailDocument = await getDetailTemplateDocument(selectedDocument.id, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, excelTemplateDocument: true });
+        break;
+      case 'productInventory':
+        detailDocument = await getDetailProductInventory(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, productInventoryDocument: true });
         break;
       default:
         break;
