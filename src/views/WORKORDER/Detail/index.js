@@ -371,7 +371,7 @@ const WorkorderModal = () => {
         dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
         dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null });
       }
-      let product_list = await handleCreateWorkOrder(false, true);
+      let product_list = await handleCreateWorkOrder(false, true, false);
       dataMaterial = await getMaterialDaily(product_list[index].id);
       dispatch({
         type: MATERIAL_CHANGE,
@@ -568,7 +568,7 @@ const WorkorderModal = () => {
   };
 
   const handleChangeDate = async (date, index) => {
-    handleCreateWorkOrder(false, false);
+    handleCreateWorkOrder(false, false, false);
     productionDailyRequestList[indexDate].percent = calculateTotalPercentList(
       productList,
       workorderRequest.number_of_worker,
@@ -830,7 +830,7 @@ const WorkorderModal = () => {
     handleGetWorkOrderRequest(productionDailyRequestList[indexDate].id, indexDate);
   };
   const handleSetDate = async (from_date, to_date) => {
-    handleCreateWorkOrder(true, true);
+    handleCreateWorkOrder(true, true, false);
     let date = [];
     if (to_date !== '' && from_date !== '') {
       for (var d = new Date(from_date); d <= new Date(to_date); d.setDate(d.getDate() + 1)) {
@@ -968,7 +968,7 @@ const WorkorderModal = () => {
   useEffect(() => {
     setDopDownData(orderRedux.orderDetail || []);
     if (!orderRedux.orderDetail) return;
-    handleCreateWorkOrder(false, false);
+    handleCreateWorkOrder(false, true, false);
     productionDailyRequestList[indexDate].percent = calculateTotalPercentList(
       productList,
       workorderRequest.number_of_worker,
