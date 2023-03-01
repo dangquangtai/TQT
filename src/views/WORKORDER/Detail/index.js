@@ -256,7 +256,7 @@ const WorkorderModal = () => {
       text: text,
     });
   };
-  const handleCreateWorkOrder = async (popup, getdate, button) => {
+  const handleCreateWorkOrder = async (popup, getdate, button, setOrder) => {
     try {
       if (productionDailyRequestList.length < 2) {
         handleOpenSnackbar(true, 'error', 'Số ngày kế hoạch không ther < 2 !');
@@ -327,12 +327,12 @@ const WorkorderModal = () => {
             });
         }
         setCheckChangeData({ changeWorkOrder: false, changeWorkOrderDaily: false, changeWorkOrderRequest: false });
-        if (getdate) return handleGetWorkOrderRequest(IdWorkorderRequest, -1);
+        if (getdate) return handleGetWorkOrderRequest(IdWorkorderRequest, -1, setOrder);
       }
     } catch {}
   };
   const handleGenerate = async () => {
-    handleCreateWorkOrder(false, true, false);
+    handleCreateWorkOrder(false, true, false, true);
     if (currentDate <= dayCurrent) {
       await generateDailyOrder(workorder.id, workorderRequest.id);
       setSnackbarStatus(true, 'success', 'Cập nhật lệnh thành công');
@@ -371,7 +371,7 @@ const WorkorderModal = () => {
         dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
         dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null });
       }
-      let product_list = await handleCreateWorkOrder(false, true, false);
+      let product_list = await handleCreateWorkOrder(false, true, false, true);
       dataMaterial = await getMaterialDaily(product_list[index].id);
       dispatch({
         type: MATERIAL_CHANGE,
@@ -527,7 +527,7 @@ const WorkorderModal = () => {
     }
   };
 
-  const handleGetWorkOrderRequest = async (id, index) => {
+  const handleGetWorkOrderRequest = async (id, index, setOrder) => {
     let productListApi = id;
     if (id === '') {
       setProductList([]);
@@ -552,23 +552,25 @@ const WorkorderModal = () => {
       setDisable(productListApi.work_order_request.is_disable);
       setProductList(productListApi.work_order_detail);
       setWorkorderRequest({ ...productListApi.work_order_request });
-      if (productListApi.work_order_detail[0]?.customer_order_id !== '')
-        if (productListApi.work_order_detail.length > 0)
-          dispatch({
-            type: ORDER_CHANGE,
-            order: {
-              id: productListApi.work_order_detail[0]?.customer_order_id,
-              change: true,
-              work_order_id: workorder.id,
-              workorderDetail: orderRedux.workorderDetail,
-            },
-          });
+      if (setOrder) {
+        if (productListApi.work_order_detail[0]?.customer_order_id !== '')
+          if (productListApi.work_order_detail.length > 0)
+            dispatch({
+              type: ORDER_CHANGE,
+              order: {
+                id: productListApi.work_order_detail[0]?.customer_order_id,
+                change: true,
+                work_order_id: workorder.id,
+                workorderDetail: orderRedux.workorderDetail,
+              },
+            });
+      }
     }
     return productListApi.work_order_detail;
   };
 
   const handleChangeDate = async (date, index) => {
-    handleCreateWorkOrder(false, false, false);
+    handleCreateWorkOrder(false, false, false, true);
     productionDailyRequestList[indexDate].percent = calculateTotalPercentList(
       productList,
       workorderRequest.number_of_worker,
@@ -576,7 +578,7 @@ const WorkorderModal = () => {
     );
     setCurrentDate(date);
     setIndexDate(index);
-    handleGetWorkOrderRequest(productionDailyRequestList[index].id, index);
+    handleGetWorkOrderRequest(productionDailyRequestList[index].id, index, false, true);
   };
 
   const updateDataDailyRequest = (product_List) => {
@@ -604,7 +606,7 @@ const WorkorderModal = () => {
   };
 
   const popupWindow = (url, title) => {
-    handleCreateWorkOrder(false, true, false);
+    handleCreateWorkOrder(false, true, false, true);
     if (workorder.id === '') {
       dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
       dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null });
@@ -817,7 +819,7 @@ const WorkorderModal = () => {
         }
         setDateListNull(datenull);
       }
-      handleGetWorkOrderRequest(date[indexCurrentDate].id, -1);
+      handleGetWorkOrderRequest(date[indexCurrentDate].id, -1, true);
     }
   };
   const handleCheckMaterial = async () => {
@@ -827,10 +829,10 @@ const WorkorderModal = () => {
       type: 'success',
       text: 'Kiểm tra hoàn tất',
     });
-    handleGetWorkOrderRequest(productionDailyRequestList[indexDate].id, indexDate);
+    handleGetWorkOrderRequest(productionDailyRequestList[indexDate].id, indexDate, true);
   };
   const handleSetDate = async (from_date, to_date) => {
-    handleCreateWorkOrder(true, true, false);
+    handleCreateWorkOrder(true, true, false, true);
     let date = [];
     if (to_date !== '' && from_date !== '') {
       for (var d = new Date(from_date); d <= new Date(to_date); d.setDate(d.getDate() + 1)) {
@@ -968,7 +970,7 @@ const WorkorderModal = () => {
   useEffect(() => {
     setDopDownData(orderRedux.orderDetail || []);
     if (!orderRedux.orderDetail) return;
-    handleCreateWorkOrder(false, true, false);
+    handleCreateWorkOrder(false, true, false, false);
     productionDailyRequestList[indexDate].percent = calculateTotalPercentList(
       productList,
       workorderRequest.number_of_worker,
@@ -989,7 +991,7 @@ const WorkorderModal = () => {
   }, [openDialog]);
   useEffect(() => {
     if (orderReduxWork?.workorderDetail?.data === 1) {
-      handleGetWorkOrderRequest(productionDailyRequestList[indexDate].id, -1);
+      handleGetWorkOrderRequest(productionDailyRequestList[indexDate].id, -1, true);
     }
   }, [orderReduxWork.workorderDetail]);
 
@@ -1435,7 +1437,7 @@ const WorkorderModal = () => {
                         <Button
                           variant="contained"
                           style={{ background: 'rgb(97, 42, 255)' }}
-                          onClick={() => handleCreateWorkOrder(true, true, true)}
+                          onClick={() => handleCreateWorkOrder(true, true, true, true)}
                         >
                           {'Tạo mới'}
                         </Button>
@@ -1466,7 +1468,7 @@ const WorkorderModal = () => {
                         <Button
                           variant="contained"
                           style={{ background: 'rgb(97, 42, 255)' }}
-                          onClick={() => handleCreateWorkOrder(true, true, true)}
+                          onClick={() => handleCreateWorkOrder(true, true, true, true)}
                         >
                           Lưu
                         </Button>
