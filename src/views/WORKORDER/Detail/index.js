@@ -371,7 +371,7 @@ const WorkorderModal = () => {
         dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
         dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null });
       }
-      let product_list = await handleCreateWorkOrder(false, true);
+      let product_list = await handleCreateWorkOrder(false, true, false);
       dataMaterial = await getMaterialDaily(product_list[index].id);
       dispatch({
         type: MATERIAL_CHANGE,
@@ -568,7 +568,7 @@ const WorkorderModal = () => {
   };
 
   const handleChangeDate = async (date, index) => {
-    handleCreateWorkOrder(false, false);
+    handleCreateWorkOrder(false, false, false);
     productionDailyRequestList[indexDate].percent = calculateTotalPercentList(
       productList,
       workorderRequest.number_of_worker,
@@ -781,10 +781,19 @@ const WorkorderModal = () => {
         }
       }
       let daycurrent = new Date();
-      setDateCurrent(daycurrent.getFullYear() + '-' + month[daycurrent.getMonth()] + '-' + daycurrent.getDate());
-      let indexCurrentDate = date.findIndex(
-        (x) => x.work_order_date === daycurrent.getFullYear() + '-' + month[daycurrent.getMonth()] + '-' + daycurrent.getDate()
-      );
+      let indexCurrentDate;
+      if (daycurrent.getDate() < 10) {
+        setDateCurrent(daycurrent.getFullYear() + '-' + month[daycurrent.getMonth()] + '-0' + daycurrent.getDate());
+        indexCurrentDate = date.findIndex(
+          (x) => x.work_order_date === daycurrent.getFullYear() + '-' + month[daycurrent.getMonth()] + '-0' + daycurrent.getDate()
+        );
+      } else {
+        setDateCurrent(daycurrent.getFullYear() + '-' + month[daycurrent.getMonth()] + '-' + daycurrent.getDate());
+        indexCurrentDate = date.findIndex(
+          (x) => x.work_order_date === daycurrent.getFullYear() + '-' + month[daycurrent.getMonth()] + '-' + daycurrent.getDate()
+        );
+      }
+
       if (indexCurrentDate === -1) indexCurrentDate = 0;
       let week = 0;
       if (Math.ceil(indexCurrentDate / 7) - 1 > 0) {
@@ -821,7 +830,7 @@ const WorkorderModal = () => {
     handleGetWorkOrderRequest(productionDailyRequestList[indexDate].id, indexDate);
   };
   const handleSetDate = async (from_date, to_date) => {
-    handleCreateWorkOrder(true, true);
+    handleCreateWorkOrder(true, true, false);
     let date = [];
     if (to_date !== '' && from_date !== '') {
       for (var d = new Date(from_date); d <= new Date(to_date); d.setDate(d.getDate() + 1)) {
@@ -959,7 +968,7 @@ const WorkorderModal = () => {
   useEffect(() => {
     setDopDownData(orderRedux.orderDetail || []);
     if (!orderRedux.orderDetail) return;
-    handleCreateWorkOrder(false, false);
+    handleCreateWorkOrder(false, true, false);
     productionDailyRequestList[indexDate].percent = calculateTotalPercentList(
       productList,
       workorderRequest.number_of_worker,
@@ -1218,7 +1227,7 @@ const WorkorderModal = () => {
                                                   ? { background: 'rgb(97, 42, 255)', color: 'white' }
                                                   : item.work_order_date === dayCurrent
                                                   ? { background: 'rgb(30 144 255)', color: 'white' }
-                                                  : item.work_order_date < dayCurrent
+                                                  : new Date(item.work_order_date) < new Date(dayCurrent)
                                                   ? { background: 'rgb(30 144 155)', color: 'white' }
                                                   : {}
                                               }
@@ -1445,7 +1454,7 @@ const WorkorderModal = () => {
                           In lệnh sản xuất
                         </Button>
                       </Grid>
-                      {currentDate <= dayCurrent && (
+                      {new Date(currentDate) <= new Date(dayCurrent) && (
                         <Grid item>
                           <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleGenerate}>
                             Cập nhật lệnh

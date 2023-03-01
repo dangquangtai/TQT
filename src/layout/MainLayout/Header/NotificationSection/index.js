@@ -236,7 +236,11 @@ const NotificationSection = () => {
                           />
                         </ListItemAvatar>
                         <ListItemText
-                          primary={<Typography variant="subtitle1">{task_title}</Typography>}
+                          primary={
+                            <Typography variant="subtitle1">
+                              {task_title.length > 50 ? task_title.substring(0, 50) + '...' : task_title}
+                            </Typography>
+                          }
                           secondary={
                             <Typography variant="subtitle2">
                               {customer_name} Ngày {assigned_date}

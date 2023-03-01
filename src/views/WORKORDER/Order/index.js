@@ -107,9 +107,16 @@ const OrderModal = () => {
       setOrderDetail(orderDetailList);
     }
   };
-  const calculateQuantity = (quantityInBox, quantityProduced) => {
-    const quantity = quantityInBox - quantityProduced;
-    const color = quantity > 0 ? 'yellow' : 'rgb(48, 188, 65)';
+  const calculateQuantity = (quantityInBox, quantityProduced, quantityOrder) => {
+    var color;
+    var quantity;
+    if (quantityProduced >= quantityInBox) {
+      quantity = 0;
+      color = quantity > 0 ? 'yellow' : 'rgb(48, 188, 65)';
+    } else {
+      quantity = quantityInBox - quantityProduced - quantityOrder;
+      color = quantity > 0 ? 'yellow' : 'rgb(48, 188, 65)';
+    }
     return <Typography style={{ backgroundColor: color }}>{quantity.toLocaleString()}</Typography>;
   };
 
@@ -288,7 +295,7 @@ const OrderModal = () => {
                                         <TableCell align="center">{item.quantity_in_workorder.toLocaleString()}</TableCell>
                                         <TableCell align="center">{item.quantity_produced.toLocaleString()}</TableCell>
                                         <TableCell align="center">
-                                          {calculateQuantity(item.quantity_in_box, item.quantity_in_workorder)}
+                                          {calculateQuantity(item.quantity_in_box, item.quantity_produced, item.quantity_in_workorder)}
                                         </TableCell>
                                       </TableRow>
                                     ))}
