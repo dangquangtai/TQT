@@ -41,7 +41,7 @@ const syncConfig = {
 };
 const middlewares = [createStateSyncMiddleware(syncConfig)];
 const store = createStore(reducer, {}, applyMiddleware(...middlewares));
-initStateWithPrevTab(store);
+// initStateWithPrevTab(store);
 
 ReactDOM.render(
   <Provider store={store}>

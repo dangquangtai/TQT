@@ -85,6 +85,7 @@ const ReturnMaterialModal = () => {
   const [warehouseList, setWarehouseList] = useState([]);
   const [brokenModal, setBrokenModal] = useState({
     open: false,
+    index: null,
     list: [],
   });
 
@@ -136,12 +137,23 @@ const ReturnMaterialModal = () => {
     setReturnMaterialData({ ...returnMaterialData, [name]: value });
   };
 
-  const handeCloseBroken = () => {
-    setBrokenModal({ open: false, list: [] });
+  const handleCloseBrokenModal = () => {
+    setBrokenModal({ open: false, index: null, list: [] });
   };
 
-  const handleOpenBroken = (list) => {
-    setBrokenModal({ open: true, list });
+  const handleOpenBrokenModal = (item, index) => {
+    setBrokenModal({ open: true, index, list: item.broken_list || [] });
+  };
+
+  const handleSubmitBroken = (brokens, totalBroken) => {
+    const newReturnDetailList = [...returnDetailList];
+    newReturnDetailList[brokenModal.index] = {
+      ...newReturnDetailList[brokenModal.index],
+      broken_list: brokens,
+      return_broken_quantity_in_piece: totalBroken,
+    };
+    setReturnDetailList(newReturnDetailList);
+    handleCloseBrokenModal();
   };
 
   const handleClickExport = async () => {
@@ -152,6 +164,17 @@ const ReturnMaterialModal = () => {
     }
     downloadFile(url);
     handleOpenSnackbar('success', 'Tải file thành công!');
+  };
+
+  const handleReturnQuantity = (e, index) => {
+    const { name, value } = e.target;
+    const newReturnDetailList = [...returnDetailList];
+    if (name === 'return_quantity_in_piece' && value > newReturnDetailList[index].quantity_in_piece) {
+      handleOpenSnackbar('error', 'Số lượng hoàn trả không được lớn hơn số lượng trong kho!');
+      return;
+    }
+    newReturnDetailList[index][name] = value;
+    setReturnDetailList(newReturnDetailList);
   };
 
   useEffect(() => {
@@ -187,10 +210,17 @@ const ReturnMaterialModal = () => {
   }, [returnMaterialData.supplier_id, returnMaterialData.warehouse_id]);
 
   const isDisabled = !!returnMaterialData?.id;
+  const isDisabledSave = returnMaterialData?.status === 'STATUS_COMPLETED';
 
   return (
     <React.Fragment>
-      <BrokenModal isOpen={brokenModal.open} handleSubmit={handeCloseBroken} handleClose={handeCloseBroken} list={brokenModal.list} />
+      <BrokenModal
+        isOpen={brokenModal.open}
+        isDisabled={true}
+        handleSubmit={handleSubmitBroken}
+        handleClose={handleCloseBrokenModal}
+        list={brokenModal.list}
+      />
       <Grid container>
         <Dialog
           open={openDialog || false}
@@ -382,7 +412,10 @@ const ReturnMaterialModal = () => {
                                 <TableRow>
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
-                                  <TableCell align="left">SL hỏng</TableCell>
+                                  <TableCell align="left">SL A</TableCell>
+                                  <TableCell align="left">SL B</TableCell>
+                                  <TableCell align="left">SL A</TableCell>
+                                  <TableCell align="left">SL B</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
                                   <TableCell align="left">Chi tiết</TableCell>
                                 </TableRow>
@@ -393,13 +426,39 @@ const ReturnMaterialModal = () => {
                                     <TableCell align="left" style={{ width: '20%' }}>
                                       {row.part_code}
                                     </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '50%' }}>
+                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '30%' }}>
                                       <Tooltip title={row?.part_name}>
                                         <span>{row?.part_name}</span>
                                       </Tooltip>
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
+                                    <TableCell align="left" style={{ width: '5%' }}>
+                                      {row.quantity_in_piece}
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '5%' }}>
                                       {row.total_broken_quantity_in_piece}
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '10%' }}>
+                                      <TextField
+                                        fullWidth
+                                        variant="outlined"
+                                        name="return_quantity_in_piece"
+                                        type="number"
+                                        size="small"
+                                        value={row.return_quantity_in_piece || ''}
+                                        onChange={(e) => handleReturnQuantity(e, index)}
+                                      />
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '10%' }}>
+                                      <TextField
+                                        fullWidth
+                                        variant="outlined"
+                                        name="return_broken_quantity_in_piece"
+                                        type="number"
+                                        size="small"
+                                        disabled
+                                        value={row.return_broken_quantity_in_piece || ''}
+                                        onChange={(e) => handleReturnQuantity(e, index)}
+                                      />
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       {row.unit_name}
@@ -407,7 +466,7 @@ const ReturnMaterialModal = () => {
                                     <TableCell
                                       align="left"
                                       style={{ width: '10%', cursor: 'pointer', textDecoration: 'underline' }}
-                                      onClick={() => handleOpenBroken(row.broken_list)}
+                                      onClick={() => handleOpenBrokenModal(row, index)}
                                     >
                                       Chi tiết
                                     </TableCell>
@@ -448,7 +507,12 @@ const ReturnMaterialModal = () => {
                   </Button>
                 )}
                 {saveButton && selectedDocument?.id && (
-                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
+                  <Button
+                    disabled={isDisabledSave}
+                    variant="contained"
+                    style={{ background: 'rgb(97, 42, 255)' }}
+                    onClick={handleSubmitForm}
+                  >
                     {saveButton.text}
                   </Button>
                 )}

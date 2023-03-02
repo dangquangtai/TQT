@@ -153,6 +153,7 @@ const InventoryModal = () => {
     <React.Fragment>
       <BrokenModal
         isOpen={brokenDialog}
+        isDisabled={false}
         handleClose={handleCloseBrokenModal}
         handleSubmit={handleSubmitBroken}
         handleOpenSnackbar={handleOpenSnackbar}

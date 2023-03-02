@@ -271,6 +271,7 @@ const DailyMaterialReceivedModal = () => {
     <React.Fragment>
       <BrokenModal
         isOpen={openBrokenModal}
+        isDisabled={false}
         handleClose={handleCloseBrokenModal}
         handleSubmit={handleSubmitBroken}
         handleOpenSnackbar={handleOpenSnackbar}

@@ -104,7 +104,7 @@ const StyledTableCell = withStyles((theme) => ({
 }))(TableCell);
 
 export default function BrokenModal(props) {
-  const { isOpen, handleClose, handleSubmit, handleOpenSnackbar, list } = props;
+  const { isOpen, isDisabled, handleClose, handleSubmit, handleOpenSnackbar, list } = props;
   const { brokens } = useSelector((state) => state.metadata);
   const [brokenList, setBrokenList] = React.useState([]);
   const [totalBroken, setTotalBroken] = React.useState(0);
@@ -178,13 +178,15 @@ export default function BrokenModal(props) {
                   <div style={style.BrokenLabel}>Tổng số hỏng: {totalBroken}</div>
                 </Grid>
                 <Grid item xs={6}>
-                  <Box display="flex" justifyContent="flex-end">
-                    <Tooltip title="Thêm loại hỏng">
-                      <IconButton onClick={handleAddBroken}>
-                        <AddCircleOutlineIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </Box>
+                  {!isDisabled && (
+                    <Box display="flex" justifyContent="flex-end">
+                      <Tooltip title="Thêm loại hỏng">
+                        <IconButton onClick={handleAddBroken}>
+                          <AddCircleOutlineIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  )}
                 </Grid>
               </Grid>
             </FormControl>
