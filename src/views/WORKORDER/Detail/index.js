@@ -77,6 +77,7 @@ TabPanel.propTypes = {
 const WorkorderModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  let changerow = false;
   const [tabIndex, setTabIndex] = useState(0);
   const [disableComponent, setDisable] = useState(false);
   const { selectedDocument } = useSelector((state) => state.document);
@@ -142,6 +143,7 @@ const WorkorderModal = () => {
   };
 
   const handleChangeRow = (row, index) => {
+    changerow = true;
     if (!!row) {
       setCheckChangeData({ ...checkChangeData, changeWorkOrderDaily: true });
       const newProductList = [...productList];
@@ -325,6 +327,7 @@ const WorkorderModal = () => {
               work_order_id: WorkOrderID,
               daily_work_order_id: IdWorkorderRequest,
             });
+          changerow = true;
         }
         setCheckChangeData({ changeWorkOrder: false, changeWorkOrderDaily: false, changeWorkOrderRequest: false });
         if (getdate) return handleGetWorkOrderRequest(IdWorkorderRequest, -1, setOrder);
@@ -461,6 +464,7 @@ const WorkorderModal = () => {
         });
         return;
       }
+
       const value = e.target.value;
       let orderDetail = order?.orderDetail;
       let product = orderDetail.find((x) => x.product_id === productList[index].product_id);
@@ -471,6 +475,7 @@ const WorkorderModal = () => {
           text: `Chọn đơn hàng mã ${productList[index].customer_order_code} để cập nhập số lượng!`,
         });
       } else {
+        changerow = true;
         if (
           parseInt(product.quantity_in_workorder) + parseInt(value) - parseInt(productList[index].quantity_in_box) <=
           parseInt(product.quantity_in_box)
@@ -526,54 +531,55 @@ const WorkorderModal = () => {
   };
 
   const handleGetWorkOrderRequest = async (id, index, setOrder) => {
-    let productListApi = id;
-    if (id === '') {
-      setProductList([]);
-      setWorkorderRequest({
-        ...workorderRequest,
-        id: '',
-      });
-      setCheckChangeData({ ...checkChangeData, changeWorkOrderRequest: true });
-      setDisable(false);
-      dispatch({
-        type: ORDER_CHANGE,
-        order: {
-          ...orderRedux,
-          change: true,
-          work_order_daily_id: '',
-        },
-      });
-    } else {
-      productListApi = await getWorkOrderRequest(id);
-      if (index >= 0) {
-        productionDailyRequestList[index].color_check = productListApi.work_order_request.color_check;
-        productionDailyRequestList[index].is_enough = productListApi.work_order_request.is_enough;
-      } else {
-        productionDailyRequestList[indexDate].color_check = productListApi.work_order_request?.color_check || 'yellow';
-        productionDailyRequestList[indexDate].is_enough = productListApi.work_order_request.is_enough;
-      }
-      setProductWHID(productListApi.work_order_request.product_warehouse_id);
-      setMaterialWhID(productListApi.work_order_request.material_warehouse_id);
-      setWorkShopID(productListApi.work_order_request.workshop_id);
-      setDisable(productListApi.work_order_request.is_disable);
-      setProductList(productListApi.work_order_detail);
-      setWorkorderRequest({ ...productListApi.work_order_request });
-
-      if (setOrder) {
-        console.log('xzczx');
+    if (changerow) {
+      let productListApi = id;
+      if (id === '') {
+        setProductList([]);
+        setWorkorderRequest({
+          ...workorderRequest,
+          id: '',
+        });
+        setCheckChangeData({ ...checkChangeData, changeWorkOrderRequest: true });
+        setDisable(false);
         dispatch({
           type: ORDER_CHANGE,
           order: {
-            id: productListApi.work_order_detail[0]?.customer_order_id,
+            ...orderRedux,
             change: true,
-            work_order_id: selectedDocument?.id || workorder.id,
-            work_order_daily_id: productListApi.work_order_request.id,
-            workorderDetail: orderRedux.workorderDetail,
+            work_order_daily_id: '',
           },
         });
+      } else {
+        productListApi = await getWorkOrderRequest(id);
+        if (index >= 0) {
+          productionDailyRequestList[index].color_check = productListApi.work_order_request.color_check;
+          productionDailyRequestList[index].is_enough = productListApi.work_order_request.is_enough;
+        } else {
+          productionDailyRequestList[indexDate].color_check = productListApi.work_order_request?.color_check || 'yellow';
+          productionDailyRequestList[indexDate].is_enough = productListApi.work_order_request.is_enough;
+        }
+        setProductWHID(productListApi.work_order_request.product_warehouse_id);
+        setMaterialWhID(productListApi.work_order_request.material_warehouse_id);
+        setWorkShopID(productListApi.work_order_request.workshop_id);
+        setDisable(productListApi.work_order_request.is_disable);
+        setProductList(productListApi.work_order_detail);
+        setWorkorderRequest({ ...productListApi.work_order_request });
+        if (setOrder) {
+          dispatch({
+            type: ORDER_CHANGE,
+            order: {
+              id: productListApi.work_order_detail[0]?.customer_order_id,
+              change: true,
+              work_order_id: selectedDocument?.id || workorder.id,
+              work_order_daily_id: productListApi.work_order_request.id,
+              workorderDetail: orderRedux.workorderDetail,
+            },
+          });
+        }
       }
+      changerow = false;
+      return productListApi.work_order_detail;
     }
-    return productListApi.work_order_detail;
   };
 
   const handleChangeDate = async (date, index) => {
@@ -585,6 +591,7 @@ const WorkorderModal = () => {
     );
     setCurrentDate(date);
     setIndexDate(index);
+    changerow = true;
     handleGetWorkOrderRequest(productionDailyRequestList[index].id, index, true);
   };
 
