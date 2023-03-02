@@ -37,6 +37,7 @@ import DatePicker from './../../../../component/DatePicker/index';
 import { createGoodsIssue, getGoodsIssueData, updateGoodsIssue, getLink } from './../../../../services/api/Product/GoodsIssue.js';
 import { downloadFile } from '../../../../utils/helper';
 import { getOrderByStatus, getOrderDetailList } from './../../../../services/api/Order/index';
+import { createFileAttachment, deleteFileAttachment, getListFile } from '../../../../services/api/Attachment/FileAttachment';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -70,7 +71,9 @@ const GoodsIssueModal = () => {
   const saveButton = formButtons.find((button) => button.name === view.goodsIssue.detail.save);
   const { goodsIssueDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
-
+  const [isOpenUpload, setIsOpenUpload] = useState(false);
+  const [listFileData, setListFileData] = useState([]);
+  const [fileData, setFileData] = useState([]);
   const [goodsIssueData, setGoodsIssueData] = useState({
     order_date: new Date(),
     notes: '',
@@ -90,7 +93,36 @@ const GoodsIssueModal = () => {
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
-
+  const setURL = async (fileDataInput) => {
+    console.log(fileDataInput?.file_name);
+    const newFileData = { ...fileData, file_name: fileDataInput?.file_name, url: fileDataInput?.url };
+    setFileData(newFileData);
+    const res = await createFileAttachment(newFileData);
+    if (res) fetchFileListData();
+  };
+  const handleDeleteFile = async (id) => {
+    showConfirmPopup({
+      title: 'Xóa file',
+      message: 'Bạn có chắc chắn muốn xóa file?',
+      action: deleteFileAttachment,
+      payload: id,
+      onSuccess: () => {
+        fetchFileListData();
+      },
+    });
+    // const res = await deleteFileAttachment(id);
+    // if (res)
+  };
+  const fetchFileListData = async () => {
+    const fileList = await getListFile(selectedDocument?.id);
+    setListFileData(fileList);
+  };
+  const handleOpenDiaLog = () => {
+    setIsOpenUpload(true);
+  };
+  const closeFirebaseDialog = () => {
+    setIsOpenUpload(false);
+  };
   const handleCloseDialog = () => {
     setDocumentToDefault();
     dispatch({ type: FLOATING_MENU_CHANGE, goodsIssueDocument: false });
@@ -110,20 +142,6 @@ const GoodsIssueModal = () => {
     setGoodsIssueData({ order_date: new Date() });
     setIssueDetailList([]);
     setTabIndex(0);
-  };
-  const setURL = (image) => {
-    if (dialogUpload.type === 'image') {
-      setGoodsIssueData({ ...goodsIssueData, image_url: image });
-    } else if (dialogUpload.type === 'banner') {
-      setGoodsIssueData({ ...goodsIssueData, banner_url: image });
-    }
-  };
-
-  const handleCloseDiaLog = () => {
-    setDialogUpload({
-      open: false,
-      type: '',
-    });
   };
 
   const handleSubmitForm = async () => {
@@ -175,6 +193,8 @@ const GoodsIssueModal = () => {
       ...goodsIssueData,
       ...selectedDocument,
     });
+    setFileData({ ...fileData, id: selectedDocument?.id });
+    fetchFileListData();
     setIssueDetailList(selectedDocument?.issue_detail || []);
   }, [selectedDocument]);
 
@@ -204,7 +224,7 @@ const GoodsIssueModal = () => {
 
   return (
     <React.Fragment>
-      <FirebaseUpload open={dialogUpload.open || false} onSuccess={setURL} onClose={handleCloseDiaLog} type="image" folder="GoodsIssue" />
+      {/* <FirebaseUpload open={dialogUpload.open || false} onSuccess={setURL} onClose={handleCloseDiaLog} type="image" folder="GoodsIssue" /> */}
       <Grid container>
         <Dialog
           open={openDialog || false}
@@ -445,8 +465,62 @@ const GoodsIssueModal = () => {
                   </Grid>
                 </TabPanel>
                 <TabPanel value={tabIndex} index={1}>
+                  <FirebaseUpload
+                    open={isOpenUpload || false}
+                    onSuccess={setURL}
+                    onClose={closeFirebaseDialog}
+                    type="other"
+                    folder="File Import/GoodsIssue"
+                  />
+                  <div className={`${classes.tabItemMentorAvatarBody}`} style={{ paddingBottom: 10, justifyContent: 'start' }}>
+                    {selectedDocument?.id && (
+                      <Button onClick={() => handleOpenDiaLog()} variant="default">
+                        Thêm mới
+                      </Button>
+                    )}
+                  </div>
                   <Grid container spacing={1}>
-                    <Grid item xs={12}></Grid>
+                    {listFileData?.map((file, index) => (
+                      <Grid item xs={2}>
+                        <div style={{ maxWidth: 210, height: 195 }}>
+                          <div className={classes.tabItem}>
+                            <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'center', height: 170 }}>
+                              <div>
+                                {' '}
+                                <img src={file.banner_url} alt="" style={{ width: 70, paddingTop: 10, height: 75 }} />
+                              </div>
+
+                              <div
+                                style={{
+                                  textAlign: 'center',
+                                  maxWidth: 205,
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  display: '-webkit-box',
+                                  WebkitBoxOrient: 'vertical',
+                                  WebkitLineClamp: 2,
+                                  wordWrap: 'break-word',
+                                  height: 54,
+                                }}
+                              >
+                                {file.file_name}
+                              </div>
+                              <div>
+                                <a href={file.download_url} target="__blank" style={{ marginRight: 10 }}>
+                                  Tải xuống
+                                </a>
+                                <a onClick={() => handleDeleteFile(file.id)} style={{ marginRight: 10, textDecoration: 'underline' }}>
+                                  Xóa
+                                </a>
+                                {/* <button  style={{ textDecoration: 'underline' }}>
+                                  Xóa
+                                </button> */}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </Grid>
+                    ))}
                   </Grid>
                 </TabPanel>
                 <TabPanel value={tabIndex} index={2}>

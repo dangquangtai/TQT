@@ -6,6 +6,7 @@ import Dropzone, { useDropzone } from 'react-dropzone';
 import { gridSpacing } from '../../../store/constant';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '../../../services/firebase.js';
+import { createFileAttachment } from '../../../services/api/Attachment/FileAttachment';
 
 function getModalStyle() {
   return {
@@ -57,6 +58,7 @@ export default function FirebaseUpload(props) {
   const { open: openDialog, onSuccess, onClose, folder, type } = props;
 
   const [fileType, setFileType] = React.useState(type);
+  const [fileData, setFileData] = React.useState({});
 
   function onDrop(files) {
     setSelectedFile(files);
@@ -80,7 +82,7 @@ export default function FirebaseUpload(props) {
         setFileType('.zip,.rar');
         break;
       case 'other':
-        setFileType('.csv,.doc,.docx,.xls,.xlsx,.txt');
+        setFileType('.csv,.doc,.docx,.xls,.xlsx,.txt,.pdf');
         break;
       default:
         setFileType('image/*');
@@ -98,6 +100,8 @@ export default function FirebaseUpload(props) {
     event.preventDefault();
     const storageRef = ref(storage, `${folder}/${selectedFiles[0].name}`);
     const uploadTask = uploadBytesResumable(storageRef, selectedFiles[0]);
+    fileData.file_name = selectedFiles[0].name;
+
     uploadTask.on(
       'state_changed',
       (snapshot) => {
@@ -111,9 +115,10 @@ export default function FirebaseUpload(props) {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           console.log('File available at', downloadURL);
+          fileData.url = downloadURL;
           setSelectedFile([]);
           setProgresspercent(0);
-          onSuccess(downloadURL);
+          onSuccess(fileData);
           setIsUploading(false);
           onClose();
         });
@@ -122,12 +127,7 @@ export default function FirebaseUpload(props) {
   }
 
   return (
-    <Modal
-      open={openDialog || false}
-      onClose={onClose}
-      aria-labelledby="simple-modal-title"
-      aria-describedby="simple-modal-description"
-    >
+    <Modal open={openDialog || false} onClose={onClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
       <div style={{ ...modalStyle, width: matchDownXs ? '100%' : '500px' }} className={classes.paper}>
         <Typography variant="h6">Tải file lên</Typography>
         <Divider className={classes.divider} />
@@ -169,12 +169,7 @@ export default function FirebaseUpload(props) {
             </Button>
           </Grid>
           <Grid item>
-            <Button
-              disabled={!selectedFiles[0]?.name || isUploading}
-              variant="contained"
-              color="primary"
-              onClick={uploadToStorage}
-            >
+            <Button disabled={!selectedFiles[0]?.name || isUploading} variant="contained" color="primary" onClick={uploadToStorage}>
               Tải lên
             </Button>
           </Grid>

@@ -312,6 +312,11 @@ export const apiEndpoints = {
   get_document_template_detail: '/Primary/?FlowAlias=bs_api_process_get_document_template_detail&action=api',
   create_document_template: '/Primary/?FlowAlias=bs_api_process_create_new_document_template&action=api',
   update_document_template: '/Primary/?FlowAlias=bs_api_process_update_document_template&action=api',
+
+  //File Attachment
+  create_new_attachment: '/Primary/?FlowAlias=bs_api_share_create_new_file_attachment&action=api',
+  get_list_file: '/Primary/?FlowAlias=bs_api_share_get_list_file_attachment&action=api',
+  delete_file_attach: '/Primary/?FlowAlias=bs_api_share_delete_file_attachment&action=api',
 };
 
 export const apiDomain = 'https://upload.truebpm.vn';
