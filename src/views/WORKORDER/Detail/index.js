@@ -484,9 +484,7 @@ const WorkorderModal = () => {
           updateDataDailyRequest(productList);
         } else {
           const calculateQuantityChange =
-            parseInt(product.quantity_in_box) -
-            parseInt(product.quantity_produced) -
-            (parseInt(product.quantity_in_workorder) - parseInt(productList[index].quantity_in_box));
+            parseInt(product.quantity_in_box) - (parseInt(product.quantity_in_workorder) - parseInt(productList[index].quantity_in_box));
           setCheckChangeData({ ...checkChangeData, changeWorkOrderDaily: true });
           orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder +=
             calculateQuantityChange - productList[index].quantity_in_box;
