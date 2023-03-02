@@ -20,7 +20,7 @@ import PropTypes from 'prop-types';
 import { view } from '../../../../store/constant';
 import useView from '../../../../hooks/useView';
 import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../../store/actions';
-import { DescriptionOutlined as DescriptionOutlinedIcon } from '@material-ui/icons';
+import { DescriptionOutlined, InfoOutlined } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import { SNACKBAR_OPEN } from './../../../../store/actions';
 import { createMaterialPart, getMaterialLoadData, updateMaterialPart } from '../../../../services/api/Material/MaterialPart';
@@ -179,7 +179,7 @@ const MaterialPartModal = () => {
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <DescriptionOutlinedIcon className={`${tabIndex === 0 ? classes.tabActiveIcon : ''}`} />
+                        <DescriptionOutlined />
                         Nội dung
                       </Typography>
                     }
@@ -195,6 +195,7 @@ const MaterialPartModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>
+                            <InfoOutlined />
                             <span>Thông tin</span>
                           </div>
                         </div>
@@ -222,6 +223,8 @@ const MaterialPartModal = () => {
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
+                                multiline
+                                minRows={2}
                                 variant="outlined"
                                 name="title"
                                 size="small"
@@ -338,7 +341,8 @@ const MaterialPartModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>
-                            <span>Thông tin chi tiết</span>
+                            <InfoOutlined />
+                            <span>Thông tin thêm</span>
                           </div>
                         </div>
                         <div className={classes.tabItemBody}>

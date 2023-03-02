@@ -30,7 +30,7 @@ import PropTypes from 'prop-types';
 import { view } from '../../../../store/constant';
 import useView from '../../../../hooks/useView';
 import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../../store/actions';
-import { History, DescriptionOutlined as DescriptionOutlinedIcon, AddCircleOutline, Delete } from '@material-ui/icons';
+import { History, DescriptionOutlined as DescriptionOutlinedIcon, AddCircleOutline, Delete, InfoOutlined } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import FirebaseUpload from '../../../FloatingMenu/FirebaseUpload/index.js';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -235,7 +235,7 @@ const ProductModal = () => {
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <DescriptionOutlinedIcon className={`${tabIndex === 0 ? classes.tabActiveIcon : ''}`} />
+                        <DescriptionOutlinedIcon />
                         Nội dung
                       </Typography>
                     }
@@ -246,8 +246,8 @@ const ProductModal = () => {
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <History className={`${tabIndex === 1 ? classes.tabActiveIcon : ''}`} />
-                        Product Part
+                        <History />
+                        Vật tư
                       </Typography>
                     }
                     value={1}
@@ -262,7 +262,7 @@ const ProductModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>
-                            {/* <QueueMusic /> */}
+                            <InfoOutlined />
                             <span>Thông tin</span>
                           </div>
                         </div>
@@ -290,6 +290,8 @@ const ProductModal = () => {
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
+                                multiline
+                                minRows={2}
                                 variant="outlined"
                                 name="title"
                                 value={productData.title}
@@ -320,7 +322,7 @@ const ProductModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>
-                            {/* <RadioOutlinedIcon /> */}
+                            <InfoOutlined />
                             <span>Thông tin thêm</span>
                           </div>
                         </div>

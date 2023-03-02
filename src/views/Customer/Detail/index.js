@@ -23,7 +23,7 @@ import { view } from '../../../store/constant';
 import useStyles from './../../../utils/classes';
 import FirebaseUpload from './../../FloatingMenu/FirebaseUpload/index';
 import useConfirmPopup from './../../../hooks/useConfirmPopup';
-import { AccountCircleOutlined as AccountCircleOutlinedIcon, Today as TodayIcon } from '@material-ui/icons';
+import { DescriptionOutlined, InfoOutlined } from '@material-ui/icons';
 import { createCustomer, updateCustomer } from '../../../services/api/Partner/Customer.js';
 import { getAllCustomerCategory } from '../../../services/api/Setting/CustomerCategory.js';
 import { SNACKBAR_OPEN } from './../../../store/actions';
@@ -187,24 +187,24 @@ const CustomerModal = () => {
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <AccountCircleOutlinedIcon className={`${tabIndex === 0 ? classes.tabActiveIcon : ''}`} />
+                        <DescriptionOutlined />
                         Chi tiết Khách hàng
                       </Typography>
                     }
                     value={0}
                     {...a11yProps(0)}
                   />
-                  <Tab
+                  {/* <Tab
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <TodayIcon className={`${tabIndex === 2 ? classes.tabActiveIcon : ''}`} />
+                        <TodayIcon />
                         Lịch sử thay đổi
                       </Typography>
                     }
                     value={1}
-                    {...a11yProps(2)}
-                  />
+                    {...a11yProps(1)}
+                  /> */}
                 </Tabs>
               </Grid>
               <Grid item xs={12}>
@@ -213,7 +213,10 @@ const CustomerModal = () => {
                     <Grid item lg={6} md={6} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>Thông tin</div>
+                          <div className={classes.tabItemLabel}>
+                            <InfoOutlined />
+                            <span>Thông tin</span>
+                          </div>
                         </div>
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={1}>
@@ -323,7 +326,10 @@ const CustomerModal = () => {
                     <Grid item lg={6} md={6} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>Thông tin thêm</div>
+                          <div className={classes.tabItemLabel}>
+                            <InfoOutlined />
+                            <span>Thông tin thêm</span>
+                          </div>
                         </div>
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={1}>
@@ -379,7 +385,7 @@ const CustomerModal = () => {
                                   name="notes"
                                   type="text"
                                   size="small"
-                                  minRows={7}
+                                  minRows={5}
                                   value={customerData.notes || ''}
                                   onChange={handleChanges}
                                 />

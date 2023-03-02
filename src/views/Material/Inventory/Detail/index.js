@@ -28,7 +28,7 @@ import PropTypes from 'prop-types';
 import { view } from '../../../../store/constant';
 import useView from '../../../../hooks/useView';
 import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../../store/actions';
-import { History, DescriptionOutlined as DescriptionOutlinedIcon, AddCircleOutlineOutlined } from '@material-ui/icons';
+import { History, DescriptionOutlined, AddCircleOutlineOutlined, InfoOutlined } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import { SNACKBAR_OPEN } from './../../../../store/actions';
 import BrokenModal from './../../../Dialog/Broken/index';
@@ -186,7 +186,7 @@ const InventoryModal = () => {
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <DescriptionOutlinedIcon className={`${tabIndex === 0 ? classes.tabActiveIcon : ''}`} />
+                        <DescriptionOutlined />
                         Nội dung
                       </Typography>
                     }
@@ -197,7 +197,7 @@ const InventoryModal = () => {
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <History className={`${tabIndex === 1 ? classes.tabActiveIcon : ''}`} />
+                        <History />
                         Chi tiết hỏng
                       </Typography>
                     }
@@ -213,7 +213,7 @@ const InventoryModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>
-                            {/* <QueueMusic /> */}
+                            <InfoOutlined />
                             <span>Thông tin</span>
                           </div>
                         </div>
@@ -289,6 +289,7 @@ const InventoryModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>
+                            <InfoOutlined />
                             <span>Thông tin thêm</span>
                           </div>
                         </div>

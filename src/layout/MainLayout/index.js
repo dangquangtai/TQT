@@ -45,6 +45,7 @@ import AccountPermissionModal from '../../views/AccountPermission/Detail';
 import ProfileModal from './Header/ProfileSection/profile';
 import ReturnMaterialModal from './../../views/Material/Return/Detail/index';
 import TemplateDocumentModal from '../../views/Setting/DocumentTemplate/ExcelDocument/Detail';
+import ProductInventoryModal from './../../views/Product/Inventory/Detail/index';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -173,6 +174,8 @@ const MainLayout = ({ children }) => {
         return <ReturnMaterialModal />;
       case 'templateDocument':
         return <TemplateDocumentModal />;
+      case 'productInventory':
+        return <ProductInventoryModal />;
       default:
         return null;
     }

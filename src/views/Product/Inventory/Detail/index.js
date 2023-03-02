@@ -12,22 +12,15 @@ import {
   Tabs,
   Typography,
   TextField,
-  Paper,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { view } from '../../../../store/constant';
 import useView from '../../../../hooks/useView';
 import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../../store/actions';
-import { History, DescriptionOutlined as DescriptionOutlinedIcon } from '@material-ui/icons';
+import { DescriptionOutlined as DescriptionOutlinedIcon, InfoOutlined } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import { SNACKBAR_OPEN } from './../../../../store/actions';
+import { format as formatDate } from 'date-fns';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -55,7 +48,7 @@ function a11yProps(index) {
   };
 }
 
-const InventoryModal = () => {
+const ProductInventoryModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -119,6 +112,8 @@ const InventoryModal = () => {
     });
   }, [selectedDocument]);
 
+  const isDisabled = true;
+
   return (
     <React.Fragment>
       <Grid container>
@@ -131,7 +126,7 @@ const InventoryModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              Kho vậ tư
+              Tồn kho thành phẩm
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -149,24 +144,24 @@ const InventoryModal = () => {
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <DescriptionOutlinedIcon className={`${tabIndex === 0 ? classes.tabActiveIcon : ''}`} />
+                        <DescriptionOutlinedIcon />
                         Nội dung
                       </Typography>
                     }
                     value={0}
                     {...a11yProps(0)}
                   />
-                  <Tab
+                  {/* <Tab
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <History className={`${tabIndex === 1 ? classes.tabActiveIcon : ''}`} />
+                        <History />
                         Lịch sử
                       </Typography>
                     }
                     value={1}
                     {...a11yProps(1)}
-                  />
+                  /> */}
                 </Tabs>
               </Grid>
               <Grid item xs={12}>
@@ -176,7 +171,7 @@ const InventoryModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>
-                            {/* <QueueMusic /> */}
+                            <InfoOutlined />
                             <span>Thông tin</span>
                           </div>
                         </div>
@@ -193,7 +188,7 @@ const InventoryModal = () => {
                                 value={inventoryData.product_code}
                                 type="text"
                                 size="small"
-                                onChange={handleChanges}
+                                disabled={isDisabled}
                               />
                             </Grid>
                           </Grid>
@@ -204,12 +199,62 @@ const InventoryModal = () => {
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
+                                multiline
+                                minRows={1}
                                 variant="outlined"
                                 name="product_name"
                                 value={inventoryData.product_name}
                                 type="text"
                                 size="small"
-                                onChange={handleChanges}
+                                disabled={isDisabled}
+                              />
+                            </Grid>
+                          </Grid>
+                          <Grid container className={classes.gridItemInfo} alignItems="center">
+                            <Grid item lg={4} md={4} xs={4}>
+                              <span className={classes.tabItemLabelField}>Đơn vị:</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={8}>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="unit_name"
+                                value={inventoryData.unit_name}
+                                type="text"
+                                size="small"
+                                disabled={isDisabled}
+                              />
+                            </Grid>
+                          </Grid>
+                          <Grid container className={classes.gridItemInfo} alignItems="center">
+                            <Grid item lg={4} md={4} xs={4}>
+                              <span className={classes.tabItemLabelField}>Mã TP KH:</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={8}>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="product_code"
+                                value={inventoryData.product_customer_code}
+                                type="text"
+                                size="small"
+                                disabled={isDisabled}
+                              />
+                            </Grid>
+                          </Grid>
+                          <Grid container className={classes.gridItemInfo} alignItems="center">
+                            <Grid item lg={4} md={4} xs={4}>
+                              <span className={classes.tabItemLabelField}>Mã đơn hàng:</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={8}>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="order_code"
+                                value={inventoryData.order_code}
+                                type="text"
+                                size="small"
+                                disabled={isDisabled}
                               />
                             </Grid>
                           </Grid>
@@ -224,7 +269,7 @@ const InventoryModal = () => {
                                 name="warehouse_name"
                                 value={inventoryData?.warehouse_name}
                                 size="small"
-                                onChange={handleChanges}
+                                disabled={isDisabled}
                               />
                             </Grid>
                           </Grid>
@@ -240,7 +285,37 @@ const InventoryModal = () => {
                                 value={inventoryData.quantity_in_box}
                                 size="small"
                                 type="number"
-                                onChange={handleChanges}
+                                disabled={isDisabled}
+                              />
+                            </Grid>
+                          </Grid>
+                          <Grid container className={classes.gridItem} alignItems="center">
+                            <Grid item lg={4} md={4} xs={4}>
+                              <span className={classes.tabItemLabelField}>Người tạo:</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={8}>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="created_by"
+                                value={inventoryData.created_by}
+                                size="small"
+                                disabled={isDisabled}
+                              />
+                            </Grid>
+                          </Grid>
+                          <Grid container className={classes.gridItem} alignItems="center">
+                            <Grid item lg={4} md={4} xs={4}>
+                              <span className={classes.tabItemLabelField}>Ngày tạo:</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={8}>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="created_date"
+                                value={inventoryData.created_date ? formatDate(new Date(inventoryData.created_date), 'dd/MM/yyyy') : ''}
+                                size="small"
+                                disabled={isDisabled}
                               />
                             </Grid>
                           </Grid>
@@ -249,39 +324,7 @@ const InventoryModal = () => {
                     </Grid>
                   </Grid>
                 </TabPanel>
-                <TabPanel value={tabIndex} index={1}>
-                  <Grid container spacing={1}>
-                    <Grid item lg={12} md={12} xs={12}>
-                      <div className={classes.tabItem}>
-                        <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>
-                            <span>Chi tiết</span>
-                          </div>
-                        </div>
-                        <div className={classes.tabItemBody}>
-                          <TableContainer style={{ maxHeight: '65vh' }} component={Paper}>
-                            <Table stickyHeader aria-label="simple table">
-                              <TableHead>
-                                <TableRow>
-                                  <TableCell align="left">Hỏng</TableCell>
-                                  <TableCell align="left">Số lượng</TableCell>
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                {inventoryData?.broken_list?.map((row, index) => (
-                                  <TableRow key={index}>
-                                    <TableCell align="left">{row.Broken_Type_Code}</TableCell>
-                                    <TableCell align="left">{row.Quantity_In_Piece}</TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
-                          </TableContainer>
-                        </div>
-                      </div>
-                    </Grid>
-                  </Grid>
-                </TabPanel>
+                <TabPanel value={tabIndex} index={1}></TabPanel>
               </Grid>
             </Grid>
           </DialogContent>
@@ -307,4 +350,4 @@ const InventoryModal = () => {
   );
 };
 
-export default InventoryModal;
+export default ProductInventoryModal;

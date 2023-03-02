@@ -45,7 +45,7 @@ import { getDetailWorkorOrder } from './../../services/api/Workorder/index';
 import { getDetailCustomer } from '../../services/api/Partner/Customer.js';
 import { getDetailSupplier } from './../../services/api/Partner/Supplier';
 import { getDetailWarehouseCategory } from './../../services/api/Setting/WHSCategory';
-import { getDetailInventory } from './../../services/api/Material/Inventory';
+import { getDetailInventory, exportMaterialInventory } from './../../services/api/Material/Inventory';
 import { getDetailInventoryCheck } from './../../services/api/Material/InventoryCheck';
 import { exportMaterial, getDetailPurchaseMaterial } from './../../services/api/Material/Purchase';
 import { getDetailReceivedMaterial } from './../../services/api/Material/Received';
@@ -63,6 +63,7 @@ import { downloadFile } from './../../utils/helper';
 import { getUserGroupDetail } from '../../services/api/UserGroup/index';
 import { getDetailReturnMaterial } from './../../services/api/Material/Return';
 import { getDetailTemplateDocument } from '../../services/api/Setting/TemplateDocument';
+import { getDetailProductInventory } from './../../services/api/Product/Inventory';
 
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
@@ -175,6 +176,7 @@ export default function GeneralTable(props) {
   const buttonCreateReturnMaterial = menuButtons.find((button) => button.name === view.materialReturn.list.create);
   const buttonCreateTemplateDocument = menuButtons.find((button) => button.name === view.templateDocument.list.create);
   const buttonCreateProduct = menuButtons.find((button) => button.name === view.product.list.create);
+  const buttonExportMaterialInventory = menuButtons.find((button) => button.name === view.materialInventory.list.export);
 
   const fetchDocument = (additionalQuery) => {
     const queries = { ...defaultQueries, ...additionalQuery };
@@ -436,6 +438,11 @@ export default function GeneralTable(props) {
         detailDocument = await getDetailTemplateDocument(selectedDocument.id, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, excelTemplateDocument: true });
+        break;
+      case 'productInventory':
+        detailDocument = await getDetailProductInventory(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, productInventoryDocument: true });
         break;
       default:
         break;
@@ -747,6 +754,16 @@ export default function GeneralTable(props) {
     });
   };
 
+  const handleExportMaterialInventory = async () => {
+    showConfirmPopup({
+      title: 'Xuất vật tư tồn kho',
+      message: 'Bạn có chắc chắn muốn xuất file tổng hợp tất cả vật tư tồn kho?',
+      action: exportMaterialInventory,
+      payload: null,
+      onSuccess: (url) => handleDownload(url),
+    });
+  };
+
   const handleDownload = (url) => {
     if (!url) {
       handleOpenSnackbar('error', 'Không tìm thấy file!');
@@ -963,6 +980,8 @@ export default function GeneralTable(props) {
     buttonCreateReturnMaterial,
     buttonCreateTemplateDocument,
     buttonCreateProduct,
+    buttonExportMaterialInventory,
+    handleExportMaterialInventory,
   };
 
   return (

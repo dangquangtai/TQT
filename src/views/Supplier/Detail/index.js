@@ -23,7 +23,7 @@ import { view } from '../../../store/constant';
 import useStyles from './../../../utils/classes';
 import FirebaseUpload from './../../FloatingMenu/FirebaseUpload/index';
 import useConfirmPopup from './../../../hooks/useConfirmPopup';
-import { AccountCircleOutlined as AccountCircleOutlinedIcon, Today as TodayIcon } from '@material-ui/icons';
+import { AccountCircleOutlinedasAccountCircleOutlinedIcon, TodayasTodayIcon, DescriptionOutlined, InfoOutlined } from '@material-ui/icons';
 import { createSupplier, updateSupplier } from '../../../services/api/Partner/Supplier.js';
 import { getAllSupplierCategory } from '../../../services/api/Setting/SupplierCategory.js';
 import { SNACKBAR_OPEN } from './../../../store/actions';
@@ -187,24 +187,24 @@ const SupplierModal = () => {
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <AccountCircleOutlinedIcon className={`${tabIndex === 0 ? classes.tabActiveIcon : ''}`} />
+                        <DescriptionOutlined />
                         Chi tiết Nhà cung cấp
                       </Typography>
                     }
                     value={0}
                     {...a11yProps(0)}
                   />
-                  <Tab
+                  {/* <Tab
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <TodayIcon className={`${tabIndex === 2 ? classes.tabActiveIcon : ''}`} />
+                        <TodayIcon />
                         Lịch sử thay đổi
                       </Typography>
                     }
                     value={1}
-                    {...a11yProps(2)}
-                  />
+                    {...a11yProps(1)}
+                  /> */}
                 </Tabs>
               </Grid>
               <Grid item xs={12}>
@@ -213,7 +213,10 @@ const SupplierModal = () => {
                     <Grid item lg={6} md={6} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>Thông tin</div>
+                          <div className={classes.tabItemLabel}>
+                            <InfoOutlined />
+                            <span>Thông tin</span>
+                          </div>
                         </div>
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={1}>

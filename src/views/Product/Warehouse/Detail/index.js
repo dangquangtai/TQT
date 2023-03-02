@@ -20,7 +20,7 @@ import PropTypes from 'prop-types';
 import { view } from '../../../../store/constant';
 import useView from '../../../../hooks/useView';
 import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../../store/actions';
-import { DescriptionOutlined as DescriptionOutlinedIcon } from '@material-ui/icons';
+import { DescriptionOutlined as DescriptionOutlinedIcon, InfoOutlined } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import { SNACKBAR_OPEN } from './../../../../store/actions';
 import { createProductWarehouse, updateProductWarehouse } from './../../../../services/api/Product/Warehouse';
@@ -149,7 +149,7 @@ const ProductWarehouseModal = () => {
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                        <DescriptionOutlinedIcon className={`${tabIndex === 0 ? classes.tabActiveIcon : ''}`} />
+                        <DescriptionOutlinedIcon />
                         Nội dung
                       </Typography>
                     }
@@ -165,6 +165,7 @@ const ProductWarehouseModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>
+                            <InfoOutlined />
                             <span>Thông tin</span>
                           </div>
                         </div>

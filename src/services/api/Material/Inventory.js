@@ -25,3 +25,17 @@ export const updateMaterialInventory = (data) => {
     return false;
   });
 };
+
+export const exportMaterialInventory = () => {
+  return axiosServices
+    .post(apiEndpoints.export_material_inventory, {})
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return response.data.url;
+      }
+      return '';
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
