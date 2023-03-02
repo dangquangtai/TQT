@@ -374,7 +374,9 @@ const WorkorderModal = () => {
         dispatch({ type: ORDER_CHANGE, order: null, orderDetail: null });
         dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: null });
       }
-      let product_list = await handleCreateWorkOrder(false, true, false, true);
+      let product_list = '';
+      product_list = await handleCreateWorkOrder(false, true, false, true);
+      if (!product_list) product_list = productList;
       dataMaterial = await getMaterialDaily(product_list[index].id);
       dispatch({
         type: MATERIAL_CHANGE,
@@ -833,6 +835,7 @@ const WorkorderModal = () => {
         }
         setDateListNull(datenull);
       }
+      changerow = true;
       handleGetWorkOrderRequest(date[indexCurrentDate].id, -1, true);
     }
   };

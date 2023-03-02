@@ -241,7 +241,7 @@ const OrderModal = () => {
                               <Grid item lg={3} md={6} xs={12}>
                                 <Grid container spacing={1}>
                                   <Grid item lg={12} md={12} xs={12}>
-                                    <Typography variant="h6">Ngày đặt hàng</Typography>
+                                    <Typography variant="h6">Ngày giao hàng</Typography>
                                   </Grid>
                                   <Grid item lg={12} md={12} xs={12}>
                                     <TextField disabled variant="outlined" size="small" fullWidth value={order?.expected_deliver_date} />
@@ -286,7 +286,7 @@ const OrderModal = () => {
                                       <TableCell align="left">Đơn vị</TableCell>
                                       <TableCell align="left">Số lượng đã lập KH</TableCell>
                                       <TableCell align="left">Số lượng đã SX</TableCell>
-                                      <TableCell align="left">Số lượng còn lại</TableCell>
+                                      <TableCell align="left">Số lượng chưa SX</TableCell>
                                     </TableRow>
                                   </TableHead>
                                   <TableBody>
@@ -304,7 +304,7 @@ const OrderModal = () => {
                                         <TableCell align="center">{item.quantity_in_workorder.toLocaleString()}</TableCell>
                                         <TableCell align="center">{item.quantity_produced.toLocaleString()}</TableCell>
                                         <TableCell align="center">
-                                          {calculateQuantity(item.quantity_in_box, item.quantity_in_workorder)}
+                                          {calculateQuantity(item.quantity_in_box, item.quantity_produced)}
                                         </TableCell>
                                       </TableRow>
                                     ))}
