@@ -40,12 +40,13 @@ const OrderModal = () => {
     order_code: '',
   });
   const [work_order_id, setWorkorderID] = useState('');
+  const [work_order_daily_id, setWorkorderDailyID] = useState('');
   const [orderDetail, setOrderDetail] = useState([]);
   const [orderList, setOrderList] = useState([]);
   const handleOrderChange = async (e, value) => {
     var orderDetail;
     if (work_order_id !== '') {
-      orderDetail = await getDetailOrderByWorkOrder(value.id, work_order_id);
+      orderDetail = await getDetailOrderByWorkOrder(value.id, work_order_id, work_order_daily_id);
     } else {
       orderDetail = await getOrderProductDetail(value.id);
     }
@@ -71,52 +72,60 @@ const OrderModal = () => {
     }
   };
 
-  const handleOrderChangeSelected = async (value) => {
+  const handleOrderChangeSelected = async (value1) => {
     var orderDetailList = {};
+    let value;
+    if (!value1) {
+      value = order;
+    } else {
+      value = value1;
+    }
     if (orderRedux?.work_order_id !== '') {
-      orderDetailList = await getDetailOrderByWorkOrder(value.id, orderRedux.work_order_id);
+      orderDetailList = await getDetailOrderByWorkOrder(value.id, orderRedux.work_order_id, orderRedux.work_order_daily_id);
       setWorkorderID(orderRedux.work_order_id);
+      setWorkorderDailyID(orderRedux.work_order_daily_id);
     } else {
       orderDetailList = await getOrderProductDetail(value.id);
       setWorkorderID('');
+      setWorkorderDailyID('');
     }
+
     setOrderSelected(value);
-    if (value) {
-      setOrder({ ...value, order_code: orderDetailList?.order_code, ...orderDetailList });
-      dispatch({
-        type: ORDER_CHANGE,
-        order: { ...value, order_code: orderDetailList.order_code, change: false, work_order_id: orderRedux.work_order_id },
-        orderDetail: orderDetailList.order_detail,
-        workorderDetail: orderRedux.workorderDetail,
-      });
-      setOrderDetail(orderDetailList?.order_detail);
-    } else {
-      dispatch({
-        type: ORDER_CHANGE,
-        order: null,
-        orderDetail: orderDetailList,
-        workorderDetail: orderRedux.workorderDetail,
-      });
-      setOrder({
-        id: '',
-        title: '',
-        customer_name: '',
-        order_date: '',
-        order_code: '',
-      });
-      setOrderDetail(orderDetailList);
+    if (!!orderDetailList) {
+      if (value) {
+        setOrder({ ...value, order_code: orderDetailList?.order_code, ...orderDetailList });
+        dispatch({
+          type: ORDER_CHANGE,
+          order: { ...value, order_code: orderDetailList.order_code, change: false, work_order_id: orderRedux.work_order_id },
+          orderDetail: orderDetailList.order_detail,
+          workorderDetail: orderRedux.workorderDetail,
+        });
+        setOrderDetail(orderDetailList?.order_detail);
+      } else {
+        dispatch({
+          type: ORDER_CHANGE,
+          order: null,
+          orderDetail: orderDetailList,
+          workorderDetail: orderRedux.workorderDetail,
+        });
+        setOrder({
+          id: '',
+          title: '',
+          customer_name: '',
+          order_date: '',
+          order_code: '',
+        });
+        setOrderDetail(orderDetailList);
+      }
     }
   };
-  const calculateQuantity = (quantityInBox, quantityProduced, quantityOrder) => {
+  const calculateQuantity = (quantityInBox, quantityOrder) => {
     var color;
     var quantity;
-    if (quantityProduced >= quantityInBox) {
-      quantity = 0;
-      color = quantity > 0 ? 'yellow' : 'rgb(48, 188, 65)';
-    } else {
-      quantity = quantityInBox - quantityProduced - quantityOrder;
-      color = quantity > 0 ? 'yellow' : 'rgb(48, 188, 65)';
-    }
+
+    quantity = quantityInBox - quantityOrder;
+    color = quantity > 0 ? 'yellow' : 'rgb(48, 188, 65)';
+
     return <Typography style={{ backgroundColor: color }}>{quantity.toLocaleString()}</Typography>;
   };
 
@@ -157,12 +166,12 @@ const OrderModal = () => {
     if (orderRedux?.close) {
       handleClose();
     }
+
+    if (orderRedux?.change) {
+      var orderInList = orderList.find((x) => x.id === orderRedux.id);
+      handleOrderChangeSelected(orderInList);
+    }
     if (!orderRedux.orderDetail) {
-      if (orderRedux?.change) {
-        var orderInList = orderList.find((x) => x.id === orderRedux.id);
-        if (!orderInList) return;
-        handleOrderChangeSelected(orderInList);
-      }
       return;
     }
     setOrderDetail(orderRedux.orderDetail);
@@ -295,7 +304,7 @@ const OrderModal = () => {
                                         <TableCell align="center">{item.quantity_in_workorder.toLocaleString()}</TableCell>
                                         <TableCell align="center">{item.quantity_produced.toLocaleString()}</TableCell>
                                         <TableCell align="center">
-                                          {calculateQuantity(item.quantity_in_box, item.quantity_produced, item.quantity_in_workorder)}
+                                          {calculateQuantity(item.quantity_in_box, item.quantity_in_workorder)}
                                         </TableCell>
                                       </TableRow>
                                     ))}

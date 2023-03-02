@@ -128,8 +128,8 @@ export default function AlertDialogSlide() {
     setSupplierList([...newProductList]);
   };
   const handleSubmit = async () => {
-    let data = supplierList.filter((x) => x.part_id !== '' && !x.id && x.quantity_in_piece !== 0);
-    let data2 = supplierListAll.filter((x) => x.part_id !== '' && !x.id && x.quantity_in_piece !== 0);
+    let data = supplierList.filter((x) => (x.part_id !== '' && !x.id && x.quantity_in_piece !== 0) || x.change);
+    let data2 = supplierListAll.filter((x) => (x.part_id !== '' && !x.id && x.quantity_in_piece !== 0) || x.change);
     if (data.length > 0 || data2.length > 0)
       await createMaterialRequisition({
         order_date: detail.order_date,
@@ -185,7 +185,7 @@ export default function AlertDialogSlide() {
     setSupplierList([...supplierList]);
   };
   const handleChangeNumber = (e, item) => {
-    console.log(detail.part_list[indexColor].Quantity_In_Piece, item.quantity_in_piece, e.target.value);
+    item.change = true;
     detail.part_list[indexColor].Quantity_In_Piece =
       detail.part_list[indexColor].Quantity_In_Piece + item.quantity_in_piece - e.target.value;
     item.quantity_in_piece = e.target.value;
@@ -383,7 +383,7 @@ export default function AlertDialogSlide() {
                             <Autocomplete
                               value={{ id: item.supplier_id, value: item.supplier_name }}
                               size="small"
-                              // disabled={item.is_disable}
+                              disabled={item.is_disable}
                               disableClearable
                               options={supplierListDrop}
                               fullWidth
@@ -400,7 +400,7 @@ export default function AlertDialogSlide() {
                               style={{ minWidth: 120, maxWidth: 120 }}
                               variant="outlined"
                               // disabled={item.is_disable}
-                              InputProps={{ inputProps: { min: 1, max: item.maxValue } }}
+                              InputProps={{ inputProps: { min: 1, max: item.quantity_in_wh } }}
                               value={item.quantity_in_piece}
                               size="small"
                               onChange={(e) => handleChangeNumber(e, item)}
@@ -423,7 +423,7 @@ export default function AlertDialogSlide() {
                           </TableCell>
                           <TableCell align="left">
                             <IconButton
-                              //  disabled={orderRedux.workorderDetail.is_disable}
+                              // disabled={orderRedux.workorderDetail.is_disable}
                               onClick={() => handleDeleteRow(index)}
                             >
                               <Delete />

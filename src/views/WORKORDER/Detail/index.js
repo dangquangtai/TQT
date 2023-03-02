@@ -473,7 +473,7 @@ const WorkorderModal = () => {
       } else {
         if (
           parseInt(product.quantity_in_workorder) + parseInt(value) - parseInt(productList[index].quantity_in_box) <=
-          parseInt(product.quantity_in_box) - parseInt(product.quantity_produced)
+          parseInt(product.quantity_in_box)
         ) {
           setCheckChangeData({ ...checkChangeData, changeWorkOrderDaily: true });
           orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder +=
@@ -537,6 +537,14 @@ const WorkorderModal = () => {
       });
       setCheckChangeData({ ...checkChangeData, changeWorkOrderRequest: true });
       setDisable(false);
+      dispatch({
+        type: ORDER_CHANGE,
+        order: {
+          ...orderRedux,
+          change: true,
+          work_order_daily_id: '',
+        },
+      });
     } else {
       productListApi = await getWorkOrderRequest(id);
       if (index >= 0) {
@@ -552,18 +560,19 @@ const WorkorderModal = () => {
       setDisable(productListApi.work_order_request.is_disable);
       setProductList(productListApi.work_order_detail);
       setWorkorderRequest({ ...productListApi.work_order_request });
+
       if (setOrder) {
-        if (productListApi.work_order_detail[0]?.customer_order_id !== '')
-          if (productListApi.work_order_detail.length > 0)
-            dispatch({
-              type: ORDER_CHANGE,
-              order: {
-                id: productListApi.work_order_detail[0]?.customer_order_id,
-                change: true,
-                work_order_id: workorder.id,
-                workorderDetail: orderRedux.workorderDetail,
-              },
-            });
+        console.log('xzczx');
+        dispatch({
+          type: ORDER_CHANGE,
+          order: {
+            id: productListApi.work_order_detail[0]?.customer_order_id,
+            change: true,
+            work_order_id: selectedDocument?.id || workorder.id,
+            work_order_daily_id: productListApi.work_order_request.id,
+            workorderDetail: orderRedux.workorderDetail,
+          },
+        });
       }
     }
     return productListApi.work_order_detail;
@@ -578,7 +587,7 @@ const WorkorderModal = () => {
     );
     setCurrentDate(date);
     setIndexDate(index);
-    handleGetWorkOrderRequest(productionDailyRequestList[index].id, index, false, true);
+    handleGetWorkOrderRequest(productionDailyRequestList[index].id, index, true);
   };
 
   const updateDataDailyRequest = (product_List) => {
@@ -958,7 +967,7 @@ const WorkorderModal = () => {
           <TableCell align="right">
             <IconButton
               onClick={() => handleDeleteRow(index, item.id)}
-              //  disabled={disableComponent}
+              // disabled={disableComponent}
             >
               <Delete />
             </IconButton>
