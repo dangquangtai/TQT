@@ -35,6 +35,7 @@ import { view } from './../../../../store/constant';
 import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CONFIRM_CHANGE } from './../../../../store/actions';
 import FirebaseUpload from './../../../FloatingMenu/FirebaseUpload/index';
 import DatePicker from './../../../../component/DatePicker/index';
+
 import {
   createDeliveryMaterial,
   deleteDeliveryMaterialDetail,
@@ -43,6 +44,7 @@ import {
   getInventoryBySupplier,
   updateDeliveryMaterial,
 } from '../../../../services/api/Material/DailyRequisitionMaterial';
+import { createFileAttachment, deleteFileAttachment, getListFile } from '../../../../services/api/Attachment/FileAttachment';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -77,7 +79,7 @@ const DeliveryMaterialModal = () => {
   const saveButton = formButtons.find((button) => button.name === view.dailyDeliveryMateial.detail.save);
   const { dailyMaterialRequitisionDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
-
+  const returnIcon = [];
   const [deliveryMaterialData, setDeliveryMaterialData] = useState({
     order_date: new Date(),
     notes: '',
@@ -87,6 +89,9 @@ const DeliveryMaterialModal = () => {
   const [statusList, setStatusList] = useState([]);
   const [warehouseList, setWarehouseList] = useState([]);
   const [tabIndex, setTabIndex] = React.useState(0);
+  const [isOpenUpload, setIsOpenUpload] = useState(false);
+  const [fileData, setFileData] = useState([]);
+  const [listFileData, setListFileData] = useState([]);
   const [dialogUpload, setDialogUpload] = useState({
     open: false,
     type: '',
@@ -115,14 +120,16 @@ const DeliveryMaterialModal = () => {
     setDeliveryMaterialData({ order_date: new Date(), notes: '' });
     setDeliveryDetailList([]);
     setMaterialOrderDetailList([]);
+    setListFileData([]);
+    setFileData([]);
     setTabIndex(0);
   };
-  const setURL = (image) => {
-    if (dialogUpload.type === 'image') {
-      setDeliveryMaterialData({ ...deliveryMaterialData, image_url: image });
-    } else if (dialogUpload.type === 'banner') {
-      setDeliveryMaterialData({ ...deliveryMaterialData, banner_url: image });
-    }
+  const setURL = async (fileDataInput) => {
+    console.log(fileDataInput?.file_name);
+    const newFileData = { ...fileData, file_name: fileDataInput?.file_name, url: fileDataInput?.url };
+    setFileData(newFileData);
+    const res = await createFileAttachment(newFileData);
+    if (res) fetchFileListData();
   };
 
   const handleCloseDiaLog = () => {
@@ -131,11 +138,15 @@ const DeliveryMaterialModal = () => {
       type: '',
     });
   };
+  const closeFirebaseDialog = () => {
+    setIsOpenUpload(false);
+  };
 
   const handleSubmitForm = async () => {
     try {
       if (selectedDocument?.id) {
         await updateDeliveryMaterial({ ...deliveryMaterialData, detail_list: deliveryDetailList });
+
         handleOpenSnackbar('success', 'Cập nhật Phiếu xuất vật tư thành công!');
       } else {
         await createDeliveryMaterial({ ...deliveryMaterialData, detail_list: deliveryDetailList });
@@ -147,7 +158,19 @@ const DeliveryMaterialModal = () => {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
     }
   };
-
+  const handleDeleteFile = async (id) => {
+    showConfirmPopup({
+      title: 'Xóa file',
+      message: 'Bạn có chắc chắn muốn xóa file?',
+      action: deleteFileAttachment,
+      payload: id,
+      onSuccess: () => {
+        fetchFileListData();
+      },
+    });
+    // const res = await deleteFileAttachment(id);
+    // if (res)
+  };
   const showConfirmPopup = ({ title = 'Thông báo', message = '', action = null, payload = null, onSuccess = null }) => {
     setConfirmPopup({ type: CONFIRM_CHANGE, open: true, title, message, action, payload, onSuccess });
   };
@@ -156,7 +179,9 @@ const DeliveryMaterialModal = () => {
     const { name, value } = e.target;
     setDeliveryMaterialData({ ...deliveryMaterialData, [name]: value });
   };
-
+  const handleOpenDiaLog = () => {
+    setIsOpenUpload(true);
+  };
   const handleAddReceivedDetail = () => {
     setDeliveryDetailList([
       {
@@ -283,12 +308,53 @@ const DeliveryMaterialModal = () => {
     setMaterialOrderDetailList(newMaterialOrderDetailList);
   };
 
+  // const returnFileIcon = (fileList) => {
+  //   if (fileData) {
+  //     fileList.map((file, index) => {
+  //       returnIcon.push(
+  //         <Grid item xs={2}>
+  //           <div style={{ display: 'flex' }}>
+  //             <div className={classes.tabItem}>
+  //               <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'center' }}>
+  //                 <div>
+  //                   {' '}
+  //                   <img src={file.banner_url} alt="" style={{ width: 70, paddingTop: 10 }} />
+  //                 </div>
+
+  //                 <div style={{ textAlign: 'center' }}>{file.file_name}</div>
+  //                 <div>
+  //                   <a href={file.download_url} target="__blank" style={{ marginRight: 10 }}>
+  //                     Tải xuống
+  //                   </a>
+  //                   <a onClick={handleDeleteFile(file.id)} style={{ textDecoration: 'underline' }}>
+  //                     Xóa
+  //                   </a>
+  //                 </div>
+  //               </div>
+  //             </div>
+  //           </div>
+  //         </Grid>
+  //       );
+  //     });
+  //     console.log(returnIcon);
+  //   }
+
+  //   return returnIcon;
+  // };
+  const fetchFileListData = async () => {
+    const fileList = await getListFile(selectedDocument?.id);
+    setListFileData(fileList);
+  };
+
   useEffect(() => {
     if (!selectedDocument) return;
     setDeliveryMaterialData({
       ...deliveryMaterialData,
       ...selectedDocument,
     });
+
+    setFileData({ ...fileData, id: selectedDocument?.id });
+    fetchFileListData();
     setDeliveryDetailList(selectedDocument?.detail_list);
     getPartListByReceivedDetail(selectedDocument?.detail_list);
   }, [selectedDocument]);
@@ -313,11 +379,11 @@ const DeliveryMaterialModal = () => {
   return (
     <React.Fragment>
       <FirebaseUpload
-        open={dialogUpload.open || false}
+        open={isOpenUpload || false}
         onSuccess={setURL}
-        onClose={handleCloseDiaLog}
-        type="image"
-        folder="receivedMaterial"
+        onClose={closeFirebaseDialog}
+        type="other"
+        folder="File Import/Delivery_Material"
       />
       <Grid container>
         <Dialog
@@ -572,8 +638,55 @@ const DeliveryMaterialModal = () => {
                   </Grid>
                 </TabPanel>
                 <TabPanel value={tabIndex} index={1}>
+                  <div className={`${classes.tabItemMentorAvatarBody}`} style={{ paddingBottom: 10, justifyContent: 'start' }}>
+                    {selectedDocument?.id && (
+                      <Button onClick={() => handleOpenDiaLog()} variant="default">
+                        Thêm mới
+                      </Button>
+                    )}
+                  </div>
                   <Grid container spacing={1}>
-                    <Grid item xs={12}></Grid>
+                    {listFileData?.map((file, index) => (
+                      <Grid item xs={2}>
+                        <div style={{ maxWidth: 210, height: 195 }}>
+                          <div className={classes.tabItem}>
+                            <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'center', height: 170 }}>
+                              <div>
+                                {' '}
+                                <img src={file.banner_url} alt="" style={{ width: 70, paddingTop: 10, height: 75 }} />
+                              </div>
+
+                              <div
+                                style={{
+                                  textAlign: 'center',
+                                  maxWidth: 205,
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  display: '-webkit-box',
+                                  WebkitBoxOrient: 'vertical',
+                                  WebkitLineClamp: 2,
+                                  wordWrap: 'break-word',
+                                  height: 54,
+                                }}
+                              >
+                                {file.file_name}
+                              </div>
+                              <div>
+                                <a href={file.download_url} target="__blank" style={{ marginRight: 10 }}>
+                                  Tải xuống
+                                </a>
+                                <a onClick={() => handleDeleteFile(file.id)} style={{ marginRight: 10, textDecoration: 'underline' }}>
+                                  Xóa
+                                </a>
+                                {/* <button  style={{ textDecoration: 'underline' }}>
+                                  Xóa
+                                </button> */}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </Grid>
+                    ))}
                   </Grid>
                 </TabPanel>
                 <TabPanel value={tabIndex} index={2}>
