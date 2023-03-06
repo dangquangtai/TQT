@@ -6,7 +6,8 @@ import Dropzone, { useDropzone } from 'react-dropzone';
 import { gridSpacing } from '../../../store/constant';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '../../../services/firebase.js';
-import { createFileAttachment } from '../../../services/api/Attachment/FileAttachment';
+import { useDispatch } from 'react-redux';
+import { SNACKBAR_OPEN } from './../../../store/actions';
 
 function getModalStyle() {
   return {
@@ -50,6 +51,7 @@ export default function FirebaseUpload(props) {
   const theme = useTheme();
   const matchDownXs = useMediaQuery(theme.breakpoints.down('xs'));
   const [modalStyle] = React.useState(getModalStyle);
+  const dispatch = useDispatch();
 
   const [selectedFiles, setSelectedFile] = React.useState([]);
   const [progresspercent, setProgresspercent] = React.useState(0);
@@ -61,6 +63,15 @@ export default function FirebaseUpload(props) {
   const [fileData, setFileData] = React.useState({});
 
   function onDrop(files) {
+    if (files[0].size / 1024 / 1024 > 5) {
+      dispatch({
+        type: SNACKBAR_OPEN,
+        open: true,
+        message: 'File tải lên không được lớn hơn 5MB',
+        alertSeverity: 'error',
+      });
+      return;
+    }
     setSelectedFile(files);
   }
 
@@ -82,7 +93,7 @@ export default function FirebaseUpload(props) {
         setFileType('.zip,.rar');
         break;
       case 'other':
-        setFileType('.csv,.doc,.docx,.xls,.xlsx,.txt,.pdf');
+        setFileType('.csv,.doc,.docx,.xls,.xlsx,.txt,.pdf,image/*');
         break;
       default:
         setFileType('image/*');

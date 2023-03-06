@@ -147,7 +147,7 @@ const InventoryCheckModal = () => {
     try {
       const res = await importInventoryCheck({
         id: inventoryCheckData.id,
-        file_url: image,
+        file_url: image?.url,
         inventory_check_code: inventoryCheckData.inventory_check_code,
       });
       if (res.code === 200) {
