@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import AccountTable from '../Table';
 import { getUrlByAction } from '../../utils/utils';
 import { DOCUMENT_CHANGE } from '../../store/actions';
+import { accountActions } from '../../store/constant';
 // import axiosInstance from '../../services/axios';
 
 const AccountWrapper = () => {
@@ -26,7 +27,7 @@ const AccountWrapper = () => {
   return (
     <React.Fragment>
       <AccountTable
-        tableTitle="Quản lý người dùng"
+        tableTitle={selectedFolder.action === accountActions.list_active_user? 'Người dùng hoạt động':'Người dùng không hoạt động'}
         url={getUrlByAction(selectedFolder)}
         categories={categories}
         documentType="account"
