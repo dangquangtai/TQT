@@ -175,7 +175,7 @@ const DailyMaterialRequisitionModal = () => {
   };
 
   const handleClickExport = async () => {
-    var url = await exportDailyMaterialRequisition(dailyMaterialRequisitionData.daily_work_order_id || '');
+    var url = await exportDailyMaterialRequisition(dailyMaterialRequisitionData.id || '');
     handleDownload(url);
   };
 
