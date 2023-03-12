@@ -2,10 +2,10 @@ import React from 'react';
 import clsx from 'clsx';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import { Box, Button, FormHelperText, TextField } from '@material-ui/core';
+import { Box, Button, FormHelperText, TextField, Link, Grid } from '@material-ui/core';
 import useAuth from '../../hooks/useAuth';
 import useScriptRef from '../../hooks/useScriptRef';
-
+import { Link as RouterLink } from 'react-router-dom';
 const JWTLogin = ({ className, ...rest }) => {
   const { login } = useAuth();
   const scriptedRef = useScriptRef();
@@ -70,7 +70,7 @@ const JWTLogin = ({ className, ...rest }) => {
             type="password"
             value={values.password}
             variant="outlined"
-           
+
             // InputLabelProps={{ style: { fontSize:20 } }}
           />
           {errors.submit && (
@@ -79,14 +79,19 @@ const JWTLogin = ({ className, ...rest }) => {
             </Box>
           )}
           <Box mt={2}>
-            <Button
-              color="primary"
-              disabled={isSubmitting}
-              fullWidth
-              size="large"
-              type="submit"
-              variant="contained"
-            >
+            <Grid container direction="column" spacing={4} justifyContent="center">
+              <Grid item xs={12}>
+                <Grid container justifyContent="space-between">
+                  <Grid item></Grid>
+                  <Grid item>
+                    <RouterLink to="/forgot">Quên mật khẩu</RouterLink>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Box>
+          <Box mt={2}>
+            <Button color="primary" disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained">
               Đăng nhập
             </Button>
           </Box>

@@ -29,6 +29,9 @@ export const apiEndpoints = {
   get_department_role_by_group: '/Primary/?FlowAlias=bs_api_dept_get_department_role_by_group_id&action=api',
   get_all_account_list: '/Primary/?FlowAlias=bs_api_orgm_user_get_all_account&action=api',
   reset_password: '/Primary/?FlowAlias=bs_api_orgm_user_reset_password&action=api',
+  forgot_password: '/Primary/?FlowAlias=bs_api_user_forget_password&action=api',
+  validate_forgot_password: '/Primary/?FlowAlias=bs_api_user_validate_forgot_password_verification&action=api',
+
   //Role template
   get_all_active_role_template: '/Primary/?FlowAlias=bs_api_role_template_get_all_active_role_template_by_page&action=api',
   active_role_template: '/Primary/?FlowAlias=bs_api_role_template_active_role_template&action=api',

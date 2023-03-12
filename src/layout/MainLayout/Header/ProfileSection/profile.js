@@ -73,15 +73,19 @@ const ProfileModal = (props) => {
   const { provinces: provinceList, genders: genderList } = useSelector((state) => state.metadata);
   const [account, setAccount] = React.useState({
     ...initAccount,
+    ...selectedDocument,
   });
+
   useEffect(() => {
     if (!selectedDocument) return;
-    setAccount({
-      ...account,
-      ...selectedDocument,
-    });
-  }, [selectedDocument]);
-
+    const fetch = async () => {
+      if (openDialog) {
+        let data = await getAccount(selectedDocument.id)
+        setAccount({ ...account, ...selectedDocument, ...data });
+      }
+    };
+    fetch();
+  }, [openDialog]);
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setDocumentToDefault();
@@ -159,7 +163,7 @@ const ProfileModal = (props) => {
   const setURL = (image) => {
     setAccount({
       ...account,
-      image_url: image,
+      image_url: image.url,
     });
   };
 
@@ -170,15 +174,6 @@ const ProfileModal = (props) => {
     setDialogUpload({ open: false, type: 'image' });
   };
 
-  useEffect(() => {
-    if (openDialog) {
-      const fetch = async () => {
-        let data = await getAccount(selectedDocument.account_id);
-        setAccount(data);
-      };
-      fetch();
-    }
-  }, [openDialog]);
   return (
     <React.Fragment>
       {snackbarStatus.isOpen && (
@@ -199,13 +194,16 @@ const ProfileModal = (props) => {
           </Snackbar>
         </Portal>
       )}
-      <FirebaseUpload
-        open={dialogUpload.open || false}
-        onSuccess={setURL}
-        onClose={handleCloseDiaLog}
-        folder="AvatarAccount"
-        type="image"
-      />
+      <Portal>
+        <FirebaseUpload
+          open={dialogUpload.open || false}
+          onSuccess={setURL}
+          onClose={handleCloseDiaLog}
+          folder="AvatarAccount"
+          type="image"
+        />
+      </Portal>
+
       <Grid container>
         <Dialog
           open={openDialog || false}
@@ -216,7 +214,7 @@ const ProfileModal = (props) => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              Thông tin người dùng
+              Thông tin cá nhân
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
