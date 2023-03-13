@@ -9,9 +9,10 @@ import { Link as RouterLink } from 'react-router-dom';
 import { Redirect } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { DOCUMENT_CHANGE } from '../../store/actions';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 const JWTLogin = ({ className, ...rest }) => {
   const { forgotpass } = useAuth();
-  const scriptedRef = useScriptRef();
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [redirectLink, setRedirect] = useState(false);
   const dispatch = useDispatch();
   return (
@@ -27,7 +28,8 @@ const JWTLogin = ({ className, ...rest }) => {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            let data = await forgotpass(values.email);
+            const token = await executeRecaptcha('forgotPass');
+            let data = await forgotpass(values.email, token);
             if (data) {
               dispatch({ type: DOCUMENT_CHANGE, selectedDocument: { email: values.email } });
               setRedirect(true);

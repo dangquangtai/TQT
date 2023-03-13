@@ -90,10 +90,11 @@ export const JWTProvider = ({ children }) => {
   const [state, dispatch] = useReducer(accountReducer, initialState);
   const { turnOnLoading, turnOffLoading } = useLoading();
 
-  const login = async (email, password) => {
+  const login = async (email, password, token) => {
     const response = await axiosInstance.post(apiEndpoints.authenticate, {
       email_address: email,
       password,
+      token,
       outputtype: 'RawJson',
       guest: 'true',
       company_code: comanyCode,
@@ -113,9 +114,10 @@ export const JWTProvider = ({ children }) => {
     }
   };
 
-  const forgotpass = async (email) => {
+  const forgotpass = async (email, token) => {
     const response = await axiosInstance.post(apiEndpoints.forgot_password, {
       email_address: email,
+      token,
       outputtype: 'RawJson',
       guest: 'true',
       company_code: comanyCode,
@@ -128,9 +130,10 @@ export const JWTProvider = ({ children }) => {
       return false;
     }
   };
-  const validatechangepass = async (email, code) => {
+  const validatechangepass = async (email, code, token) => {
     const response = await axiosInstance.post(apiEndpoints.validate_forgot_password, {
       email_address: email,
+      token,
       outputtype: 'RawJson',
       guest: 'true',
       verification_code: code,

@@ -6,9 +6,11 @@ import { Box, Button, FormHelperText, TextField, Link, Grid } from '@material-ui
 import useAuth from '../../hooks/useAuth';
 import useScriptRef from '../../hooks/useScriptRef';
 import { Link as RouterLink } from 'react-router-dom';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 const JWTLogin = ({ className, ...rest }) => {
   const { login } = useAuth();
   const scriptedRef = useScriptRef();
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   return (
     <Formik
@@ -25,7 +27,8 @@ const JWTLogin = ({ className, ...rest }) => {
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
         try {
-          await login(values.email, values.password);
+          const token = await executeRecaptcha('login');
+          await login(values.email, values.password, token);
 
           if (scriptedRef.current) {
             setStatus({ success: true });

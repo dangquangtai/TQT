@@ -8,11 +8,13 @@ import useScriptRef from '../../hooks/useScriptRef';
 import { Link as RouterLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 const JWTLogin = ({ className, ...rest }) => {
   const { validatechangepass } = useAuth();
   const scriptedRef = useScriptRef();
   const { selectedDocument } = useSelector((state) => state.document);
   const [redirectLink, setRedirect] = React.useState(false);
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   return (
     <>
@@ -30,7 +32,8 @@ const JWTLogin = ({ className, ...rest }) => {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            let data = await validatechangepass(values.email, values.code);
+            const token = await executeRecaptcha('confirmCode');
+            let data = await validatechangepass(values.email, values.code, token);
             if (data) {
               setErrors({ submit: 'Hệ thống đã gửi mật khẩu mới vào email của bạn.' });
               setTimeout(function () {

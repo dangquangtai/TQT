@@ -13,6 +13,7 @@ import OrderModal from './views/WORKORDER/Order/index.js';
 import AlertDialogSlide from './views/WORKORDER/Material';
 import ShortageModal from './views/Material/Purchase/Shortage/index';
 import MaterialModal from './views/Material/Received/Material';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 const AuthLogin = lazy(() => import('./views/Login'));
 const AuthForgot = lazy(() => import('./views/ForgotPass'));
 const AuthConfirm = lazy(() => import('./views/ConfirmCode'));
@@ -28,45 +29,20 @@ const Routes = () => {
       <Suspense fallback={<Loader />}>
         <Switch>
           <Redirect exact from="/" to="/dashboard/app" />
-          <Route path={['/application/login']}>
-            <MinimalLayout>
-              <Switch location={location} key={location.pathname}>
-                <NavMotion>
-                  <Route path="/application/login" component={AuthLogin} />
-                </NavMotion>
-              </Switch>
-            </MinimalLayout>
-          </Route>
-          <Route path={['/login']}>
+          <Route path={['/login', '/forgot', '/confirm']}>
             <MinimalLayout>
               <Switch location={location} key={location.pathname}>
                 <NavMotion>
                   <GuestGuard>
-                    <Route path="/login" component={AuthLogin} />
-                    <Route path="/dashboard/app" component={App} />
-                    <Route path="/dashboard/default" component={DashboardDefault} />
-                  </GuestGuard>
-                </NavMotion>
-              </Switch>
-            </MinimalLayout>
-          </Route>
-          <Route path={['/forgot']}>
-            <MinimalLayout>
-              <Switch location={location} key={location.pathname}>
-                <NavMotion>
-                  <GuestGuard>
-                    <Route path="/forgot" component={AuthForgot} />
-                  </GuestGuard>
-                </NavMotion>
-              </Switch>
-            </MinimalLayout>
-          </Route>
-          <Route path={['/confirm']}>
-            <MinimalLayout>
-              <Switch location={location} key={location.pathname}>
-                <NavMotion>
-                  <GuestGuard>
-                    <Route path="/confirm" component={AuthConfirm} />
+                    <GoogleReCaptchaProvider
+                      useRecaptchaNet
+                      reCaptchaKey={process.env.REACT_APP_GOOGLE_RECAPTCHA_SITE_KEY}
+                      scriptProps={{ async: true, defer: true, appendTo: 'body' }}
+                    >
+                      <Route path="/login" component={AuthLogin} />
+                      <Route path="/forgot" component={AuthForgot} />
+                      <Route path="/confirm" component={AuthConfirm} />
+                    </GoogleReCaptchaProvider>
                   </GuestGuard>
                 </NavMotion>
               </Switch>
