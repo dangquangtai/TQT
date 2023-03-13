@@ -155,16 +155,16 @@ const NotificationSection = () => {
     prevOpen.current = open;
   }, [open]);
   React.useEffect(() => {
-    const fetch = async () => {
-      try {
-        let data = await getAllTask();
-        setTask(data);
-      } catch {
-        let data = await getAllTask();
-        setTask(data);
-      }
-    };
-    fetch();
+    // const fetch = async () => {
+    //   try {
+    //     let data = await getAllTask();
+    //     setTask(data);
+    //   } catch {
+    //     let data = await getAllTask();
+    //     setTask(data);
+    //   }
+    // };
+    // fetch();
   }, []);
   React.useEffect(() => {
     setCurrentTask(taskList);

@@ -44,6 +44,7 @@ export default function AlertDialogSlide() {
   const [indexColor, setIndexColor] = useState(-1);
   const [totalPart, setTotal] = useState({ total: 0 });
   const [supplierList, setSupplierList] = useState([]);
+  let submit = false;
   const dispatch = useDispatch();
   const [detailPartList, setDetailPartList] = useState([]);
   const [supplierListAll, setSupplierListAll] = useState([]);
@@ -128,28 +129,31 @@ export default function AlertDialogSlide() {
     setSupplierList([...newProductList]);
   };
   const handleSubmit = async () => {
-    let data = supplierList.filter((x) => (x.part_id !== '' && !x.id && x.quantity_in_piece !== 0) || x.change);
-    let data2 = supplierListAll.filter((x) => (x.part_id !== '' && !x.id && x.quantity_in_piece !== 0) || x.change);
-    if (data.length > 0 || data2.length > 0)
-      await createMaterialRequisition({
-        order_date: detail.order_date,
-        daily_requisition_detail_list: [...data2, ...data],
-        requisition_id: detail?.supplierList[0]?.requisition_id || '',
-        daily_work_order_detail_id: detail.id,
-        work_order_id: detail.work_order_id,
+    if (submit === false) {
+      submit = true;
+      let data = supplierList.filter((x) => (x.part_id !== '' && !x.id && x.quantity_in_piece !== 0) || x.change);
+      let data2 = supplierListAll.filter((x) => (x.part_id !== '' && !x.id && x.quantity_in_piece !== 0) || x.change);
+      if (data.length > 0 || data2.length > 0)
+        await createMaterialRequisition({
+          order_date: detail.order_date,
+          daily_requisition_detail_list: [...data2, ...data],
+          requisition_id: detail?.supplierList[0]?.requisition_id || '',
+          daily_work_order_detail_id: detail.id,
+          work_order_id: detail.work_order_id,
+        });
+      dispatch({
+        type: MATERIAL_CHANGE,
+        order: null,
+        orderDetail: null,
+        workorderDetail: { data: 1 },
       });
-    dispatch({
-      type: MATERIAL_CHANGE,
-      order: null,
-      orderDetail: null,
-      workorderDetail: { data: 1 },
-    });
-    window.opener = null;
-    window.open('', '_self');
-    window.close();
-    setSupplierDropList([]);
-    setSupplierListAll([]);
-    setSupplierList([]);
+      window.opener = null;
+      window.open('', '_self');
+      window.close();
+      setSupplierDropList([]);
+      setSupplierListAll([]);
+      setSupplierList([]);
+    }
   };
   const handleClose = () => {
     setSupplierList([]);
@@ -366,10 +370,7 @@ export default function AlertDialogSlide() {
                         <TableCell>SL thiếu</TableCell>
                         <TableCell>Trạng thái</TableCell>
                         <TableCell>
-                          <IconButton
-                            // disabled={orderRedux.workorderDetail?.is_disable || false}
-                            onClick={handleAddRow}
-                          >
+                          <IconButton disabled={orderRedux.workorderDetail?.is_disable || false} onClick={handleAddRow}>
                             <AddCircleOutline />
                           </IconButton>{' '}
                         </TableCell>
@@ -399,7 +400,7 @@ export default function AlertDialogSlide() {
                               type="number"
                               style={{ minWidth: 120, maxWidth: 120 }}
                               variant="outlined"
-                              // disabled={item.is_disable}
+                              disabled={item.is_disable}
                               InputProps={{ inputProps: { min: 1, max: item.quantity_in_wh } }}
                               value={item.quantity_in_piece}
                               size="small"
@@ -422,10 +423,7 @@ export default function AlertDialogSlide() {
                             </Typography>
                           </TableCell>
                           <TableCell align="left">
-                            <IconButton
-                              // disabled={orderRedux.workorderDetail.is_disable}
-                              onClick={() => handleDeleteRow(index)}
-                            >
+                            <IconButton disabled={orderRedux.workorderDetail.is_disable} onClick={() => handleDeleteRow(index)}>
                               <Delete />
                             </IconButton>
                           </TableCell>

@@ -303,7 +303,7 @@ const WorkorderModal = () => {
 
         let IdWorkorderRequest = workorderRequest.id;
 
-        if (checkChangeData.changeWorkOrderRequest || workorder.id === '' || (IdWorkorderRequest === '' && productList.length > 0)) {
+        if (checkChangeData.changeWorkOrderRequest || (IdWorkorderRequest === '' && productList.length > 0)) {
           IdWorkorderRequest = await createWorkOrderRequest({
             number_of_worker: workorderRequest?.number_of_worker || 20,
             number_of_working_hour: workorderRequest?.number_of_working_hour || 8,
@@ -542,7 +542,6 @@ const WorkorderModal = () => {
           ...workorderRequest,
           id: '',
         });
-        setCheckChangeData({ ...checkChangeData, changeWorkOrderRequest: true });
         setDisable(false);
         dispatch({
           type: ORDER_CHANGE,
@@ -853,70 +852,6 @@ const WorkorderModal = () => {
     handleCreateWorkOrder(true, true, false, true);
     let data = await getDetailWorkorOrder2(workorder.id);
     dispatch({ type: DOCUMENT_CHANGE, selectedDocument: data, documentType: 'workorder' });
-    // let date = [];
-    // if (to_date !== '' && from_date !== '') {
-    //   for (var d = new Date(from_date); d <= new Date(to_date); d.setDate(d.getDate() + 1)) {
-    //     let dateFormat = d.getDate();
-    //     if (dateFormat < 10) dateFormat = '0' + dateFormat;
-    //     const day = d.getFullYear() + '-' + month[d.getMonth()] + '-' + dateFormat;
-    //     let data = selectedDocument.production_daily_request.find(
-    //       (obj) => toJSONLocal(new Date(obj.work_order_date)) === toJSONLocal(new Date(day))
-    //     );
-    //     if (!data) {
-    //       date = [
-    //         ...date,
-    //         {
-    //           work_order_date: day,
-    //           id: '',
-    //           percent: (0 / 1).toFixed(1),
-    //           color_check: 'yellow',
-    //         },
-    //       ];
-    //     } else {
-    //       date = [
-    //         ...date,
-    //         {
-    //           work_order_date: day,
-    //           id: data.id,
-    //           percent: data.percent,
-    //           color_check: data.color_check,
-    //         },
-    //       ];
-    //     }
-    //   }
-
-    //   let yFilter = date.map((itemY) => {
-    //     return itemY.work_order_date;
-    //   });
-
-    //   // Use filter and "not" includes to filter the full dataset by the filter dataset's val.
-    //   // let itemRemove = productionDailyRequestList.filter((itemX) => !yFilter.includes(itemX.work_order_date));
-
-    //   // itemRemove.forEach((element) => {
-    //   //   if (!!element.id) {
-    //   //     deleteWorkOrderRequest(element.id);
-    //   //   }
-    //   // });
-    //   setStart(0);
-    //   setCurrentDate(date[0].work_order_date);
-    //   setProductionDailyRequest([...date]);
-    //   setWorkorderRequest({ ...workorderRequest, work_order_date: date[0].work_order_date });
-    //   if (date.length > 7) {
-    //     setEnd(7);
-    //   } else if (date.length > 0) {
-    //     setEnd(date.length);
-    //   }
-    //   setIndexDate(0);
-    //   setCurrentWeek(0);
-    //   setDateListNull([]);
-    //   if (date.length < 7) {
-    //     let datenull = [];
-    //     for (var d = 0; d < 7 - date.length; d++) {
-    //       datenull = [...datenull, { check: true }];
-    //     }
-    //     setDateListNull(datenull);
-    //   }
-    // }
   };
   const handleRenderTableRow = (item, index) => {
     return (
@@ -935,7 +870,7 @@ const WorkorderModal = () => {
               size="small"
               disableClearable
               options={dropdownData}
-              // disabled={disableComponent}
+              disabled={disableComponent}
               fullWidth
               onChange={(e, u) => handleChangeRow(u, index)}
               getOptionLabel={(option) => option.product_code}
@@ -956,7 +891,7 @@ const WorkorderModal = () => {
               type="number"
               style={{ minWidth: 80, maxWidth: 80 }}
               variant="outlined"
-              // disabled={disableComponent}
+              disabled={disableComponent}
               InputProps={{ inputProps: { min: 1 } }}
               value={item.quantity_in_box}
               size="small"
@@ -978,10 +913,7 @@ const WorkorderModal = () => {
           </TableCell>
           <TableCell align="center"> {calculateQuantity(item, index)}</TableCell>
           <TableCell align="right">
-            <IconButton
-              onClick={() => handleDeleteRow(index, item.id)}
-              // disabled={disableComponent}
-            >
+            <IconButton onClick={() => handleDeleteRow(index, item.id)} disabled={disableComponent}>
               <Delete />
             </IconButton>
           </TableCell>
@@ -1322,7 +1254,7 @@ const WorkorderModal = () => {
                                         <TextField
                                           style={{ marginLeft: '10px' }}
                                           type="number"
-                                          // disabled={disableComponent}
+                                          disabled={disableComponent}
                                           variant="outlined"
                                           name="number_of_worker"
                                           InputProps={{ inputProps: { min: 1 } }}
@@ -1341,7 +1273,7 @@ const WorkorderModal = () => {
                                         <TextField
                                           type="number"
                                           variant="outlined"
-                                          // disabled={disableComponent}
+                                          disabled={disableComponent}
                                           name="number_of_working_hour"
                                           InputProps={{ inputProps: { min: 1 } }}
                                           value={workorderRequest?.number_of_working_hour}
