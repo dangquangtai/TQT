@@ -80,7 +80,7 @@ const ProfileModal = (props) => {
     if (!selectedDocument) return;
     const fetch = async () => {
       if (openDialog) {
-        let data = await getAccount(selectedDocument.id)
+        let data = await getAccount(selectedDocument.id);
         setAccount({ ...account, ...selectedDocument, ...data });
       }
     };
@@ -116,6 +116,10 @@ const ProfileModal = (props) => {
         });
         if (check) {
           handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
+          var user = JSON.parse(window.localStorage.getItem('user'));
+          user.account = { ...user.account, avatar_url: account.image_url, fullname: account.full_name };
+          console.log(user, 'proffile');
+          localStorage.setItem('user', JSON.stringify(user));
           handleCloseDialog();
         } else {
           handleOpenSnackbar(true, 'error', 'Tài khoản đã tồn tại!');

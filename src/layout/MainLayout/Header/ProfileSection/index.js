@@ -45,8 +45,7 @@ const ProfileSection = () => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const user = JSON.parse(window.localStorage.getItem('user'));
-  const account = user?.account;
-
+  const [account, setAccount] = useState(user?.account);
   const handleLogout = async () => {
     try {
       await logout();
@@ -63,7 +62,6 @@ const ProfileSection = () => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
-
     setOpen(false);
   };
   const [openDialog, setOpenDialog] = useState(false);
@@ -72,9 +70,11 @@ const ProfileSection = () => {
     if (prevOpen.current === true && open === false) {
       anchorRef.current.focus();
     }
-
     prevOpen.current = open;
   }, [open]);
+  React.useEffect(() => {
+    setAccount(user.account);
+  }, [user.account]);
 
   return (
     <React.Fragment>
