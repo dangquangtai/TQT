@@ -113,6 +113,38 @@ export const JWTProvider = ({ children }) => {
     }
   };
 
+  const forgotpass = async (email) => {
+    const response = await axiosInstance.post(apiEndpoints.forgot_password, {
+      email_address: email,
+      outputtype: 'RawJson',
+      guest: 'true',
+      company_code: comanyCode,
+    });
+    const loginResult = response.data;
+    if (loginResult.return === 200 && loginResult.code === 0) {
+      return true;
+    } else {
+      // lert login loi
+      return false;
+    }
+  };
+  const validatechangepass = async (email, code) => {
+    const response = await axiosInstance.post(apiEndpoints.validate_forgot_password, {
+      email_address: email,
+      outputtype: 'RawJson',
+      guest: 'true',
+      verification_code: code,
+      company_code: comanyCode,
+    });
+    const loginResult = response.data;
+    if (loginResult.return === 200 && loginResult.code === 0) {
+      return true;
+    } else {
+      // lert login loi
+      return false;
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('serviceToken');
     localStorage.removeItem('user');
@@ -170,7 +202,7 @@ export const JWTProvider = ({ children }) => {
     return <Loader />;
   }
 
-  return <JWTContext.Provider value={{ ...state, login, logout }}>{children}</JWTContext.Provider>;
+  return <JWTContext.Provider value={{ ...state, login, logout, forgotpass, validatechangepass }}>{children}</JWTContext.Provider>;
 };
 
 export default JWTContext;

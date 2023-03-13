@@ -175,7 +175,7 @@ const AccountModal = () => {
   const setURL = (image) => {
     setAccount({
       ...account,
-      image_url: image,
+      image_url: image.url,
     });
   };
 

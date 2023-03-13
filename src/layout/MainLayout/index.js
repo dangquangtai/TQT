@@ -190,25 +190,30 @@ const MainLayout = ({ children }) => {
   }, [matchUpMd]);
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar position="fixed" className={classes.header}>
-        <Toolbar>
-          <Header drawerOpen={drawerOpen} drawerToggle={handleDrawerToggle} />
-        </Toolbar>
-      </AppBar>
-      <Sidebar drawerOpen={drawerOpen} drawerToggle={handleDrawerToggle} />
-      <main className={clsx(classes.content, { [classes.contentShift]: drawerOpen })}>
-        <div className={classes.toolbar} />
-        <div className={classes.main}>{children}</div>
-        <FloatingMenu />
-        <UploadFile />
+    <>
+      <div className={classes.root}>
+        <CssBaseline />
+        <AppBar position="fixed" className={classes.header}>
+          <Toolbar>
+            <Header drawerOpen={drawerOpen} drawerToggle={handleDrawerToggle} />
+          </Toolbar>
+        </AppBar>
+        <Sidebar drawerOpen={drawerOpen} drawerToggle={handleDrawerToggle} />
+        <main className={clsx(classes.content, { [classes.contentShift]: drawerOpen })}>
+          <div className={classes.toolbar} />
+          <div className={classes.main}>{children}</div>
+          <FloatingMenu />
+          <UploadFile />
 
-        {renderDetailDialog()}
-      </main>
-      {loading && <Loading />}
-      <ConfirmPopup />
-    </div>
+          {renderDetailDialog()}
+        </main>
+        {loading && <Loading />}
+        <ConfirmPopup />
+      </div>
+      <div>
+        <span style={{ color: 'black', fontFamily: `'Roboto', sans-serif`, marginLeft: 150 }}>(C) 2023, Bản quyền công ty TNHH TQT</span>
+      </div>
+    </>
   );
 };
 

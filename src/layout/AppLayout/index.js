@@ -32,18 +32,23 @@ const useStyles = makeStyles((theme) => ({
 const AppLayout = ({ children }) => {
   const classes = useStyles();
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar position="fixed" className={classes.header}>
-        <Toolbar>
-          <Header />
-        </Toolbar>
-      </AppBar>
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        <div className={classes.main}>{children}</div>
-      </main>
-    </div>
+    <>
+      <div className={classes.root}>
+        <CssBaseline />
+        <AppBar position="fixed" className={classes.header}>
+          <Toolbar>
+            <Header />
+          </Toolbar>
+        </AppBar>
+        <main className={classes.content}>
+          <div className={classes.toolbar} />
+          <div className={classes.main}>{children}</div>
+        </main>
+      </div>
+      <div style={{}}>
+        <span style={{ color: 'black', fontFamily: `'Roboto', sans-serif` }}>(C) 2023, Bản quyền công ty TNHH TQT</span>
+      </div>
+    </>
   );
 };
 

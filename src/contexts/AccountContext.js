@@ -30,7 +30,7 @@ export const AccountProvider = ({ children }) => {
       })
       .then((response) => {
         if (response.status === 200 && response.data.return === 200) {
-          const { data: news, view } = response.data;
+          const { data: news } = response.data;
           return news;
         } else return {};
       });

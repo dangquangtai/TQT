@@ -14,6 +14,8 @@ import AlertDialogSlide from './views/WORKORDER/Material';
 import ShortageModal from './views/Material/Purchase/Shortage/index';
 import MaterialModal from './views/Material/Received/Material';
 const AuthLogin = lazy(() => import('./views/Login'));
+const AuthForgot = lazy(() => import('./views/ForgotPass'));
+const AuthConfirm = lazy(() => import('./views/ConfirmCode'));
 const App = lazy(() => import('./views/Dashboard/App/index.js'));
 const DashboardDefault = lazy(() => import('./views/Dashboard/Default'));
 const Logout = lazy(() => import('./views/Users/logout'));
@@ -43,6 +45,28 @@ const Routes = () => {
                     <Route path="/login" component={AuthLogin} />
                     <Route path="/dashboard/app" component={App} />
                     <Route path="/dashboard/default" component={DashboardDefault} />
+                  </GuestGuard>
+                </NavMotion>
+              </Switch>
+            </MinimalLayout>
+          </Route>
+          <Route path={['/forgot']}>
+            <MinimalLayout>
+              <Switch location={location} key={location.pathname}>
+                <NavMotion>
+                  <GuestGuard>
+                    <Route path="/forgot" component={AuthForgot} />
+                  </GuestGuard>
+                </NavMotion>
+              </Switch>
+            </MinimalLayout>
+          </Route>
+          <Route path={['/confirm']}>
+            <MinimalLayout>
+              <Switch location={location} key={location.pathname}>
+                <NavMotion>
+                  <GuestGuard>
+                    <Route path="/confirm" component={AuthConfirm} />
                   </GuestGuard>
                 </NavMotion>
               </Switch>
