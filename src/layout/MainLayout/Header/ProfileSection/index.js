@@ -45,7 +45,7 @@ const ProfileSection = () => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const user = JSON.parse(window.localStorage.getItem('user'));
-  const [account, setAccount] = useState(user?.account);
+  const [account, setAccount] = useState(user?.account || {});
   const handleLogout = async () => {
     try {
       await logout();
@@ -73,8 +73,8 @@ const ProfileSection = () => {
     prevOpen.current = open;
   }, [open]);
   React.useEffect(() => {
-    setAccount(user.account);
-  }, [user.account]);
+    setAccount(user?.account || {});
+  }, [user?.account]);
 
   return (
     <React.Fragment>
