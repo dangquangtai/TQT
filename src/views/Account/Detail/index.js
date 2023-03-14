@@ -15,6 +15,8 @@ import {
   MenuItem,
   TextField,
   Snackbar,
+  Switch,
+  FormControlLabel,
 } from '@material-ui/core';
 import { ImageOutlined as ImageIcon } from '@material-ui/icons';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
@@ -266,7 +268,7 @@ const AccountModal = () => {
                           </div>
                         </div>
                       </div>
-                      {!!selectedDocument && (
+                      {/* {!!selectedDocument && (
                         <div className={classes.tabItem}>
                           <div className={classes.tabItemTitle}>
                             <div className={classes.tabItemLabel}>
@@ -324,7 +326,7 @@ const AccountModal = () => {
                             </Grid>
                           </div>
                         </div>
-                      )}
+                      )} */}
                     </Grid>
 
                     <Grid item lg={6} md={6} xs={12}>
@@ -488,6 +490,22 @@ const AccountModal = () => {
                               />
                             </Grid>
                           </Grid>
+                          <Grid container className={classes.gridItem} alignItems="center">
+                            <Grid item lg={4} md={4} xs={12}>
+                              <span className={classes.tabItemLabelField}>Hoạt động:</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={12}>
+                              <FormControlLabel
+                                control={
+                                  <Switch
+                                    color="primary"
+                                    checked={account.is_active}
+                                    onClick={(event) => setAccount({ ...account, is_active: event.target.checked })}
+                                  />
+                                }
+                              />
+                            </Grid>
+                          </Grid>
                         </div>
                       </div>
                     </Grid>
@@ -511,7 +529,7 @@ const AccountModal = () => {
                 </Grid>
               )}
               <Grid item>
-                {buttonResetPass && !!selectedDocument && (
+                {/* {buttonResetPass && !!selectedDocument && (
                   <Button
                     variant="contained"
                     style={{ background: 'rgb(97, 42, 255)', marginRight: 10 }}
@@ -519,7 +537,7 @@ const AccountModal = () => {
                   >
                     {buttonResetPass.text}
                   </Button>
-                )}
+                )} */}
                 {buttonSave && !!selectedDocument && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={() => handleUpdateAccount()}>
                     {buttonSave.text}

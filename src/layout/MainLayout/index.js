@@ -211,7 +211,9 @@ const MainLayout = ({ children }) => {
         <ConfirmPopup />
       </div>
       <div>
-        <span style={{ color: 'black', fontFamily: `'Roboto', sans-serif`, marginLeft: 150 }}>(C) 2023, Bản quyền công ty TNHH TQT</span>
+        <center style={{ color: 'black', fontFamily: `'Roboto', sans-serif`, marginLeft: 150 }}>
+          (C) 2023, Bản quyền công ty TNHH TQT
+        </center>
       </div>
     </>
   );

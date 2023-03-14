@@ -46,7 +46,7 @@ const AppLayout = ({ children }) => {
         </main>
       </div>
       <div style={{}}>
-        <span style={{ color: 'black', fontFamily: `'Roboto', sans-serif` }}>(C) 2023, Bản quyền công ty TNHH TQT</span>
+        <center style={{ color: 'black', fontFamily: `'Roboto', sans-serif` }}>(C) 2023, Bản quyền công ty TNHH TQT</center>
       </div>
     </>
   );
