@@ -302,7 +302,6 @@ const WorkorderModal = () => {
         }
 
         let IdWorkorderRequest = workorderRequest.id;
-
         if (checkChangeData.changeWorkOrderRequest || (IdWorkorderRequest === '' && productList.length > 0)) {
           IdWorkorderRequest = await createWorkOrderRequest({
             number_of_worker: workorderRequest?.number_of_worker || 20,
@@ -318,6 +317,7 @@ const WorkorderModal = () => {
             workshop_id: workShopID,
           });
           productionDailyRequestList[indexDate].id = IdWorkorderRequest;
+          setWorkorderRequest({ ...workorderRequest, id: IdWorkorderRequest });
         }
         if (checkChangeData.changeWorkOrderDaily) {
           let productListFilter = productList.filter((x) => x.product_id !== '');
@@ -547,6 +547,7 @@ const WorkorderModal = () => {
           type: ORDER_CHANGE,
           order: {
             ...orderRedux,
+            work_order_id: workorder.id,
             change: true,
             work_order_daily_id: '',
           },

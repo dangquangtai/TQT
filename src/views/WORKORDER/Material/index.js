@@ -44,7 +44,7 @@ export default function AlertDialogSlide() {
   const [indexColor, setIndexColor] = useState(-1);
   const [totalPart, setTotal] = useState({ total: 0 });
   const [supplierList, setSupplierList] = useState([]);
-  let submit = false;
+  const [submit, setSubmit] = useState(false);
   const dispatch = useDispatch();
   const [detailPartList, setDetailPartList] = useState([]);
   const [supplierListAll, setSupplierListAll] = useState([]);
@@ -129,31 +129,29 @@ export default function AlertDialogSlide() {
     setSupplierList([...newProductList]);
   };
   const handleSubmit = async () => {
-    if (submit === false) {
-      submit = true;
-      let data = supplierList.filter((x) => (x.part_id !== '' && !x.id && x.quantity_in_piece !== 0) || x.change);
-      let data2 = supplierListAll.filter((x) => (x.part_id !== '' && !x.id && x.quantity_in_piece !== 0) || x.change);
-      if (data.length > 0 || data2.length > 0)
-        await createMaterialRequisition({
-          order_date: detail.order_date,
-          daily_requisition_detail_list: [...data2, ...data],
-          requisition_id: detail?.supplierList[0]?.requisition_id || '',
-          daily_work_order_detail_id: detail.id,
-          work_order_id: detail.work_order_id,
-        });
-      dispatch({
-        type: MATERIAL_CHANGE,
-        order: null,
-        orderDetail: null,
-        workorderDetail: { data: 1 },
+    let data = supplierList.filter((x) => (x.part_id !== '' && !x.id && x.quantity_in_piece !== 0) || x.change);
+    let data2 = supplierListAll.filter((x) => (x.part_id !== '' && !x.id && x.quantity_in_piece !== 0) || x.change);
+    if (data.length > 0 || data2.length > 0)
+      await createMaterialRequisition({
+        order_date: detail.order_date,
+        daily_requisition_detail_list: [...data2, ...data],
+        requisition_id: detail?.supplierList[0]?.requisition_id || '',
+        daily_work_order_detail_id: detail.id,
+        work_order_id: detail.work_order_id,
       });
-      window.opener = null;
-      window.open('', '_self');
-      window.close();
-      setSupplierDropList([]);
-      setSupplierListAll([]);
-      setSupplierList([]);
-    }
+    dispatch({
+      type: MATERIAL_CHANGE,
+      order: null,
+      orderDetail: null,
+      workorderDetail: { data: 1 },
+    });
+
+    window.opener = null;
+    window.open('', '_self');
+    window.close();
+    setSupplierDropList([]);
+    setSupplierListAll([]);
+    setSupplierList([]);
   };
   const handleClose = () => {
     setSupplierList([]);
@@ -264,6 +262,11 @@ export default function AlertDialogSlide() {
       window.close();
     }
   });
+  useEffect(() => {
+    if (submit) {
+      handleSubmit();
+    }
+  }, [submit]);
   return (
     <div>
       <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
@@ -438,7 +441,16 @@ export default function AlertDialogSlide() {
         </DialogContent>
         <DialogActions>
           <Grid container spacing={2} justifyContent="flex-end">
-            <Button onClick={handleSubmit} variant="contained" style={{ background: 'rgb(97, 42, 255)', color: 'white', margin: 10 }}>
+            <Button
+              onClick={() => setSubmit(true)}
+              variant="contained"
+              style={
+                submit
+                  ? { background: 'rgb(97, 42, 140)', color: 'white', margin: 10 }
+                  : { background: 'rgb(97, 42, 255)', color: 'white', margin: 10 }
+              }
+              disabled={submit}
+            >
               {'Lưu'}
             </Button>
           </Grid>
