@@ -92,6 +92,8 @@ const EnhancedTableToolbar = (props) => {
     buttonCreateTemplateDocument,
     buttonCreateProduct,
     buttonExportMaterialInventory,
+    buttonExportMaterialInventory2,
+    handleExportMaterialInventory2,
     handleExportMaterialInventory,
   } = props;
 
@@ -475,6 +477,13 @@ const EnhancedTableToolbar = (props) => {
                   <Grid item xs={6}>
                     <Button variant="contained" color={'primary'} onClick={handleExportMaterialInventory}>
                       {buttonExportMaterialInventory.text}
+                    </Button>
+                  </Grid>
+                )}
+                {buttonExportMaterialInventory2 && (
+                  <Grid item xs={6}>
+                    <Button variant="contained" color={'primary'} onClick={handleExportMaterialInventory2}>
+                      {buttonExportMaterialInventory2.text}
                     </Button>
                   </Grid>
                 )}

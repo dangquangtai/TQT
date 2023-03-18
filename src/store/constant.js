@@ -177,6 +177,8 @@ export const apiEndpoints = {
   get_material_inventory_detail: '/Primary/?FlowAlias=bs_api_factory_get_material_inventory_detail&action=api',
   update_material_inventory: '/Primary/?FlowAlias=bs_api_factory_update_material_inventory&action=api',
   export_material_inventory: '/Primary/?FlowAlias=bs_api_factory_export_material_inventory&action=api',
+  export_detailed_summary_material_inventory:
+    '/Primary/?FlowAlias=bs_api_factory_export_detailed_summary_material_warehouse_template&action=api',
 
   // Material Inventory Check
   get_material_inventory_check_list: '/Primary/?FlowAlias=bs_api_factory_get_material_inventory_check_list&action=api',
@@ -694,6 +696,7 @@ export const view = {
   materialInventory: {
     list: {
       export: 'TQT_MATERIAL_DEFAULT_MATERIAL_INVENTORY_EXPORT_MENU_BUTTON',
+      export2: 'TQT_MATERIAL_DEFAULT_MATERIAL_INVENTORY_EXPORT_INVENTORY_CONSOLIDATION_MENU_BUTTON',
     },
   },
 };

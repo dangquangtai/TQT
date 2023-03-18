@@ -46,6 +46,7 @@ import ProfileModal from './Header/ProfileSection/profile';
 import ReturnMaterialModal from './../../views/Material/Return/Detail/index';
 import TemplateDocumentModal from '../../views/Setting/DocumentTemplate/ExcelDocument/Detail';
 import ProductInventoryModal from './../../views/Product/Inventory/Detail/index';
+import ExportMaterialInventoryModal from '../../views/Dialog/ExportMaterialInventory';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -137,7 +138,12 @@ const MainLayout = ({ children }) => {
       case 'customer':
         return <CustomerModal />;
       case 'materialInventory':
-        return <InventoryModal />;
+        return (
+          <>
+            <InventoryModal />
+            <ExportMaterialInventoryModal />
+          </>
+        );
       case 'materialInventoryCheck':
         return <InventoryCheckModal />;
       case 'purchaseMaterial':

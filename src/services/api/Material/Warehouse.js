@@ -34,3 +34,25 @@ export const updateMaterialWarehouse = (data) => {
     return false;
   });
 };
+export const exportDetailedSummaryMaterialWarehouse = (data) => {
+  return axiosServices.post(apiEndpoints.export_detailed_summary_material_inventory, data).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return true;
+    }
+    return false;
+  });
+};
+
+export const exportDetailedSummaryMaterialInventory = (data) => {
+  return axiosServices
+    .post(apiEndpoints.export_detailed_summary_material_inventory, { ...data })
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return response.data.url;
+      }
+      return '';
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
