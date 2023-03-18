@@ -177,6 +177,7 @@ export default function GeneralTable(props) {
   const buttonCreateTemplateDocument = menuButtons.find((button) => button.name === view.templateDocument.list.create);
   const buttonCreateProduct = menuButtons.find((button) => button.name === view.product.list.create);
   const buttonExportMaterialInventory = menuButtons.find((button) => button.name === view.materialInventory.list.export);
+  const buttonExportMaterialInventory2 = menuButtons.find((button) => button.name === view.materialInventory.list.export2);
 
   const fetchDocument = (additionalQuery) => {
     const queries = { ...defaultQueries, ...additionalQuery };
@@ -763,6 +764,9 @@ export default function GeneralTable(props) {
       onSuccess: (url) => handleDownload(url),
     });
   };
+  const handleExportMaterialInventory2 = async () => {
+    dispatch({ type: FLOATING_MENU_CHANGE, exportMaterialInventoryDocument: true });
+  };
 
   const handleDownload = (url) => {
     if (!url) {
@@ -982,6 +986,8 @@ export default function GeneralTable(props) {
     buttonCreateTemplateDocument,
     buttonCreateProduct,
     buttonExportMaterialInventory,
+    buttonExportMaterialInventory2,
+    handleExportMaterialInventory2,
     handleExportMaterialInventory,
   };
 
