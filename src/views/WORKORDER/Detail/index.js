@@ -452,57 +452,61 @@ const WorkorderModal = () => {
     }
   };
   const handleChangeNumber = (e, index) => {
-    if (!order.orderDetail) {
-      setSnackbarStatus({
-        isOpen: true,
-        type: 'error',
-        text: 'Mở mục tiêu sản xuất để thực hiện thay đổi!',
-      });
-    } else {
-      if (productList[index].customer_order_code !== order.order_code) {
-        setSnackbarStatus({
-          isOpen: true,
-          type: 'error',
-          text: `Chọn đơn hàng mã ${productList[index].customer_order_code} để cập nhập số lượng!`,
-        });
-        return;
-      }
+    // if (!order.orderDetail) {
+    //   setSnackbarStatus({
+    //     isOpen: true,
+    //     type: 'error',
+    //     text: 'Mở mục tiêu sản xuất để thực hiện thay đổi!',
+    //   });
+    // } else {
+    // if (productList[index].customer_order_code !== order.order_code) {
+    //   setSnackbarStatus({
+    //     isOpen: true,
+    //     type: 'error',
+    //     text: `Chọn đơn hàng mã ${productList[index].customer_order_code} để cập nhập số lượng!`,
+    //   });
+    //   return;
+    // }
 
-      const value = e.target.value;
-      let orderDetail = order?.orderDetail;
+    const value = e.target.value;
+    let orderDetail = order?.orderDetail;
+
+    // if (!product) {
+    //   setSnackbarStatus({
+    //     isOpen: true,
+    //     type: 'error',
+    //     text: `Chọn đơn hàng mã ${productList[index].customer_order_code} để cập nhập số lượng!`,
+    //   });
+    // } else {
+    changerow = true;
+    // if (
+    //   parseInt(product.quantity_in_workorder) + parseInt(value) - parseInt(productList[index].quantity_in_box) <=
+    //   parseInt(product.quantity_in_box)
+    // ) {
+    setCheckChangeData({ ...checkChangeData, changeWorkOrderDaily: true });
+    try {
       let product = orderDetail.find((x) => x.product_id === productList[index].product_id);
-      if (!product) {
-        setSnackbarStatus({
-          isOpen: true,
-          type: 'error',
-          text: `Chọn đơn hàng mã ${productList[index].customer_order_code} để cập nhập số lượng!`,
-        });
-      } else {
-        changerow = true;
-        if (
-          parseInt(product.quantity_in_workorder) + parseInt(value) - parseInt(productList[index].quantity_in_box) <=
-          parseInt(product.quantity_in_box)
-        ) {
-          setCheckChangeData({ ...checkChangeData, changeWorkOrderDaily: true });
-          orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder +=
-            value - productList[index].quantity_in_box;
-          dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
-          productList[index].quantity_in_box = value;
-          setProductList([...productList]);
-          updateDataDailyRequest(productList);
-        } else {
-          const calculateQuantityChange =
-            parseInt(product.quantity_in_box) - (parseInt(product.quantity_in_workorder) - parseInt(productList[index].quantity_in_box));
-          setCheckChangeData({ ...checkChangeData, changeWorkOrderDaily: true });
-          orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder +=
-            calculateQuantityChange - productList[index].quantity_in_box;
-          dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
-          productList[index].quantity_in_box = calculateQuantityChange;
-          setProductList([...productList]);
-          updateDataDailyRequest(productList);
-        }
-      }
-    }
+      orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder +=
+        value - productList[index].quantity_in_box;
+      dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
+    } catch {}
+
+    productList[index].quantity_in_box = value;
+    setProductList([...productList]);
+    updateDataDailyRequest(productList);
+    // } else {
+    //   const calculateQuantityChange =
+    //     parseInt(product.quantity_in_box) - (parseInt(product.quantity_in_workorder) - parseInt(productList[index].quantity_in_box));
+    //   setCheckChangeData({ ...checkChangeData, changeWorkOrderDaily: true });
+    //   orderDetail.find((x) => x.product_id === productList[index].product_id).quantity_in_workorder +=
+    //     calculateQuantityChange - productList[index].quantity_in_box;
+    //   dispatch({ type: ORDER_DETAIL_CHANGE, orderDetail: orderDetail });
+    //   productList[index].quantity_in_box = calculateQuantityChange;
+    //   setProductList([...productList]);
+    //   updateDataDailyRequest(productList);
+    // }
+    // }
+    // }
   };
 
   const calculatePercent = (number_of_worker, number_of_working_hour, piece, sl, productivity_per_worker) => {
