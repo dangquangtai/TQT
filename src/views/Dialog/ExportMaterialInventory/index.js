@@ -8,6 +8,7 @@ import DatePicker from './../../../component/DatePicker/index';
 import { getAllSupplier } from '../../../services/api/Partner/Supplier';
 import { exportDetailedSummaryMaterialInventory } from '../../../services/api/Material/Warehouse';
 import { downloadFile } from '../../../utils/helper';
+import { Autocomplete } from '@material-ui/lab';
 
 const style = {
   box: {
@@ -166,21 +167,16 @@ export default function ExportMaterialInventoryModal() {
             </Grid>
             <Grid item lg={4} md={4} xs={4}>
               <span className={classes.tabItemLabelField}>Nhà cung cấp:</span>
-              <TextField
+
+              <Autocomplete
+                // value={supplierList}
+                options={supplierList}
+                getOptionLabel={(option) => option.title}
                 fullWidth
-                name="supplier_id"
-                variant="outlined"
-                select
+                onChange={(e, value) => setExportData({ ...exportData, supplier_id: value?.id })}
                 size="small"
-                // value={supplierList.warehouse_id || ''}
-                onChange={handleChanges}
-              >
-                {supplierList?.map((option) => (
-                  <MenuItem key={option.id} value={option.id}>
-                    {option.title}
-                  </MenuItem>
-                ))}
-              </TextField>
+                renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
+              />
             </Grid>
           </Grid>
           <div id="modal-modal-description" style={style.body}>
@@ -192,7 +188,7 @@ export default function ExportMaterialInventoryModal() {
                 Đóng
               </Button>
               <Button type="submit" variant="contained" style={style.submitButton} onClick={handleSubmited}>
-                Lưu
+                Xuất
               </Button>
             </div>
           </div>

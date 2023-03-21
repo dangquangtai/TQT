@@ -474,14 +474,14 @@ const EnhancedTableToolbar = (props) => {
                   </Grid>
                 )}
                 {buttonExportMaterialInventory && (
-                  <Grid item xs={6}>
+                  <Grid item>
                     <Button variant="contained" color={'primary'} onClick={handleExportMaterialInventory}>
                       {buttonExportMaterialInventory.text}
                     </Button>
                   </Grid>
                 )}
                 {buttonExportMaterialInventory2 && (
-                  <Grid item xs={6}>
+                  <Grid item>
                     <Button variant="contained" color={'primary'} onClick={handleExportMaterialInventory2}>
                       {buttonExportMaterialInventory2.text}
                     </Button>
