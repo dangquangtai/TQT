@@ -196,14 +196,16 @@ const ProductModal = () => {
   }, [selectedDocument]);
 
   useEffect(() => {
+    if (openDialog === false) return;
     const fetchData = async () => {
       const loadData = await getMaterialLoadData();
       setDataUnitList(loadData?.data_unit_list);
       const materialList = await getAllMaterialPart();
       setMaterials(materialList);
     };
+
     fetchData();
-  }, []);
+  }, [openDialog]);
   return (
     <React.Fragment>
       <FirebaseUpload open={openDialogUploadImage} onSuccess={setURL} onClose={handleCloseDiaLog} type="image" folder="Podcast" />

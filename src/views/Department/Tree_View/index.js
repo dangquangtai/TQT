@@ -81,14 +81,12 @@ const TreeViewModal = (props) => {
     const fetch = async () => {
       if (documentType === 'department') {
         let data = await getDataTreeView();
-        // formatDataTreeView(splitData(data), data);
         setData(data);
-      } else if (documentType==='department') {
+      } else if (documentType === 'department') {
         let data = await getRoleTree();
         setData(data);
-        // formatDataTreeView(splitData(data), data);
       } else {
-        setData(documents)
+        setData(documents);
       }
     };
     fetch();
@@ -96,7 +94,7 @@ const TreeViewModal = (props) => {
   const handleClickOpen = (data) => {
     if (documentType === 'department') {
       setSelectedDepartment(data);
-    } else if(documentType==='processrole'){
+    } else if (documentType === 'processrole') {
       setSelectedProcessRole(data);
     }
   };
@@ -117,38 +115,22 @@ const TreeViewModal = (props) => {
     } else {
       if (documentType === 'department') {
         return (
-          <TreeItem
-            nodeId={data.id}
-            label={data.name}
-            key={data.id}
-            onClick={(event) => handleClickOpen(data.id)}
-          >
+          <TreeItem nodeId={data.id} label={data.name} key={data.id} onClick={(event) => handleClickOpen(data.id)}>
             {data.children.map((data2) => renderItem(data2))}
           </TreeItem>
         );
-      } else if(documentType==='processrole') {
+      } else if (documentType === 'processrole') {
         return (
-          <TreeItem
-            nodeId={data.id}
-            label={data.name}
-            key={data.id}
-            onClick={(event) => setSelectedProcessRole('')}
-          >
+          <TreeItem nodeId={data.id} label={data.name} key={data.id} onClick={(event) => setSelectedProcessRole('')}>
             {data.children.map((data2) => renderItem(data2))}
           </TreeItem>
         );
-      }
-      else {
-        return(
-          <TreeItem
-        nodeId={data.id}
-        label={data.name}
-        key={data.id}
-      >
-        {data.children.map((data2) => renderItem(data2))}
-      </TreeItem>
-        )
-        
+      } else {
+        return (
+          <TreeItem nodeId={data.id} label={data.name} key={data.id}>
+            {data.children.map((data2) => renderItem(data2))}
+          </TreeItem>
+        );
       }
     }
   };
@@ -182,7 +164,7 @@ const TreeViewModal = (props) => {
       >
         {dataShow && (
           <TreeView
-            style={{ padding: 5, minHeight: 500, background: '#fff',maxHeight:500, overflowY: 'auto'}}
+            style={{ padding: 5, minHeight: 500, background: '#fff', maxHeight: 500, overflowY: 'auto' }}
             aria-label="file system navigator"
             defaultCollapseIcon={<MinusSquare />}
             defaultExpandIcon={<PlusSquare />}

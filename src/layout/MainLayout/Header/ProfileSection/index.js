@@ -39,13 +39,12 @@ const useStyles = makeStyles((theme) => ({
 
 const ProfileSection = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
   const [selectedIndex] = React.useState(1);
   const { logout } = useAuth();
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
   const user = JSON.parse(window.localStorage.getItem('user'));
-  const [account, setAccount] = useState(user?.account || {});
+  const [account, setAccount] = useState({});
   const handleLogout = async () => {
     try {
       await logout();
@@ -73,8 +72,10 @@ const ProfileSection = () => {
     prevOpen.current = open;
   }, [open]);
   React.useEffect(() => {
-    setAccount(user?.account || {});
-  }, [user?.account]);
+    if (!user?.account) return;
+    if (user.account.avatar_url === account.avatar_url && user.account.fullname === account.fullname) return;
+    setAccount({ ...user.account });
+  }, [user.account]);
 
   return (
     <React.Fragment>
