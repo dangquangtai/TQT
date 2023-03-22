@@ -250,8 +250,6 @@ const DepartmentModal = () => {
                               <TextField
                                 fullWidth
                                 autoFocus
-                                rows={1}
-                                rowsMax={1}
                                 margin="normal"
                                 name="department_name"
                                 size="medium"
@@ -354,7 +352,6 @@ const DepartmentModal = () => {
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 multiline
-                                rows={3}
                                 fullWidth
                                 label="Mô tả ngắn gọn"
                                 variant="outlined"

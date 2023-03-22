@@ -341,8 +341,6 @@ const ProfileModal = (props) => {
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
-                                rows={1}
-                                rowsMax={1}
                                 variant="outlined"
                                 name="employee_code"
                                 value={account.employee_code || ''}

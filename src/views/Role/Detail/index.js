@@ -245,8 +245,6 @@ const RoleModal = () => {
                               <TextField
                                 fullWidth
                                 autoFocus
-                                rows={1}
-                                rowsMax={1}
                                 margin="normal"
                                 name="role_template_name"
                                 size="medium"
@@ -267,8 +265,6 @@ const RoleModal = () => {
                               <TextField
                                 fullWidth
                                 autoFocus
-                                rows={1}
-                                rowsMax={1}
                                 margin="normal"
                                 name="role_template_code"
                                 size="medium"

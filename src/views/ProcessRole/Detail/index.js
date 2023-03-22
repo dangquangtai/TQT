@@ -288,8 +288,6 @@ const ProcessRoleModal = () => {
                               <TextField
                                 fullWidth
                                 autoFocus
-                                rows={1}
-                                rowsMax={1}
                                 margin="normal"
                                 name="role_name"
                                 size="medium"
@@ -310,8 +308,6 @@ const ProcessRoleModal = () => {
                               <TextField
                                 fullWidth
                                 autoFocus
-                                rows={1}
-                                rowsMax={1}
                                 margin="normal"
                                 name="role_code"
                                 size="medium"
@@ -331,8 +327,6 @@ const ProcessRoleModal = () => {
                               <TextField
                                 fullWidth
                                 autoFocus
-                                rows={1}
-                                rowsMax={1}
                                 margin="normal"
                                 name="rank"
                                 size="medium"

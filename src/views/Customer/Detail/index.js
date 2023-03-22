@@ -345,7 +345,6 @@ const CustomerModal = () => {
                                   type="text"
                                   size="small"
                                   multiline
-                                  minRows={2}
                                   value={customerData.address || ''}
                                   onChange={handleChanges}
                                 />

@@ -475,7 +475,6 @@ const InventoryCheckModal = () => {
                               <TextField
                                 fullWidth
                                 multiline
-                                rows={4}
                                 variant="outlined"
                                 name="notes"
                                 size="small"

@@ -261,9 +261,7 @@ const AccountPermissionModal = () => {
                           <Grid item lg={8} md={8} xs={8}>
                             <TextField
                               fullWidth
-                              rows={1}
                               disabled
-                              rowsMax={1}
                               variant="outlined"
                               name="full_name"
                               value={account.full_name || ''}
