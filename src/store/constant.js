@@ -189,6 +189,7 @@ export const apiEndpoints = {
   import_material_inventory_check: '/Primary/?FlowAlias=bs_api_factory_import_material_inventory_check&action=api',
   apply_material_inventory_check: '/Primary/?FlowAlias=bs_api_factory_apply_material_inventory_check&action=api',
   remove_material_inventory_check: '/Primary/?FlowAlias=bs_api_factory_remove_material_inventory_check&action=api',
+  get_in_out_detail_list: '/Primary/?FlowAlias=bs_api_factory_get_in_out_detail_material_inventory&action=api',
 
   // Purchase Material
   get_purchase_material_list: '/Primary/?FlowAlias=bs_api_factory_get_purchase_material_list&action=api',
