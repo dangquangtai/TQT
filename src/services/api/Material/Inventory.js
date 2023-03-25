@@ -39,3 +39,11 @@ export const exportMaterialInventory = () => {
       console.log(error);
     });
 };
+export const getInOutDetailList = (part_id, supplier_id) => {
+  return axiosServices.post(apiEndpoints.get_in_out_detail_list, { part_id, supplier_id }).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data.data;
+    }
+    return [];
+  });
+};

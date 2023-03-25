@@ -32,7 +32,7 @@ import { History, DescriptionOutlined, AddCircleOutlineOutlined, InfoOutlined } 
 import useStyles from './../../../../utils/classes';
 import { SNACKBAR_OPEN } from './../../../../store/actions';
 import BrokenModal from './../../../Dialog/Broken/index';
-import { updateMaterialInventory } from '../../../../services/api/Material/Inventory.js';
+import { getInOutDetailList, updateMaterialInventory } from '../../../../services/api/Material/Inventory.js';
 import { getMaterialWHSList } from '../../../../services/api/Workorder/index.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -74,6 +74,7 @@ const InventoryModal = () => {
   const [inventoryData, setInventoryData] = useState({});
   const [brokenDialog, setBrokenDialog] = useState(false);
   const [warehouseList, setWarehouseList] = useState([]);
+  const [inOutDetailList, setInOutDetailList] = useState([]);
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
@@ -139,15 +140,24 @@ const InventoryModal = () => {
       ...inventoryData,
       ...selectedDocument,
     });
-  }, [selectedDocument]);
+  }, [inventoryData, selectedDocument]);
 
   useEffect(() => {
     const getWarehouseList = async () => {
       const warehouseList = await getMaterialWHSList();
       setWarehouseList(warehouseList);
     };
+
     getWarehouseList();
   }, []);
+  useEffect(() => {
+    const getListInOutDetail = async () => {
+      const InOutDetail = await getInOutDetailList(inventoryData.part_id, inventoryData.supplier_id);
+      setInOutDetailList(InOutDetail);
+    };
+
+    getListInOutDetail();
+  }, [inventoryData.part_id, inventoryData.supplier_id]);
 
   return (
     <React.Fragment>
@@ -160,13 +170,7 @@ const InventoryModal = () => {
         list={inventoryData?.broken_list || []}
       />
       <Grid container>
-        <Dialog
-          open={openDialog || false}
-          TransitionComponent={Transition}
-          keepMounted
-          onClose={handleCloseDialog}
-          className={classes.useradddialog}
-        >
+        <Dialog open={openDialog || false} TransitionComponent={Transition} keepMounted onClose={handleCloseDialog} fullScreen>
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
               Kho vậ tư
@@ -204,6 +208,17 @@ const InventoryModal = () => {
                     }
                     value={1}
                     {...a11yProps(1)}
+                  />
+                  <Tab
+                    className={classes.unUpperCase}
+                    label={
+                      <Typography className={classes.tabLabels} component="span" variant="subtitle1">
+                        <History />
+                        Chi tiết xuất nhập
+                      </Typography>
+                    }
+                    value={2}
+                    {...a11yProps(2)}
                   />
                 </Tabs>
               </Grid>
@@ -397,6 +412,58 @@ const InventoryModal = () => {
                                   <TableRow key={index}>
                                     <TableCell align="left">{row.Broken_Type_Name}</TableCell>
                                     <TableCell align="left">{row.Quantity_In_Piece}</TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </div>
+                      </div>
+                    </Grid>
+                  </Grid>
+                </TabPanel>
+                <TabPanel value={tabIndex} index={2}>
+                  <Grid container spacing={1}>
+                    <Grid item lg={12} md={12} xs={12}>
+                      <div className={classes.tabItem}>
+                        <div className={classes.tabItemTitle}>
+                          <div className={classes.tabItemLabel}>
+                            <span>Chi tiết xuất nhập</span>
+                          </div>
+                          {/* <Tooltip title="Thêm mới">
+                            <IconButton aria-label="add" onClick={handleOpenBrokenModal}>
+                              <AddCircleOutlineOutlined />
+                            </IconButton>
+                          </Tooltip> */}
+                        </div>
+                        <div className={classes.tabItemBody}>
+                          <TableContainer style={{ maxHeight: '65vh' }} component={Paper}>
+                            <Table stickyHeader aria-label="simple table">
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell align="left">Ngày chứng từ</TableCell>
+                                  <TableCell align="left">Mã phiếu xuất/nhập kho</TableCell>
+                                  <TableCell align="left">Diễn giải</TableCell>
+                                  <TableCell align="left">SL nhập</TableCell>
+                                  <TableCell align="left">SL nhập hỏng</TableCell>
+                                  <TableCell align="left">SL xuất</TableCell>
+                                  <TableCell align="left">SL xuất hỏng</TableCell>
+                                  <TableCell align="left">SL tồn</TableCell>
+                                  <TableCell align="left">SL tồn hỏng</TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {inOutDetailList?.map((row, index) => (
+                                  <TableRow key={index}>
+                                    <TableCell align="left">{row.order_date}</TableCell>
+                                    <TableCell align="left">{row.order_code}</TableCell>
+                                    <TableCell align="left">{row.detail}</TableCell>
+                                    <TableCell align="left">{row.received_quantity_in_piece}</TableCell>
+                                    <TableCell align="left">{row.broken_received_quantity_in_piece}</TableCell>
+                                    <TableCell align="left">{row.requisition_quantity_in_piece}</TableCell>
+                                    <TableCell align="left">{row.broken_requisition_quantity_in_piece}</TableCell>
+                                    <TableCell align="left">{row.inventory_quantity_in_piece}</TableCell>
+                                    <TableCell align="left">{row.broken_inventory_quantity_in_piece}</TableCell>
                                   </TableRow>
                                 ))}
                               </TableBody>
