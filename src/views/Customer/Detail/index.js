@@ -231,6 +231,7 @@ const CustomerModal = () => {
                                   name="customer_code"
                                   type="text"
                                   size="small"
+                                  disabled={!!selectedDocument?.id}
                                   value={customerData.customer_code || ''}
                                   onChange={handleChanges}
                                 />

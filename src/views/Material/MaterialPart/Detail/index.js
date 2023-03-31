@@ -211,6 +211,7 @@ const MaterialPartModal = () => {
                                 name="part_code"
                                 size="small"
                                 type="text"
+                                disabled={!!selectedDocument?.id}
                                 value={materialPartDetailData.part_code || ''}
                                 onChange={handleChanges}
                               />

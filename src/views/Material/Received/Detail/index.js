@@ -402,6 +402,7 @@ const ReceivedMaterialModal = () => {
                                 name="received_code"
                                 type="text"
                                 size="small"
+                                disabled={isDisabled}
                                 value={receivedMaterialData.received_code || ''}
                                 onChange={handleChanges}
                               />

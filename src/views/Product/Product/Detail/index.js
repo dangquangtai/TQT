@@ -77,6 +77,7 @@ const ProductModal = () => {
   const [openDialogUploadImage, setOpenDiaLogUploadImage] = React.useState(false);
   const [dataUnitList, setDataUnitList] = useState([]);
   const [productData, setProductData] = useState({
+    volume: '',
     is_active: true,
     id: '',
   });
@@ -104,7 +105,8 @@ const ProductModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setProductData({ is_active: true });
+    setProductData({ is_active: true, volume: '', id: '' });
+    setPartList([]);
     setTabIndex(0);
   };
   const setURL = (image) => {
@@ -280,7 +282,8 @@ const ProductModal = () => {
                                 name="product_code"
                                 size="small"
                                 type="text"
-                                value={productData.product_code}
+                                disabled={!!productData?.id}
+                                value={productData.product_code || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
@@ -296,7 +299,7 @@ const ProductModal = () => {
                                 minRows={2}
                                 variant="outlined"
                                 name="title"
-                                value={productData.title}
+                                value={productData.title || ''}
                                 type="text"
                                 size="small"
                                 onChange={handleChanges}
@@ -312,7 +315,7 @@ const ProductModal = () => {
                                 fullWidth
                                 variant="outlined"
                                 name="product_customer_code"
-                                value={productData.product_customer_code}
+                                value={productData.product_customer_code || ''}
                                 size="small"
                                 type="text"
                                 onChange={handleChanges}
@@ -338,7 +341,7 @@ const ProductModal = () => {
                                 fullWidth
                                 variant="outlined"
                                 name="no_piece_per_box"
-                                value={productData.no_piece_per_box}
+                                value={productData.no_piece_per_box || ''}
                                 size="small"
                                 type="number"
                                 onChange={handleChanges}
@@ -376,9 +379,24 @@ const ProductModal = () => {
                                 fullWidth
                                 variant="outlined"
                                 name="productivity_per_worker"
-                                value={productData.productivity_per_worker}
+                                value={productData.productivity_per_worker || ''}
                                 size="small"
                                 type="number"
+                                onChange={handleChanges}
+                              />
+                            </Grid>
+                          </Grid>
+                          <Grid container className={classes.gridItem} alignItems="center">
+                            <Grid item lg={4} md={4} xs={4}>
+                              <span className={classes.tabItemLabelField}>Thể tích 1 đơn vị:</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={8}>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="volume"
+                                value={productData.volume || ''}
+                                size="small"
                                 onChange={handleChanges}
                               />
                             </Grid>

@@ -307,6 +307,7 @@ const GoodsIssueModal = () => {
                                 name="order_code"
                                 type="text"
                                 size="small"
+                                disabled={isDisabled}
                                 value={goodsIssueData.order_code || ''}
                                 onChange={handleChanges}
                               />

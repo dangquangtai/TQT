@@ -389,13 +389,14 @@ const PurchaseMaterialModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={3} className={classes.gridItemInfo}>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Mã đơn hàng(*):</span>
+                              <span className={classes.tabItemLabelField}>Mã đơn mua hàng(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
                                 name="order_code"
                                 type="text"
                                 size="small"
+                                disabled={isDisabled}
                                 value={purchaseMaterialData.order_code || ''}
                                 onChange={handleChanges}
                               />
@@ -527,7 +528,7 @@ const PurchaseMaterialModal = () => {
                             <Table size="small" stickyHeader>
                               <TableHead>
                                 <TableRow>
-                                  <TableCell align="left">Mã đơn hàng</TableCell>
+                                  <TableCell align="left">Mã đơn KH</TableCell>
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">SL mua</TableCell>

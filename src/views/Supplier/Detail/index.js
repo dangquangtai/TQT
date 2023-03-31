@@ -231,6 +231,7 @@ const SupplierModal = () => {
                                   name="supplier_code"
                                   type="text"
                                   size="small"
+                                  disabled={!!selectedDocument?.id}
                                   value={supplierData.supplier_code || ''}
                                   onChange={handleChanges}
                                 />

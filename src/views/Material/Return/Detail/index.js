@@ -303,6 +303,7 @@ const ReturnMaterialModal = () => {
                                 name="order_code"
                                 type="text"
                                 size="small"
+                                disabled={isDisabled}
                                 value={returnMaterialData.order_code || ''}
                                 onChange={handleChanges}
                               />

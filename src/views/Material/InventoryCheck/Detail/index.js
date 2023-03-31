@@ -330,6 +330,7 @@ const InventoryCheckModal = () => {
                                 name="inventory_check_code"
                                 size="small"
                                 type="text"
+                                disabled={!!selectedDocument?.id}
                                 value={inventoryCheckData.inventory_check_code}
                                 onChange={handleChanges}
                               />

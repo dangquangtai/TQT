@@ -356,6 +356,7 @@ const OrderModal = () => {
                                 name="order_code"
                                 type="text"
                                 size="small"
+                                disabled={!!selectedDocument?.id}
                                 value={orderData.order_code || ''}
                                 onChange={handleChanges}
                               />
