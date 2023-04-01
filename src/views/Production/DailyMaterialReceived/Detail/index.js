@@ -40,6 +40,7 @@ import BrokenModal from './../../../Dialog/Broken/index';
 import { downloadFile } from '../../../../utils/helper.js';
 import { createFileAttachment, deleteFileAttachment, getListFile } from '../../../../services/api/Attachment/FileAttachment';
 import FirebaseUpload from '../../../FloatingMenu/FirebaseUpload';
+import ActivityLog from '../../../../component/ActivityLog/index.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -598,7 +599,7 @@ const DailyMaterialReceivedModal = () => {
                 </TabPanel>
                 <TabPanel value={tabIndex} index={2}>
                   <Grid container spacing={1}>
-                    <Grid item lg={12} md={12} xs={12}></Grid>
+                    <ActivityLog id={selectedDocument?.id} />
                   </Grid>
                 </TabPanel>
               </Grid>

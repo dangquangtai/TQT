@@ -34,6 +34,7 @@ import { SNACKBAR_OPEN } from './../../../../store/actions';
 import BrokenModal from './../../../Dialog/Broken/index';
 import { getInOutDetailList, updateMaterialInventory } from '../../../../services/api/Material/Inventory.js';
 import { getMaterialWHSList } from '../../../../services/api/Workorder/index.js';
+import ActivityLog from '../../../../component/ActivityLog/index.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -137,10 +138,9 @@ const InventoryModal = () => {
   useEffect(() => {
     if (!selectedDocument) return;
     setInventoryData({
-      ...inventoryData,
       ...selectedDocument,
     });
-  }, [inventoryData, selectedDocument]);
+  }, [selectedDocument]);
 
   useEffect(() => {
     const getWarehouseList = async () => {
@@ -150,6 +150,7 @@ const InventoryModal = () => {
 
     getWarehouseList();
   }, []);
+
   useEffect(() => {
     const getListInOutDetail = async () => {
       const InOutDetail = await getInOutDetailList(inventoryData.part_id, inventoryData.supplier_id);
@@ -173,7 +174,7 @@ const InventoryModal = () => {
         <Dialog open={openDialog || false} TransitionComponent={Transition} keepMounted onClose={handleCloseDialog} fullScreen>
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              Kho vậ tư
+              Kho vật tư
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -219,6 +220,17 @@ const InventoryModal = () => {
                     }
                     value={2}
                     {...a11yProps(2)}
+                  />
+                  <Tab
+                    className={classes.unUpperCase}
+                    label={
+                      <Typography className={classes.tabLabels} component="span" variant="subtitle1">
+                        <History />
+                        Lịch sử thay đổi
+                      </Typography>
+                    }
+                    value={3}
+                    {...a11yProps(3)}
                   />
                 </Tabs>
               </Grid>
@@ -430,11 +442,6 @@ const InventoryModal = () => {
                           <div className={classes.tabItemLabel}>
                             <span>Chi tiết xuất nhập</span>
                           </div>
-                          {/* <Tooltip title="Thêm mới">
-                            <IconButton aria-label="add" onClick={handleOpenBrokenModal}>
-                              <AddCircleOutlineOutlined />
-                            </IconButton>
-                          </Tooltip> */}
                         </div>
                         <div className={classes.tabItemBody}>
                           <TableContainer style={{ maxHeight: '65vh' }} component={Paper}>
@@ -472,6 +479,11 @@ const InventoryModal = () => {
                         </div>
                       </div>
                     </Grid>
+                  </Grid>
+                </TabPanel>
+                <TabPanel value={tabIndex} index={3}>
+                  <Grid container spacing={1}>
+                    <ActivityLog id={inventoryData.id || ''} />
                   </Grid>
                 </TabPanel>
               </Grid>

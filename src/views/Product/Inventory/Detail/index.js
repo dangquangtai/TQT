@@ -17,10 +17,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import useView from '../../../../hooks/useView';
 import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../../store/actions';
-import { DescriptionOutlined as DescriptionOutlinedIcon, InfoOutlined } from '@material-ui/icons';
+import { DescriptionOutlined as DescriptionOutlinedIcon, History, InfoOutlined } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import { SNACKBAR_OPEN } from './../../../../store/actions';
 import { format as formatDate } from 'date-fns';
+import ActivityLog from '../../../../component/ActivityLog/index.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -151,17 +152,17 @@ const ProductInventoryModal = () => {
                     value={0}
                     {...a11yProps(0)}
                   />
-                  {/* <Tab
+                  <Tab
                     className={classes.unUpperCase}
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
                         <History />
-                        Lịch sử
+                        Lịch sử thay đổi
                       </Typography>
                     }
                     value={1}
                     {...a11yProps(1)}
-                  /> */}
+                  />
                 </Tabs>
               </Grid>
               <Grid item xs={12}>
@@ -324,7 +325,11 @@ const ProductInventoryModal = () => {
                     </Grid>
                   </Grid>
                 </TabPanel>
-                <TabPanel value={tabIndex} index={1}></TabPanel>
+                <TabPanel value={tabIndex} index={1}>
+                  <Grid container>
+                    <ActivityLog id={inventoryData.id} />
+                  </Grid>
+                </TabPanel>
               </Grid>
             </Grid>
           </DialogContent>

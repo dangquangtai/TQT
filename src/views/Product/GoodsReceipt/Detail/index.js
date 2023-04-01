@@ -25,13 +25,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { format as formatDate } from 'date-fns';
-import {
-  AccountCircleOutlinedasAccountCircleOutlinedIcon,
-  TodayasTodayIcon,
-  DescriptionOutlined,
-  AttachFileOutlined,
-  History,
-} from '@material-ui/icons';
+import { DescriptionOutlined, AttachFileOutlined, History } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import useStyles from './../../../../utils/classes';
 import useView from './../../../../hooks/useView';
@@ -44,6 +38,7 @@ import { exportGoodsReceipt, getGoodsReceiptData, updateGoodsReceipt } from './.
 import { getDailyWorkOrderList } from './../../../../services/api/Workorder/index';
 import { downloadFile } from './../../../../utils/helper';
 import { createFileAttachment, deleteFileAttachment, getListFile } from '../../../../services/api/Attachment/FileAttachment';
+import ActivityLog from '../../../../component/ActivityLog/index.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -574,7 +569,7 @@ const GoodsReceiptModal = () => {
                 </TabPanel>
                 <TabPanel value={tabIndex} index={2}>
                   <Grid container spacing={1}>
-                    <Grid item lg={12} md={12} xs={12}></Grid>
+                    <ActivityLog id={selectedDocument?.id} />
                   </Grid>
                 </TabPanel>
               </Grid>

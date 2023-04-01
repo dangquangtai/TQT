@@ -42,6 +42,7 @@ import { getAllProduct } from '../../../services/api/Product/Product.js';
 import { createOrder, deleteOrderDetail } from './../../../services/api/Order/index';
 import { SNACKBAR_OPEN } from './../../../store/actions';
 import { createFileAttachment, deleteFileAttachment, getListFile } from '../../../services/api/Attachment/FileAttachment';
+import ActivityLog from '../../../component/ActivityLog/index.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -586,7 +587,7 @@ const OrderModal = () => {
                 </TabPanel>
                 <TabPanel value={tabIndex} index={2}>
                   <Grid container spacing={1}>
-                    <Grid item lg={12} md={12} xs={12}></Grid>
+                    <ActivityLog id={selectedDocument?.id} />
                   </Grid>
                 </TabPanel>
               </Grid>

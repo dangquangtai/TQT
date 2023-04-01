@@ -324,6 +324,9 @@ export const apiEndpoints = {
   create_new_attachment: '/Primary/?FlowAlias=bs_api_share_create_new_file_attachment&action=api',
   get_list_file: '/Primary/?FlowAlias=bs_api_share_get_list_file_attachment&action=api',
   delete_file_attach: '/Primary/?FlowAlias=bs_api_share_delete_file_attachment&action=api',
+
+  // Activity Logs
+  get_activity_logs_list: '/Primary/?FlowAlias=bs_api_share_get_activity_logs&action=api',
 };
 
 export const apiDomain = 'https://upload.truebpm.vn';

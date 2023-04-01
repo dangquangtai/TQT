@@ -42,6 +42,7 @@ import {
 import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
 import BrokenModal from './../../../Dialog/Broken/index';
 import { downloadFile } from './../../../../utils/helper';
+import ActivityLog from '../../../../component/ActivityLog/index.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -488,7 +489,7 @@ const ReturnMaterialModal = () => {
                 </TabPanel>
                 <TabPanel value={tabIndex} index={2}>
                   <Grid container spacing={1}>
-                    <Grid item lg={12} md={12} xs={12}></Grid>
+                    <ActivityLog id={selectedDocument?.id} />
                   </Grid>
                 </TabPanel>
               </Grid>
