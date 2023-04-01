@@ -72,10 +72,11 @@ const ProfileSection = () => {
     prevOpen.current = open;
   }, [open]);
   React.useEffect(() => {
+    if(!user) return;
     if (!user?.account) return;
-    if (user.account.avatar_url === account.avatar_url && user.account.fullname === account.fullname) return;
+    if (user.account?.avatar_url === account?.avatar_url && user.account?.fullname === account?.fullname) return;
     setAccount({ ...user.account });
-  }, [user.account]);
+  }, [user?.account]);
 
   return (
     <React.Fragment>
@@ -129,7 +130,7 @@ const ProfileSection = () => {
                       <PersonTwoToneIcon />
                     </ListItemIcon>
                     <ListItemText
-                      primary={account ? (account.fullname === '' || !account.fullname ? 'No Name' : account.fullname) : 'No Name'}
+                      primary={account ? (account?.fullname === '' || !account?.fullname ? 'No Name' : account?.fullname) : 'No Name'}
                       onClick={() => setOpenDialog(true)}
                     />
                   </ListItem>

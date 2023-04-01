@@ -117,8 +117,7 @@ const ProfileModal = (props) => {
         if (check) {
           handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
           var user = JSON.parse(window.localStorage.getItem('user'));
-          user.account = { ...user.account, avatar_url: account.image_url, fullname: account.full_name };
-          console.log(user, 'proffile');
+          user.account = { ...user.account, avatar_url: account?.image_url, fullname: account?.full_name };
           localStorage.setItem('user', JSON.stringify(user));
           handleCloseDialog();
         } else {
@@ -132,13 +131,13 @@ const ProfileModal = (props) => {
   };
   const handleResetPasswordAccount = async () => {
     try {
-      if (!account.new_password || !account.password || !account.new_password_confirm) {
+      if (!account?.new_password || !account?.password || !account?.new_password_confirm) {
         handleOpenSnackbar(true, 'error', 'Vui lòng điền đầy đủ thông tin!');
       } else {
-        if (account.new_password != account.new_password_confirm) {
+        if (account.new_password != account?.new_password_confirm) {
           handleOpenSnackbar(true, 'error', 'Mật khẩu mới không đúng!');
         } else {
-          let check = await resetPassword(account.new_password, account.password, account.email_address);
+          let check = await resetPassword(account?.new_password, account?.password, account?.email_address);
           if (check) {
             handleOpenSnackbar(true, 'success', 'Cập nhập thành công!');
             handleCloseDiaLog();
