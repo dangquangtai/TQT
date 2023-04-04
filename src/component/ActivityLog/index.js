@@ -48,7 +48,9 @@ const ActivityLog = ({ id }) => {
               <TimelineConnector />
             </TimelineSeparator>
             <TimelineContent>
-              <Typography>{item.log_data}</Typography>
+              <Typography>
+                <div dangerouslySetInnerHTML={{ __html: item.log_content }} />
+              </Typography>
             </TimelineContent>
           </TimelineItem>
         ))}
