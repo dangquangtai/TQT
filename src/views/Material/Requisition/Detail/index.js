@@ -237,6 +237,8 @@ const MaterialRequisitionModal = () => {
       supplier_name: materialRequisitionData?.supplier_name || '',
       unit_id: newItem?.unit_id || '',
       unit_name: newItem?.unit_name || '',
+      order_code: '',
+      order_date: new Date(),
     };
     newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
     setMaterialList(newMaterialList);
@@ -290,6 +292,8 @@ const MaterialRequisitionModal = () => {
     };
     fetchData();
   }, []);
+
+  const isDisabled = materialRequisitionData.status?.includes('RECEIVED');
 
   return (
     <React.Fragment>
@@ -419,6 +423,7 @@ const MaterialRequisitionModal = () => {
                                 options={supplier}
                                 getOptionLabel={(option) => option.title || ''}
                                 fullWidth
+                                disabled={isDisabled}
                                 size="small"
                                 value={supplier?.find((item) => item.id === materialRequisitionData.supplier_id) || null}
                                 onChange={(event, newValue) => {
@@ -439,6 +444,7 @@ const MaterialRequisitionModal = () => {
                                 variant="outlined"
                                 select
                                 size="small"
+                                disabled={isDisabled}
                                 value={materialRequisitionData.warehouse_id || ''}
                                 onChange={handleChanges}
                               >
@@ -504,9 +510,9 @@ const MaterialRequisitionModal = () => {
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">SL cần</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
-                                  {/* {selectedDocument?.id && <TableCell align="left">Trạng thái</TableCell>} */}
                                   <TableCell align="left">Ghi chú</TableCell>
-                                  <TableCell align="center">Xoá</TableCell>
+                                  <TableCell align="left">Trạng thái</TableCell>
+                                  {!isDisabled && <TableCell align="center">Xoá</TableCell>}
                                 </TableRow>
                               </TableHead>
                               <TableBody>
@@ -518,6 +524,7 @@ const MaterialRequisitionModal = () => {
                                         getOptionLabel={(option) => option.part_code || ''}
                                         fullWidth
                                         size="small"
+                                        disabled={isDisabled}
                                         value={materials.find((item) => item.part_code === row.part_code) || null}
                                         onChange={(event, newValue) => handleChangeMaterialCode(index, newValue)}
                                         renderInput={(params) => <TextField {...params} variant="outlined" />}
@@ -538,6 +545,7 @@ const MaterialRequisitionModal = () => {
                                         name="quantity_in_piece"
                                         type="number"
                                         size="small"
+                                        disabled={isDisabled}
                                         value={row?.quantity_in_piece || ''}
                                         onChange={(e) => handleChangeMaterial(index, e)}
                                       />
@@ -558,11 +566,16 @@ const MaterialRequisitionModal = () => {
                                         onChange={(e) => handleChangeMaterial(index, e)}
                                       />
                                     </TableCell>
-                                    <TableCell align="center" style={{ width: '10%' }}>
-                                      <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>
-                                        <Delete />
-                                      </IconButton>
+                                    <TableCell align="left" style={{ width: '5%' }}>
+                                      {row.status_display}
                                     </TableCell>
+                                    {!isDisabled && (
+                                      <TableCell align="center" style={{ width: '5%' }}>
+                                        <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>
+                                          <Delete />
+                                        </IconButton>
+                                      </TableCell>
+                                    )}
                                   </TableRow>
                                 ))}
                               </TableBody>

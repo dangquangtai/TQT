@@ -538,7 +538,7 @@ const PurchaseMaterialModal = () => {
                                   <TableCell align="left">Ngày sản xuất</TableCell>
                                   <TableCell align="left">Ghi chú</TableCell>
                                   <TableCell align="left">Trạng thái</TableCell>
-                                  <TableCell align="center">Xoá</TableCell>
+                                  {!isDisabled && <TableCell align="center">Xoá</TableCell>}
                                 </TableRow>
                               </TableHead>
                               <TableBody>
@@ -582,11 +582,13 @@ const PurchaseMaterialModal = () => {
                                     <TableCell align="left" style={{ width: '5%' }}>
                                       {row.status_display}
                                     </TableCell>
-                                    <TableCell align="center" style={{ width: '5%' }}>
-                                      <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>
-                                        <Delete />
-                                      </IconButton>
-                                    </TableCell>
+                                    {!isDisabled && (
+                                      <TableCell align="center" style={{ width: '5%' }}>
+                                        <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>
+                                          <Delete />
+                                        </IconButton>
+                                      </TableCell>
+                                    )}
                                   </TableRow>
                                 ))}
                               </TableBody>

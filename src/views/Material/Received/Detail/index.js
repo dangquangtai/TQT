@@ -296,6 +296,8 @@ const ReceivedMaterialModal = () => {
   }, []);
 
   const isDisabled = !!selectedDocument?.id;
+  const isCompleted = !!receivedMaterialData.status?.includes('COMPLETED');
+  const isWorkOrder = !!receivedDetailList[0]?.customer_order_code;
 
   useEffect(() => {
     if (materialReceived === selectedDocument?.order_detail) return;
@@ -535,23 +537,25 @@ const ReceivedMaterialModal = () => {
                             <Table size="small" stickyHeader>
                               <TableHead>
                                 <TableRow>
-                                  <TableCell align="left">Mã đơn hàng</TableCell>
+                                  {isWorkOrder && <TableCell align="left">Mã đơn hàng</TableCell>}
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">SL đặt</TableCell>
                                   <TableCell align="left">SL nhập</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
-                                  <TableCell align="left">Ngày sản xuất</TableCell>
+                                  {isWorkOrder && <TableCell align="left">Ngày sản xuất</TableCell>}
                                   <TableCell align="left">Ghi chú</TableCell>
-                                  <TableCell align="center">Xoá</TableCell>
+                                  {!isCompleted && <TableCell align="center">Xoá</TableCell>}
                                 </TableRow>
                               </TableHead>
                               <TableBody>
                                 {receivedDetailList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '10%' }}>
-                                      {row.customer_order_code}
-                                    </TableCell>
+                                    {isWorkOrder && (
+                                      <TableCell align="left" style={{ width: '10%' }}>
+                                        {row.customer_order_code}
+                                      </TableCell>
+                                    )}
                                     <TableCell align="left" style={{ width: '12%' }}>
                                       {row.part_code}
                                     </TableCell>
@@ -574,15 +578,18 @@ const ReceivedMaterialModal = () => {
                                         type="number"
                                         size="small"
                                         value={row?.received_quantity_in_piece || ''}
+                                        disabled={isCompleted}
                                         onChange={(e) => handleChangeQuantity(index, e.target.value)}
                                       />
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '5%' }}>
                                       {row.unit_name}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
-                                      {row.customer_order_date ? formatDate(new Date(row.customer_order_date), 'dd/MM/yyyy') : ''}
-                                    </TableCell>
+                                    {isWorkOrder && (
+                                      <TableCell align="left" style={{ width: '10%' }}>
+                                        {row.customer_order_date ? formatDate(new Date(row.customer_order_date), 'dd/MM/yyyy') : ''}
+                                      </TableCell>
+                                    )}
                                     <TableCell align="left" style={{ width: '15%' }}>
                                       <TextField
                                         multiline
@@ -596,11 +603,13 @@ const ReceivedMaterialModal = () => {
                                         onChange={(e) => handleChangeMaterial(index, e)}
                                       />
                                     </TableCell>
-                                    <TableCell align="center" style={{ width: '5%' }}>
-                                      <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>
-                                        <Delete />
-                                      </IconButton>
-                                    </TableCell>
+                                    {!isCompleted && (
+                                      <TableCell align="center" style={{ width: '5%' }}>
+                                        <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>
+                                          <Delete />
+                                        </IconButton>
+                                      </TableCell>
+                                    )}
                                   </TableRow>
                                 ))}
                               </TableBody>
