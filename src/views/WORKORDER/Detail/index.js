@@ -23,6 +23,7 @@ import {
   IconButton,
   Tabs,
   Tab,
+  DialogContentText,
 } from '@material-ui/core';
 import Alert from '../../../component/Alert/index.js';
 import { useSelector, useDispatch } from 'react-redux';
@@ -135,7 +136,7 @@ const WorkorderModal = () => {
   const [workshopList, setWorkShopList] = useState([]);
   const [productWHSList, setProductWHSList] = useState([]);
   const [materialWHSList, setMaterialWHSList] = useState([]);
-
+  const [openDelete, setOpenDelete] = useState({ open: false, index: -1, id: '' });
   const virtuoso = useRef(null);
   const [dropdownData, setDopDownData] = useState([]);
 
@@ -933,7 +934,7 @@ const WorkorderModal = () => {
           </TableCell>
           <TableCell align="center"> {calculateQuantity(item, index)}</TableCell>
           <TableCell align="right">
-            <IconButton onClick={() => handleDeleteRow(index, item.id)} disabled={disableComponent}>
+            <IconButton onClick={() => handleOpenDelete(index, item.id)} disabled={disableComponent}>
               <Delete />
             </IconButton>
           </TableCell>
@@ -975,9 +976,38 @@ const WorkorderModal = () => {
   useEffect(() => {
     if (checkChangeData.changeWorkOrder) handleSetDate(workorder.from_date, workorder.to_date);
   }, [workorder.from_date, workorder.to_date]);
-
+  const handleOpenDelete = (index, id) => {
+    setOpenDelete({ open: true, index: index, id: id });
+  };
+  const handleCloseDelete = () => {
+    setOpenDelete({ open: false, index: -1, id: '' });
+  };
   return (
     <React.Fragment>
+      <Dialog
+        open={openDelete.open}
+        onClose={handleCloseDelete}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        style={{ maxHeight: 250, marginTop: 300 }}
+      >
+        <DialogTitle>{'Xác nhận xoá thành phẩm'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Xác nhận xoá thành phẩm {productList[openDelete.index]?.product_code}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDelete}>Huỷ</Button>
+          <Button
+            onClick={() => {
+              handleDeleteRow(openDelete.index, openDelete.id);
+              setOpenDelete({ open: false, index: -1, id: '' });
+            }}
+            autoFocus
+          >
+            Xoá
+          </Button>
+        </DialogActions>
+      </Dialog>
       {snackbarStatus.isOpen && (
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
