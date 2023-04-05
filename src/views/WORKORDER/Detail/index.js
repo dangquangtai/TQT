@@ -583,7 +583,7 @@ const WorkorderModal = () => {
         setProductWHID(productListApi.work_order_request.product_warehouse_id);
         setMaterialWhID(productListApi.work_order_request.material_warehouse_id);
         setWorkShopID(productListApi.work_order_request.workshop_id);
-        setDisable(productListApi.work_order_request.is_disable);
+        // setDisable(productListApi.work_order_request.is_disable);
         setProductList(productListApi.work_order_detail);
         setWorkorderRequest({ ...productListApi.work_order_request });
         if (setOrder) {
