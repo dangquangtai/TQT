@@ -238,7 +238,7 @@ const MaterialRequisitionModal = () => {
       unit_id: newItem?.unit_id || '',
       unit_name: newItem?.unit_name || '',
       order_code: '',
-      order_date: new Date(),
+      order_date: new Date('0001-01-01T00:00:00.000Z'),
     };
     newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
     setMaterialList(newMaterialList);
@@ -511,6 +511,7 @@ const MaterialRequisitionModal = () => {
                                   <TableCell align="left">SL cần</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
                                   <TableCell align="left">Ghi chú</TableCell>
+                                  <TableCell align="left">Ghi chú 2</TableCell>
                                   <TableCell align="left">Trạng thái</TableCell>
                                   {!isDisabled && <TableCell align="center">Xoá</TableCell>}
                                 </TableRow>
@@ -518,7 +519,7 @@ const MaterialRequisitionModal = () => {
                               <TableBody>
                                 {materialList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '25%' }}>
+                                    <TableCell align="left" style={{ width: '20%' }}>
                                       <Autocomplete
                                         options={materials}
                                         getOptionLabel={(option) => option.part_code || ''}
@@ -550,7 +551,7 @@ const MaterialRequisitionModal = () => {
                                         onChange={(e) => handleChangeMaterial(index, e)}
                                       />
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
+                                    <TableCell align="left" style={{ width: '5%' }}>
                                       {row.unit_name}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '15%' }}>
@@ -563,6 +564,19 @@ const MaterialRequisitionModal = () => {
                                         type="text"
                                         size="small"
                                         value={row.notes || ''}
+                                        onChange={(e) => handleChangeMaterial(index, e)}
+                                      />
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '10%' }}>
+                                      <TextField
+                                        multiline
+                                        minRows={1}
+                                        fullWidth
+                                        variant="outlined"
+                                        name="notes2"
+                                        type="text"
+                                        size="small"
+                                        value={row.notes2 || ''}
                                         onChange={(e) => handleChangeMaterial(index, e)}
                                       />
                                     </TableCell>

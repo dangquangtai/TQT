@@ -519,11 +519,6 @@ const PurchaseMaterialModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>Danh sách vật tư</div>
-                          {/* <Tooltip title="Thêm vật tư">
-                            <IconButton onClick={handleAddMaterial}>
-                              <AddCircleOutline />
-                            </IconButton>
-                          </Tooltip> */}
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
@@ -537,6 +532,7 @@ const PurchaseMaterialModal = () => {
                                   <TableCell align="left">Đơn vị</TableCell>
                                   <TableCell align="left">Ngày sản xuất</TableCell>
                                   <TableCell align="left">Ghi chú</TableCell>
+                                  <TableCell align="left">Ghi chú 2</TableCell>
                                   <TableCell align="left">Trạng thái</TableCell>
                                   {!isDisabled && <TableCell align="center">Xoá</TableCell>}
                                 </TableRow>
@@ -552,7 +548,7 @@ const PurchaseMaterialModal = () => {
                                         <span>{row?.part_code}</span>
                                       </Tooltip>
                                     </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '25%' }}>
+                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '20%' }}>
                                       <Tooltip title={row?.part_name}>
                                         <span>{row?.part_name}</span>
                                       </Tooltip>
@@ -566,7 +562,7 @@ const PurchaseMaterialModal = () => {
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       {row.order_date ? formatDate(new Date(row.order_date), 'dd/MM/yyyy') : ''}
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '20%' }}>
+                                    <TableCell align="left" style={{ width: '15%' }}>
                                       <TextField
                                         multiline
                                         minRows={1}
@@ -576,6 +572,19 @@ const PurchaseMaterialModal = () => {
                                         type="text"
                                         size="small"
                                         value={row.notes || ''}
+                                        onChange={(e) => handleChangeMaterial(index, e)}
+                                      />
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '10%' }}>
+                                      <TextField
+                                        multiline
+                                        minRows={1}
+                                        fullWidth
+                                        variant="outlined"
+                                        name="notes2"
+                                        type="text"
+                                        size="small"
+                                        value={row.notes2 || ''}
                                         onChange={(e) => handleChangeMaterial(index, e)}
                                       />
                                     </TableCell>

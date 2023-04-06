@@ -228,7 +228,7 @@ const DailyMaterialReceivedModal = () => {
   };
 
   const handleClickExport = async () => {
-    var url = await exportDailyMaterialReceived(dailyMaterialReceivedData.daily_work_order_id);
+    var url = await exportDailyMaterialReceived(dailyMaterialReceivedData.id || '');
     handleDownload(url);
     // showConfirmPopup({
     //   title: 'Xuất phiếu nhập vật tư',
