@@ -327,6 +327,16 @@ export const apiEndpoints = {
 
   // Activity Logs
   get_activity_logs_list: '/Primary/?FlowAlias=bs_api_share_get_activity_logs&action=api',
+
+  // Product Inventory Check
+  get_product_inventory_check_list: '/Primary/?FlowAlias=bs_api_factory_get_product_inventory_check_list&action=api',
+  get_product_inventory_check_detail: '/Primary/?FlowAlias=bs_api_factory_get_product_inventory_check_detail&action=api',
+  create_product_inventory_check: '/Primary/?FlowAlias=bs_api_factory_create_product_inventory_check&action=api',
+  update_product_inventory_check: '/Primary/?FlowAlias=bs_api_factory_update_product_inventory_check&action=api',
+  get_product_inventory_check_data: '/Primary/?FlowAlias=bs_api_factory_get_product_inventory_check_data&action=api',
+  import_product_inventory_check: '/Primary/?FlowAlias=bs_api_factory_import_product_inventory_check&action=api',
+  apply_product_inventory_check: '/Primary/?FlowAlias=bs_api_factory_apply_product_inventory_check&action=api',
+  remove_product_inventory_check: '/Primary/?FlowAlias=bs_api_factory_remove_product_inventory_check&action=api',
 };
 
 export const apiDomain = 'https://upload.truebpm.vn';
@@ -445,6 +455,10 @@ export const materialReturnActions = {
 };
 export const templateDocumentActions = {
   list_template_document: 'TQT_SETTING_DEFAULT_OPEN_DOCUMENT_LIST',
+};
+
+export const productInventoryCheckActions = {
+  list_product_inventory_check: 'TQT_PRODUCT_DEFAULT_OPEN_PRODUCT_INVENTORY_CHECK',
 };
 
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
@@ -701,6 +715,17 @@ export const view = {
     list: {
       export: 'TQT_MATERIAL_DEFAULT_MATERIAL_INVENTORY_EXPORT_MENU_BUTTON',
       export2: 'TQT_MATERIAL_DEFAULT_MATERIAL_INVENTORY_EXPORT_INVENTORY_CONSOLIDATION_MENU_BUTTON',
+    },
+  },
+  productInventoryCheck: {
+    list: {
+      create: 'TQT_PRODUCT_DEFAULT_PRODUCT_INVENTORY_CHECK_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_PRODUCT_DEFAULT_PRODUCT_INVENTORY_CHECK_SAVE_FORM_BUTTON',
+      import: 'TQT_PRODUCT_DEFAULT_PRODUCT_INVENTORY_CHECK_IMPORT_FORM_BUTTON',
+      apply: 'TQT_PRODUCT_DEFAULT_PRODUCT_INVENTORY_CHECK_APPLY_FORM_BUTTON',
+      remove: 'TQT_PRODUCT_DEFAULT_PRODUCT_INVENTORY_CHECK_REMOVE_FORM_BUTTON',
     },
   },
 };

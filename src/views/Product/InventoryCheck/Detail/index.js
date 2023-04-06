@@ -23,19 +23,12 @@ import { History, DescriptionOutlined, InfoOutlined } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import { SNACKBAR_OPEN } from './../../../../store/actions';
 import DatePicker from './../../../../component/DatePicker/index';
-import {
-  removeInventoryCheck,
-  applyInventoryCheck,
-  createInventoryCheck,
-  updateInventoryCheck,
-  importInventoryCheck,
-  getMoreInventoryCheckData,
-} from '../../../../services/api/Material/InventoryCheck.js';
-import { materialInventoryTemplate } from './../../../../store/constants/initial';
 import { downloadFile } from './../../../../utils/helper';
 import FirebaseUpload from '../../../FloatingMenu/FirebaseUpload/index.js';
 import useConfirmPopup from '../../../../hooks/useConfirmPopup.js';
+import { ProductInventoryCheckService } from '../../../../services/api/Product/InventoryCheck.js';
 import ActivityLog from '../../../../component/ActivityLog/index.js';
+import { productInventoryTemplate } from '../../../../store/constants/initial.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -63,22 +56,21 @@ function a11yProps(index) {
   };
 }
 
-const InventoryCheckModal = () => {
+const ProductInventoryCheckModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { setConfirmPopup } = useConfirmPopup();
   const { form_buttons: formButtons } = useView();
-  const buttonSave = formButtons.find((button) => button.name === view.materialInventoryCheck.detail.save);
-  const buttonImport = formButtons.find((button) => button.name === view.materialInventoryCheck.detail.import);
-  const buttonApply = formButtons.find((button) => button.name === view.materialInventoryCheck.detail.apply);
-
-  const buttonRemove = formButtons.find((button) => button.name === view.materialInventoryCheck.detail.remove);
-  const { materialInventoryCheckDocument: openDialog } = useSelector((state) => state.floatingMenu);
+  const buttonSave = formButtons.find((button) => button.name === view.productInventoryCheck.detail.save);
+  const buttonImport = formButtons.find((button) => button.name === view.productInventoryCheck.detail.import);
+  const buttonApply = formButtons.find((button) => button.name === view.productInventoryCheck.detail.apply);
+  const buttonRemove = formButtons.find((button) => button.name === view.productInventoryCheck.detail.remove);
+  const { productInventoryCheckDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
   const [tabIndex, setTabIndex] = React.useState(0);
 
-  const [inventoryCheckData, setInventoryCheckData] = useState({ notes: '' });
-  const [inventoryCheck, setInventoryCheck] = useState({
+  const [productInventoryCheckData, setProductInventoryCheckData] = useState({ notes: '', inventory_check_date: new Date() });
+  const [productInventoryCheck, setProductInventoryCheck] = useState({
     categories: [],
     status: [],
     warehouses: [],
@@ -87,7 +79,7 @@ const InventoryCheckModal = () => {
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
-    dispatch({ type: FLOATING_MENU_CHANGE, materialInventoryCheckDocument: false });
+    dispatch({ type: FLOATING_MENU_CHANGE, productInventoryCheckDocument: false });
   };
 
   const handleChangeTab = (event, newValue) => {
@@ -109,25 +101,25 @@ const InventoryCheckModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setInventoryCheckData({ notes: '' });
+    setProductInventoryCheckData({ notes: '', inventory_check_date: new Date() });
     setTabIndex(0);
   };
 
   const handleChanges = (e) => {
     const { name, value } = e.target;
-    setInventoryCheckData({ ...inventoryCheckData, [name]: value });
+    setProductInventoryCheckData({ ...productInventoryCheckData, [name]: value });
   };
 
   const handleSubmit = async () => {
     try {
-      if (inventoryCheckData?.id) {
-        await updateInventoryCheck(inventoryCheckData);
+      if (productInventoryCheckData?.id) {
+        await ProductInventoryCheckService.update(productInventoryCheckData);
         handleOpenSnackbar('success', 'Cập nhật thành công!');
       } else {
-        await createInventoryCheck(inventoryCheckData);
+        await ProductInventoryCheckService.create(productInventoryCheckData);
         handleOpenSnackbar('success', 'Tạo mới thành công!');
       }
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'materialInventoryCheck' });
+      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'productInventoryCheck' });
       handleCloseDialog();
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
@@ -135,15 +127,15 @@ const InventoryCheckModal = () => {
   };
 
   const handleDownload = () => {
-    downloadFile(materialInventoryTemplate);
+    downloadFile(productInventoryTemplate);
   };
 
   const importExcel = async (image) => {
     try {
-      const res = await importInventoryCheck({
-        id: inventoryCheckData.id,
+      const res = await ProductInventoryCheckService.import({
+        id: productInventoryCheckData.id,
         file_url: image?.url,
-        inventory_check_code: inventoryCheckData.inventory_check_code,
+        inventory_check_code: productInventoryCheckData.inventory_check_code,
       });
       if (res.code === 200) {
         handleOpenSnackbar('success', res.message);
@@ -160,14 +152,17 @@ const InventoryCheckModal = () => {
       title: 'Xác nhận áp dụng',
       message: 'Bạn có chắc chắn muốn áp dụng?',
       action: actionApply,
-      payload: inventoryCheckData.id,
-      onSuccess: handleCloseDialog,
+      payload: productInventoryCheckData.id,
+      onSuccess: () => {
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'productInventoryCheck' });
+        handleCloseDialog();
+      },
     });
   };
 
   const actionApply = async (id) => {
     try {
-      const res = await applyInventoryCheck(id);
+      const res = await ProductInventoryCheckService.apply(id);
       if (res.code === 200) {
         handleOpenSnackbar('success', res.message);
       } else {
@@ -183,14 +178,14 @@ const InventoryCheckModal = () => {
       title: 'Xác nhận xóa',
       message: 'Bạn có chắc chắn muốn xóa?',
       action: actionRemove,
-      payload: inventoryCheckData.id,
+      payload: productInventoryCheckData.id,
       onSuccess: handleCloseDialog,
     });
   };
 
   const actionRemove = async (id) => {
     try {
-      const res = await removeInventoryCheck(inventoryCheckData.id);
+      const res = await ProductInventoryCheckService.remove(productInventoryCheckData.id);
       if (res.code === 200) {
         handleOpenSnackbar('success', res.message);
       } else {
@@ -211,22 +206,22 @@ const InventoryCheckModal = () => {
 
   useEffect(() => {
     if (!selectedDocument) return;
-    setInventoryCheckData({
-      ...inventoryCheckData,
+    setProductInventoryCheckData({
+      ...productInventoryCheckData,
       ...selectedDocument,
     });
   }, [selectedDocument]);
 
   useEffect(() => {
-    const getInventoryCheck = async () => {
-      const res = await getMoreInventoryCheckData();
-      setInventoryCheck({
-        categories: res.categories,
-        status: res.status,
-        warehouses: res.warehouses,
+    const getProductInventoryCheck = async () => {
+      const res = await ProductInventoryCheckService.data();
+      setProductInventoryCheck({
+        categories: res.category_list,
+        status: res.status_list,
+        warehouses: res.warehouse_list,
       });
     };
-    getInventoryCheck();
+    getProductInventoryCheck();
   }, []);
 
   return (
@@ -236,7 +231,7 @@ const InventoryCheckModal = () => {
         onSuccess={importExcel}
         onClose={handleCloseDiaLog}
         type="excel"
-        folder="File Import/Material Inventory"
+        folder="File Import/ Inventory"
       />
       <Grid container>
         <Dialog
@@ -298,25 +293,9 @@ const InventoryCheckModal = () => {
                           </div>
                         </div>
                         <div className={classes.tabItemBody}>
-                          <Grid container className={classes.gridItemInfo} alignItems="center">
-                            <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tiêu đề:</span>
-                            </Grid>
-                            <Grid item lg={8} md={8} xs={8}>
-                              <TextField
-                                fullWidth
-                                variant="outlined"
-                                name="title"
-                                value={inventoryCheckData.title}
-                                type="text"
-                                size="small"
-                                onChange={handleChanges}
-                              />
-                            </Grid>
-                          </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã kiểm kê:</span>
+                              <span className={classes.tabItemLabelField}>Mã kiểm kê(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -326,14 +305,30 @@ const InventoryCheckModal = () => {
                                 size="small"
                                 type="text"
                                 disabled={!!selectedDocument?.id}
-                                value={inventoryCheckData.inventory_check_code}
+                                value={productInventoryCheckData.inventory_check_code}
+                                onChange={handleChanges}
+                              />
+                            </Grid>
+                          </Grid>
+                          <Grid container className={classes.gridItemInfo} alignItems="center">
+                            <Grid item lg={4} md={4} xs={4}>
+                              <span className={classes.tabItemLabelField}>Tiêu đề(*):</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={8}>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="title"
+                                value={productInventoryCheckData.title}
+                                type="text"
+                                size="small"
                                 onChange={handleChanges}
                               />
                             </Grid>
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Loại kiểm kê:</span>
+                              <span className={classes.tabItemLabelField}>Loại kiểm kê(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -341,11 +336,11 @@ const InventoryCheckModal = () => {
                                 fullWidth
                                 variant="outlined"
                                 name="category_id"
-                                value={inventoryCheckData.category_id || ''}
+                                value={productInventoryCheckData.category_id || ''}
                                 size="small"
                                 onChange={handleChanges}
                               >
-                                {inventoryCheck.categories?.map((option) => (
+                                {productInventoryCheck.categories?.map((option) => (
                                   <MenuItem key={option.id} value={option.id}>
                                     {option.value}
                                   </MenuItem>
@@ -355,7 +350,7 @@ const InventoryCheckModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Kho vật tư:</span>
+                              <span className={classes.tabItemLabelField}>Kho vật tư(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -363,11 +358,11 @@ const InventoryCheckModal = () => {
                                 fullWidth
                                 variant="outlined"
                                 name="warehouse_id"
-                                value={inventoryCheckData.warehouse_id || ''}
+                                value={productInventoryCheckData.warehouse_id || ''}
                                 size="small"
                                 onChange={handleChanges}
                               >
-                                {inventoryCheck.warehouses?.map((option) => (
+                                {productInventoryCheck.warehouses?.map((option) => (
                                   <MenuItem key={option.id} value={option.id}>
                                     {option.value}
                                   </MenuItem>
@@ -377,12 +372,14 @@ const InventoryCheckModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Ngày kiểm kê:</span>
+                              <span className={classes.tabItemLabelField}>Ngày kiểm kê(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <DatePicker
-                                date={inventoryCheckData.inventory_check_date}
-                                onChange={(date) => setInventoryCheckData({ ...inventoryCheckData, inventory_check_date: date })}
+                                date={productInventoryCheckData.inventory_check_date}
+                                onChange={(date) =>
+                                  setProductInventoryCheckData({ ...productInventoryCheckData, inventory_check_date: date })
+                                }
                               />
                             </Grid>
                           </Grid>
@@ -421,7 +418,7 @@ const InventoryCheckModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Trạng thái:</span>
+                              <span className={classes.tabItemLabelField}>Trạng thái(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -429,11 +426,11 @@ const InventoryCheckModal = () => {
                                 fullWidth
                                 variant="outlined"
                                 name="status"
-                                value={inventoryCheckData.status || ''}
+                                value={productInventoryCheckData.status || ''}
                                 size="small"
                                 onChange={handleChanges}
                               >
-                                {inventoryCheck.status?.map((option) => (
+                                {productInventoryCheck.status?.map((option) => (
                                   <MenuItem key={option.id} value={option.id}>
                                     {option.value}
                                   </MenuItem>
@@ -446,7 +443,7 @@ const InventoryCheckModal = () => {
                               <span className={classes.tabItemLabelField}>Kiểm tra bởi:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
-                              <TextField fullWidth disabled variant="outlined" value={inventoryCheckData.checked_by} size="small" />
+                              <TextField fullWidth disabled variant="outlined" value={productInventoryCheckData.checked_by} size="small" />
                             </Grid>
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
@@ -454,7 +451,7 @@ const InventoryCheckModal = () => {
                               <span className={classes.tabItemLabelField}>Xác nhận bởi:</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
-                              <TextField fullWidth disabled variant="outlined" value={inventoryCheckData.verified_by} size="small" />
+                              <TextField fullWidth disabled variant="outlined" value={productInventoryCheckData.verified_by} size="small" />
                             </Grid>
                           </Grid>
                         </div>
@@ -472,9 +469,10 @@ const InventoryCheckModal = () => {
                                 fullWidth
                                 multiline
                                 variant="outlined"
+                                minRows={3}
                                 name="notes"
                                 size="small"
-                                value={inventoryCheckData.notes}
+                                value={productInventoryCheckData.notes}
                                 onChange={handleChanges}
                               />
                             </Grid>
@@ -534,4 +532,4 @@ const InventoryCheckModal = () => {
   );
 };
 
-export default InventoryCheckModal;
+export default ProductInventoryCheckModal;

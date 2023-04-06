@@ -64,6 +64,7 @@ import { getUserGroupDetail } from '../../services/api/UserGroup/index';
 import { getDetailReturnMaterial } from './../../services/api/Material/Return';
 import { getDetailTemplateDocument } from '../../services/api/Setting/TemplateDocument';
 import { getDetailProductInventory } from './../../services/api/Product/Inventory';
+import { ProductInventoryCheckService } from '../../services/api/Product/InventoryCheck.js';
 
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
@@ -178,6 +179,7 @@ export default function GeneralTable(props) {
   const buttonCreateProduct = menuButtons.find((button) => button.name === view.product.list.create);
   const buttonExportMaterialInventory = menuButtons.find((button) => button.name === view.materialInventory.list.export);
   const buttonExportMaterialInventory2 = menuButtons.find((button) => button.name === view.materialInventory.list.export2);
+  const buttonCreateProductInventoryCheck = menuButtons.find((button) => button.name === view.productInventoryCheck.list.create);
 
   const fetchDocument = (additionalQuery) => {
     const queries = { ...defaultQueries, ...additionalQuery };
@@ -445,6 +447,11 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, productInventoryDocument: true });
         break;
+      case 'productInventoryCheck':
+        detailDocument = await ProductInventoryCheckService.detail(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, productInventoryCheckDocument: true });
+        break;
       default:
         break;
     }
@@ -525,6 +532,9 @@ export default function GeneralTable(props) {
         break;
       case 'product':
         dispatch({ type: FLOATING_MENU_CHANGE, productDocument: true });
+        break;
+      case 'productInventoryCheck':
+        dispatch({ type: FLOATING_MENU_CHANGE, productInventoryCheckDocument: true });
         break;
       default:
         break;
@@ -989,6 +999,7 @@ export default function GeneralTable(props) {
     buttonExportMaterialInventory2,
     handleExportMaterialInventory2,
     handleExportMaterialInventory,
+    buttonCreateProductInventoryCheck,
   };
 
   return (

@@ -95,6 +95,7 @@ const EnhancedTableToolbar = (props) => {
     buttonExportMaterialInventory2,
     handleExportMaterialInventory2,
     handleExportMaterialInventory,
+    buttonCreateProductInventoryCheck,
   } = props;
 
   const filterRef = useRef(null);
@@ -487,6 +488,13 @@ const EnhancedTableToolbar = (props) => {
                     </Button>
                   </Grid>
                 )}
+                {buttonCreateProductInventoryCheck && (
+                  <Grid item>
+                    <Button variant="contained" color={'primary'} onClick={handleCreate}>
+                      {buttonCreateProductInventoryCheck.text}
+                    </Button>
+                  </Grid>
+                )}
               </Grid>
             </Grid>
             {documentType === 'processrole' && (
@@ -548,8 +556,8 @@ const EnhancedTableToolbar = (props) => {
           </Grid>
         )}
         {documentType !== 'processrole' && documentType !== 'department' && (
-          <Grid item lg={6} md={6} xs={12} className={classes.toolSearchWrap} alignContent="flex-start">
-            <Grid container spacing={gridSpacing}>
+          <Grid item lg={6} md={6} xs={12} className={classes.toolSearchWrap}>
+            <Grid container spacing={gridSpacing} alignItems="center">
               <>
                 <div className={classes.toolSearchWrap}>
                   <SearchIcon />
