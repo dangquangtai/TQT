@@ -532,7 +532,16 @@ const MaterialRequisitionModal = () => {
                                     </TableCell>
                                     <TableCell align="left" className={classes.maxWidthCell} style={{ width: '25%' }}>
                                       <Tooltip title={row?.part_name}>
-                                        <span>{row?.part_name}</span>
+                                        <Autocomplete
+                                          options={materials}
+                                          getOptionLabel={(option) => option.title || ''}
+                                          fullWidth
+                                          size="small"
+                                          disabled={isDisabled}
+                                          value={materials.find((item) => item.part_code === row.part_code) || null}
+                                          onChange={(event, newValue) => handleChangeMaterialCode(index, newValue)}
+                                          renderInput={(params) => <TextField {...params} variant="outlined" />}
+                                        />
                                       </Tooltip>
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '15%' }}>
