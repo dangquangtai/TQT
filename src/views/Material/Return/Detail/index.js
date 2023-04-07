@@ -178,6 +178,13 @@ const ReturnMaterialModal = () => {
     setReturnDetailList(newReturnDetailList);
   };
 
+  const handleChangeMaterial = (index, e) => {
+    const { name, value } = e.target;
+    const newReturnDetailList = [...returnDetailList];
+    newReturnDetailList[index] = { ...newReturnDetailList[index], [name]: value };
+    setReturnDetailList(newReturnDetailList);
+  };
+
   useEffect(() => {
     if (!selectedDocument) return;
     setReturnMaterialData({
@@ -419,7 +426,8 @@ const ReturnMaterialModal = () => {
                                   <TableCell align="left">SL A</TableCell>
                                   <TableCell align="left">SL B</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
-                                  <TableCell align="left">Chi tiết</TableCell>
+                                  <TableCell align="left">Hỏng</TableCell>
+                                  <TableCell align="left">Ghi chú</TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
@@ -428,7 +436,7 @@ const ReturnMaterialModal = () => {
                                     <TableCell align="left" style={{ width: '20%' }}>
                                       {row.part_code}
                                     </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '30%' }}>
+                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '25%' }}>
                                       <Tooltip title={row?.part_name}>
                                         <span>{row?.part_name}</span>
                                       </Tooltip>
@@ -462,15 +470,28 @@ const ReturnMaterialModal = () => {
                                         onChange={(e) => handleReturnQuantity(e, index)}
                                       />
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
+                                    <TableCell align="left" style={{ width: '5%' }}>
                                       {row.unit_name}
                                     </TableCell>
                                     <TableCell
                                       align="left"
-                                      style={{ width: '10%', cursor: 'pointer', textDecoration: 'underline' }}
+                                      style={{ width: '5%', cursor: 'pointer', textDecoration: 'underline' }}
                                       onClick={() => handleOpenBrokenModal(row, index)}
                                     >
                                       Chi tiết
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '15%' }}>
+                                      <TextField
+                                        multiline
+                                        minRows={1}
+                                        fullWidth
+                                        variant="outlined"
+                                        name="notes"
+                                        type="text"
+                                        size="small"
+                                        value={row.notes || ''}
+                                        onChange={(e) => handleReturnQuantity(e, index)}
+                                      />
                                     </TableCell>
                                   </TableRow>
                                 ))}

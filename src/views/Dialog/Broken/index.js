@@ -150,6 +150,7 @@ export default function BrokenModal(props) {
   const handleDelete = (index) => {
     const list = [...brokenList];
     list.splice(index, 1);
+    setTotalBroken(list.reduce((a, b) => a + Number(b.Quantity_In_Piece), 0));
     setBrokenList(list);
   };
 

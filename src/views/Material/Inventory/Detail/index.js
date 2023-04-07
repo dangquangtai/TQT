@@ -135,11 +135,17 @@ const InventoryModal = () => {
     setBrokenDialog(false);
   };
 
+  const getListInOutDetail = async (part_id, supplier_id) => {
+    const InOutDetail = await getInOutDetailList(part_id, supplier_id);
+    setInOutDetailList(InOutDetail);
+  };
+
   useEffect(() => {
     if (!selectedDocument) return;
     setInventoryData({
       ...selectedDocument,
     });
+    getListInOutDetail(selectedDocument.part_id, selectedDocument.supplier_id);
   }, [selectedDocument]);
 
   useEffect(() => {
@@ -150,15 +156,6 @@ const InventoryModal = () => {
 
     getWarehouseList();
   }, []);
-
-  useEffect(() => {
-    const getListInOutDetail = async () => {
-      const InOutDetail = await getInOutDetailList(inventoryData.part_id, inventoryData.supplier_id);
-      setInOutDetailList(InOutDetail);
-    };
-
-    getListInOutDetail();
-  }, [inventoryData.part_id, inventoryData.supplier_id]);
 
   return (
     <React.Fragment>
