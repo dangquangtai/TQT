@@ -1446,7 +1446,7 @@ const WorkorderModal = () => {
                 </TabPanel>
                 <TabPanel value={tabIndex} index={1}>
                   <Grid container spacing={1}>
-                    <ActivityLog id={productionDailyRequestList[indexDate]?.id} />
+                    <ActivityLog id={workorder.id} />
                   </Grid>
                 </TabPanel>
               </Grid>
