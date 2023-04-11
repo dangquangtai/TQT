@@ -53,7 +53,6 @@ export const headCells = [
   { id: 'percent_production', numeric: false, disablePadding: false, label: '% đã SX', maxWidth: 100 },
   { id: 'percent_plan', numeric: false, disablePadding: false, label: '% đã lập KH', maxWidth: 100 },
 
-
   { id: 'order__title', numeric: false, disablePadding: false, label: 'Tên kế hoạch', maxWidth: 150 },
   { id: 'from__date', numeric: false, disablePadding: false, label: 'Ngày bắt đầu', maxWidth: 150 },
   { id: 'to__date', numeric: false, disablePadding: false, label: 'Ngày kết thúc', maxWidth: 150 },
@@ -68,5 +67,6 @@ export const headCells = [
   { id: 'user_group_number_item', numeric: false, disablePadding: false, label: 'Số chức năng', maxWidth: 100 },
   { id: 'is_active', numeric: false, disablePadding: false, label: 'Hoạt động', maxWidth: 150 },
   { id: 'is_featured', numeric: false, disablePadding: false, label: 'Nổi bật', maxWidth: 150 },
+  { id: 'file_url', numeric: false, disablePadding: false, label: 'Tải xuống', maxWidth: 150 },
   { id: 'menuButtons', numeric: false, disablePadding: false, label: '', maxWidth: 50 },
 ];
