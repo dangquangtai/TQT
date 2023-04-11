@@ -62,6 +62,7 @@ const floatingMenuReducer = (state = initialState, action) => {
         excelTemplateDocument: action.excelTemplateDocument,
         productInventoryDocument: action.productInventoryDocument,
         exportMaterialInventoryDocument: action.exportMaterialInventoryDocument,
+        materialReportDocument: action.materialReportDocument,
         productInventoryCheckDocument: action.productInventoryCheckDocument,
       };
     default:

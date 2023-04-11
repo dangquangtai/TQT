@@ -43,6 +43,7 @@ import {
   accountPermissionAction,
   materialReturnActions,
   templateDocumentActions,
+  MaterialReportActions,
   productInventoryCheckActions,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
@@ -80,6 +81,7 @@ import UserGroupMenuItemWrapper from '../../UserGroupMenuItem';
 import AccountPermissionWrapper from '../../AccountPermission';
 import ReturnMaterialWrapper from './../../Material/Return/index';
 import ExcelDocumentWrapper from '../../Setting/DocumentTemplate/ExcelDocument';
+import MaterialReportWrapper from '../../Report';
 import ProductInventoryCheckWrapper from './../../Product/InventoryCheck/index';
 
 const Default = () => {
@@ -124,6 +126,7 @@ const Default = () => {
 
   const availableMaterialReturnEndpoint = Object.values(materialReturnActions);
   const availableTemplateDocumentEndpoint = Object.values(templateDocumentActions);
+  const availableMaterialReportEndpoint = Object.values(MaterialReportActions);
   const availableProductInventoryCheckEndpoint = Object.values(productInventoryCheckActions);
 
   if (!selectedApp?.id) {
@@ -171,6 +174,7 @@ const Default = () => {
           {availableUserPermissionEndpoint.includes(selectedFolder?.action) && <AccountPermissionWrapper />}
           {availableMaterialReturnEndpoint.includes(selectedFolder?.action) && <ReturnMaterialWrapper />}
           {availableTemplateDocumentEndpoint.includes(selectedFolder?.action) && <ExcelDocumentWrapper />}
+          {availableMaterialReportEndpoint.includes(selectedFolder?.action) && <MaterialReportWrapper />}
           {availableProductInventoryCheckEndpoint.includes(selectedFolder?.action) && <ProductInventoryCheckWrapper />}
         </Grid>
       )}

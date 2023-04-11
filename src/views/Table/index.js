@@ -179,6 +179,7 @@ export default function GeneralTable(props) {
   const buttonCreateProduct = menuButtons.find((button) => button.name === view.product.list.create);
   const buttonExportMaterialInventory = menuButtons.find((button) => button.name === view.materialInventory.list.export);
   const buttonExportMaterialInventory2 = menuButtons.find((button) => button.name === view.materialInventory.list.export2);
+  const buttonCreateMaterialReport = menuButtons.find((button) => button.name === view.MaterialReport.list.create);
   const buttonCreateProductInventoryCheck = menuButtons.find((button) => button.name === view.productInventoryCheck.list.create);
 
   const fetchDocument = (additionalQuery) => {
@@ -447,6 +448,11 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, productInventoryDocument: true });
         break;
+      // case 'materialReport':
+      //   detailDocument = await getDetailProductInventory(selectedDocument.id, setView);
+      //   dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+      //   dispatch({ type: FLOATING_MENU_CHANGE, materialReportDocument: true });
+      //   break;
       case 'productInventoryCheck':
         detailDocument = await ProductInventoryCheckService.detail(selectedDocument.id, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
@@ -532,6 +538,9 @@ export default function GeneralTable(props) {
         break;
       case 'product':
         dispatch({ type: FLOATING_MENU_CHANGE, productDocument: true });
+        break;
+      case 'materialReport':
+        dispatch({ type: FLOATING_MENU_CHANGE, materialReportDocument: true });
         break;
       case 'productInventoryCheck':
         dispatch({ type: FLOATING_MENU_CHANGE, productInventoryCheckDocument: true });
@@ -999,6 +1008,7 @@ export default function GeneralTable(props) {
     buttonExportMaterialInventory2,
     handleExportMaterialInventory2,
     handleExportMaterialInventory,
+    buttonCreateMaterialReport,
     buttonCreateProductInventoryCheck,
   };
 

@@ -36,6 +36,7 @@ import {
   accountPermissionAction,
   materialReturnActions,
   templateDocumentActions,
+  MaterialReportActions,
   productInventoryCheckActions,
 } from '../store/constant.js';
 
@@ -163,6 +164,9 @@ export function getUrlByAction(selectedFolder) {
     }
     case templateDocumentActions.list_template_document: {
       return apiEndpoints.get_document_template_list;
+    }
+    case MaterialReportActions.list_material_report: {
+      return apiEndpoints.get_list_material_report;
     }
     case productInventoryCheckActions.list_product_inventory_check: {
       return apiEndpoints.get_product_inventory_check_list;
