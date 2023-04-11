@@ -35,7 +35,8 @@ import {
   usergroupItemAction,
   accountPermissionAction,
   materialReturnActions,
-  templateDocumentActions
+  templateDocumentActions,
+  MaterialReportActions,
 } from '../store/constant.js';
 
 export function getUrlByAction(selectedFolder) {
@@ -159,10 +160,12 @@ export function getUrlByAction(selectedFolder) {
     }
     case materialReturnActions.list_material_return: {
       return apiEndpoints.get_material_return_list;
-
     }
     case templateDocumentActions.list_template_document: {
       return apiEndpoints.get_document_template_list;
+    }
+    case MaterialReportActions.list_material_report: {
+      return apiEndpoints.get_list_material_report;
     }
     default: {
       return '';

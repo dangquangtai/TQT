@@ -178,6 +178,7 @@ export default function GeneralTable(props) {
   const buttonCreateProduct = menuButtons.find((button) => button.name === view.product.list.create);
   const buttonExportMaterialInventory = menuButtons.find((button) => button.name === view.materialInventory.list.export);
   const buttonExportMaterialInventory2 = menuButtons.find((button) => button.name === view.materialInventory.list.export2);
+  const buttonCreateMaterialReport = menuButtons.find((button) => button.name === view.MaterialReport.list.create);
 
   const fetchDocument = (additionalQuery) => {
     const queries = { ...defaultQueries, ...additionalQuery };
@@ -445,6 +446,11 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, productInventoryDocument: true });
         break;
+      // case 'materialReport':
+      //   detailDocument = await getDetailProductInventory(selectedDocument.id, setView);
+      //   dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+      //   dispatch({ type: FLOATING_MENU_CHANGE, materialReportDocument: true });
+      //   break;
       default:
         break;
     }
@@ -525,6 +531,9 @@ export default function GeneralTable(props) {
         break;
       case 'product':
         dispatch({ type: FLOATING_MENU_CHANGE, productDocument: true });
+        break;
+      case 'materialReport':
+        dispatch({ type: FLOATING_MENU_CHANGE, materialReportDocument: true });
         break;
       default:
         break;
@@ -989,6 +998,7 @@ export default function GeneralTable(props) {
     buttonExportMaterialInventory2,
     handleExportMaterialInventory2,
     handleExportMaterialInventory,
+    buttonCreateMaterialReport,
   };
 
   return (

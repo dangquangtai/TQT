@@ -47,6 +47,7 @@ import ReturnMaterialModal from './../../views/Material/Return/Detail/index';
 import TemplateDocumentModal from '../../views/Setting/DocumentTemplate/ExcelDocument/Detail';
 import ProductInventoryModal from './../../views/Product/Inventory/Detail/index';
 import ExportMaterialInventoryModal from '../../views/Dialog/ExportMaterialInventory';
+import MaterialReportModel from '../../views/Report/Detail';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -182,6 +183,8 @@ const MainLayout = ({ children }) => {
         return <TemplateDocumentModal />;
       case 'productInventory':
         return <ProductInventoryModal />;
+      case 'materialReport':
+        return <MaterialReportModel />;
       default:
         return null;
     }
