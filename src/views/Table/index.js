@@ -65,6 +65,8 @@ import { getDetailReturnMaterial } from './../../services/api/Material/Return';
 import { getDetailTemplateDocument } from '../../services/api/Setting/TemplateDocument';
 import { getDetailProductInventory } from './../../services/api/Product/Inventory';
 import { ProductInventoryCheckService } from '../../services/api/Product/InventoryCheck.js';
+import { downloadMaterialReportFile } from '../../services/api/Report/MaterialReport';
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
@@ -462,7 +464,18 @@ export default function GeneralTable(props) {
         break;
     }
   };
-
+  const downloadFileOption = async (event, selectedDocument) => {
+    switch (documentType) {
+      case 'materialReport':
+        console.log(documentType);
+        const url = await downloadMaterialReportFile(selectedDocument.id);
+        handleDownload(url);
+        break;
+      default:
+        console.log(documentType);
+        break;
+    }
+  };
   const openDialogCreate = () => {
     dispatch({ type: DOCUMENT_CHANGE, documentType });
     switch (documentType) {
@@ -870,6 +883,7 @@ export default function GeneralTable(props) {
       percent_production: tableColumns.includes('percent_production'),
       percent_plan: tableColumns.includes('percent_plan'),
       user_group_number_item: tableColumns.includes('user_group_number_item'),
+      file_url: tableColumns.includes('file_url'),
     };
     setDisplayOptions(initOptions);
   }, [tableColumns, selectedFolder]);
@@ -1496,6 +1510,15 @@ export default function GeneralTable(props) {
                                         }
                                       })()}
                                     </>
+                                  </TableCell>
+                                )}
+                                {displayOptions.file_url && (
+                                  <TableCell align="left">
+                                    <Tooltip title={'Tải xuống'}>
+                                      <Button onClick={(event) => downloadFileOption(event, row)}>
+                                        <GetAppIcon />
+                                      </Button>
+                                    </Tooltip>
                                   </TableCell>
                                 )}
                                 {displayOptions.menuButtons && (
