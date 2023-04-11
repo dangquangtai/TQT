@@ -37,6 +37,7 @@ import {
   materialReturnActions,
   templateDocumentActions,
   MaterialReportActions,
+  productInventoryCheckActions,
 } from '../store/constant.js';
 
 export function getUrlByAction(selectedFolder) {
@@ -166,6 +167,9 @@ export function getUrlByAction(selectedFolder) {
     }
     case MaterialReportActions.list_material_report: {
       return apiEndpoints.get_list_material_report;
+    }
+    case productInventoryCheckActions.list_product_inventory_check: {
+      return apiEndpoints.get_product_inventory_check_list;
     }
     default: {
       return '';

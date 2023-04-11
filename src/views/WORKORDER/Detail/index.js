@@ -21,6 +21,9 @@ import {
   Table,
   Paper,
   IconButton,
+  Tabs,
+  Tab,
+  DialogContentText,
 } from '@material-ui/core';
 import Alert from '../../../component/Alert/index.js';
 import { useSelector, useDispatch } from 'react-redux';
@@ -28,7 +31,7 @@ import { useRef } from 'react';
 import PropTypes from 'prop-types';
 import useStyles from './classes.js';
 import { FLOATING_MENU_CHANGE, ORDER_DETAIL_CHANGE, DOCUMENT_CHANGE, MATERIAL_CHANGE, ORDER_CHANGE } from '../../../store/actions.js';
-import { SkipNext, SkipPrevious } from '@material-ui/icons';
+import { DescriptionOutlined, History, SkipNext, SkipPrevious } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { month, weekday } from './../data';
 import { Delete } from '@material-ui/icons';
@@ -56,6 +59,7 @@ import { exportDailyMaterialReceived } from '../../../services/api/Production/Ma
 import { exportGoodsReceiptByWorkOrder } from '../../../services/api/Product/GoodsReceipt';
 import { exportDailyMaterialRequisition } from '../../../services/api/Production/MaterialRequisition';
 import DatePicker from '../../../component/DatePicker/index.js';
+import ActivityLog from '../../../component/ActivityLog/index.js';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -74,6 +78,13 @@ TabPanel.propTypes = {
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
 };
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
 
 const WorkorderModal = () => {
   const classes = useStyles();
@@ -125,9 +136,14 @@ const WorkorderModal = () => {
   const [workshopList, setWorkShopList] = useState([]);
   const [productWHSList, setProductWHSList] = useState([]);
   const [materialWHSList, setMaterialWHSList] = useState([]);
-
+  const [openDelete, setOpenDelete] = useState({ open: false, index: -1, id: '' });
   const virtuoso = useRef(null);
   const [dropdownData, setDopDownData] = useState([]);
+
+  const handleChangeTab = (event, newValue) => {
+    setTabIndex(newValue);
+  };
+
   const handleViewDetailMaterial = (product, index) => {
     handleUpdateWorkOrder(product, index);
   };
@@ -918,7 +934,7 @@ const WorkorderModal = () => {
           </TableCell>
           <TableCell align="center"> {calculateQuantity(item, index)}</TableCell>
           <TableCell align="right">
-            <IconButton onClick={() => handleDeleteRow(index, item.id)} disabled={disableComponent}>
+            <IconButton onClick={() => handleOpenDelete(index, item.id)} disabled={disableComponent}>
               <Delete />
             </IconButton>
           </TableCell>
@@ -960,9 +976,38 @@ const WorkorderModal = () => {
   useEffect(() => {
     if (checkChangeData.changeWorkOrder) handleSetDate(workorder.from_date, workorder.to_date);
   }, [workorder.from_date, workorder.to_date]);
-
+  const handleOpenDelete = (index, id) => {
+    setOpenDelete({ open: true, index: index, id: id });
+  };
+  const handleCloseDelete = () => {
+    setOpenDelete({ open: false, index: -1, id: '' });
+  };
   return (
     <React.Fragment>
+      <Dialog
+        open={openDelete.open}
+        onClose={handleCloseDelete}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        style={{ maxHeight: 250, marginTop: 300 }}
+      >
+        <DialogTitle>{'Xác nhận xoá thành phẩm'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Xác nhận xoá thành phẩm {productList[openDelete.index]?.product_code}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDelete}>Huỷ</Button>
+          <Button
+            onClick={() => {
+              handleDeleteRow(openDelete.index, openDelete.id);
+              setOpenDelete({ open: false, index: -1, id: '' });
+            }}
+            autoFocus
+          >
+            Xoá
+          </Button>
+        </DialogActions>
+      </Dialog>
       {snackbarStatus.isOpen && (
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -995,7 +1040,39 @@ const WorkorderModal = () => {
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
             <Grid container spacing={2}>
-              <Grid item xs={12}></Grid>
+              <Grid item xs={12}>
+                <Tabs
+                  value={tabIndex}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  onChange={handleChangeTab}
+                  aria-label="simple tabs example"
+                  variant="scrollable"
+                >
+                  <Tab
+                    className={classes.unUpperCase}
+                    label={
+                      <Typography className={classes.tabLabels} component="span" variant="subtitle1">
+                        <DescriptionOutlined />
+                        Chi tiết kế hoạch sản xuất
+                      </Typography>
+                    }
+                    value={0}
+                    {...a11yProps(0)}
+                  />
+                  <Tab
+                    className={classes.unUpperCase}
+                    label={
+                      <Typography className={classes.tabLabels} component="span" variant="subtitle1">
+                        <History />
+                        Lịch sử thay đổi
+                      </Typography>
+                    }
+                    value={1}
+                    {...a11yProps(1)}
+                  />
+                </Tabs>
+              </Grid>
               <Grid item xs={12}>
                 <TabPanel value={tabIndex} index={0}>
                   <Grid container spacing={1}>
@@ -1365,6 +1442,11 @@ const WorkorderModal = () => {
                         </div>
                       </div>
                     </Grid>
+                  </Grid>
+                </TabPanel>
+                <TabPanel value={tabIndex} index={1}>
+                  <Grid container spacing={1}>
+                    <ActivityLog id={workorder.id} />
                   </Grid>
                 </TabPanel>
               </Grid>

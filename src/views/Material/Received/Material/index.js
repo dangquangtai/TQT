@@ -69,7 +69,11 @@ const MaterialModal = () => {
   const getMaterial = async (supplierID, warehouseID) => {
     try {
       const res = await getMaterialOrderList(supplierID, warehouseID);
-      setMaterials(res);
+      setMaterials(res?.list);
+      setData({
+        supplier: res?.supplier?.title,
+        warehouse: res?.warehouse?.warehouse_name,
+      });
     } catch (error) {
       const res = await getMaterialOrderList(supplierID, warehouseID);
       setMaterials(res?.list);

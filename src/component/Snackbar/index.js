@@ -49,7 +49,7 @@ const Snackbar = (props) => {
 
   React.useEffect(() => {
     setOpen(snackbarInitial.open);
-  }, [snackbarInitial.action, snackbarInitial.open]);
+  }, [snackbarInitial.message, snackbarInitial.open]);
 
   return (
     <React.Fragment>
@@ -74,12 +74,7 @@ const Snackbar = (props) => {
         />
       )}
       {snackbarInitial.variant === 'alert' && (
-        <MuiSnackbar
-          anchorOrigin={snackbarInitial.anchorOrigin}
-          open={open}
-          autoHideDuration={3000}
-          onClose={handleClose}
-        >
+        <MuiSnackbar anchorOrigin={snackbarInitial.anchorOrigin} open={open} autoHideDuration={3000} onClose={handleClose}>
           <Alert variant="filled" onClose={handleClose} severity={snackbarInitial.alertSeverity}>
             {snackbarInitial.message}
           </Alert>

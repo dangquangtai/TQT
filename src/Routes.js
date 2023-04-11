@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Switch, Route, Redirect, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 import Loader from './component/Loader/Loader';
 import NavMotion from './layout/NavMotion';
@@ -13,13 +14,15 @@ import OrderModal from './views/WORKORDER/Order/index.js';
 import AlertDialogSlide from './views/WORKORDER/Material';
 import ShortageModal from './views/Material/Purchase/Shortage/index';
 import MaterialModal from './views/Material/Received/Material';
-import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 const AuthLogin = lazy(() => import('./views/Login'));
 const AuthForgot = lazy(() => import('./views/ForgotPass'));
 const AuthConfirm = lazy(() => import('./views/ConfirmCode'));
 const App = lazy(() => import('./views/Dashboard/App/index.js'));
 const DashboardDefault = lazy(() => import('./views/Dashboard/Default'));
 const Logout = lazy(() => import('./views/Users/logout'));
+// const OrderModal = lazy(() => import('./views/WORKORDER/Order/index.js'));
+// const ShortageModal = lazy(() => import('./views/Material/Purchase/Shortage/index'));
+// const MaterialModal = lazy(() => import('./views/Material/Received/Material'));
 
 const Routes = () => {
   const location = useLocation();
