@@ -48,6 +48,7 @@ export const headCells = [
   },
   { id: 'is_part_list_available', numeric: false, disablePadding: false, label: 'Thành phần', maxWidth: 100 },
   { id: 'active', numeric: false, disablePadding: false, label: 'Hoạt động', maxWidth: 100 },
+  { id: 'type', numeric: false, disablePadding: false, label: 'Thể loại', maxWidth: 150 },
   { id: 'created_by', numeric: false, disablePadding: false, label: 'Người tạo', maxWidth: 100 },
   { id: 'created_date', numeric: false, disablePadding: false, label: 'Ngày tạo', maxWidth: 100 },
   { id: 'percent_production', numeric: false, disablePadding: false, label: '% đã SX', maxWidth: 100 },
