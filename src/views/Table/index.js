@@ -834,6 +834,7 @@ export default function GeneralTable(props) {
       fullname: tableColumns.includes('fullname'),
       email_address: tableColumns.includes('email_address'),
       number_phone: tableColumns.includes('number_phone'),
+      type: tableColumns.includes('type'),
       created_date: tableColumns.includes('created_date'),
       created_by: tableColumns.includes('created_by'),
       account_id: tableColumns.includes('account_id'),
@@ -1353,6 +1354,7 @@ export default function GeneralTable(props) {
                                 {displayOptions.broken_quantity_in_piece && (
                                   <TableCell align="left">{row.broken_quantity_in_piece}</TableCell>
                                 )}
+                                {displayOptions.type && <TableCell align="left">{row.type || ''}</TableCell>}
                                 {displayOptions.created_by && <TableCell align="left">{row.created_by || ''}</TableCell>}
                                 {displayOptions.created_date && (
                                   <TableCell align="left">

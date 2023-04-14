@@ -17,7 +17,7 @@ import {
   Table,
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
-import { FLOATING_MENU_CHANGE } from '../../../store/actions';
+import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../store/actions';
 import { SNACKBAR_OPEN } from './../../../store/actions';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -126,6 +126,7 @@ const MaterialReportModel = () => {
       }
       const getURL = await createMaterialReportFile(queryData);
       setDownloadURL(getURL);
+      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'materialReport' });
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
     }
