@@ -50,7 +50,11 @@ const ActivityLog = ({ id }) => {
         {logs?.map((item, i) => (
           <TimelineItem key={i}>
             <TimelineOppositeContent>
-              <Typography color="textSecondary">{format(new Date(item.log_date), "dd/MM/yyyy 'lúc' h:mm aa")}</Typography>
+              <Typography color="textSecondary">
+                {format(new Date(item.log_date), "dd/MM/yyyy 'lúc' h:mm aa")}
+                <br />
+                {item.email_address}
+              </Typography>
             </TimelineOppositeContent>
             <TimelineSeparator>
               <TimelineDot color="primary" />
