@@ -169,6 +169,7 @@ const OrderModal = () => {
 
     if (orderRedux?.change) {
       var orderInList = orderList.find((x) => x.id === orderRedux.id);
+      console.log(orderRedux);
       handleOrderChangeSelected(orderInList);
     }
     if (!orderRedux.orderDetail) {

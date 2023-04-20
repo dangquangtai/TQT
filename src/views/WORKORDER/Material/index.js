@@ -19,6 +19,7 @@ import {
   TextField,
   Tooltip,
   Grid,
+  DialogTitle,
 } from '@material-ui/core';
 import { Delete, AddCircleOutline } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
@@ -46,6 +47,7 @@ export default function AlertDialogSlide() {
   const [supplierList, setSupplierList] = useState([]);
   const [submit, setSubmit] = useState(false);
   const dispatch = useDispatch();
+  const [openDelete, setOpenDelete] = useState({ open: false, index: -1 });
   const [detailPartList, setDetailPartList] = useState([]);
   const [supplierListAll, setSupplierListAll] = useState([]);
   const [supplierListDrop, setSupplierDropList] = useState([]);
@@ -269,6 +271,30 @@ export default function AlertDialogSlide() {
   }, [submit]);
   return (
     <div>
+      <Dialog
+        open={openDelete.open}
+        onClose={() => setOpenDelete({ index: -1, open: false })}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        style={{ maxHeight: 250, marginTop: 300 }}
+      >
+        <DialogTitle>{'Xác nhận xoá thành phẩm'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Xác nhận xoá nhà cung cấp </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDelete({ index: -1, open: false })}>Huỷ</Button>
+          <Button
+            onClick={() => {
+              handleDeleteRow(openDelete.index);
+              setOpenDelete({ open: false, index: -1 });
+            }}
+            autoFocus
+          >
+            Xoá
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
         <AppBar sx={{ position: 'relative' }}>
           <Toolbar>
@@ -431,7 +457,7 @@ export default function AlertDialogSlide() {
                           <TableCell align="left">
                             <IconButton
                               // disabled={orderRedux.workorderDetail.is_disable}
-                              onClick={() => handleDeleteRow(index)}
+                              onClick={() => setOpenDelete({ index: index, open: true })}
                             >
                               <Delete />
                             </IconButton>
