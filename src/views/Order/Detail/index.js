@@ -460,6 +460,7 @@ const OrderModal = () => {
                                   <TableCell align="left">Tên sản phẩm</TableCell>
                                   <TableCell align="left">SL cần</TableCell>
                                   {selectedDocument?.id && <TableCell align="left">Đã SX</TableCell>}
+                                  {selectedDocument?.id && <TableCell align="left">SL Kho</TableCell>}
                                   <TableCell align="left">Đơn vị</TableCell>
                                   {/* {selectedDocument?.id && <TableCell align="left">Trạng thái</TableCell>} */}
                                   <TableCell align="center">Xoá</TableCell>
@@ -504,6 +505,11 @@ const OrderModal = () => {
                                     {selectedDocument?.id && (
                                       <TableCell align="left" style={{ width: '100px' }}>
                                         {row?.quantity_produced}
+                                      </TableCell>
+                                    )}
+                                    {selectedDocument?.id && (
+                                      <TableCell align="left" style={{ width: '100px' }}>
+                                        {row?.quantity_in_warehouse}
                                       </TableCell>
                                     )}
                                     <TableCell align="left">{row.unit_name}</TableCell>

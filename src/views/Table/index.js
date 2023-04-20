@@ -885,6 +885,7 @@ export default function GeneralTable(props) {
       percent_plan: tableColumns.includes('percent_plan'),
       user_group_number_item: tableColumns.includes('user_group_number_item'),
       file_url: tableColumns.includes('file_url'),
+      percent_warehouse: tableColumns.includes('percent_warehouse'),
     };
     setDisplayOptions(initOptions);
   }, [tableColumns, selectedFolder]);
@@ -1363,6 +1364,8 @@ export default function GeneralTable(props) {
                                 )}
                                 {displayOptions.percent_production && <TableCell align="left">{row.percent_production || '0'}%</TableCell>}
                                 {displayOptions.percent_plan && <TableCell align="left">{row.percent_plan || '0'}%</TableCell>}
+                                {displayOptions.percent_warehouse && <TableCell align="left">{row.percent_warehouse || '0'}%</TableCell>}
+
                                 {displayOptions.order__title && (
                                   <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
                                     {row.order_title}{' '}

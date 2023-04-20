@@ -53,7 +53,7 @@ export const headCells = [
   { id: 'created_date', numeric: false, disablePadding: false, label: 'Ngày tạo', maxWidth: 100 },
   { id: 'percent_production', numeric: false, disablePadding: false, label: '% đã SX', maxWidth: 100 },
   { id: 'percent_plan', numeric: false, disablePadding: false, label: '% đã lập KH', maxWidth: 100 },
-
+  { id: 'percent_warehouse', numeric: false, disablePadding: false, label: '% trong kho', maxWidth: 100 },
   { id: 'order__title', numeric: false, disablePadding: false, label: 'Tên kế hoạch', maxWidth: 150 },
   { id: 'from__date', numeric: false, disablePadding: false, label: 'Ngày bắt đầu', maxWidth: 150 },
   { id: 'to__date', numeric: false, disablePadding: false, label: 'Ngày kết thúc', maxWidth: 150 },
