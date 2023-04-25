@@ -198,6 +198,7 @@ const DeliveryMaterialModal = () => {
         quantity_in_piece: 0,
         supplier_id: '',
         supplier_name: '',
+        notes: '',
       },
       ...deliveryDetailList,
     ]);
@@ -307,6 +308,13 @@ const DeliveryMaterialModal = () => {
     const newMaterialOrderDetailList = [...materialOrderDetailList];
     newMaterialOrderDetailList.splice(index, 1);
     setMaterialOrderDetailList(newMaterialOrderDetailList);
+  };
+
+  const handleChangeNotes = (index, e) => {
+    const { name, value } = e.target;
+    const newdeliveryDetailList = [...deliveryDetailList];
+    newdeliveryDetailList[index] = { ...newdeliveryDetailList[index], [name]: value };
+    setDeliveryDetailList(newdeliveryDetailList);
   };
 
   // const returnFileIcon = (fileList) => {
@@ -568,13 +576,14 @@ const DeliveryMaterialModal = () => {
                                   <TableCell align="left">Tồn kho</TableCell>
                                   <TableCell align="left">SL xuất</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
+                                  <TableCell align="left">Ghi chú</TableCell>
                                   <TableCell align="center">Xoá</TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
                                 {deliveryDetailList?.map((row, index) => (
                                   <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '20%' }}>
+                                    <TableCell align="left" style={{ width: '15%' }}>
                                       <Autocomplete
                                         options={materials}
                                         getOptionLabel={(option) => option.part_code || ''}
@@ -585,7 +594,7 @@ const DeliveryMaterialModal = () => {
                                         renderInput={(params) => <TextField {...params} variant="outlined" />}
                                       />
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '25%' }}>
+                                    <TableCell align="left" style={{ width: '15%' }}>
                                       <Autocomplete
                                         options={materialOrderDetailList[index] || []}
                                         getOptionLabel={(option) => option.supplier_name || ''}
@@ -598,12 +607,12 @@ const DeliveryMaterialModal = () => {
                                         renderInput={(params) => <TextField {...params} variant="outlined" />}
                                       />
                                     </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '35%' }}>
+                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '25%' }}>
                                       <Tooltip title={row?.part_name}>
                                         <span>{row?.part_name}</span>
                                       </Tooltip>
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
+                                    <TableCell align="left" style={{ width: '5%' }}>
                                       {row.warehouse_quantity_in_piece === undefined ? '' : String(row.warehouse_quantity_in_piece)}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
@@ -622,6 +631,19 @@ const DeliveryMaterialModal = () => {
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '5%' }}>
                                       {row.unit_name}
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '20%' }}>
+                                      <TextField
+                                        fullWidth
+                                        multiline
+                                        minRows={1}
+                                        variant="outlined"
+                                        name="notes"
+                                        type="text"
+                                        size="small"
+                                        value={row?.notes || ''}
+                                        onChange={(e) => handleChangeNotes(index, e)}
+                                      />
                                     </TableCell>
                                     <TableCell align="center" style={{ width: '5%' }}>
                                       <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>
