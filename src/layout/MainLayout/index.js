@@ -49,6 +49,7 @@ import ProductInventoryModal from './../../views/Product/Inventory/Detail/index'
 import ExportMaterialInventoryModal from '../../views/Dialog/ExportMaterialInventory';
 import MaterialReportModel from '../../views/Report/Detail';
 import ProductInventoryCheckModal from '../../views/Product/InventoryCheck/Detail/index.js';
+import ViewReportDataModal from '../../views/Report/Detail/ViewDataTable';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -186,6 +187,7 @@ const MainLayout = ({ children }) => {
         return <ProductInventoryModal />;
       case 'materialReport':
         return <MaterialReportModel />;
+
       case 'productInventoryCheck':
         return <ProductInventoryCheckModal />;
       default:

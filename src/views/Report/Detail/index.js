@@ -10,8 +10,13 @@ import {
   DialogContentText,
   DialogActions,
   makeStyles,
+  Paper,
   Stepper,
+  TableContainer,
+  Select,
+  TableHead,
   Step,
+  MenuItem,
   StepLabel,
   Typography,
   Table,
@@ -24,9 +29,18 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import DatePicker from './../../../component/DatePicker/index';
 import { Autocomplete } from '@material-ui/lab';
-import { createMaterialReportFile, getAllMaterialReportType, getAllWorkOrder } from '../../../services/api/Report/MaterialReport';
+import {
+  createMaterialReportFile,
+  getAllMaterialReportType,
+  getAllWorkOrder,
+  getListPart,
+  getMaterialInventorySynthesis,
+} from '../../../services/api/Report/MaterialReport';
 import moment from 'moment/moment.js';
-
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { getAllSupplier } from '../../../services/api/Partner/Supplier';
+import ViewReportDataModal from './ViewDataTable';
+import BrokenModal from '../../Dialog/Broken';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -60,6 +74,14 @@ const MaterialReportModel = () => {
   const { materialReportDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const [reportType, setReportType] = useState([]);
   const [workOrders, setWorkOrders] = useState([]);
+  const [listCol, setlistCol] = useState([]);
+  const [rowData, setRowData] = useState(['11/02/2023', 'test']);
+  const [listSupplier, setlistSupplier] = useState([]);
+  const [listPart, setListPart] = useState([]);
+  const [selectedSuppliers, setSelectedSuppliers] = useState([]);
+  const [dataTableModal, setDataTableModal] = useState(false);
+  const [selectedParts, setSelectedParts] = useState([]);
+  const [reportID, setReportID] = useState('');
   const [queryData, setQueryData] = useState({
     from_date: new Date(),
     to_date: new Date(),
@@ -69,16 +91,28 @@ const MaterialReportModel = () => {
   });
 
   const [activeStep, setActiveStep] = React.useState(0);
-  const steps = ['Chọn báo cáo', 'Điền thông tin', 'Truy xuất'];
+  const steps = ['Chọn báo cáo', 'Điền thông tin'];
   const [downloadURL, setDownloadURL] = useState('');
   const handleNext = () => {
-    if (activeStep === 1) {
+    if (activeStep === 3) {
       handleSubmited();
     }
+    if (activeStep === 1) {
+      handleSubmited();
+      // dispatch({ type: DOCUMENT_CHANGE, documentType: 'materialReport' });
+      // dispatch({ type: FLOATING_MENU_CHANGE, reportViewDataTableDocument: true });
+      setDataTableModal(true);
+      handleCloseDialog();
+    }
+
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleBack = () => {
+    // if (activeStep === 2) {
+    //   setlistCol(['']);
+    // }
+
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
@@ -98,13 +132,68 @@ const MaterialReportModel = () => {
   };
   const handleClick = (event, row) => {
     setQueryData({ ...queryData, report_type: row.id });
+    if (activeStep === 0) {
+      switch (row.id) {
+        case 'TONG_HOP_TON_KHO_VAT_TU':
+          setlistCol([
+            'Ngày chứng từ',
+            'Mã phiếu xuất/nhập kho',
+            'Diễn giải',
+            'SL nhập',
+            'SL nhập hỏng',
+            'SL xuất',
+            'SL xuất hỏng',
+            'SL tồn',
+            'SL tồn hỏng',
+          ]);
+          break;
+        case 'KH_SAN_XUAT':
+          setlistCol([
+            'Ngày',
+            'Mã đơn hàng',
+            'Mã thành phẩm tqt',
+            'Mã thành phẩm khách hàng',
+            'Đơn vị',
+            'Số lượng',
+            'Số người làm',
+            'Số giờ làm',
+            '% công suất',
+            'vật tư',
+            'Nhà cung cấp(danh mục vật tư khăn)',
+          ]);
+          break;
+        case 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP':
+          setlistCol([
+            'Ngày nhập kho dự kiến',
+            'Nhà cung cấp',
+            'Mã đơn mua hàng',
+            'Mã vật tư',
+            'Tên vật tư',
+            'Đơn vị',
+            'Số lượng đặt',
+            'Ngày sản xuất',
+            'Mã đơn khách hàng',
+            'Trạng thái',
+            'Ngày nhập kho thực tế',
+            'Số lượng nhập kho',
+            'Ghi chú',
+          ]);
+          break;
+        default:
+          break;
+      }
+    }
     setSelected(row);
+  };
+  const handleChangeSupplier = async (event, value) => {
+    setSelectedSuppliers(value.map((item) => item.id));
+    const getListPartData = await getListPart({ list_supplier_id: value.map((item) => item.id) });
+    setListPart(getListPartData);
   };
 
   const setDocumentToDefault = async () => {
     setQueryData({
-      from_date: new Date(),
-      to_date: new Date(),
+      ...queryData,
       report_type: '',
       report_name: '',
       work_order_id: '',
@@ -113,6 +202,13 @@ const MaterialReportModel = () => {
     setDownloadURL('');
     setActiveStep(0);
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      const getListSupplier = await getAllSupplier();
+      setlistSupplier(getListSupplier);
+    };
+    fetchData();
+  }, [reportType]);
 
   const handleSubmited = async () => {
     try {
@@ -124,12 +220,15 @@ const MaterialReportModel = () => {
         handleOpenSnackbar('error', 'Không được để trống tên report!');
         return;
       }
-      const getURL = await createMaterialReportFile(queryData);
-      setDownloadURL(getURL);
+      const getReportID = await createMaterialReportFile(queryData);
+      setReportID(getReportID);
       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'materialReport' });
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
     }
+  };
+  const handleCloseViewReportDataModal = () => {
+    setDataTableModal(false);
   };
 
   const checkToDate = (date, type) => {
@@ -199,19 +298,106 @@ const MaterialReportModel = () => {
           <span className={classes.tabItemLabelField}>Đặt tên report:</span>
           <TextField fullWidth variant="outlined" name="report_name" size="small" type="text" onChange={handleChanges} />
         </Grid>
+        <Grid item xs={12}>
+          <span className={classes.tabItemLabelField}>Nhà cung cấp:</span>
+          <Autocomplete
+            options={listSupplier}
+            multiple={true}
+            getOptionLabel={(option) => option.title}
+            // defaultValue={['a', 'b']}
+            // value={listSupplier?.find((item) => item === ['a', 'b']) || ['']}
+            fullWidth
+            onChange={(e, value) => handleChangeSupplier(e, value)}
+            size="small"
+            renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <span className={classes.tabItemLabelField}>Vật tư:</span>
+          <Autocomplete
+            options={listPart}
+            multiple={true}
+            getOptionLabel={(option) => option.value}
+            // defaultValue={['a', 'b']}
+            // value={listSupplier?.find((item) => item === ['a', 'b']) || ['']}
+            fullWidth
+            onChange={(e, value) => setSelectedParts(value.map((item) => item.id))}
+            size="small"
+            renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
+          />
+        </Grid>
+      </Grid>
+    );
+  };
+  const renderStep3 = () => {
+    return (
+      <Grid container className={classes.gridItemInfo} spacing={2}>
+        <Grid item xs={12}>
+          <Grid container spacing={1}>
+            <Grid item lg={12} md={12} xs={12}>
+              <div className={classes.tabItem}>
+                <div className={classes.tabItemTitle}>
+                  <div className={classes.tabItemLabel}>
+                    <span>Chi tiết xuất nhập</span>
+                  </div>
+                </div>
+                <div className={classes.tabItemBody}>
+                  <TableContainer style={{ maxHeight: '65vh' }} component={Paper}>
+                    <Table stickyHeader aria-label="simple table">
+                      <TableHead>
+                        <TableRow>
+                          {listCol?.map((col, index) => (
+                            <TableCell align="left">{col}</TableCell>
+                          ))}
+                          {/* <TableCell align="left">Ngày chứng từ</TableCell>
+                          <TableCell align="left">Mã phiếu xuất/nhập kho</TableCell>
+                          <TableCell align="left">Diễn giải</TableCell>
+                          <TableCell align="left">SL nhập</TableCell>
+                          <TableCell align="left">SL nhập hỏng</TableCell>
+                          <TableCell align="left">SL xuất</TableCell>
+                          <TableCell align="left">SL xuất hỏng</TableCell>
+                          <TableCell align="left">SL tồn</TableCell>
+                          <TableCell align="left">SL tồn hỏng</TableCell> */}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {rowData?.map((row, index) => (
+                          <TableRow key={index}>
+                            <TableCell align="left">{row.order_date}</TableCell>
+                            <TableCell align="left">{row.order_code}</TableCell>
+                            <TableCell align="left">{row.detail}</TableCell>
+                            <TableCell align="left">{row.received_quantity_in_piece}</TableCell>
+                            <TableCell align="left">{row.broken_received_quantity_in_piece}</TableCell>
+                            <TableCell align="left">{row.requisition_quantity_in_piece}</TableCell>
+                            <TableCell align="left">{row.broken_requisition_quantity_in_piece}</TableCell>
+                            <TableCell align="left">{row.inventory_quantity_in_piece}</TableCell>
+                            <TableCell align="left">{row.broken_inventory_quantity_in_piece}</TableCell>
+                            <TableCell align="left">
+                              <AddCircleIcon onClick={handleNext}></AddCircleIcon>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </div>
+              </div>
+            </Grid>
+          </Grid>
+        </Grid>
       </Grid>
     );
   };
 
-  const renderStep3 = () => {
+  const renderStep4 = () => {
     return (
       <Grid container className={classes.gridItemInfo} spacing={2}>
         <Grid item xs={12}>
           <span className={classes.tabItemLabelField}>Loại report: {selected.value}</span>
         </Grid>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <span className={classes.tabItemLabelField}>Tên report: {queryData.report_name}</span>
-        </Grid>
+        </Grid> */}
         <Grid item xs={12}>
           <span className={classes.tabItemLabelField}>Kế hoạch sản xuất: {queryData.work_order_name}</span>
         </Grid>
@@ -238,7 +424,8 @@ const MaterialReportModel = () => {
       case 1:
         return renderStep2();
       case 2:
-        return renderStep3();
+        return '';
+      // return renderStep3();
       default:
         return '';
     }
@@ -259,6 +446,21 @@ const MaterialReportModel = () => {
 
   return (
     <React.Fragment>
+      <ViewReportDataModal
+        isOpen={dataTableModal}
+        listSupplier={selectedSuppliers}
+        listPart={selectedParts}
+        fromDate={queryData.from_date}
+        toDate={queryData.to_date}
+        reportID={reportID}
+        // isDisabled={false}
+        listCol={listCol}
+        handleClose={handleCloseViewReportDataModal}
+        // handleSubmit={handleSubmitBroken}
+        // handleOpenSnackbar={handleOpenSnackbar}
+        // list={inventoryData?.broken_list || []}
+      />
+
       <Dialog fullWidth={true} maxWidth={'sm'} open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle disableTypography>
           <Typography variant="h3" align="center">
@@ -289,16 +491,7 @@ const MaterialReportModel = () => {
               Quay lại
             </Button>
           )}
-          {activeStep === steps.length - 1 ? (
-            <>
-              <Button component={Link} target="_blank" href={downloadURL} variant="contained" color="primary" onClick={handleCloseDialog}>
-                Tải xuống
-              </Button>
-              <Button variant="contained" color="primary" onClick={handleCloseDialog}>
-                Hoàn thành
-              </Button>
-            </>
-          ) : (
+          {activeStep > 1 ? undefined : (
             <Button variant="contained" color="primary" onClick={handleNext}>
               Tiếp tục
             </Button>
