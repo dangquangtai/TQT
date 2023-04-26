@@ -27,7 +27,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { view } from '../../../../store/constant';
 import useView from '../../../../hooks/useView';
-import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE } from '../../../../store/actions';
+import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE, CONFIRM_CHANGE } from '../../../../store/actions';
 import { History, DescriptionOutlined, AddCircleOutlineOutlined, InfoOutlined } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import { SNACKBAR_OPEN } from './../../../../store/actions';
@@ -35,6 +35,7 @@ import BrokenModal from './../../../Dialog/Broken/index';
 import { getInOutDetailList, updateMaterialInventory } from '../../../../services/api/Material/Inventory.js';
 import { getMaterialWHSList } from '../../../../services/api/Workorder/index.js';
 import ActivityLog from '../../../../component/ActivityLog/index.js';
+import useConfirmPopup from './../../../../hooks/useConfirmPopup';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -76,6 +77,11 @@ const InventoryModal = () => {
   const [brokenDialog, setBrokenDialog] = useState(false);
   const [warehouseList, setWarehouseList] = useState([]);
   const [inOutDetailList, setInOutDetailList] = useState([]);
+  const { setConfirmPopup } = useConfirmPopup();
+
+  const showConfirmPopup = ({ title = 'Thông báo', message = '', action = null, payload = null, onSuccess = null }) => {
+    setConfirmPopup({ type: CONFIRM_CHANGE, open: true, title, message, action, payload, onSuccess });
+  };
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
@@ -107,18 +113,17 @@ const InventoryModal = () => {
   };
 
   const handleSubmit = async () => {
-    try {
-      const update = await updateMaterialInventory(inventoryData);
-      if (update) {
-        handleOpenSnackbar('success', 'Cập nhật Vật tư thành công!');
-      } else {
-        handleOpenSnackbar('error', 'Cập nhật Vật tư thất bại!');
-      }
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'materialInventory' });
-      handleCloseDialog();
-    } catch (error) {
-      handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
-    }
+    showConfirmPopup({
+      title: 'Xác nhận',
+      message: 'Bạn có chắc chắn muốn cập nhật tồn kho Vật tư này?',
+      action: updateMaterialInventory,
+      payload: inventoryData,
+      onSuccess: () => {
+        handleOpenSnackbar('success', 'Cập nhật tồn kho Vật tư thành công!');
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'materialInventory' });
+        handleCloseDialog();
+      },
+    });
   };
 
   const handleOpenBrokenModal = () => {
@@ -496,7 +501,7 @@ const InventoryModal = () => {
               <Grid item className={classes.gridItemInfoButtonWrap}>
                 {/* {selectedDocument?.id && buttonSave && ( */}
                 <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmit}>
-                  Lưu
+                  Sửa tồn kho
                 </Button>
                 {/* )} */}
               </Grid>
