@@ -1516,11 +1516,13 @@ export default function GeneralTable(props) {
                                 )}
                                 {displayOptions.file_url && (
                                   <TableCell align="left">
-                                    <Tooltip title={'Tải xuống'}>
-                                      <Button onClick={(event) => downloadFileOption(event, row)}>
-                                        <GetAppIcon />
-                                      </Button>
-                                    </Tooltip>
+                                    {row.file_url ? (
+                                      <Tooltip title={'Tải xuống'}>
+                                        <Button onClick={(event) => downloadFileOption(event, row)}>
+                                          <GetAppIcon />
+                                        </Button>
+                                      </Tooltip>
+                                    ) : undefined}
                                   </TableCell>
                                 )}
                                 {displayOptions.menuButtons && (

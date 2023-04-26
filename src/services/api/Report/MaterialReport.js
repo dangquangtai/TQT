@@ -19,10 +19,42 @@ export const createMaterialReport = (data) => {
     return false;
   });
 };
+export const addMaterialReportFileToReport = (data) => {
+  return axiosServices.post(apiEndpoints.add_material_report_file, data).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data.url;
+    }
+    return '';
+  });
+};
 export const createMaterialReportFile = (data) => {
   return axiosServices.post(apiEndpoints.create_new_material_report_file, data).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
-      return response.data.url;
+      return response.data.report_id;
+    }
+    return '';
+  });
+};
+export const getListPart = (list_supplier_id) => {
+  return axiosServices.post(apiEndpoints.get_list_material_from_list_supplier_id, list_supplier_id).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data.list;
+    }
+    return '';
+  });
+};
+export const getMaterialInventorySynthesis = (data) => {
+  return axiosServices.post(apiEndpoints.get_material_inventory_synthesis, data).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data.list;
+    }
+    return '';
+  });
+};
+export const getViewDataForReporTemplate = (data) => {
+  return axiosServices.post(apiEndpoints.get_view_data_for_report_template, data).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data.list;
     }
     return '';
   });
