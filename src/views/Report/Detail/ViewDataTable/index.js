@@ -311,6 +311,16 @@ export default function ViewReportDataModal(props) {
                                   {row.list_specific_supplier_string ? (
                                     <TableCell align="left">{row.list_specific_supplier_string}</TableCell>
                                   ) : undefined}
+                                  {row.part_name ? <TableCell align="left">{row.part_name}</TableCell> : undefined}
+                                  {row.part_code ? <TableCell align="left">{row.part_code}</TableCell> : undefined}
+                                  {row.order_date ? <TableCell align="left">{row.order_date}</TableCell> : undefined}
+                                  {row.notes ? <TableCell align="left">{row.notes}</TableCell> : undefined}
+                                  {row.received_quantity_in_piece ? (
+                                    <TableCell align="left">{row.received_quantity_in_piece}</TableCell>
+                                  ) : undefined}
+                                  {row.delivery_date ? <TableCell align="left">{row.delivery_date}</TableCell> : undefined}
+                                  {row.status_display ? <TableCell align="left">{row.status_display}</TableCell> : undefined}
+                                  {row.customer_order_code ? <TableCell align="left">{row.customer_order_code}</TableCell> : undefined}
                                 </TableRow>
                               ))}
                             </TableBody>
