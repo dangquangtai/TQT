@@ -6,11 +6,13 @@ import {
   Grid,
   FormControl,
   TableCell,
+  IconButton,
   TextField,
   MenuItem,
   TableContainer,
   Tab,
   DialogActions,
+  Collapse,
   Table,
   TableBody,
   Dialog,
@@ -35,11 +37,14 @@ import { exportDetailedSummaryMaterialInventory } from '../../../../services/api
 import { downloadFile } from '../../../../utils/helper';
 import { Autocomplete } from '@material-ui/lab';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import RemoveIcon from '@material-ui/icons/Remove';
+
 import {
   addMaterialReportFileToReport,
   getMaterialInventorySynthesis,
   getViewDataForReporTemplate,
 } from '../../../../services/api/Report/MaterialReport';
+import Row from './row.table.';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -134,14 +139,23 @@ const style = {
     justifyContent: 'flex-end',
   },
 };
+const useRowStyles = {
+  root: {
+    '& > *': {
+      borderBottom: 'unset',
+    },
+  },
+};
 
 export default function ViewReportDataModal(props) {
-  const { isOpen, listCol, fromDate, toDate, listSupplier, listPart, handleClose, reportID } = props;
+  const { isOpen, listCol, listColDetail, fromDate, toDate, listSupplier, listPart, handleClose, reportID, listProductID, reportType } =
+    props;
   const { reportViewDataTableDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const dispatch = useDispatch();
   const { selectedDocument } = useSelector((state) => state.document);
   const classes = useStyles();
   const [listViewData, setListViewData] = useState([]);
+  const [openDetail, setOpenDetail] = useState(false);
   const [tabIndex, setTabIndex] = React.useState(0);
   const [exportData, setExportData] = useState({
     from_date: new Date(),
@@ -181,6 +195,7 @@ export default function ViewReportDataModal(props) {
       report_id: reportID,
       supplier_id_list: listSupplier,
       part_id_list: listPart,
+      product_code_list: listProductID,
     });
     dispatch({ type: DOCUMENT_CHANGE, documentType: 'materialReport' });
     handleDownload(url);
@@ -210,11 +225,16 @@ export default function ViewReportDataModal(props) {
         from_date: fromDate,
         to_date: toDate,
         report_id: reportID,
+        product_code_list: listProductID,
       });
-      setListViewData(getListViewData);
+      {
+        reportType === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP'
+          ? setListViewData(getListViewData?.list)
+          : setListViewData(getListViewData?.list_delivery_to_customer);
+      }
     };
     if (isOpen) fetchData();
-  }, [isOpen, listSupplier, listPart]);
+  }, [isOpen, listSupplier, listPart, reportID]);
 
   return (
     <Grid container>
@@ -253,75 +273,20 @@ export default function ViewReportDataModal(props) {
                 <Grid container spacing={1}>
                   <Grid item lg={12} md={12} xs={12}>
                     <div className={classes.tabItem}>
-                      {/* <div className={classes.tabItemTitle}>
-                        <div className={classes.tabItemLabel}>
-                          <span>Chi tiết xuất nhập</span>
-                        </div>
-                      </div> */}
                       <div className={classes.tabItemBody}>
                         <TableContainer style={{ maxHeight: '65vh' }} component={Paper}>
                           <Table stickyHeader aria-label="simple table">
                             <TableHead>
                               <TableRow>
-                                <TableCell align="left">Ngày chứng từ</TableCell>
-                                <TableCell align="left">Mã phiếu xuất/nhập kho</TableCell>
-                                <TableCell align="left">Diễn giải</TableCell>
-                                <TableCell align="left">SL nhập</TableCell>
-                                <TableCell align="left">SL nhập hỏng</TableCell>
-                                <TableCell align="left">SL xuất</TableCell>
-                                <TableCell align="left">SL xuất hỏng</TableCell>
-                                <TableCell align="left">SL tồn</TableCell>
-                                <TableCell align="left">SL tồn hỏng</TableCell>
+                                <TableCell />
+                                {listCol?.map((col, index) => (
+                                  <TableCell align="left">{col}</TableCell>
+                                ))}
                               </TableRow>
                             </TableHead>
                             <TableBody>
                               {listViewData?.map((row, index) => (
-                                <TableRow key={index}>
-                                  {row.order_date ? <TableCell align="left">{row.order_date}</TableCell> : undefined}
-                                  {row.order_code ? <TableCell align="left">{row.order_code}</TableCell> : undefined}
-                                  {row.detail ? <TableCell align="left">{row.detail}</TableCell> : undefined}
-                                  {row.received_quantity_in_piece ? (
-                                    <TableCell align="left">{row.received_quantity_in_piece}</TableCell>
-                                  ) : undefined}
-                                  {row.broken_received_quantity_in_piece ? (
-                                    <TableCell align="left">{row.broken_received_quantity_in_piece}</TableCell>
-                                  ) : undefined}
-                                  {row.requisition_quantity_in_piece ? (
-                                    <TableCell align="left">{row.requisition_quantity_in_piece}</TableCell>
-                                  ) : undefined}
-                                  {row.broken_requisition_quantity_in_piece ? (
-                                    <TableCell align="left">{row.broken_requisition_quantity_in_piece}</TableCell>
-                                  ) : undefined}
-                                  {row.inventory_quantity_in_piece ? (
-                                    <TableCell align="left">{row.inventory_quantity_in_piece}</TableCell>
-                                  ) : undefined}
-                                  {row.broken_inventory_quantity_in_piece ? (
-                                    <TableCell align="left">{row.broken_inventory_quantity_in_piece}</TableCell>
-                                  ) : undefined}
-                                  {row.customer_order_code ? <TableCell align="left">{row.customer_order_code}</TableCell> : undefined}
-                                  {row.product_code ? <TableCell align="left">{row.product_code}</TableCell> : undefined}
-                                  {row.product_customer_code ? <TableCell align="left">{row.product_customer_code}</TableCell> : undefined}
-                                  {row.unit_name ? <TableCell align="left">{row.unit_name}</TableCell> : undefined}
-                                  {row.quantity_in_box ? <TableCell align="left">{row.quantity_in_box}</TableCell> : undefined}
-                                  {row.number_of_worker ? <TableCell align="left">{row.number_of_worker}</TableCell> : undefined}
-                                  {row.number_of_working_hour ? (
-                                    <TableCell align="left">{row.number_of_working_hour}</TableCell>
-                                  ) : undefined}
-                                  {row.wattage ? <TableCell align="left">{row.wattage}</TableCell> : undefined}
-                                  {row.list_specific_supplier_string ? (
-                                    <TableCell align="left">{row.list_specific_supplier_string}</TableCell>
-                                  ) : undefined}
-                                  {row.part_name ? <TableCell align="left">{row.part_name}</TableCell> : undefined}
-                                  {row.part_code ? <TableCell align="left">{row.part_code}</TableCell> : undefined}
-                                  {row.order_date ? <TableCell align="left">{row.order_date}</TableCell> : undefined}
-                                  {row.notes ? <TableCell align="left">{row.notes}</TableCell> : undefined}
-                                  {row.received_quantity_in_piece ? (
-                                    <TableCell align="left">{row.received_quantity_in_piece}</TableCell>
-                                  ) : undefined}
-                                  {row.delivery_date ? <TableCell align="left">{row.delivery_date}</TableCell> : undefined}
-                                  {row.status_display ? <TableCell align="left">{row.status_display}</TableCell> : undefined}
-                                  {row.customer_order_code ? <TableCell align="left">{row.customer_order_code}</TableCell> : undefined}
-                                </TableRow>
+                                <Row key={index} row={row} reportType={reportType} listColDetail={listColDetail} />
                               ))}
                             </TableBody>
                           </Table>
