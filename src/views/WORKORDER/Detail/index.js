@@ -137,6 +137,7 @@ const WorkorderModal = () => {
   const [productWHSList, setProductWHSList] = useState([]);
   const [materialWHSList, setMaterialWHSList] = useState([]);
   const [openDelete, setOpenDelete] = useState({ open: false, index: -1, id: '' });
+  const [openUpdate, setOpenUpdate] = useState(false);
   const virtuoso = useRef(null);
   const [dropdownData, setDopDownData] = useState([]);
 
@@ -996,16 +997,52 @@ const WorkorderModal = () => {
           <DialogContentText>Xác nhận xoá thành phẩm {productList[openDelete.index]?.product_code}</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDelete}>Huỷ</Button>
-          <Button
-            onClick={() => {
-              handleDeleteRow(openDelete.index, openDelete.id);
-              setOpenDelete({ open: false, index: -1, id: '' });
-            }}
-            autoFocus
-          >
-            Xoá
-          </Button>
+          <Grid container spacing={2}>
+            <Grid item>
+              <Button onClick={handleCloseDelete}>Huỷ</Button>
+            </Grid>
+            <Grid item>
+              <Button
+                onClick={() => {
+                  handleDeleteRow(openDelete.index, openDelete.id);
+                  setOpenDelete({ open: false, index: -1, id: '' });
+                }}
+                autoFocus
+              >
+                Xoá
+              </Button>
+            </Grid>
+          </Grid>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openUpdate}
+        onClose={() => setOpenUpdate(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        style={{ maxHeight: 250, marginTop: 300 }}
+      >
+        <DialogTitle>{'Cập nhật lệnh ngày ' + productionDailyRequestList[indexDate]?.work_order_date}</DialogTitle>
+        <DialogContent>
+          <DialogContentText> {'Xác nhận cập nhật lệnh ngày ' + productionDailyRequestList[indexDate]?.work_order_date}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Grid container spacing={2}>
+            <Grid item>
+              <Button onClick={() => setOpenUpdate(false)}>Huỷ</Button>
+            </Grid>
+            <Grid item>
+              <Button
+                onClick={() => {
+                  handleGenerate();
+                  setOpenUpdate(false);
+                }}
+                autoFocus
+              >
+                Cập nhật lệnh
+              </Button>
+            </Grid>
+          </Grid>
         </DialogActions>
       </Dialog>
       {snackbarStatus.isOpen && (
@@ -1499,7 +1536,7 @@ const WorkorderModal = () => {
                       </Grid>
                       {new Date(currentDate) <= new Date(dayCurrent) && (
                         <Grid item>
-                          <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleGenerate}>
+                          <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={() => setOpenUpdate(true)}>
                             Cập nhật lệnh
                           </Button>
                         </Grid>
