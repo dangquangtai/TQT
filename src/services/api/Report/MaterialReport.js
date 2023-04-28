@@ -54,9 +54,17 @@ export const getMaterialInventorySynthesis = (data) => {
 export const getViewDataForReporTemplate = (data) => {
   return axiosServices.post(apiEndpoints.get_view_data_for_report_template, data).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
+      return response.data;
+    }
+    return {};
+  });
+};
+export const getAllProduct = () => {
+  return axiosServices.post(apiEndpoints.get_list_product_for_report, {}).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
       return response.data.list;
     }
-    return '';
+    return [];
   });
 };
 export const getAllWorkOrder = () => {
