@@ -227,13 +227,22 @@ const MaterialReportModel = () => {
   };
   useEffect(() => {
     const fetchData = async () => {
-      selectedReport === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP' || selectedReport === 'TONG_HOP_TON_KHO_VAT_TU'
-        ? getAllSupplier().then(setlistSupplier)
-        : selectedReport === 'KH_GIAO_HANG_CHO_KHACH' &&
-          getAllCustomerCode()
-            .then((customerCodes) => listCustomerCode.concat({ id: null, value: 'Chọn tất cả' }, customerCodes))
-            .then(setListCustomerCode);
+      let newListSupplier = [];
+      let newListCustomerCode = [];
+
+      if (selectedReport === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP' || selectedReport === 'TONG_HOP_TON_KHO_VAT_TU') {
+        newListSupplier = await getAllSupplier();
+      }
+
+      if (selectedReport === 'KH_GIAO_HANG_CHO_KHACH') {
+        const customerCodes = await getAllCustomerCode();
+        newListCustomerCode = [{ id: null, value: 'Chọn tất cả' }, ...customerCodes];
+      }
+
+      setlistSupplier((prevListSupplier) => [...newListSupplier]);
+      setListCustomerCode((prevListCustomerCode) => [...newListCustomerCode]);
     };
+
     fetchData();
   }, [selectedReport]);
 
