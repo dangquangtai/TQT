@@ -334,13 +334,15 @@ export default function ViewReportDataModal(props) {
                 Đóng
               </Button>
             </Grid>
-            <Grid item className={classes.gridItemInfoButtonWrap}>
-              {/* {selectedDocument?.id && buttonSave && ( */}
-              <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleExportReportTemplate}>
-                Xuất File
-              </Button>
-              {/* )} */}
-            </Grid>
+            {reportType === 'TONG_HOP_TON_KHO_VAT_TU' ? undefined : (
+              <Grid item className={classes.gridItemInfoButtonWrap}>
+                {/* {selectedDocument?.id && buttonSave && ( */}
+                <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleExportReportTemplate}>
+                  Xuất File
+                </Button>
+                {/* )} */}
+              </Grid>
+            )}
           </Grid>
         </DialogActions>
       </Dialog>
