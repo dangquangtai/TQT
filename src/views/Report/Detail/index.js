@@ -209,8 +209,9 @@ const MaterialReportModel = () => {
   };
   const handleChangeSupplier = async (event, value) => {
     setSelectedSuppliers(value.map((item) => item.id));
-    const getListPartData = await getListPart({ list_supplier_id: value.map((item) => item.id) });
-    setListPart(getListPartData);
+    await getListPart({ list_supplier_id: value.map((item) => item.id) })
+      .then((PartCodes) => listPart.concat({ id: null, value: 'Chọn tất cả' }, PartCodes))
+      .then(setListPart);
   };
 
   const setDocumentToDefault = async () => {
@@ -262,6 +263,13 @@ const MaterialReportModel = () => {
       setSelectedCustomers(listCustomerCode.map((item) => item.id));
     } else {
       setSelectedCustomers(value.map((item) => item.id));
+    }
+  }
+  function handlePartChange(event, value) {
+    if (value.some((item) => item.id === null)) {
+      setSelectedParts(listPart.map((item) => item.id));
+    } else {
+      setSelectedParts(value.map((item) => item.id));
     }
   }
 
@@ -357,7 +365,7 @@ const MaterialReportModel = () => {
                 // defaultValue={['a', 'b']}
                 // value={listSupplier?.find((item) => item === ['a', 'b']) || ['']}
                 fullWidth
-                onChange={(e, value) => setSelectedParts(value.map((item) => item.id))}
+                onChange={(e, value) => handlePartChange(e, value)}
                 size="small"
                 renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
               />
