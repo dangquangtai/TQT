@@ -67,6 +67,14 @@ export const getAllProduct = () => {
     return [];
   });
 };
+export const getAllCustomerCode = () => {
+  return axiosServices.post(apiEndpoints.get_list_customer_code_for_report, {}).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data.list;
+    }
+    return [];
+  });
+};
 export const getAllWorkOrder = () => {
   return axiosServices.post(apiEndpoints.get_list_work_order, {}).then((response) => {
     if (response.status === 200 && response.data.return === 200) {

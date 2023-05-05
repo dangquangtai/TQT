@@ -148,8 +148,20 @@ const useRowStyles = {
 };
 
 export default function ViewReportDataModal(props) {
-  const { isOpen, listCol, listColDetail, fromDate, toDate, listSupplier, listPart, handleClose, reportID, listProductID, reportType } =
-    props;
+  const {
+    isOpen,
+    listCol,
+    listColDetail,
+    fromDate,
+    toDate,
+    listSupplier,
+    listPart,
+    handleClose,
+    reportID,
+    listProductID,
+    reportType,
+    listCustomerCode,
+  } = props;
   const { reportViewDataTableDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const dispatch = useDispatch();
   const { selectedDocument } = useSelector((state) => state.document);
@@ -196,6 +208,7 @@ export default function ViewReportDataModal(props) {
       supplier_id_list: listSupplier,
       part_id_list: listPart,
       product_code_list: listProductID,
+      customer_code_list: listCustomerCode,
     });
     dispatch({ type: DOCUMENT_CHANGE, documentType: 'materialReport' });
     handleDownload(url);
@@ -226,11 +239,18 @@ export default function ViewReportDataModal(props) {
         to_date: toDate,
         report_id: reportID,
         product_code_list: listProductID,
+        customer_code_list: listCustomerCode,
       });
       {
-        reportType === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP'
-          ? setListViewData(getListViewData?.list)
-          : setListViewData(getListViewData?.list_delivery_to_customer);
+        const listViewData =
+          reportType === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP'
+            ? getListViewData?.list
+            : reportType === 'KH_GIAO_HANG_CHO_KHACH'
+            ? getListViewData?.list_delivery_to_customer
+            : reportType === 'TONG_HOP_TON_KHO_VAT_TU'
+            ? getListViewData?.list_data_synthesis
+            : undefined;
+        setListViewData(listViewData);
       }
     };
     if (isOpen) fetchData();
@@ -286,7 +306,15 @@ export default function ViewReportDataModal(props) {
                             </TableHead>
                             <TableBody>
                               {listViewData?.map((row, index) => (
-                                <Row key={index} row={row} reportType={reportType} listColDetail={listColDetail} />
+                                <Row
+                                  key={index}
+                                  row={row}
+                                  reportType={reportType}
+                                  listColDetail={listColDetail}
+                                  reportID={reportID}
+                                  fromDate={fromDate}
+                                  toDate={toDate}
+                                />
                               ))}
                             </TableBody>
                           </Table>
