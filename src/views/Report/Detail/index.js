@@ -29,6 +29,7 @@ import DatePicker from './../../../component/DatePicker/index';
 import { Autocomplete } from '@material-ui/lab';
 import {
   createMaterialReportFile,
+  getAllCustomerCode,
   getAllMaterialReportType,
   getAllProduct,
   getAllWorkOrder,
@@ -81,6 +82,8 @@ const MaterialReportModel = () => {
   const [reportID, setReportID] = useState('');
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [listProductID, setListProductID] = useState([]);
+  const [listCustomerCode, setListCustomerCode] = useState([]);
+  const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [listColDetail, setListColDetail] = useState([]);
   const [selectedReport, setSelectedReport] = useState('');
   const [queryData, setQueryData] = useState({
@@ -131,15 +134,36 @@ const MaterialReportModel = () => {
       switch (row.id) {
         case 'TONG_HOP_TON_KHO_VAT_TU':
           setlistCol([
-            'Ngày chứng từ',
-            'Mã phiếu xuất/nhập kho',
+            'Danh mục',
+            'Nhà cung cấp',
+            'Mã vật tư',
+            'Tên vật tư',
+            'Đơn vị',
+            'SL A',
+            'SL Hỏng',
+            'SL A',
+            'SL Hỏng',
+            'SL A',
+            'SL Hỏng',
+            'SL A',
+            'SL Hỏng',
+          ]);
+          setListColDetail([
+            'Ngày tháng',
+            'Danh mục',
+            'Nhà cung cấp',
+            'Mã vật tư',
+            'Tên vật tư',
+            'Đơn vị',
             'Diễn giải',
-            'SL nhập',
-            'SL nhập hỏng',
-            'SL xuất',
-            'SL xuất hỏng',
-            'SL tồn',
-            'SL tồn hỏng',
+            'SL A',
+            'SL Hỏng',
+            'SL A',
+            'SL Hỏng',
+            'SL A',
+            'SL Hỏng',
+            'SL A',
+            'SL Hỏng',
           ]);
           break;
         case 'KH_SAN_XUAT':
@@ -174,7 +198,7 @@ const MaterialReportModel = () => {
           ]);
           break;
         case 'KH_GIAO_HANG_CHO_KHACH':
-          setlistCol(['', 'Khách hàng', 'Mã đơn hàng', 'Cảng đến', 'Ngày giao hàng', 'Trạng thái']);
+          setlistCol(['Khách hàng', 'Mã đơn hàng', 'Cảng đến', 'Ngày giao hàng', 'Trạng thái']);
           setListColDetail(['Mã sản phẩm', 'Mã SP KH', 'Tên sản phẩm', 'Đơn vị', 'SL cần', 'SL đã SX', 'SL đã lập KH', 'Nhà cung cấp']);
           break;
         default:
@@ -202,13 +226,15 @@ const MaterialReportModel = () => {
   };
   useEffect(() => {
     const fetchData = async () => {
-      const getListSupplier = await getAllSupplier();
-      setlistSupplier(getListSupplier);
-      const getListProduct = await getAllProduct();
-      setListProductID(getListProduct);
+      selectedReport === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP' || selectedReport === 'TONG_HOP_TON_KHO_VAT_TU'
+        ? getAllSupplier().then(setlistSupplier)
+        : selectedReport === 'KH_GIAO_HANG_CHO_KHACH' &&
+          getAllCustomerCode()
+            .then((customerCodes) => listCustomerCode.concat({ id: null, value: 'Chọn tất cả' }, customerCodes))
+            .then(setListCustomerCode);
     };
     fetchData();
-  }, [reportType]);
+  }, [selectedReport]);
 
   const handleSubmited = async () => {
     try {
@@ -230,6 +256,14 @@ const MaterialReportModel = () => {
   const handleCloseViewReportDataModal = () => {
     setDataTableModal(false);
   };
+
+  function handleCustomerChange(event, value) {
+    if (value.some((item) => item.id === null)) {
+      setSelectedCustomers(listCustomerCode.map((item) => item.id));
+    } else {
+      setSelectedCustomers(value.map((item) => item.id));
+    }
+  }
 
   const checkToDate = (date, type) => {
     let DateCP;
@@ -298,7 +332,7 @@ const MaterialReportModel = () => {
           <span className={classes.tabItemLabelField}>Đặt tên report:</span>
           <TextField fullWidth variant="outlined" name="report_name" size="small" type="text" onChange={handleChanges} />
         </Grid>
-        {selectedReport === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP' && (
+        {['KH_GIAO_HANG_CHO_NHA_CUNG_CAP', 'TONG_HOP_TON_KHO_VAT_TU'].includes(selectedReport) && (
           <>
             <Grid item xs={12}>
               <span className={classes.tabItemLabelField}>Nhà cung cấp:</span>
@@ -333,15 +367,15 @@ const MaterialReportModel = () => {
         {selectedReport === 'KH_GIAO_HANG_CHO_KHACH' && (
           <>
             <Grid item xs={12}>
-              <span className={classes.tabItemLabelField}>Tên thành phẩm:</span>
+              <span className={classes.tabItemLabelField}>Mã khách hàng:</span>
               <Autocomplete
-                options={listProductID}
+                options={listCustomerCode}
                 multiple={true}
                 getOptionLabel={(option) => option.value}
                 // defaultValue={['a', 'b']}
                 // value={listSupplier?.find((item) => item === ['a', 'b']) || ['']}
                 fullWidth
-                onChange={(e, value) => setSelectedProducts(value.map((item) => item.id))}
+                onChange={(e, value) => handleCustomerChange(e, value)}
                 size="small"
                 renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
               />
@@ -476,6 +510,7 @@ const MaterialReportModel = () => {
         toDate={queryData.to_date}
         reportID={reportID}
         listProductID={selectedProducts}
+        listCustomerCode={selectedCustomers}
         listCol={listCol}
         reportType={selectedReport}
         listColDetail={listColDetail}
