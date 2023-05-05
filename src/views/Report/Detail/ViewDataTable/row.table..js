@@ -157,7 +157,7 @@ const Row = (props) => {
 
       {isDetail && (
         <TableRow>
-          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={17}>
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box margin={1}>
                 <Table size="small" aria-label="purchases">
