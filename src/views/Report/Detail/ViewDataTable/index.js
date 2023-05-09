@@ -51,6 +51,7 @@ import Row from './row.table.';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -72,80 +73,17 @@ function a11yProps(index) {
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
+
 const style = {
-  box: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '100%',
-    height: '80%',
-    boxShadow: 24,
-    background: '#FFFFFF',
-    borderRadius: '15px',
-  },
-  title: {
-    padding: '16px 32px 20px',
-    fontSize: '18px',
-    textAlign: 'center',
-    marginBottom: '20px',
-    fontWeight: 'bold',
-    borderBottom: '1px solid #ddd',
-  },
-  body: {
-    padding: '0 32px',
-  },
-  form: {
-    width: '100%',
-    marginBottom: '10px',
-  },
-  BrokenContainer: {
+  scroll: {
+    height: 60,
     display: 'flex',
-    alignItems: 'center',
-  },
-  BrokenLabel: {
-    fontWeight: 'bold',
-    // marginTop: 15,
-  },
-  input: {},
-  buttonWrap: {
-    marginTop: '12px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: '0 32px 16px',
-  },
-  button: {
-    margin: '0 12px',
-    background: '#FFC000',
-  },
-  closeButton: {
-    margin: '0 12px',
-    background: '#465169',
-  },
-  submitButton: {
-    margin: '0 12px',
-    background: '#612AFF',
-  },
-  error: {
-    color: 'red',
-  },
-  formlabel: {
-    fontWeight: 'bold',
-  },
-  table: {
-    maxHeight: 250,
-    marginBottom: 25,
-  },
-  flexEnd: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-  },
-};
-const useRowStyles = {
-  root: {
-    '& > *': {
-      borderBottom: 'unset',
+    flexWrap: 'wrap',
+    alignContent: 'flexStart',
+    whiteSpace: 'pre-wrap',
+    overflowY: 'scroll',
+    '&::-webkit-scrollbar': {
+      display: 'none',
     },
   },
 };
@@ -259,6 +197,8 @@ export default function ViewReportDataModal(props) {
             ? getListViewData?.list_requisition_received_plan
             : reportType === 'KH_SAN_XUAT'
             ? getListViewData?.list_data_production_detail_plan
+            : reportType === 'BAO_CAO_THUC_TE_SAN_XUAT'
+            ? getListViewData?.list_data_for_production_reality
             : undefined;
         setListViewData(listViewData);
       }
@@ -333,31 +273,31 @@ export default function ViewReportDataModal(props) {
 
   const components = {
     event: ({ event }) => (
-      <div style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'flexStart' }}>
-        <div style={{ fontWeight: 'bold', textAlign: 'center', fontSize: '16px', marginBottom: '5px' }}>{event.title}</div>
-
+      <div className={classes.scroll}>
         <div
           style={{
-            flexGrow: 1,
-            minHeight: 0,
-            padding: '2px',
-            width: '100%',
-            boxSizing: 'border-box',
-            wordWrap: 'break-word',
-            whiteSpace: 'pre-wrap',
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignContent: 'flexStart',
+            minWidth: '0',
+            maxWidth: '100%',
+            minHeight: '0',
+            maxHeight: '100%',
+            flexShrink: 0,
           }}
         >
           {aAccessor(event)}
         </div>
         <div
           style={{
-            flexGrow: 1,
-            minHeight: 0,
-            padding: '2px',
-            width: '100%',
-            boxSizing: 'border-box',
-            wordWrap: 'break-word',
-            whiteSpace: 'pre-wrap',
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignContent: 'flexStart',
+            minWidth: '0',
+            maxWidth: '100%',
+            minHeight: '0',
+            maxHeight: '100%',
+            flexShrink: 0,
           }}
         >
           {bAccessor(event)}
@@ -433,30 +373,29 @@ export default function ViewReportDataModal(props) {
                             </Table>
                           </TableContainer>
                         ) : (
-                          <div>
-                            <Calendar
-                              localizer={localizer}
-                              events={listViewData}
-                              startAccessor="start"
-                              endAccessor="end"
-                              style={{ height: 500, wordBreak: ' break-all' }}
-                              components={components}
-                              aAccessor={aAccessor}
-                              bAccessor={bAccessor}
-                              selectable={false}
-                              views={{
-                                month: true,
-                                agenda: true,
-                              }}
-                              step={60}
-                              messages={messages}
-                              timeslots={1}
-                              defaultView="month"
-                              defaultDate={new Date()}
-                              culture="vi"
-                              formats={formats}
-                            />
-                          </div>
+                          <Calendar
+                            localizer={localizer}
+                            events={listViewData}
+                            startAccessor="start"
+                            endAccessor="end"
+                            contentHeight="auto"
+                            style={{ minHeight: 500 }}
+                            components={components}
+                            aAccessor={aAccessor}
+                            bAccessor={bAccessor}
+                            selectable={false}
+                            views={{
+                              month: true,
+                              agenda: true,
+                            }}
+                            messages={messages}
+                            defaultView="month"
+                            defaultDate={new Date()}
+                            culture="vi"
+                            formats={formats}
+
+                            // eventPropGetter={eventStyleGetter}
+                          />
                         )}
                       </div>
                     </div>

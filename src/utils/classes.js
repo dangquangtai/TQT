@@ -563,6 +563,18 @@ const useStyles = makeStyles((theme) => ({
       paddingLeft: '20px',
     },
   },
+  scroll: {
+    height: 60,
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignContent: 'flexStart',
+    whiteSpace: 'pre-wrap',
+    overflowY: 'scroll',
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
+    fontSize: '12px',
+  },
 }));
 
 export default useStyles;

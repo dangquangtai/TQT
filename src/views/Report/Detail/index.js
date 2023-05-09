@@ -204,6 +204,19 @@ const MaterialReportModel = () => {
           setlistCol(['Khách hàng', 'Mã đơn hàng', 'Cảng đến', 'Ngày giao hàng', 'Trạng thái']);
           setListColDetail(['Mã sản phẩm', 'Mã SP KH', 'Tên sản phẩm', 'Đơn vị', 'SL cần', 'SL đã SX', 'SL đã lập KH', 'Nhà cung cấp']);
           break;
+        case 'BAO_CAO_THUC_TE_SAN_XUAT':
+          setlistCol([
+            'Ngày sản xuất',
+            'Mã đơn hàng',
+            'Mã TP KH',
+            'Mã TP TQT',
+            'Tên sản phẩm',
+            'Đơn vị',
+            'Số lượng kế hoạch',
+            'Số lượng thực tế',
+            'Trạng thái',
+          ]);
+          break;
         default:
           break;
       }
@@ -242,8 +255,9 @@ const MaterialReportModel = () => {
         const customerCodes = await getAllCustomerCode();
         newListCustomerCode = [{ id: null, value: 'Chọn tất cả' }, ...customerCodes];
       }
-      if (selectedReport === 'KH_SAN_XUAT') {
-        newListCustomerOrderCode = await getListCustomerOrderCode();
+      if (selectedReport === 'KH_SAN_XUAT' || 'BAO_CAO_THUC_TE_SAN_XUAT') {
+        const listCustomerOrderCode = await getListCustomerOrderCode();
+        newListCustomerOrderCode = [{ id: null, value: 'Chọn tất cả' }, ...listCustomerOrderCode];
       }
       setListCustomerOderCode((prevListSupplier) => [...newListCustomerOrderCode]);
       setlistSupplier((prevListSupplier) => [...newListSupplier]);
@@ -279,6 +293,13 @@ const MaterialReportModel = () => {
       setSelectedCustomers(listCustomerCode.map((item) => item.id));
     } else {
       setSelectedCustomers(value.map((item) => item.id));
+    }
+  }
+  function handleCustomerOrderChange(event, value) {
+    if (value.some((item) => item.id === null)) {
+      setListSelectedCustomerOrderCodes(listCustomerOderCode.map((item) => item.id));
+    } else {
+      setListSelectedCustomerOrderCodes(value.map((item) => item.id));
     }
   }
 
@@ -389,7 +410,7 @@ const MaterialReportModel = () => {
             </Grid>
           </>
         )}
-        {selectedReport === 'KH_GIAO_HANG_CHO_KHACH' && (
+        {['KH_GIAO_HANG_CHO_KHACH'].includes(selectedReport) && (
           <>
             <Grid item xs={12}>
               <span className={classes.tabItemLabelField}>Mã khách hàng:</span>
@@ -407,7 +428,7 @@ const MaterialReportModel = () => {
             </Grid>
           </>
         )}
-        {selectedReport === 'KH_SAN_XUAT' && (
+        {['KH_SAN_XUAT', 'BAO_CAO_THUC_TE_SAN_XUAT'].includes(selectedReport) && (
           <>
             <Grid item xs={12}>
               <span className={classes.tabItemLabelField}>Mã đơn khách hàng:</span>
@@ -418,7 +439,7 @@ const MaterialReportModel = () => {
                 // defaultValue={['a', 'b']}
                 // value={listSupplier?.find((item) => item === ['a', 'b']) || ['']}
                 fullWidth
-                onChange={(e, value) => setListSelectedCustomerOrderCodes(value.map((item) => item.id))}
+                onChange={(e, value) => handleCustomerOrderChange(e, value)}
                 size="small"
                 renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
               />
