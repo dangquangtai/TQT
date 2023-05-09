@@ -379,7 +379,7 @@ export default function ViewReportDataModal(props) {
                             startAccessor="start"
                             endAccessor="end"
                             contentHeight="auto"
-                            style={{ minHeight: 500 }}
+                            style={{ minHeight: 550 }}
                             components={components}
                             aAccessor={aAccessor}
                             bAccessor={bAccessor}
