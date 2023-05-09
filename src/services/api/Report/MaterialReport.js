@@ -43,6 +43,14 @@ export const getListPart = (list_supplier_id) => {
     return '';
   });
 };
+export const getListCustomerOrderCode = () => {
+  return axiosServices.post(apiEndpoints.get_list_customer_order_code_for_report, {}).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data.list;
+    }
+    return '';
+  });
+};
 export const getMaterialInventorySynthesis = (data) => {
   return axiosServices.post(apiEndpoints.get_material_inventory_synthesis, data).then((response) => {
     if (response.status === 200 && response.data.return === 200) {

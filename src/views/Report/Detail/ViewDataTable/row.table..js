@@ -133,6 +133,36 @@ const Row = (props) => {
         </>
       );
     }
+    if (reportType === 'KH_SAN_XUAT') {
+      const {
+        order_date,
+        customer_order_code,
+        product_code,
+        product_customer_code,
+        unit_name,
+        quantity_in_box,
+        number_of_worker,
+        number_of_working_hour,
+        wattage,
+        status_display,
+        list_specific_supplier_string,
+      } = row;
+      return (
+        <>
+          <TableCell align="left">{order_date ? order_date : ''}</TableCell>
+          <TableCell align="left">{customer_order_code ? customer_order_code : ''}</TableCell>
+          <TableCell align="left">{product_code ? product_code : ''}</TableCell>
+          <TableCell align="left">{product_customer_code ? product_customer_code : ''}</TableCell>
+          <TableCell align="left">{unit_name ? unit_name : ''}</TableCell>
+          <TableCell align="left">{quantity_in_box ? quantity_in_box : 0}</TableCell>
+          <TableCell align="left">{number_of_worker ? number_of_worker : 0}</TableCell>
+          <TableCell align="left">{number_of_working_hour ? number_of_working_hour : 0}</TableCell>
+          <TableCell align="left">{wattage ? wattage : 0}</TableCell>
+          <TableCell align="left">{status_display ? status_display : ''}</TableCell>
+          <TableCell align="left">{list_specific_supplier_string ? list_specific_supplier_string : ''}</TableCell>
+        </>
+      );
+    }
   };
 
   const isDetail = row.detail && row.detail.length > 0;
@@ -147,9 +177,11 @@ const Row = (props) => {
                 {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
               </IconButton>
             )}
-            <IconButton aria-label="expand row" size="small" onClick={() => handleDownloadFile(row.part_id, row.supplier_id)}>
-              <GetAppIcon></GetAppIcon>
-            </IconButton>
+            {reportType === 'TONG_HOP_TON_KHO_VAT_TU' ? (
+              <IconButton aria-label="expand row" size="small" onClick={() => handleDownloadFile(row.part_id, row.supplier_id)}>
+                <GetAppIcon></GetAppIcon>
+              </IconButton>
+            ) : undefined}
           </>
         </TableCell>
         {renderHeading(row)}

@@ -33,6 +33,7 @@ import {
   getAllMaterialReportType,
   getAllProduct,
   getAllWorkOrder,
+  getListCustomerOrderCode,
   getListPart,
 } from '../../../services/api/Report/MaterialReport';
 import moment from 'moment/moment.js';
@@ -75,6 +76,8 @@ const MaterialReportModel = () => {
   const [listCol, setlistCol] = useState([]);
   const [rowData, setRowData] = useState(['11/02/2023', 'test']);
   const [listSupplier, setlistSupplier] = useState([]);
+  const [listCustomerOderCode, setListCustomerOderCode] = useState([]);
+  const [listSelectedCustomerOrderCodes, setListSelectedCustomerOrderCodes] = useState([]);
   const [listPart, setListPart] = useState([]);
   const [selectedSuppliers, setSelectedSuppliers] = useState([]);
   const [dataTableModal, setDataTableModal] = useState(false);
@@ -229,6 +232,7 @@ const MaterialReportModel = () => {
     const fetchData = async () => {
       let newListSupplier = [];
       let newListCustomerCode = [];
+      let newListCustomerOrderCode = [];
 
       if (selectedReport === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP' || selectedReport === 'TONG_HOP_TON_KHO_VAT_TU') {
         newListSupplier = await getAllSupplier();
@@ -238,7 +242,10 @@ const MaterialReportModel = () => {
         const customerCodes = await getAllCustomerCode();
         newListCustomerCode = [{ id: null, value: 'Chọn tất cả' }, ...customerCodes];
       }
-
+      if (selectedReport === 'KH_SAN_XUAT') {
+        newListCustomerOrderCode = await getListCustomerOrderCode();
+      }
+      setListCustomerOderCode((prevListSupplier) => [...newListCustomerOrderCode]);
       setlistSupplier((prevListSupplier) => [...newListSupplier]);
       setListCustomerCode((prevListCustomerCode) => [...newListCustomerCode]);
     };
@@ -274,6 +281,7 @@ const MaterialReportModel = () => {
       setSelectedCustomers(value.map((item) => item.id));
     }
   }
+
   function handlePartChange(event, value) {
     if (value.some((item) => item.id === null)) {
       setSelectedParts(listPart.map((item) => item.id));
@@ -393,6 +401,24 @@ const MaterialReportModel = () => {
                 // value={listSupplier?.find((item) => item === ['a', 'b']) || ['']}
                 fullWidth
                 onChange={(e, value) => handleCustomerChange(e, value)}
+                size="small"
+                renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
+              />
+            </Grid>
+          </>
+        )}
+        {selectedReport === 'KH_SAN_XUAT' && (
+          <>
+            <Grid item xs={12}>
+              <span className={classes.tabItemLabelField}>Mã đơn khách hàng:</span>
+              <Autocomplete
+                options={listCustomerOderCode}
+                multiple={true}
+                getOptionLabel={(option) => option.value}
+                // defaultValue={['a', 'b']}
+                // value={listSupplier?.find((item) => item === ['a', 'b']) || ['']}
+                fullWidth
+                onChange={(e, value) => setListSelectedCustomerOrderCodes(value.map((item) => item.id))}
                 size="small"
                 renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
               />
@@ -531,6 +557,7 @@ const MaterialReportModel = () => {
         listCol={listCol}
         reportType={selectedReport}
         listColDetail={listColDetail}
+        listCustomerOrderCode={listSelectedCustomerOrderCodes}
         handleClose={handleCloseViewReportDataModal}
         // handleSubmit={handleSubmitBroken}
         // handleOpenSnackbar={handleOpenSnackbar}

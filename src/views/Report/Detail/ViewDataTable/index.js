@@ -38,7 +38,10 @@ import { downloadFile } from '../../../../utils/helper';
 import { Autocomplete } from '@material-ui/lab';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RemoveIcon from '@material-ui/icons/Remove';
-
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import 'moment/locale/vi';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 import {
   addMaterialReportFileToReport,
   getMaterialInventorySynthesis,
@@ -161,6 +164,7 @@ export default function ViewReportDataModal(props) {
     listProductID,
     reportType,
     listCustomerCode,
+    listCustomerOrderCode,
   } = props;
   const { reportViewDataTableDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const dispatch = useDispatch();
@@ -209,6 +213,7 @@ export default function ViewReportDataModal(props) {
       part_id_list: listPart,
       product_code_list: listProductID,
       customer_code_list: listCustomerCode,
+      customer_order_code_list: listCustomerOrderCode,
     });
     dispatch({ type: DOCUMENT_CHANGE, documentType: 'materialReport' });
     handleDownload(url);
@@ -240,6 +245,7 @@ export default function ViewReportDataModal(props) {
         report_id: reportID,
         product_code_list: listProductID,
         customer_code_list: listCustomerCode,
+        customer_order_code_list: listCustomerOrderCode,
       });
       {
         const listViewData =
@@ -249,12 +255,118 @@ export default function ViewReportDataModal(props) {
             ? getListViewData?.list_delivery_to_customer
             : reportType === 'TONG_HOP_TON_KHO_VAT_TU'
             ? getListViewData?.list_data_synthesis
+            : reportType === 'KH_XUAT_NHAP'
+            ? getListViewData?.list_requisition_received_plan
+            : reportType === 'KH_SAN_XUAT'
+            ? getListViewData?.list_data_production_detail_plan
             : undefined;
         setListViewData(listViewData);
       }
     };
     if (isOpen) fetchData();
-  }, [isOpen, listSupplier, listPart, reportID]);
+  }, [isOpen, listSupplier, listPart, reportID, fromDate, toDate, listProductID, listCustomerCode, listCustomerOrderCode, reportType]);
+  // useEffect(() => {
+  //   const convertData = async () => {
+  //     const getListViewDataWithDate = listViewData.map((event) => ({
+  //       ...event,
+  //       start: moment(event.start).toDate(),
+  //       end: moment(event.end).toDate(),
+  //     }));
+  //     setListViewData({ ...getListViewDataWithDate });
+  //   };
+  //   if (isOpen) convertData();
+  // }, [isOpen, listViewData]);
+
+  const aAccessor = (event) => event.received_title;
+  const bAccessor = (event) => event.requisition_title;
+  const formats = {
+    dayFormat: (date, culture, localizer) => localizer.format(date, 'dddd, DD/MM/YYYY', culture),
+    agendaDateFormat: (date, culture, localizer) => localizer.format(date, 'DD/MM/YYYY', culture),
+    agendaTimeFormat: (date, culture, localizer) => localizer.format(date, 'HH:mm', culture),
+    agendaTimeRangeFormat: ({ start, end }, culture, localizer) =>
+      `${localizer.format(start, 'HH:mm', culture)} - ${localizer.format(end, 'HH:mm', culture)}`,
+    monthHeaderFormat: (date, culture, localizer) => localizer.format(date, 'MMMM YYYY', culture),
+    agendaHeaderFormat: (date, culture, localizer) => localizer.format(date, 'dddd, DD/MM/YYYY', culture),
+    selectRangeFormat: ({ start, end }, culture, localizer) =>
+      `${localizer.format(start, 'DD/MM/YYYY', culture)} - ${localizer.format(end, 'DD/MM/YYYY', culture)}`,
+    weekNumberFormat: (weekNumber) => `Tuần ${weekNumber}`,
+    dayRangeHeaderFormat: ({ start, end }, culture, localizer) =>
+      `${localizer.format(start, 'DD/MM/YYYY', culture)} - ${localizer.format(end, 'DD/MM/YYYY', culture)}`,
+    todayFormat: (date, culture, localizer) => localizer.format(date, '[Hôm nay], DD/MM/YYYY', culture),
+    toolbarDateFormat: (date, culture, localizer) => localizer.format(date, 'MMMM YYYY', culture),
+    agendaTodayLabel: {
+      long: 'Hôm nay',
+      short: 'Hôm nay',
+    },
+    agendaYesterdayLabel: {
+      long: 'Hôm qua',
+      short: 'Hôm qua',
+    },
+    agendaTomorrowLabel: {
+      long: 'Ngày mai',
+      short: 'Ngày mai',
+    },
+    agendaEventLabel: {
+      long: 'Sự kiện',
+      short: 'Sự kiện',
+    },
+    allDayLabel: 'Cả ngày',
+    previousLabel: 'Trước',
+    nextLabel: 'Tiếp',
+    showMore: (total) => `Xem thêm (${total})`,
+  };
+  const messages = {
+    allDay: 'Cả ngày',
+    previous: 'Trước',
+    next: 'Tiếp',
+    today: 'Hôm nay',
+    month: 'Tháng',
+    week: 'Tuần',
+    day: 'Ngày',
+    agenda: 'Lịch công việc',
+    date: 'Ngày',
+    time: 'Thời gian',
+    event: 'Sự kiện',
+    noEventsInRange: 'Không có sự kiện nào trong phạm vi này.',
+    showMore: (total) => `Xem thêm (${total})`,
+  };
+
+  const components = {
+    event: ({ event }) => (
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignContent: 'flexStart' }}>
+        <div style={{ fontWeight: 'bold', textAlign: 'center', fontSize: '16px', marginBottom: '5px' }}>{event.title}</div>
+
+        <div
+          style={{
+            flexGrow: 1,
+            minHeight: 0,
+            padding: '2px',
+            width: '100%',
+            boxSizing: 'border-box',
+            wordWrap: 'break-word',
+            whiteSpace: 'pre-wrap',
+          }}
+        >
+          {aAccessor(event)}
+        </div>
+        <div
+          style={{
+            flexGrow: 1,
+            minHeight: 0,
+            padding: '2px',
+            width: '100%',
+            boxSizing: 'border-box',
+            wordWrap: 'break-word',
+            whiteSpace: 'pre-wrap',
+          }}
+        >
+          {bAccessor(event)}
+        </div>
+      </div>
+    ),
+  };
+
+  const localizer = momentLocalizer(moment);
 
   return (
     <Grid container>
@@ -294,31 +406,58 @@ export default function ViewReportDataModal(props) {
                   <Grid item lg={12} md={12} xs={12}>
                     <div className={classes.tabItem}>
                       <div className={classes.tabItemBody}>
-                        <TableContainer style={{ maxHeight: '65vh' }} component={Paper}>
-                          <Table stickyHeader aria-label="simple table">
-                            <TableHead>
-                              <TableRow>
-                                <TableCell />
-                                {listCol?.map((col, index) => (
-                                  <TableCell align="left">{col}</TableCell>
+                        {reportType !== 'KH_XUAT_NHAP' ? (
+                          <TableContainer style={{ maxHeight: '65vh' }} component={Paper}>
+                            <Table stickyHeader aria-label="simple table">
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell />
+                                  {listCol?.map((col, index) => (
+                                    <TableCell align="left">{col}</TableCell>
+                                  ))}
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {listViewData?.map((row, index) => (
+                                  <Row
+                                    key={index}
+                                    row={row}
+                                    reportType={reportType}
+                                    listColDetail={listColDetail}
+                                    reportID={reportID}
+                                    fromDate={fromDate}
+                                    toDate={toDate}
+                                  />
                                 ))}
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {listViewData?.map((row, index) => (
-                                <Row
-                                  key={index}
-                                  row={row}
-                                  reportType={reportType}
-                                  listColDetail={listColDetail}
-                                  reportID={reportID}
-                                  fromDate={fromDate}
-                                  toDate={toDate}
-                                />
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        ) : (
+                          <div>
+                            <Calendar
+                              localizer={localizer}
+                              events={listViewData}
+                              startAccessor="start"
+                              endAccessor="end"
+                              style={{ height: 500, wordBreak: ' break-all' }}
+                              components={components}
+                              aAccessor={aAccessor}
+                              bAccessor={bAccessor}
+                              selectable={false}
+                              views={{
+                                month: true,
+                                agenda: true,
+                              }}
+                              step={60}
+                              messages={messages}
+                              timeslots={1}
+                              defaultView="month"
+                              defaultDate={new Date()}
+                              culture="vi"
+                              formats={formats}
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                   </Grid>
@@ -334,7 +473,7 @@ export default function ViewReportDataModal(props) {
                 Đóng
               </Button>
             </Grid>
-            {reportType === 'TONG_HOP_TON_KHO_VAT_TU' ? undefined : (
+            {reportType === 'TONG_HOP_TON_KHO_VAT_TU' || reportType === 'KH_XUAT_NHAP' ? undefined : (
               <Grid item className={classes.gridItemInfoButtonWrap}>
                 {/* {selectedDocument?.id && buttonSave && ( */}
                 <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleExportReportTemplate}>

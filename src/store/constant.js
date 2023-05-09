@@ -340,6 +340,7 @@ export const apiEndpoints = {
   get_view_data_for_report_template: '/Primary/?FlowAlias=bs_api_factory_get_view_data_for_report_template&action=api',
   get_list_product_for_report: '/Primary/?FlowAlias=bs_api_factory_get_list_product_for_report&action=api',
   get_list_customer_code_for_report: '/Primary/?FlowAlias=bs_api_factory_get_list_customer_code_for_report&action=api',
+  get_list_customer_order_code_for_report: '/Primary/?FlowAlias=bs_api_factory_get_list_customer_order_code&action=api',
 
   // Product Inventory Check
   get_product_inventory_check_list: '/Primary/?FlowAlias=bs_api_factory_get_product_inventory_check_list&action=api',
