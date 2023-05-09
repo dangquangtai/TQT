@@ -163,6 +163,32 @@ const Row = (props) => {
         </>
       );
     }
+    if (reportType === 'BAO_CAO_THUC_TE_SAN_XUAT') {
+      const {
+        production_date,
+        order_code,
+        product_customer_code,
+        product_code,
+        product_name,
+        unit_name,
+        plan_quantity_in_box,
+        reality_quantity_in_box,
+        status_display,
+      } = row;
+      return (
+        <>
+          <TableCell align="left">{production_date ? production_date : ''}</TableCell>
+          <TableCell align="left">{order_code ? order_code : ''}</TableCell>
+          <TableCell align="left">{product_customer_code ? product_customer_code : ''}</TableCell>
+          <TableCell align="left">{product_code ? product_code : ''}</TableCell>
+          <TableCell align="left">{product_name ? product_name : ''}</TableCell>
+          <TableCell align="left">{unit_name ? unit_name : ''}</TableCell>
+          <TableCell align="left">{plan_quantity_in_box ? plan_quantity_in_box : 0}</TableCell>
+          <TableCell align="left">{reality_quantity_in_box ? reality_quantity_in_box : 0}</TableCell>
+          <TableCell align="left">{status_display ? status_display : ''}</TableCell>
+        </>
+      );
+    }
   };
 
   const isDetail = row.detail && row.detail.length > 0;
