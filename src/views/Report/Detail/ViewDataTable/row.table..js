@@ -40,7 +40,7 @@ const Row = (props) => {
       alertSeverity: type,
     });
   };
-  const handleDownloadFile = async (part_id, supplier_id) => {
+  const handleDownloadFile = async (part_id, supplier_id, product_id) => {
     console.log(part_id);
     const url = await addMaterialReportFileToReport({
       from_date: fromDate,
@@ -48,8 +48,9 @@ const Row = (props) => {
       report_id: reportID,
       supplier_id_list: [supplier_id],
       part_id_list: [part_id],
-      product_code_list: [],
+      product_code_list: [product_id],
       customer_code_list: [],
+      customer_order_code_list: [],
     });
     dispatch({ type: DOCUMENT_CHANGE, documentType: 'materialReport' });
     handleDownload(url);
@@ -189,6 +190,32 @@ const Row = (props) => {
         </>
       );
     }
+    if (reportType === 'TONG_HOP_TON_KHO_THANH_PHAM') {
+      const {
+        product_customer_code,
+        product_code,
+        product_name,
+        unit_name,
+        order_code,
+        initial_quantity_in_box,
+        received_quantity_in_box,
+        requisition_quantity_in_box,
+        final_quantity_in_box,
+      } = row;
+      return (
+        <>
+          <TableCell align="left">{product_customer_code ? product_customer_code : ''}</TableCell>
+          <TableCell align="left">{product_code ? product_code : ''}</TableCell>
+          <TableCell align="left">{product_name ? product_name : ''}</TableCell>
+          <TableCell align="left">{unit_name ? unit_name : ''}</TableCell>
+          <TableCell align="left">{order_code ? order_code : ''}</TableCell>
+          <TableCell align="left">{initial_quantity_in_box ? initial_quantity_in_box : ''}</TableCell>
+          <TableCell align="left">{received_quantity_in_box ? received_quantity_in_box : 0}</TableCell>
+          <TableCell align="left">{requisition_quantity_in_box ? requisition_quantity_in_box : 0}</TableCell>
+          <TableCell align="left">{final_quantity_in_box ? final_quantity_in_box : ''}</TableCell>
+        </>
+      );
+    }
   };
 
   const isDetail = row.detail && row.detail.length > 0;
@@ -203,8 +230,12 @@ const Row = (props) => {
                 {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
               </IconButton>
             )}
-            {reportType === 'TONG_HOP_TON_KHO_VAT_TU' ? (
-              <IconButton aria-label="expand row" size="small" onClick={() => handleDownloadFile(row.part_id, row.supplier_id)}>
+            {reportType === 'TONG_HOP_TON_KHO_VAT_TU' || 'TONG_HOP_TON_KHO_THANH_PHAM' ? (
+              <IconButton
+                aria-label="expand row"
+                size="small"
+                onClick={() => handleDownloadFile(row.part_id, row.supplier_id, row.product_id)}
+              >
                 <GetAppIcon></GetAppIcon>
               </IconButton>
             ) : undefined}
@@ -301,6 +332,40 @@ const Row = (props) => {
                           )}
                           {detailitm.broken_inventory_quantity_in_piece ? (
                             <TableCell>{detailitm.broken_inventory_quantity_in_piece}</TableCell>
+                          ) : (
+                            <TableCell>0</TableCell>
+                          )}
+                        </TableRow>
+                      ) : reportType === 'TONG_HOP_TON_KHO_THANH_PHAM' ? (
+                        <TableRow>
+                          {detailitm.order_date ? <TableCell>{detailitm.order_date}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.product_customer_code ? (
+                            <TableCell>{detailitm.product_customer_code}</TableCell>
+                          ) : (
+                            <TableCell></TableCell>
+                          )}
+                          {detailitm.product_code ? <TableCell>{detailitm.product_code}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.product_name ? <TableCell>{detailitm.product_name}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.unit_name ? <TableCell>{detailitm.unit_name}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.explain ? <TableCell>{detailitm.explain}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.order_code ? <TableCell>{detailitm.order_code}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.initial_quantity_in_box ? (
+                            <TableCell>{detailitm.initial_quantity_in_box}</TableCell>
+                          ) : (
+                            <TableCell>0</TableCell>
+                          )}
+                          {detailitm.received_quantity_in_box ? (
+                            <TableCell>{detailitm.received_quantity_in_box}</TableCell>
+                          ) : (
+                            <TableCell>0</TableCell>
+                          )}
+                          {detailitm.requisition_quantity_in_box ? (
+                            <TableCell>{detailitm.requisition_quantity_in_box}</TableCell>
+                          ) : (
+                            <TableCell>0</TableCell>
+                          )}
+                          {detailitm.final_quantity_in_box ? (
+                            <TableCell>{detailitm.final_quantity_in_box}</TableCell>
                           ) : (
                             <TableCell>0</TableCell>
                           )}

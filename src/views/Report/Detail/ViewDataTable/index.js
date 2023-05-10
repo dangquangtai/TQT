@@ -199,6 +199,8 @@ export default function ViewReportDataModal(props) {
             ? getListViewData?.list_data_production_detail_plan
             : reportType === 'BAO_CAO_THUC_TE_SAN_XUAT'
             ? getListViewData?.list_data_for_production_reality
+            : reportType === 'TONG_HOP_TON_KHO_THANH_PHAM'
+            ? getListViewData?.list_data_product_inventory
             : undefined;
         setListViewData(listViewData);
       }
@@ -217,8 +219,6 @@ export default function ViewReportDataModal(props) {
   //   if (isOpen) convertData();
   // }, [isOpen, listViewData]);
 
-  const aAccessor = (event) => event.received_title;
-  const bAccessor = (event) => event.requisition_title;
   const formats = {
     dayFormat: (date, culture, localizer) => localizer.format(date, 'dddd, DD/MM/YYYY', culture),
     agendaDateFormat: (date, culture, localizer) => localizer.format(date, 'DD/MM/YYYY', culture),
@@ -271,40 +271,39 @@ export default function ViewReportDataModal(props) {
     showMore: (total) => `Xem thêm (${total})`,
   };
 
-  const components = {
-    event: ({ event }) => (
-      <div className={classes.scroll}>
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignContent: 'flexStart',
-            minWidth: '0',
-            maxWidth: '100%',
-            minHeight: '0',
-            maxHeight: '100%',
-            flexShrink: 0,
-          }}
-        >
-          {aAccessor(event)}
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignContent: 'flexStart',
-            minWidth: '0',
-            maxWidth: '100%',
-            minHeight: '0',
-            maxHeight: '100%',
-            flexShrink: 0,
-          }}
-        >
-          {bAccessor(event)}
-        </div>
+  const Event = ({ event }) => (
+    <div className={classes.scroll}>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignContent: 'flexStart',
+          minWidth: '0',
+          maxWidth: '100%',
+          minHeight: '0',
+          maxHeight: '100%',
+          flexShrink: 0,
+        }}
+      >
+        {event.received_title}
       </div>
-    ),
-  };
+      <br></br>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignContent: 'flexStart',
+          minWidth: '0',
+          maxWidth: '100%',
+          minHeight: '0',
+          maxHeight: '100%',
+          flexShrink: 0,
+        }}
+      >
+        {event.requisition_title}
+      </div>
+    </div>
+  );
 
   const localizer = momentLocalizer(moment);
 
@@ -378,11 +377,10 @@ export default function ViewReportDataModal(props) {
                             events={listViewData}
                             startAccessor="start"
                             endAccessor="end"
-                            contentHeight="auto"
+                            // contentHeight="auto"
                             style={{ minHeight: 550 }}
-                            components={components}
-                            aAccessor={aAccessor}
-                            bAccessor={bAccessor}
+                            components={{ event: Event }}
+                            step={30}
                             selectable={false}
                             views={{
                               month: true,
@@ -393,8 +391,6 @@ export default function ViewReportDataModal(props) {
                             defaultDate={new Date()}
                             culture="vi"
                             formats={formats}
-
-                            // eventPropGetter={eventStyleGetter}
                           />
                         )}
                       </div>
@@ -412,7 +408,7 @@ export default function ViewReportDataModal(props) {
                 Đóng
               </Button>
             </Grid>
-            {reportType === 'TONG_HOP_TON_KHO_VAT_TU' || reportType === 'KH_XUAT_NHAP' ? undefined : (
+            {reportType === 'TONG_HOP_TON_KHO_VAT_TU' || reportType === 'KH_XUAT_NHAP' || 'TONG_HOP_TON_KHO_THANH_PHAM' ? undefined : (
               <Grid item className={classes.gridItemInfoButtonWrap}>
                 {/* {selectedDocument?.id && buttonSave && ( */}
                 <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleExportReportTemplate}>
