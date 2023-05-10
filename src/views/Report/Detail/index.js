@@ -169,6 +169,32 @@ const MaterialReportModel = () => {
             'SL Hỏng',
           ]);
           break;
+        case 'TONG_HOP_TON_KHO_THANH_PHAM':
+          setlistCol([
+            'Mã thành phẩm KH',
+            'Mã thành phẩm TQT',
+            'Tên thành phẩm',
+            'Đơn vị',
+            'Mã đơn hàng',
+            'Tồn đầu kỳ',
+            'Nhập',
+            'Xuất',
+            'Tồn cuối kỳ',
+          ]);
+          setListColDetail([
+            'Ngày tháng',
+            'Mã thành phẩm KH',
+            'Mã thành phẩm TQT',
+            'Tên thành phẩm',
+            'Đơn vị',
+            'Diễn giải',
+            'Mã đơn hàng',
+            'Tồn đầu kỳ',
+            'Nhập',
+            'Xuất',
+            'Tồn cuối kỳ',
+          ]);
+          break;
         case 'KH_SAN_XUAT':
           setlistCol([
             'Ngày',
@@ -245,6 +271,7 @@ const MaterialReportModel = () => {
     const fetchData = async () => {
       let newListSupplier = [];
       let newListCustomerCode = [];
+      let newListProductCode = [];
       let newListCustomerOrderCode = [];
 
       if (selectedReport === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP' || selectedReport === 'TONG_HOP_TON_KHO_VAT_TU') {
@@ -259,9 +286,14 @@ const MaterialReportModel = () => {
         const listCustomerOrderCode = await getListCustomerOrderCode();
         newListCustomerOrderCode = [{ id: null, value: 'Chọn tất cả' }, ...listCustomerOrderCode];
       }
+      if (selectedReport === 'TONG_HOP_TON_KHO_THANH_PHAM') {
+        const getProduct = await getAllProduct();
+        newListProductCode = [{ id: null, value: 'Chọn tất cả' }, ...getProduct];
+      }
       setListCustomerOderCode((prevListSupplier) => [...newListCustomerOrderCode]);
       setlistSupplier((prevListSupplier) => [...newListSupplier]);
       setListCustomerCode((prevListCustomerCode) => [...newListCustomerCode]);
+      setListProductID((prevListCustomerCode) => [...newListProductCode]);
     };
 
     fetchData();
@@ -300,6 +332,13 @@ const MaterialReportModel = () => {
       setListSelectedCustomerOrderCodes(listCustomerOderCode.map((item) => item.id));
     } else {
       setListSelectedCustomerOrderCodes(value.map((item) => item.id));
+    }
+  }
+  function handleProductCodeChange(event, value) {
+    if (value.some((item) => item.id === null)) {
+      setSelectedProducts(listProductID.map((item) => item.id));
+    } else {
+      setSelectedProducts(value.map((item) => item.id));
     }
   }
 
@@ -440,6 +479,24 @@ const MaterialReportModel = () => {
                 // value={listSupplier?.find((item) => item === ['a', 'b']) || ['']}
                 fullWidth
                 onChange={(e, value) => handleCustomerOrderChange(e, value)}
+                size="small"
+                renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
+              />
+            </Grid>
+          </>
+        )}
+        {['TONG_HOP_TON_KHO_THANH_PHAM'].includes(selectedReport) && (
+          <>
+            <Grid item xs={12}>
+              <span className={classes.tabItemLabelField}>Mã thành phẩm:</span>
+              <Autocomplete
+                options={listProductID}
+                multiple={true}
+                getOptionLabel={(option) => option.value}
+                // defaultValue={['a', 'b']}
+                // value={listSupplier?.find((item) => item === ['a', 'b']) || ['']}
+                fullWidth
+                onChange={(e, value) => handleProductCodeChange(e, value)}
                 size="small"
                 renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
               />
