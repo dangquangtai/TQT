@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Button,
   Grid,
@@ -40,6 +40,7 @@ import moment from 'moment/moment.js';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { getAllSupplier } from '../../../services/api/Partner/Supplier';
 import ViewReportDataModal from './ViewDataTable';
+import { useMemo } from 'react';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -89,6 +90,7 @@ const MaterialReportModel = () => {
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [listColDetail, setListColDetail] = useState([]);
   const [selectedReport, setSelectedReport] = useState('');
+  const [autocompleteVersion, setAutocompleteVersion] = useState(0);
   const [queryData, setQueryData] = useState({
     from_date: new Date(),
     to_date: new Date(),
@@ -136,21 +138,7 @@ const MaterialReportModel = () => {
     if (activeStep === 0) {
       switch (row.id) {
         case 'TONG_HOP_TON_KHO_VAT_TU':
-          setlistCol([
-            'Danh mục',
-            'Nhà cung cấp',
-            'Mã vật tư',
-            'Tên vật tư',
-            'Đơn vị',
-            'SL A',
-            'SL Hỏng',
-            'SL A',
-            'SL Hỏng',
-            'SL A',
-            'SL Hỏng',
-            'SL A',
-            'SL Hỏng',
-          ]);
+          setlistCol(['Danh mục', 'Nhà cung cấp', 'Mã vật tư', 'Tên vật tư', 'Đơn vị', 'Tồn đầu', 'Nhập', 'Xuất', 'Tồn cuối']);
           setListColDetail([
             'Ngày tháng',
             'Danh mục',
@@ -159,14 +147,10 @@ const MaterialReportModel = () => {
             'Tên vật tư',
             'Đơn vị',
             'Diễn giải',
-            'SL A',
-            'SL Hỏng',
-            'SL A',
-            'SL Hỏng',
-            'SL A',
-            'SL Hỏng',
-            'SL A',
-            'SL Hỏng',
+            'Tồn đầu',
+            'Nhập',
+            'Xuất',
+            'Tồn cuối',
           ]);
           break;
         case 'TONG_HOP_TON_KHO_THANH_PHAM':
@@ -249,12 +233,32 @@ const MaterialReportModel = () => {
     }
     setSelected(row);
   };
-  const handleChangeSupplier = async (event, value) => {
-    setSelectedSuppliers(value.map((item) => item.id));
-    await getListPart({ list_supplier_id: value.map((item) => item.id) })
-      .then((PartCodes) => listPart.concat({ id: null, value: 'Chọn tất cả' }, PartCodes))
-      .then(setListPart);
+
+  const handleChangeSupplier = (event, value) => {
+    if (value.some((item) => item.id === null)) {
+      setSelectedSuppliers(listSupplier.map((item) => item.id));
+    } else {
+      setSelectedSuppliers(value.map((item) => item.id));
+    }
   };
+  const fetchData = useCallback(() => {
+    if (selectedSuppliers.length !== 0) {
+      getListPart({ list_supplier_id: selectedSuppliers })
+        .then((PartCodes) => {
+          setListPart([{ id: null, value: 'Chọn tất cả' }, ...PartCodes]);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      setListPart([]);
+      setAutocompleteVersion((prev) => prev + 1);
+    }
+  }, [selectedSuppliers]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const setDocumentToDefault = async () => {
     setQueryData({
@@ -275,7 +279,8 @@ const MaterialReportModel = () => {
       let newListCustomerOrderCode = [];
 
       if (selectedReport === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP' || selectedReport === 'TONG_HOP_TON_KHO_VAT_TU') {
-        newListSupplier = await getAllSupplier();
+        const getListSupplier = await getAllSupplier();
+        newListSupplier = [{ id: null, title: 'Chọn tất cả' }, ...getListSupplier];
       }
 
       if (selectedReport === 'KH_GIAO_HANG_CHO_KHACH') {
@@ -434,9 +439,10 @@ const MaterialReportModel = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <span className={classes.tabItemLabelField}>Vật tư:</span>
+              <span className={classes.tabItemLabelField}>Mã vật tư:</span>
               <Autocomplete
                 options={listPart}
+                key={autocompleteVersion}
                 multiple={true}
                 getOptionLabel={(option) => option.value}
                 // defaultValue={['a', 'b']}
@@ -607,7 +613,6 @@ const MaterialReportModel = () => {
         return '';
     }
   }
-
   useEffect(() => {
     const fetchData = async () => {
       const reporttype = await getAllMaterialReportType();
