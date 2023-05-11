@@ -99,6 +99,8 @@ const MaterialModal = () => {
     };
   }, []);
 
+  const isWorkOrder = Boolean(materials[0]?.order_code);
+
   return (
     <React.Fragment>
       <Grid container>
@@ -156,12 +158,14 @@ const MaterialModal = () => {
                                           inputProps={{ 'aria-label': 'primary checkbox' }}
                                         />
                                       </TableCell>
-                                      <TableCell align="left">Mã Đơn hàng</TableCell>
+                                      {isWorkOrder && <TableCell align="left">Mã Đơn KH</TableCell>}
+                                      <TableCell align="left">Mã Đơn mua hàng</TableCell>
                                       <TableCell align="left">Mã vật tư</TableCell>
                                       <TableCell align="left">Tên vật tư</TableCell>
                                       <TableCell align="left">Số lượng nhập</TableCell>
                                       <TableCell align="left">Đơn vị</TableCell>
-                                      <TableCell align="left">Ngày sản xuất</TableCell>
+                                      {isWorkOrder && <TableCell align="left">Ngày sản xuất</TableCell>}
+                                      <TableCell align="left">Ngày mua hàng</TableCell>
                                     </TableRow>
                                   </TableHead>
                                   <TableBody>
@@ -177,13 +181,21 @@ const MaterialModal = () => {
                                             inputProps={{ 'aria-label': 'primary checkbox' }}
                                           />
                                         </TableCell>
-                                        <TableCell align="left">{material.order_code}</TableCell>
+                                        {isWorkOrder && <TableCell align="left">{material.order_code}</TableCell>}
+                                        <TableCell align="left">{material.requisition_order_code}</TableCell>
                                         <TableCell align="left">{material.part_code}</TableCell>
                                         <TableCell align="left">{material.part_name}</TableCell>
                                         <TableCell align="left">{material.quantity_in_piece}</TableCell>
                                         <TableCell align="left">{material.unit_name}</TableCell>
+                                        {isWorkOrder && (
+                                          <TableCell align="left">
+                                            {material.order_date ? formatDate(new Date(material.order_date), 'dd/MM/yyyy') : ''}
+                                          </TableCell>
+                                        )}
                                         <TableCell align="left">
-                                          {material.order_date ? formatDate(new Date(material.order_date), 'dd/MM/yyyy') : ''}
+                                          {material.requisition_order_date
+                                            ? formatDate(new Date(material.requisition_order_date), 'dd/MM/yyyy')
+                                            : ''}
                                         </TableCell>
                                       </TableRow>
                                     ))}

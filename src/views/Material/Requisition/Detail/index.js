@@ -379,7 +379,7 @@ const MaterialRequisitionModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={3} className={classes.gridItemInfo}>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Mã đơn hàng(*):</span>
+                              <span className={classes.tabItemLabelField}>Mã đơn mua hàng(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -391,7 +391,7 @@ const MaterialRequisitionModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên đơn hàng(*):</span>
+                              <span className={classes.tabItemLabelField}>Tên đơn mua hàng(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
