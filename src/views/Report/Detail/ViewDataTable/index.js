@@ -26,7 +26,7 @@ import {
   TableRow,
   Link,
 } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import useStyles from './../../../../utils/classes';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -51,7 +51,32 @@ import Row from './row.table.';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
-
+const usetableStyles = makeStyles({
+  table: {
+    minWidth: 650,
+    borderCollapse: 'collapse',
+    '& td': {
+      // border: '1px solid #ddd',
+      padding: '8px',
+      textAlign: 'center',
+      width: '15%',
+    },
+    '& th': {
+      // border: '1px solid #ddd',
+      padding: '8px',
+      textAlign: 'center',
+      fontWeight: 'bold',
+      backgroundColor: '#f2f2f2',
+      // width: '15%',
+    },
+    '& .center': {
+      textAlign: 'center',
+      '& td': {
+        width: '50%',
+      },
+    },
+  },
+});
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -108,6 +133,7 @@ export default function ViewReportDataModal(props) {
   const dispatch = useDispatch();
   const { selectedDocument } = useSelector((state) => state.document);
   const classes = useStyles();
+  const classesTable = usetableStyles();
   const [listViewData, setListViewData] = useState([]);
   const [openDetail, setOpenDetail] = useState(false);
   const [tabIndex, setTabIndex] = React.useState(0);
@@ -347,12 +373,28 @@ export default function ViewReportDataModal(props) {
                       <div className={classes.tabItemBody}>
                         {reportType !== 'KH_XUAT_NHAP' ? (
                           <TableContainer style={{ maxHeight: '65vh' }} component={Paper}>
-                            <Table stickyHeader aria-label="simple table">
+                            <Table stickyHeader aria-label="simple table" className={classesTable.table}>
                               <TableHead>
                                 <TableRow>
                                   <TableCell />
                                   {listCol?.map((col, index) => (
-                                    <TableCell align="left">{col}</TableCell>
+                                    <React.Fragment key={index}>
+                                      {['Tồn đầu', 'Nhập', 'Xuất', 'Tồn cuối'].includes(col) ? (
+                                        <TableCell colSpan={2} align="center" style={{ width: '10%' }}>
+                                          {col}
+                                          <TableRow>
+                                            <TableCell align="center" className={classesTable.cellData}>
+                                              &nbsp;&nbsp;&nbsp; SL A&nbsp;&nbsp;
+                                            </TableCell>
+                                            <TableCell align="center" className={classesTable.cellData}>
+                                              SL hỏng
+                                            </TableCell>
+                                          </TableRow>
+                                        </TableCell>
+                                      ) : (
+                                        <TableCell align="left">{col}</TableCell>
+                                      )}
+                                    </React.Fragment>
                                   ))}
                                 </TableRow>
                               </TableHead>
@@ -408,13 +450,11 @@ export default function ViewReportDataModal(props) {
                 Đóng
               </Button>
             </Grid>
-            {reportType === 'TONG_HOP_TON_KHO_VAT_TU' || reportType === 'KH_XUAT_NHAP' || 'TONG_HOP_TON_KHO_THANH_PHAM' ? undefined : (
+            {['KH_XUAT_NHAP', 'TONG_HOP_TON_KHO_THANH_PHAM'].includes(reportType) ? null : (
               <Grid item className={classes.gridItemInfoButtonWrap}>
-                {/* {selectedDocument?.id && buttonSave && ( */}
                 <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleExportReportTemplate}>
                   Xuất File
                 </Button>
-                {/* )} */}
               </Grid>
             )}
           </Grid>

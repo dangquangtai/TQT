@@ -15,6 +15,49 @@ const useRowStyles = makeStyles({
     },
   },
 });
+const usetableStyles = makeStyles({
+  table: {
+    minWidth: 650,
+    borderCollapse: 'collapse',
+    '& td': {
+      border: '1px solid #ddd',
+      padding: '8px',
+      textAlign: 'center',
+      width: '15%',
+    },
+    '& th': {
+      // border: '1px solid #ddd',
+      padding: '8px',
+      textAlign: 'center',
+      fontWeight: 'bold',
+      backgroundColor: '#f2f2f2',
+      // width: '15%',
+    },
+    '& .center': {
+      textAlign: 'center',
+      '& td': {
+        width: '50%',
+      },
+    },
+  },
+  '& td': {
+    border: '1px solid #ddd',
+    padding: '8px',
+    textAlign: 'center',
+    width: '15%',
+    '&.sl-cell': {
+      width: 'calc(10% / 2)',
+    },
+  },
+  '& th': {
+    border: '1px solid #ddd',
+    padding: '8px',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    backgroundColor: '#f2f2f2',
+    width: '10%',
+  },
+});
 
 const Row = (props) => {
   const [listSupplier, setListSupplier] = useState([]);
@@ -23,6 +66,7 @@ const Row = (props) => {
   const { row, reportType, listColDetail, fromDate, toDate, reportID } = props;
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
+  const classesTable = usetableStyles();
   const handleDownload = (url) => {
     if (!url) {
       handleOpenSnackbar('error', 'Khôn   g tìm thấy file!');
@@ -40,7 +84,7 @@ const Row = (props) => {
       alertSeverity: type,
     });
   };
-  const handleDownloadFile = async (part_id, supplier_id, product_id) => {
+  const handleDownloadFile = async (part_id, supplier_id, product_id, customer_id) => {
     console.log(part_id);
     const url = await addMaterialReportFileToReport({
       from_date: fromDate,
@@ -49,7 +93,7 @@ const Row = (props) => {
       supplier_id_list: [supplier_id],
       part_id_list: [part_id],
       product_code_list: [product_id],
-      customer_code_list: [],
+      customer_code_list: [customer_id],
       customer_order_code_list: [],
     });
     dispatch({ type: DOCUMENT_CHANGE, documentType: 'materialReport' });
@@ -123,14 +167,14 @@ const Row = (props) => {
           <TableCell align="left">{part_code ? part_code : ''}</TableCell>
           <TableCell align="left">{part_name ? part_name : ''}</TableCell>
           <TableCell align="left">{unit_name ? unit_name : ''}</TableCell>
-          <TableCell align="left">{beginning_quantity_in_piece ? beginning_quantity_in_piece : 0}</TableCell>
-          <TableCell align="left">{broken_beginning_quantity_in_piece ? broken_beginning_quantity_in_piece : 0}</TableCell>
-          <TableCell align="left">{received_quantity_in_piece ? received_quantity_in_piece : 0}</TableCell>
-          <TableCell align="left">{broken_received_quantity_in_piece ? broken_received_quantity_in_piece : 0}</TableCell>
-          <TableCell align="left">{requisition_quantity_in_piece ? requisition_quantity_in_piece : 0}</TableCell>
-          <TableCell align="left">{broken_requisition_quantity_in_piece ? broken_requisition_quantity_in_piece : 0}</TableCell>
-          <TableCell align="left">{inventory_quantity_in_piece ? inventory_quantity_in_piece : 0}</TableCell>
-          <TableCell align="left">{broken_inventory_quantity_in_piece ? broken_inventory_quantity_in_piece : 0}</TableCell>
+          <TableCell align="left">{beginning_quantity_in_piece ? beginning_quantity_in_piece : ''}</TableCell>
+          <TableCell align="left">{broken_beginning_quantity_in_piece ? broken_beginning_quantity_in_piece : ''}</TableCell>
+          <TableCell align="left">{received_quantity_in_piece ? received_quantity_in_piece : ''}</TableCell>
+          <TableCell align="left">{broken_received_quantity_in_piece ? broken_received_quantity_in_piece : ''}</TableCell>
+          <TableCell align="left">{requisition_quantity_in_piece ? requisition_quantity_in_piece : ''}</TableCell>
+          <TableCell align="left">{broken_requisition_quantity_in_piece ? broken_requisition_quantity_in_piece : ''}</TableCell>
+          <TableCell align="left">{inventory_quantity_in_piece ? inventory_quantity_in_piece : ''}</TableCell>
+          <TableCell align="left">{broken_inventory_quantity_in_piece ? broken_inventory_quantity_in_piece : ''}</TableCell>
         </>
       );
     }
@@ -230,15 +274,15 @@ const Row = (props) => {
                 {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
               </IconButton>
             )}
-            {reportType === 'TONG_HOP_TON_KHO_VAT_TU' || 'TONG_HOP_TON_KHO_THANH_PHAM' ? (
+            {['TONG_HOP_TON_KHO_VAT_TU', 'TONG_HOP_TON_KHO_THANH_PHAM', 'KH_GIAO_HANG_CHO_KHACH'].includes(reportType) && (
               <IconButton
                 aria-label="expand row"
                 size="small"
-                onClick={() => handleDownloadFile(row.part_id, row.supplier_id, row.product_id)}
+                onClick={() => handleDownloadFile(row.part_id, row.supplier_id, row.product_id, row.customer_id)}
               >
                 <GetAppIcon></GetAppIcon>
               </IconButton>
-            ) : undefined}
+            )}
           </>
         </TableCell>
         {renderHeading(row)}
@@ -253,7 +297,19 @@ const Row = (props) => {
                   <TableHead>
                     <TableRow>
                       {listColDetail?.map((Coldt, index) => (
-                        <TableCell>{Coldt}</TableCell>
+                        <React.Fragment key={index}>
+                          {['Tồn đầu', 'Nhập', 'Xuất', 'Tồn cuối'].includes(Coldt) ? (
+                            <TableCell colSpan={2} align="center" style={{ width: '10%' }}>
+                              {Coldt}
+                              <TableRow>
+                                <TableCell align="center">&nbsp;&nbsp;&nbsp; SL A&nbsp;&nbsp;</TableCell>
+                                <TableCell align="center">SL hỏng</TableCell>
+                              </TableRow>
+                            </TableCell>
+                          ) : (
+                            <TableCell align="left">{Coldt}</TableCell>
+                          )}
+                        </React.Fragment>
                       ))}
                     </TableRow>
                   </TableHead>
@@ -298,42 +354,42 @@ const Row = (props) => {
                           {detailitm.beginning_quantity_in_piece ? (
                             <TableCell>{detailitm.beginning_quantity_in_piece}</TableCell>
                           ) : (
-                            <TableCell>0</TableCell>
+                            <TableCell></TableCell>
                           )}
                           {detailitm.broken_beginning_quantity_in_piece ? (
                             <TableCell>{detailitm.broken_beginning_quantity_in_piece}</TableCell>
                           ) : (
-                            <TableCell>0</TableCell>
+                            <TableCell></TableCell>
                           )}
                           {detailitm.received_quantity_in_piece ? (
                             <TableCell>{detailitm.received_quantity_in_piece}</TableCell>
                           ) : (
-                            <TableCell>0</TableCell>
+                            <TableCell></TableCell>
                           )}
                           {detailitm.broken_received_quantity_in_piece ? (
                             <TableCell>{detailitm.broken_received_quantity_in_piece}</TableCell>
                           ) : (
-                            <TableCell>0</TableCell>
+                            <TableCell></TableCell>
                           )}
                           {detailitm.requisition_quantity_in_piece ? (
                             <TableCell>{detailitm.requisition_quantity_in_piece}</TableCell>
                           ) : (
-                            <TableCell>0</TableCell>
+                            <TableCell></TableCell>
                           )}
                           {detailitm.broken_requisition_quantity_in_piece ? (
                             <TableCell>{detailitm.broken_requisition_quantity_in_piece}</TableCell>
                           ) : (
-                            <TableCell>0</TableCell>
+                            <TableCell></TableCell>
                           )}
                           {detailitm.inventory_quantity_in_piece ? (
                             <TableCell>{detailitm.inventory_quantity_in_piece}</TableCell>
                           ) : (
-                            <TableCell>0</TableCell>
+                            <TableCell></TableCell>
                           )}
                           {detailitm.broken_inventory_quantity_in_piece ? (
                             <TableCell>{detailitm.broken_inventory_quantity_in_piece}</TableCell>
                           ) : (
-                            <TableCell>0</TableCell>
+                            <TableCell></TableCell>
                           )}
                         </TableRow>
                       ) : reportType === 'TONG_HOP_TON_KHO_THANH_PHAM' ? (
