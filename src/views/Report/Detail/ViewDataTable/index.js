@@ -301,14 +301,8 @@ export default function ViewReportDataModal(props) {
     <div className={classes.scroll}>
       <div
         style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignContent: 'flexStart',
-          minWidth: '0',
-          maxWidth: '100%',
-          minHeight: '0',
-          maxHeight: '100%',
-          flexShrink: 0,
+          Width: '100%',
+          whiteSpace: 'break-spaces',
         }}
       >
         {event.received_title}
@@ -316,14 +310,8 @@ export default function ViewReportDataModal(props) {
       <br></br>
       <div
         style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignContent: 'flexStart',
-          minWidth: '0',
-          maxWidth: '100%',
-          minHeight: '0',
-          maxHeight: '100%',
-          flexShrink: 0,
+          Width: '100%',
+          whiteSpace: 'break-spaces',
         }}
       >
         {event.requisition_title}
