@@ -568,7 +568,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
     alignContent: 'flexStart',
-    whiteSpace: 'pre-wrap',
+    width: '100%',
     overflowY: 'scroll',
     '&::-webkit-scrollbar': {
       display: 'none',
