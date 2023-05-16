@@ -66,6 +66,7 @@ const floatingMenuReducer = (state = initialState, action) => {
         materialReportDocument: action.materialReportDocument,
         productInventoryCheckDocument: action.productInventoryCheckDocument,
         reportViewDataTableDocument: action.reportViewDataTableDocument,
+        importMaterialPartsDataDocument: action.importMaterialPartsDataDocument,
       };
     default:
       return state;

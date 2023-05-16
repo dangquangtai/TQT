@@ -43,6 +43,14 @@ export const getListPart = (list_supplier_id) => {
     return '';
   });
 };
+export const getMaterialReportDetail = (reportID) => {
+  return axiosServices.post(apiEndpoints.get_detail_material_report, { report_id: reportID }).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data.data;
+    }
+    return '';
+  });
+};
 export const getListCustomerOrderCode = () => {
   return axiosServices.post(apiEndpoints.get_list_customer_order_code_for_report, {}).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
@@ -64,7 +72,7 @@ export const getViewDataForReporTemplate = (data) => {
     if (response.status === 200 && response.data.return === 200) {
       return response.data;
     }
-    return {};
+    return [];
   });
 };
 export const getAllProduct = () => {

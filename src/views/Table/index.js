@@ -15,7 +15,7 @@ import {
   TableContainer,
   Chip,
 } from '@material-ui/core';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CONFIRM_CHANGE, DOCUMENT_CHANGE, FLOATING_MENU_CHANGE, SNACKBAR_OPEN, TASK_CHANGE } from '../../store/actions';
 import { gridSpacing, view } from '../../store/constant';
@@ -65,8 +65,9 @@ import { getDetailReturnMaterial } from './../../services/api/Material/Return';
 import { getDetailTemplateDocument } from '../../services/api/Setting/TemplateDocument';
 import { getDetailProductInventory } from './../../services/api/Product/Inventory';
 import { ProductInventoryCheckService } from '../../services/api/Product/InventoryCheck.js';
-import { downloadMaterialReportFile } from '../../services/api/Report/MaterialReport';
+import { downloadMaterialReportFile, getMaterialReportDetail } from '../../services/api/Report/MaterialReport';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import ViewReportDataModal from '../Report/Detail/ViewDataTable';
 
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
@@ -105,8 +106,11 @@ export default function GeneralTable(props) {
   const [department_code_selected, setSelectedDepartment] = React.useState('');
   const [role_template_selected, setSelectedRoleTemplate] = React.useState('Member');
   const [process_role_code_selected, setSelectedProcessRole] = React.useState('');
+  const [openMaterialReportView, setOpenMaterialReportView] = useState(false);
+  const [materialReportViewData, setmaterialReportViewData] = useState([]);
 
   const { getProcessDetail, addDeptUser, removeUser, removeDept, syncProcessRole } = useProcessRole();
+  const [currentDetailDocument, setCurrentDetailDocument] = useState(null);
   const { getDocuments } = useTask();
   const { activeDepartment, getDepartmentDetail, getAllDepartment } = useDepartment();
   const { activeRole, getRoleDetail, getDepartmentListGroup, syncRole, getRoletemplateByDept } = useRole();
@@ -173,6 +177,7 @@ export default function GeneralTable(props) {
   const buttonCreateGoodsReceipt = menuButtons.find((button) => button.name === view.goodsReceipt.list.create);
   const buttonCreateDailyMaterial = menuButtons.find((button) => button.name === view.dailyDeliveryMateial.list.create);
   const buttonCreateMaterialPart = menuButtons.find((button) => button.name === view.materialPart.list.create);
+  const buttonImportMaterialParts = menuButtons.find((button) => button.name === view.materialPart.importData.importListData);
   const buttonCreateMaterialRequisition = menuButtons.find((button) => button.name === view.materialRequisition.list.create);
   const buttonExportMaterial = menuButtons.find((button) => button.name === view.purchaseMaterial.list.export);
   const buttonCreateUGroup = menuButtons.find((button) => button.name === view.ugroup.list.create);
@@ -273,6 +278,12 @@ export default function GeneralTable(props) {
     fetchDocument({ page: 1, no_item_per_page: event.target.value, search_text, category_id });
     setPage(1);
   };
+  const handleOpenMaterialReportView = async () => {
+    const detailDocument = await getMaterialReportDetail(selectedDocument.id);
+    dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+    setOpenMaterialReportView(true);
+  };
+  const handleCloseMaterialReportView = () => setOpenMaterialReportView(false);
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
@@ -450,15 +461,17 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, productInventoryDocument: true });
         break;
-      // case 'materialReport':
-      //   detailDocument = await getDetailProductInventory(selectedDocument.id, setView);
-      //   dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
-      //   dispatch({ type: FLOATING_MENU_CHANGE, materialReportDocument: true });
-      //   break;
       case 'productInventoryCheck':
         detailDocument = await ProductInventoryCheckService.detail(selectedDocument.id, setView);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, productInventoryCheckDocument: true });
+        break;
+      case 'materialReport':
+        detailDocument = await getMaterialReportDetail(selectedDocument.id);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        await setmaterialReportViewData(detailDocument);
+        await setOpenMaterialReportView(true);
+
         break;
       default:
         break;
@@ -799,6 +812,9 @@ export default function GeneralTable(props) {
   const handleExportMaterialInventory2 = async () => {
     dispatch({ type: FLOATING_MENU_CHANGE, exportMaterialInventoryDocument: true });
   };
+  const handleImportMaterialsPartData = async () => {
+    dispatch({ type: FLOATING_MENU_CHANGE, importMaterialPartsDataDocument: true });
+  };
 
   const handleDownload = (url) => {
     if (!url) {
@@ -943,7 +959,7 @@ export default function GeneralTable(props) {
   }, [process_role_code_selected]);
 
   useEffect(() => {
-    if (selectedDocument === null && documents?.length > 0) {
+    if (selectedDocument === null) {
       reloadCurrentDocuments(page);
     }
     if (documentType === 'department') {
@@ -1026,6 +1042,8 @@ export default function GeneralTable(props) {
     handleExportMaterialInventory,
     buttonCreateMaterialReport,
     buttonCreateProductInventoryCheck,
+    buttonImportMaterialParts,
+    handleImportMaterialsPartData,
   };
 
   return (
@@ -1089,6 +1107,26 @@ export default function GeneralTable(props) {
                           rowCount={documents?.length}
                           displayOptions={displayOptions}
                           documentType={documentType}
+                        />
+                        <ViewReportDataModal
+                          isOpen={openMaterialReportView}
+                          sumaryData={materialReportViewData}
+                          handleClose={handleCloseMaterialReportView}
+                        />
+                        <ViewReportDataModal
+                          isOpen={openMaterialReportView}
+                          listSupplier={materialReportViewData.supplier_id_list}
+                          listPart={materialReportViewData.part_id_list}
+                          fromDate={materialReportViewData.from_date}
+                          toDate={materialReportViewData.to_date}
+                          reportID={materialReportViewData.id}
+                          listProductID={materialReportViewData.product_id_list}
+                          listCustomerCode={materialReportViewData.customer_id_list}
+                          listCol={materialReportViewData.list_column}
+                          reportType={materialReportViewData.type_code}
+                          listColDetail={materialReportViewData.list_column_detail}
+                          listCustomerOrderCode={materialReportViewData.customer_order_id_list}
+                          handleClose={handleCloseMaterialReportView}
                         />
                         <TableBody>
                           {stableSort(documents || [], getComparator(order, orderBy)).map((row, index) => {

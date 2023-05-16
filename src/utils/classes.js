@@ -575,6 +575,11 @@ const useStyles = makeStyles((theme) => ({
     },
     fontSize: '12px',
   },
+  tabItemNoBorder: {
+    background: '#FFFFFF',
+    borderRadius: '8px',
+    marginBottom: '8px',
+  },
 }));
 
 export default useStyles;

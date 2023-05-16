@@ -112,12 +112,13 @@ const Row = (props) => {
         production_date,
         customer_order_code,
         status_display,
+        order_date,
         received_quantity_in_piece,
         notes,
       } = row;
       return (
         <>
-          <TableCell align="left">{delivery_date ? delivery_date : ''}</TableCell>
+          <TableCell align="left">{order_date ? order_date : ''}</TableCell>
           <TableCell align="left">{supplier_name ? supplier_name : ''}</TableCell>
           <TableCell align="left">{order_code ? order_code : ''}</TableCell>
           <TableCell align="left">{part_code ? part_code : ''}</TableCell>
@@ -127,6 +128,7 @@ const Row = (props) => {
           <TableCell align="left">{production_date ? production_date : ''}</TableCell>
           <TableCell align="left">{customer_order_code ? customer_order_code : ''}</TableCell>
           <TableCell align="left">{status_display ? status_display : ''}</TableCell>
+          <TableCell align="left">{delivery_date ? delivery_date : ''}</TableCell>
           <TableCell align="left">{received_quantity_in_piece ? received_quantity_in_piece : ''}</TableCell>
           <TableCell align="left">{notes ? notes : ''}</TableCell>
         </>
