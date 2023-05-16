@@ -103,6 +103,8 @@ export const apiEndpoints = {
   update_material_part: '/Primary/?FlowAlias=bs_api_factory_update_material_part&action=api',
   set_active_material_part: '/Primary/?FlowAlias=bs_api_factory_active_material_part&action=api',
   get_all_material_part: '/Primary/?FlowAlias=bs_api_factory_get_all_material_part&action=api',
+  get_import_material_part_template: '/Primary/?FlowAlias=bs_api_factory_import_material_part&action=api',
+  import_material_part_data: '/Primary/?FlowAlias=bs_api_factory_import_material_part_file&action=api',
 
   // Product
   get_product_list: '/Primary/?FlowAlias=bs_api_factory_get_list_product&action=api',
@@ -341,6 +343,7 @@ export const apiEndpoints = {
   get_list_product_for_report: '/Primary/?FlowAlias=bs_api_factory_get_list_product_for_report&action=api',
   get_list_customer_code_for_report: '/Primary/?FlowAlias=bs_api_factory_get_list_customer_code_for_report&action=api',
   get_list_customer_order_code_for_report: '/Primary/?FlowAlias=bs_api_factory_get_list_customer_order_code&action=api',
+  get_detail_material_report: '/Primary/?FlowAlias=bs_api_factory_get_detail_material_report&action=api',
 
   // Product Inventory Check
   get_product_inventory_check_list: '/Primary/?FlowAlias=bs_api_factory_get_product_inventory_check_list&action=api',
@@ -697,6 +700,9 @@ export const view = {
     },
     detail: {
       save: 'TQT_SETTING_DEFAULT_MATERIAL_SAVE_FORM_BUTTON',
+    },
+    importData: {
+      importListData: 'TQT_SETTING_DEFAULT_IMPORT_MATERIAL_PART',
     },
   },
   materialRequisition: {

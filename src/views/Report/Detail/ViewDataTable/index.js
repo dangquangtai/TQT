@@ -135,6 +135,7 @@ export default function ViewReportDataModal(props) {
   const classes = useStyles();
   const classesTable = usetableStyles();
   const [listViewData, setListViewData] = useState([]);
+  const [sumaryDataa, setsumaryDataa] = useState([]);
   const [openDetail, setOpenDetail] = useState(false);
   const [tabIndex, setTabIndex] = React.useState(0);
   const [exportData, setExportData] = useState({
@@ -179,7 +180,6 @@ export default function ViewReportDataModal(props) {
       customer_code_list: listCustomerCode,
       customer_order_code_list: listCustomerOrderCode,
     });
-    dispatch({ type: DOCUMENT_CHANGE, documentType: 'materialReport' });
     handleDownload(url);
   };
   const handleOpenSnackbar = (type, text) => {
@@ -200,6 +200,13 @@ export default function ViewReportDataModal(props) {
     dispatch({ type: FLOATING_MENU_CHANGE, reportViewDataTableDocument: false });
   };
   useEffect(() => {
+    if (!selectedDocument) return;
+    setsumaryDataa({
+      ...setsumaryDataa,
+      ...selectedDocument,
+    });
+  }, [selectedDocument]);
+  useEffect(() => {
     const fetchData = async () => {
       const getListViewData = await getViewDataForReporTemplate({
         supplier_id_list: listSupplier,
@@ -211,27 +218,28 @@ export default function ViewReportDataModal(props) {
         customer_code_list: listCustomerCode,
         customer_order_code_list: listCustomerOrderCode,
       });
-      {
-        const listViewData =
-          reportType === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP'
-            ? getListViewData?.list
-            : reportType === 'KH_GIAO_HANG_CHO_KHACH'
-            ? getListViewData?.list_delivery_to_customer
-            : reportType === 'TONG_HOP_TON_KHO_VAT_TU'
-            ? getListViewData?.list_data_synthesis
-            : reportType === 'KH_XUAT_NHAP'
-            ? getListViewData?.list_requisition_received_plan
-            : reportType === 'KH_SAN_XUAT'
-            ? getListViewData?.list_data_production_detail_plan
-            : reportType === 'BAO_CAO_THUC_TE_SAN_XUAT'
-            ? getListViewData?.list_data_for_production_reality
-            : reportType === 'TONG_HOP_TON_KHO_THANH_PHAM'
-            ? getListViewData?.list_data_product_inventory
-            : undefined;
-        setListViewData(listViewData);
-      }
+      const listViewData =
+        reportType === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP'
+          ? getListViewData?.list
+          : reportType === 'KH_GIAO_HANG_CHO_KHACH'
+          ? getListViewData?.list_delivery_to_customer
+          : reportType === 'TONG_HOP_TON_KHO_VAT_TU'
+          ? getListViewData?.list_data_synthesis
+          : reportType === 'KH_XUAT_NHAP'
+          ? getListViewData?.list_requisition_received_plan
+          : reportType === 'KH_SAN_XUAT'
+          ? getListViewData?.list_data_production_detail_plan
+          : reportType === 'BAO_CAO_THUC_TE_SAN_XUAT'
+          ? getListViewData?.list_data_for_production_reality
+          : reportType === 'TONG_HOP_TON_KHO_THANH_PHAM'
+          ? getListViewData?.list_data_product_inventory
+          : undefined;
+
+      setListViewData(listViewData);
     };
-    if (isOpen) fetchData();
+    if (isOpen) {
+      fetchData();
+    }
   }, [isOpen, listSupplier, listPart, reportID, fromDate, toDate, listProductID, listCustomerCode, listCustomerOrderCode, reportType]);
   // useEffect(() => {
   //   const convertData = async () => {
@@ -438,7 +446,7 @@ export default function ViewReportDataModal(props) {
                 Đóng
               </Button>
             </Grid>
-            {['KH_XUAT_NHAP', 'TONG_HOP_TON_KHO_THANH_PHAM'].includes(reportType) ? null : (
+            {['KH_XUAT_NHAP'].includes(reportType) ? null : (
               <Grid item className={classes.gridItemInfoButtonWrap}>
                 <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleExportReportTemplate}>
                   Xuất File

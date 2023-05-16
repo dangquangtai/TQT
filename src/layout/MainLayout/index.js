@@ -50,6 +50,7 @@ import ExportMaterialInventoryModal from '../../views/Dialog/ExportMaterialInven
 import MaterialReportModel from '../../views/Report/Detail';
 import ProductInventoryCheckModal from '../../views/Product/InventoryCheck/Detail/index.js';
 import ViewReportDataModal from '../../views/Report/Detail/ViewDataTable';
+import ImportMatetialPartsDataModal from '../../views/Material/MaterialPart/ImportData';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -172,7 +173,12 @@ const MainLayout = ({ children }) => {
       case 'dailyMaterialRequisition':
         return <DailyMaterialRequisitionModal />;
       case 'materialPart':
-        return <MaterialPartModal />;
+        return (
+          <>
+            <MaterialPartModal />;
+            <ImportMatetialPartsDataModal />;
+          </>
+        );
       case 'materialRequisition':
         return <MaterialRequisitionModal />;
       case 'usergroup':

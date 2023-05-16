@@ -33,6 +33,14 @@ export const createMaterialPart = (data) => {
     return false;
   });
 };
+export const importMaterialPartsData = (file) => {
+  return axiosServices.post(apiEndpoints.import_material_part_data, file).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return true;
+    }
+    return false;
+  });
+};
 
 export const updateMaterialPart = (data) => {
   return axiosServices.post(apiEndpoints.update_material_part, data).then((response) => {
@@ -47,6 +55,14 @@ export const getAllMaterialPart = () => {
   return axiosServices.post(apiEndpoints.get_all_material_part, {}).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
       return response.data.list;
+    }
+    return [];
+  });
+};
+export const getTemplateMaterialPart = () => {
+  return axiosServices.post(apiEndpoints.get_import_material_part_template, {}).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data.url;
     }
     return [];
   });

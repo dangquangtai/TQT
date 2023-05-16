@@ -97,6 +97,11 @@ const MaterialReportModel = () => {
     report_type: '',
     report_name: '',
     work_order_id: '',
+    product_id_list: '',
+    customer_id_list: '',
+    part_id_list: '',
+    supplier_id_list: '',
+    customer_order_id_list: '',
   });
 
   const [activeStep, setActiveStep] = React.useState(0);
@@ -206,6 +211,7 @@ const MaterialReportModel = () => {
             'Ngày sản xuất',
             'Mã đơn khách hàng',
             'Trạng thái',
+            'Ngày nhập kho thực tế',
             'Số lượng nhập kho',
             'Ghi chú',
           ]);
@@ -314,14 +320,27 @@ const MaterialReportModel = () => {
         handleOpenSnackbar('error', 'Không được để trống tên report!');
         return;
       }
-      const getReportID = await createMaterialReportFile(queryData);
+      const getReportID = await createMaterialReportFile({
+        from_date: queryData.from_date,
+        to_date: queryData.to_date,
+        report_type: selectedReport,
+        report_name: queryData.report_name,
+        work_order_id: queryData.work_order_id,
+        product_id_list: selectedProducts,
+        customer_id_list: selectedCustomers,
+        part_id_list: selectedParts,
+        supplier_id_list: selectedSuppliers,
+        customer_order_id_list: listSelectedCustomerOrderCodes,
+        list_column: listCol,
+        list_column_detail: listColDetail,
+      });
       setReportID(getReportID);
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'materialReport' });
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
     }
   };
   const handleCloseViewReportDataModal = () => {
+    dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'materialReport' });
     setDataTableModal(false);
   };
 
