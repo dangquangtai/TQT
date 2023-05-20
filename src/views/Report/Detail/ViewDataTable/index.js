@@ -193,11 +193,12 @@ export default function ViewReportDataModal(props) {
   };
   const setDocumentToDefault = async () => {
     setExportData({});
+    setListViewData([]);
     setTabIndex(0);
   };
-  const handleCloseDialog = () => {
+  const handleCloseModel = () => {
     setDocumentToDefault();
-    dispatch({ type: FLOATING_MENU_CHANGE, reportViewDataTableDocument: false });
+    handleClose();
   };
   useEffect(() => {
     if (!selectedDocument) return;
@@ -331,7 +332,7 @@ export default function ViewReportDataModal(props) {
 
   return (
     <Grid container>
-      <Dialog open={isOpen || false} TransitionComponent={Transition} keepMounted onClose={() => handleClose()} fullScreen>
+      <Dialog open={isOpen || false} TransitionComponent={Transition} keepMounted onClose={() => handleCloseModel()} fullScreen>
         <DialogTitle className={classes.dialogTitle}>
           <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
             Dữ liệu báo cáo
