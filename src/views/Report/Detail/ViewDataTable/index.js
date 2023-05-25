@@ -234,6 +234,8 @@ export default function ViewReportDataModal(props) {
           ? getListViewData?.list_data_for_production_reality
           : reportType === 'TONG_HOP_TON_KHO_THANH_PHAM'
           ? getListViewData?.list_data_product_inventory
+          : reportType === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP'
+          ? getListViewData?.list_use_of_material_supplier_detail
           : undefined;
 
       setListViewData(listViewData);
@@ -404,6 +406,7 @@ export default function ViewReportDataModal(props) {
                                     listColDetail={listColDetail}
                                     reportID={reportID}
                                     fromDate={fromDate}
+                                    index={index}
                                     toDate={toDate}
                                   />
                                 ))}

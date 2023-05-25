@@ -195,13 +195,14 @@ export default function ImportMatetialPartsDataModal() {
             <div className={classes.tabItemNoBorder}>
               <div className={`${classes.tabItemBody} ${classes.tabItemMentorAvatarBody}`} style={{ textAlign: 'center' }}>
                 <div>
-                  <div>Tải template mẫu</div>
-                  {/* <Button onClick={() => handleOpenDiaLog()}>Chọn File </Button> */}
-                  <div style={{ marginTop: 10 }}>
-                    <Link href={templateFileUrl} target="_blank">
-                      {templateFileUrl}
-                    </Link>
+                  <div>
+                    <div style={{ marginTop: 10 }}>
+                      <Link href={templateFileUrl} target="_blank">
+                        Tải template mẫu
+                      </Link>
+                    </div>
                   </div>
+                  {/* <Button onClick={() => handleOpenDiaLog()}>Chọn File </Button> */}
                 </div>
               </div>
             </div>
@@ -243,7 +244,9 @@ export default function ImportMatetialPartsDataModal() {
             <div className={classes.tabItemNoBorder}>
               <div className={`${classes.tabItemBody} ${classes.tabItemMentorAvatarBody}`} style={{ textAlign: 'center' }}>
                 <div>
-                  <Link href={exportData.file_name}>{exportData.file_name ? exportData.file_name : 'Có lỗi xảy ra khi tải file lên'}</Link>
+                  <Link href={exportData.file_url} target="_blank">
+                    {exportData.file_name ? exportData.file_name : 'Có lỗi xảy ra khi tải file lên'}
+                  </Link>
                 </div>
               </div>
             </div>
