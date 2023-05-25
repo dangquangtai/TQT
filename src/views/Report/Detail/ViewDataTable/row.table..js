@@ -63,7 +63,7 @@ const Row = (props) => {
   const [listSupplier, setListSupplier] = useState([]);
   const [listPart, setListPart] = useState([]);
   const dispatch = useDispatch();
-  const { row, reportType, listColDetail, fromDate, toDate, reportID } = props;
+  const { row, reportType, listColDetail, fromDate, toDate, reportID, index } = props;
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
   const classesTable = usetableStyles();
@@ -262,6 +262,18 @@ const Row = (props) => {
         </>
       );
     }
+    if (reportType === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP') {
+      const { part_code, part_name, unit_name, used_quantity_in_piece } = row;
+      return (
+        <>
+          <TableCell align="left">{index + 1}</TableCell>
+          <TableCell align="left">{part_code ? part_code : ''}</TableCell>
+          <TableCell align="left">{part_name ? part_name : ''}</TableCell>
+          <TableCell align="left">{unit_name ? unit_name : ''}</TableCell>
+          <TableCell align="left">{used_quantity_in_piece ? used_quantity_in_piece : 0}</TableCell>
+        </>
+      );
+    }
   };
 
   const isDetail = row.detail && row.detail.length > 0;
@@ -276,7 +288,12 @@ const Row = (props) => {
                 {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
               </IconButton>
             )}
-            {['TONG_HOP_TON_KHO_VAT_TU', 'TONG_HOP_TON_KHO_THANH_PHAM', 'KH_GIAO_HANG_CHO_KHACH'].includes(reportType) && (
+            {[
+              'TONG_HOP_TON_KHO_VAT_TU',
+              'TONG_HOP_TON_KHO_THANH_PHAM',
+              'KH_GIAO_HANG_CHO_KHACH',
+              'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP',
+            ].includes(reportType) && (
               <IconButton
                 aria-label="expand row"
                 size="small"
@@ -424,6 +441,26 @@ const Row = (props) => {
                           )}
                           {detailitm.final_quantity_in_box ? (
                             <TableCell>{detailitm.final_quantity_in_box}</TableCell>
+                          ) : (
+                            <TableCell>0</TableCell>
+                          )}
+                        </TableRow>
+                      ) : reportType === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP' ? (
+                        <TableRow>
+                          {detailitm.order_date ? <TableCell>{detailitm.order_date}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.part_code ? <TableCell>{detailitm.part_code}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.part_name ? <TableCell>{detailitm.part_name}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.unit_name ? <TableCell>{detailitm.unit_name}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.explain ? <TableCell>{detailitm.explain}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.customer_order_code ? <TableCell>{detailitm.customer_order_code}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.product_customer_code ? (
+                            <TableCell>{detailitm.product_customer_code}</TableCell>
+                          ) : (
+                            <TableCell></TableCell>
+                          )}
+                          {detailitm.product_code ? <TableCell>{detailitm.product_code}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.used_quantity_in_piece ? (
+                            <TableCell>{detailitm.used_quantity_in_piece}</TableCell>
                           ) : (
                             <TableCell>0</TableCell>
                           )}

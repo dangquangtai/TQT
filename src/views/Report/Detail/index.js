@@ -233,6 +233,20 @@ const MaterialReportModel = () => {
             'Trạng thái',
           ]);
           break;
+        case 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP':
+          setlistCol(['STT', 'Mã vật tư', 'Tên vật tư', 'Đơn vị', 'Số lượng sử dụng']);
+          setListColDetail([
+            'Ngày tháng',
+            'Mã vật tư',
+            'Tên vật tư',
+            'Đơn vị',
+            'Diễn giải',
+            'Mã đơn hàng',
+            'Mã TP KH',
+            'Mã TP TQT',
+            'SL sử dụng',
+          ]);
+          break;
         default:
           break;
       }
@@ -284,7 +298,11 @@ const MaterialReportModel = () => {
       let newListProductCode = [];
       let newListCustomerOrderCode = [];
 
-      if (selectedReport === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP' || selectedReport === 'TONG_HOP_TON_KHO_VAT_TU') {
+      if (
+        selectedReport === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP' ||
+        selectedReport === 'TONG_HOP_TON_KHO_VAT_TU' ||
+        selectedReport === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP'
+      ) {
         const getListSupplier = await getAllSupplier();
         newListSupplier = [{ id: null, title: 'Chọn tất cả' }, ...getListSupplier];
       }
@@ -441,7 +459,7 @@ const MaterialReportModel = () => {
           <span className={classes.tabItemLabelField}>Đặt tên report:</span>
           <TextField fullWidth variant="outlined" name="report_name" size="small" type="text" onChange={handleChanges} />
         </Grid>
-        {['KH_GIAO_HANG_CHO_NHA_CUNG_CAP', 'TONG_HOP_TON_KHO_VAT_TU'].includes(selectedReport) && (
+        {['KH_GIAO_HANG_CHO_NHA_CUNG_CAP', 'TONG_HOP_TON_KHO_VAT_TU', 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP'].includes(selectedReport) && (
           <>
             <Grid item xs={12}>
               <span className={classes.tabItemLabelField}>Nhà cung cấp:</span>
@@ -449,8 +467,6 @@ const MaterialReportModel = () => {
                 options={listSupplier}
                 multiple={true}
                 getOptionLabel={(option) => option.title}
-                // defaultValue={['a', 'b']}
-                // value={listSupplier?.find((item) => item === ['a', 'b']) || ['']}
                 fullWidth
                 onChange={(e, value) => handleChangeSupplier(e, value)}
                 size="small"
@@ -464,8 +480,6 @@ const MaterialReportModel = () => {
                 key={autocompleteVersion}
                 multiple={true}
                 getOptionLabel={(option) => option.value}
-                // defaultValue={['a', 'b']}
-                // value={listSupplier?.find((item) => item === ['a', 'b']) || ['']}
                 fullWidth
                 onChange={(e, value) => handlePartChange(e, value)}
                 size="small"
