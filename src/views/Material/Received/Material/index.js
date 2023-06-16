@@ -47,7 +47,7 @@ const MaterialModal = () => {
   };
 
   const handleChangeMaterial = (material, e) => {
-    const newMaterial = { ...material, material_order_id: material.requisition_id };
+    const newMaterial = { ...material, material_order_id: material.requisition_id, requisition_order_detail_id: material.id };
     if (e.target.checked) {
       setMaterialSelected([...materialSelected, newMaterial]);
     } else {
@@ -58,7 +58,7 @@ const MaterialModal = () => {
   const handleSelectAll = (e) => {
     if (e.target.checked) {
       const newMaterial = materials.map((item) => {
-        return { ...item, material_order_id: item.requisition_id };
+        return { ...item, material_order_id: item.requisition_id, requisition_order_detail_id: item.id };
       });
       setMaterialSelected(newMaterial);
     } else {
@@ -162,7 +162,9 @@ const MaterialModal = () => {
                                       <TableCell align="left">Mã Đơn mua hàng</TableCell>
                                       <TableCell align="left">Mã vật tư</TableCell>
                                       <TableCell align="left">Tên vật tư</TableCell>
-                                      <TableCell align="left">Số lượng nhập</TableCell>
+                                      <TableCell align="left">Số lượng đặt</TableCell>
+                                      <TableCell align="left">Số lượng đã nhập</TableCell>
+                                      <TableCell align="left">Số lượng còn lại</TableCell>
                                       <TableCell align="left">Đơn vị</TableCell>
                                       {isWorkOrder && <TableCell align="left">Ngày sản xuất</TableCell>}
                                       <TableCell align="left">Ngày mua hàng</TableCell>
@@ -186,6 +188,8 @@ const MaterialModal = () => {
                                         <TableCell align="left">{material.part_code}</TableCell>
                                         <TableCell align="left">{material.part_name}</TableCell>
                                         <TableCell align="left">{material.quantity_in_piece}</TableCell>
+                                        <TableCell align="left">{material.entered_quantity_in_piece}</TableCell>
+                                        <TableCell align="left">{material.remain_quantity_in_piece}</TableCell>
                                         <TableCell align="left">{material.unit_name}</TableCell>
                                         {isWorkOrder && (
                                           <TableCell align="left">
