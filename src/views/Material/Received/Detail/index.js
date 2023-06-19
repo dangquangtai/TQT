@@ -296,7 +296,7 @@ const ReceivedMaterialModal = () => {
   }, []);
 
   const isDisabled = !!selectedDocument?.id;
-  const isCompleted = !!receivedMaterialData.status?.includes('COMPLETED');
+  const isCompleted = !!selectedDocument?.status?.includes('COMPLETED');
   const isWorkOrder = !!receivedDetailList[0]?.customer_order_code;
 
   useEffect(() => {
@@ -309,6 +309,7 @@ const ReceivedMaterialModal = () => {
         id: '',
         customer_order_code: item.order_code,
         customer_order_date: item.order_date,
+        requisition_order_detail_id: item.id,
       };
     });
     setReceivedDetailList(newMaterial);
@@ -541,6 +542,8 @@ const ReceivedMaterialModal = () => {
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">SL đặt</TableCell>
+                                  <TableCell align="left">SL đã nhập</TableCell>
+                                  <TableCell align="left">SL còn lại</TableCell>
                                   <TableCell align="left">SL nhập</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
                                   {isWorkOrder && <TableCell align="left">Ngày sản xuất</TableCell>}
@@ -556,16 +559,22 @@ const ReceivedMaterialModal = () => {
                                         {row.customer_order_code}
                                       </TableCell>
                                     )}
-                                    <TableCell align="left" style={{ width: '12%' }}>
+                                    <TableCell align="left" style={{ width: '10%' }}>
                                       {row.part_code}
                                     </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '23%' }}>
+                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '20%' }}>
                                       <Tooltip title={row?.part_name}>
                                         <span>{row?.part_name}</span>
                                       </Tooltip>
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
+                                    <TableCell align="left" style={{ width: '5%' }}>
                                       {row.quantity_in_piece}
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '5%' }}>
+                                      {row.entered_quantity_in_piece}
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '5%' }}>
+                                      {row.remain_quantity_in_piece}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       <TextField

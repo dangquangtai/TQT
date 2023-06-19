@@ -44,6 +44,7 @@ import {
 } from './../../../../services/api/Material/Purchase';
 import { createFileAttachment, deleteFileAttachment, getListFile } from '../../../../services/api/Attachment/FileAttachment';
 import ActivityLog from '../../../../component/ActivityLog/index.js';
+import TableCollapse from './collapse.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -221,6 +222,8 @@ const MaterialRequisitionModal = () => {
         unit_id: '',
         unit_name: '',
         quantity_in_piece: 0,
+        order_code: '',
+        order_date: new Date('0001-01-01T00:00:00.000Z'),
       },
     ]);
   };
@@ -293,7 +296,7 @@ const MaterialRequisitionModal = () => {
     fetchData();
   }, []);
 
-  const isDisabled = materialRequisitionData.status?.includes('RECEIVED');
+  const isDisabled = selectedDocument?.status?.includes('RECEIVED');
 
   return (
     <React.Fragment>
@@ -506,6 +509,7 @@ const MaterialRequisitionModal = () => {
                             <Table className={classes.tableSmall} aria-label="simple table" stickyHeader>
                               <TableHead>
                                 <TableRow>
+                                  <TableCell />
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">SL cần</TableCell>
@@ -518,88 +522,16 @@ const MaterialRequisitionModal = () => {
                               </TableHead>
                               <TableBody>
                                 {materialList?.map((row, index) => (
-                                  <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '20%' }}>
-                                      <Autocomplete
-                                        options={materials}
-                                        getOptionLabel={(option) => option.part_code || ''}
-                                        fullWidth
-                                        size="small"
-                                        disabled={isDisabled}
-                                        value={materials.find((item) => item.part_code === row.part_code) || null}
-                                        onChange={(event, newValue) => handleChangeMaterialCode(index, newValue)}
-                                        renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '25%' }}>
-                                      <Tooltip title={row?.part_name}>
-                                        <Autocomplete
-                                          options={materials}
-                                          getOptionLabel={(option) => option.title || ''}
-                                          fullWidth
-                                          size="small"
-                                          disabled={isDisabled}
-                                          value={materials.find((item) => item.part_code === row.part_code) || null}
-                                          onChange={(event, newValue) => handleChangeMaterialCode(index, newValue)}
-                                          renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                        />
-                                      </Tooltip>
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '15%' }}>
-                                      <TextField
-                                        InputProps={{
-                                          inputProps: { min: 0 },
-                                        }}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="quantity_in_piece"
-                                        type="number"
-                                        size="small"
-                                        disabled={isDisabled}
-                                        value={row?.quantity_in_piece || ''}
-                                        onChange={(e) => handleChangeMaterial(index, e)}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '5%' }}>
-                                      {row.unit_name}
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '15%' }}>
-                                      <TextField
-                                        multiline
-                                        minRows={1}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="notes"
-                                        type="text"
-                                        size="small"
-                                        value={row.notes || ''}
-                                        onChange={(e) => handleChangeMaterial(index, e)}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
-                                      <TextField
-                                        multiline
-                                        minRows={1}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="notes2"
-                                        type="text"
-                                        size="small"
-                                        value={row.notes2 || ''}
-                                        onChange={(e) => handleChangeMaterial(index, e)}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '5%' }}>
-                                      {row.status_display}
-                                    </TableCell>
-                                    {!isDisabled && (
-                                      <TableCell align="center" style={{ width: '5%' }}>
-                                        <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>
-                                          <Delete />
-                                        </IconButton>
-                                      </TableCell>
-                                    )}
-                                  </TableRow>
+                                  <TableCollapse
+                                    key={index}
+                                    row={row}
+                                    index={index}
+                                    isDisabled={isDisabled}
+                                    handleDeleteMaterial={handleDeleteMaterial}
+                                    handleChangeMaterialCode={handleChangeMaterialCode}
+                                    classes={classes}
+                                    handleChangeMaterial={handleChangeMaterial}
+                                  />
                                 ))}
                               </TableBody>
                             </Table>
