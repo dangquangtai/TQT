@@ -45,6 +45,7 @@ import {
   templateDocumentActions,
   MaterialReportActions,
   productInventoryCheckActions,
+  contractActions,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
 import { Redirect } from 'react-router-dom';
@@ -83,6 +84,7 @@ import ReturnMaterialWrapper from './../../Material/Return/index';
 import ExcelDocumentWrapper from '../../Setting/DocumentTemplate/ExcelDocument';
 import MaterialReportWrapper from '../../Report';
 import ProductInventoryCheckWrapper from './../../Product/InventoryCheck/index';
+import ContractWrapper from './../../Material/Contract/index';
 
 const Default = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
@@ -128,6 +130,7 @@ const Default = () => {
   const availableTemplateDocumentEndpoint = Object.values(templateDocumentActions);
   const availableMaterialReportEndpoint = Object.values(MaterialReportActions);
   const availableProductInventoryCheckEndpoint = Object.values(productInventoryCheckActions);
+  const availableContractCheckEndpoint = Object.values(contractActions);
 
   if (!selectedApp?.id) {
     return <Redirect to="/dashboard/app" />;
@@ -176,6 +179,7 @@ const Default = () => {
           {availableTemplateDocumentEndpoint.includes(selectedFolder?.action) && <ExcelDocumentWrapper />}
           {availableMaterialReportEndpoint.includes(selectedFolder?.action) && <MaterialReportWrapper />}
           {availableProductInventoryCheckEndpoint.includes(selectedFolder?.action) && <ProductInventoryCheckWrapper />}
+          {availableContractCheckEndpoint.includes(selectedFolder?.action) && <ContractWrapper />}
         </Grid>
       )}
     </Grid>

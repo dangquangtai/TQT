@@ -68,6 +68,7 @@ import { ProductInventoryCheckService } from '../../services/api/Product/Invento
 import { downloadMaterialReportFile, getMaterialReportDetail } from '../../services/api/Report/MaterialReport';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import ViewReportDataModal from '../Report/Detail/ViewDataTable';
+import { ContractService } from './../../services/api/Material/Contract';
 
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
@@ -188,6 +189,7 @@ export default function GeneralTable(props) {
   const buttonExportMaterialInventory2 = menuButtons.find((button) => button.name === view.materialInventory.list.export2);
   const buttonCreateMaterialReport = menuButtons.find((button) => button.name === view.MaterialReport.list.create);
   const buttonCreateProductInventoryCheck = menuButtons.find((button) => button.name === view.productInventoryCheck.list.create);
+  const buttonCreateContract = menuButtons.find((button) => button.name === view.contract.list.create);
 
   const fetchDocument = (additionalQuery) => {
     const queries = { ...defaultQueries, ...additionalQuery };
@@ -471,7 +473,11 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         await setmaterialReportViewData(detailDocument);
         await setOpenMaterialReportView(true);
-
+        break;
+      case 'contract':
+        detailDocument = await ContractService.detail(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, contractDocument: true });
         break;
       default:
         break;
@@ -570,6 +576,9 @@ export default function GeneralTable(props) {
         break;
       case 'productInventoryCheck':
         dispatch({ type: FLOATING_MENU_CHANGE, productInventoryCheckDocument: true });
+        break;
+      case 'contract':
+        dispatch({ type: FLOATING_MENU_CHANGE, contractDocument: true });
         break;
       default:
         break;
@@ -902,6 +911,8 @@ export default function GeneralTable(props) {
       user_group_number_item: tableColumns.includes('user_group_number_item'),
       file_url: tableColumns.includes('file_url'),
       percent_warehouse: tableColumns.includes('percent_warehouse'),
+      contract_code: tableColumns.includes('contract_code'),
+      contract_date: tableColumns.includes('contract_date'),
     };
     setDisplayOptions(initOptions);
   }, [tableColumns, selectedFolder]);
@@ -1044,6 +1055,7 @@ export default function GeneralTable(props) {
     buttonCreateProductInventoryCheck,
     buttonImportMaterialParts,
     handleImportMaterialsPartData,
+    buttonCreateContract,
   };
 
   return (
@@ -1155,7 +1167,6 @@ export default function GeneralTable(props) {
                                     <img alt="" src={row.image_url} style={style.tableUserAvatar} />
                                   </TableCell>
                                 )}
-
                                 {displayOptions.fullname && (
                                   <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
                                     {row.fullname}
@@ -1224,6 +1235,15 @@ export default function GeneralTable(props) {
                                     {row.inventory_check_code}
                                   </TableCell>
                                 )}
+                                {displayOptions.contract_code && (
+                                  <TableCell
+                                    align="left"
+                                    onClick={(event) => openDetailDocument(event, row)}
+                                    className={classes.tableItemName}
+                                  >
+                                    {row.contract_code}
+                                  </TableCell>
+                                )}
                                 {displayOptions.title && (
                                   <TableCell
                                     align="left"
@@ -1269,7 +1289,6 @@ export default function GeneralTable(props) {
                                     {row.supplier_name || row.title}
                                   </TableCell>
                                 )}
-
                                 {displayOptions.warehouse_name && (
                                   <TableCell
                                     align="left"
@@ -1332,6 +1351,11 @@ export default function GeneralTable(props) {
                                     {row.received_date ? formatDate(new Date(row.received_date), 'dd/MM/yyyy') : ''}
                                   </TableCell>
                                 )}
+                                {displayOptions.contract_date && (
+                                  <TableCell align="left">
+                                    {row.contract_date ? formatDate(new Date(row.contract_date), 'dd/MM/yyyy') : ''}
+                                  </TableCell>
+                                )}
                                 {displayOptions.account_id && (
                                   <TableCell
                                     align="left"
@@ -1363,7 +1387,6 @@ export default function GeneralTable(props) {
                                 {displayOptions.apply_to_department_type && row.apply_to_department_type && (
                                   <TableCell align="left">{row.apply_to_department_type.join(', ')}</TableCell>
                                 )}
-
                                 {displayOptions.visible_for_selection && (
                                   <TableCell align="left">
                                     <>
@@ -1403,7 +1426,6 @@ export default function GeneralTable(props) {
                                 {displayOptions.percent_production && <TableCell align="left">{row.percent_production || '0'}%</TableCell>}
                                 {displayOptions.percent_plan && <TableCell align="left">{row.percent_plan || '0'}%</TableCell>}
                                 {displayOptions.percent_warehouse && <TableCell align="left">{row.percent_warehouse || '0'}%</TableCell>}
-
                                 {displayOptions.order__title && (
                                   <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
                                     {row.order_title}{' '}
@@ -1430,7 +1452,6 @@ export default function GeneralTable(props) {
                                     {row.order_title}
                                   </TableCell>
                                 )}
-
                                 {displayOptions.number_of_worker && (
                                   <TableCell align="left" onClick={(event) => openDetailDocument(event, row)}>
                                     {row.number_of_worker}

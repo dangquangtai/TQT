@@ -42,15 +42,14 @@ import MaterialRequisitionModal from './../../views/Material/Requisition/Detail/
 import UserGroupModal from '../../views/UserGroup/Detail';
 import UserGroupMenuItemModal from '../../views/UserGroupMenuItem/Detail';
 import AccountPermissionModal from '../../views/AccountPermission/Detail';
-import ProfileModal from './Header/ProfileSection/profile';
 import ReturnMaterialModal from './../../views/Material/Return/Detail/index';
 import TemplateDocumentModal from '../../views/Setting/DocumentTemplate/ExcelDocument/Detail';
 import ProductInventoryModal from './../../views/Product/Inventory/Detail/index';
 import ExportMaterialInventoryModal from '../../views/Dialog/ExportMaterialInventory';
 import MaterialReportModel from '../../views/Report/Detail';
 import ProductInventoryCheckModal from '../../views/Product/InventoryCheck/Detail/index.js';
-import ViewReportDataModal from '../../views/Report/Detail/ViewDataTable';
 import ImportMatetialPartsDataModal from '../../views/Material/MaterialPart/ImportData';
+import ContractModal from '../../views/Material/Contract/Detail/index.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -196,6 +195,8 @@ const MainLayout = ({ children }) => {
 
       case 'productInventoryCheck':
         return <ProductInventoryCheckModal />;
+      case 'contract':
+        return <ContractModal />;
       default:
         return null;
     }

@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Modal, Grid, FormControl, TableCell, TextField, MenuItem, Link, Stepper, Step, StepLabel } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { Box, Button, Modal, Grid, FormControl, Link, Stepper, Step, StepLabel } from '@material-ui/core';
 import useStyles from './../../../../utils/classes';
 import { useDispatch, useSelector } from 'react-redux';
-import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CONFIRM_CHANGE } from './../../../../store/actions';
-import { Autocomplete } from '@material-ui/lab';
+import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN } from './../../../../store/actions';
 import { getTemplateMaterialPart, importMaterialPartsData } from '../../../../services/api/Material/MaterialPart';
-import * as XLSX from 'xlsx';
 import FirebaseUpload from '../../../FloatingMenu/FirebaseUpload';
 import { downloadFile } from '../../../../utils/helper';
 
