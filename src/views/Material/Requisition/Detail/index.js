@@ -214,8 +214,8 @@ const MaterialRequisitionModal = () => {
         part_id: '',
         part_name: '',
         part_code: '',
-        supplier_id: '',
-        supplier_name: '',
+        supplier_id: materialRequisitionData?.supplier_id || '',
+        supplier_name: materialRequisitionData?.supplier_name || '',
         category_id: '',
         category_name: '',
         status: '',
@@ -236,12 +236,19 @@ const MaterialRequisitionModal = () => {
       part_name: newItem?.title || '',
       category_id: newItem?.category_id || '',
       category_name: newItem?.category_name || '',
-      supplier_id: materialRequisitionData?.supplier_id || '',
-      supplier_name: materialRequisitionData?.supplier_name || '',
       unit_id: newItem?.unit_id || '',
       unit_name: newItem?.unit_name || '',
       order_code: '',
       order_date: new Date('0001-01-01T00:00:00.000Z'),
+    };
+    newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
+    setMaterialList(newMaterialList);
+  };
+
+  const handleChangeContract = (index, newItem) => {
+    const newMaterialList = [...materialList];
+    const newMaterial = {
+      contract_id: newItem?.id,
     };
     newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
     setMaterialList(newMaterialList);
@@ -499,14 +506,14 @@ const MaterialRequisitionModal = () => {
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>Danh sách vật tư</div>
                           <Tooltip title="Thêm vật tư">
-                            <IconButton onClick={handleAddMaterial}>
+                            <IconButton size="small" onClick={handleAddMaterial}>
                               <AddCircleOutline />
                             </IconButton>
                           </Tooltip>
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
-                            <Table className={classes.tableSmall} aria-label="simple table" stickyHeader>
+                            <Table size="small" stickyHeader>
                               <TableHead>
                                 <TableRow>
                                   <TableCell />
@@ -514,6 +521,7 @@ const MaterialRequisitionModal = () => {
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">SL cần</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
+                                  <TableCell align="left">Hợp đồng</TableCell>
                                   <TableCell align="left">Ghi chú</TableCell>
                                   <TableCell align="left">Ghi chú 2</TableCell>
                                   <TableCell align="left">Trạng thái</TableCell>
@@ -531,6 +539,7 @@ const MaterialRequisitionModal = () => {
                                     handleChangeMaterialCode={handleChangeMaterialCode}
                                     classes={classes}
                                     handleChangeMaterial={handleChangeMaterial}
+                                    handleChangeContract={handleChangeContract}
                                   />
                                 ))}
                               </TableBody>
