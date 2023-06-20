@@ -95,6 +95,7 @@ const Row = (props) => {
       product_code_list: [product_id],
       customer_code_list: [customer_id],
       customer_order_code_list: [],
+      is_synthetic: false,
     });
     dispatch({ type: DOCUMENT_CHANGE, documentType: 'materialReport' });
     handleDownload(url);
@@ -263,14 +264,44 @@ const Row = (props) => {
       );
     }
     if (reportType === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP') {
-      const { part_code, part_name, unit_name, used_quantity_in_piece } = row;
+      const { part_code, part_name, unit_name, used_quantity_in_piece, detail } = row;
+      return (
+        <>
+          <TableCell align="left">{index + 1}</TableCell>
+          <TableCell align="left">{part_code ? part_code : ''}</TableCell>
+          <TableCell align="left">{part_name ? part_name : ''}</TableCell>
+          <TableCell align="left">{detail.length && detail[0]?.supplier_name ? detail[0].supplier_name : ''}</TableCell>
+          <TableCell align="left">{unit_name ? unit_name : ''}</TableCell>
+          <TableCell align="left">{used_quantity_in_piece ? used_quantity_in_piece : 0}</TableCell>
+        </>
+      );
+    }
+    if (reportType === 'BAO_CAO_SU_DUNG_VAT_TU_THEO_DON_HANG') {
+      const { product_customer_code, product_code, product_name, part_code, part_name, unit_name, used_quantity_in_piece } = row;
+      return (
+        <>
+          <TableCell align="left">{index + 1}</TableCell>
+          <TableCell align="left">{product_customer_code ? product_customer_code : ''}</TableCell>
+          <TableCell align="left">{product_code ? product_code : ''}</TableCell>
+          <TableCell align="left">{product_name ? product_name : ''}</TableCell>
+          <TableCell align="left">{part_code ? part_code : ''}</TableCell>
+          <TableCell align="left">{part_name ? part_name : ''}</TableCell>
+          <TableCell align="left">{unit_name ? unit_name : ''}</TableCell>
+          <TableCell align="left">{used_quantity_in_piece ? used_quantity_in_piece : 0}</TableCell>
+        </>
+      );
+    }
+    if (reportType === 'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP') {
+      const { difference_quantity_in_piece, part_code, part_name, unit_name } = row;
       return (
         <>
           <TableCell align="left">{index + 1}</TableCell>
           <TableCell align="left">{part_code ? part_code : ''}</TableCell>
           <TableCell align="left">{part_name ? part_name : ''}</TableCell>
           <TableCell align="left">{unit_name ? unit_name : ''}</TableCell>
-          <TableCell align="left">{used_quantity_in_piece ? used_quantity_in_piece : 0}</TableCell>
+          <TableCell align="left">{difference_quantity_in_piece ? difference_quantity_in_piece : 0}</TableCell>
+          <TableCell align="left"></TableCell>
+          <TableCell align="left"></TableCell>
         </>
       );
     }

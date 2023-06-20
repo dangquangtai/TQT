@@ -128,6 +128,7 @@ export default function ViewReportDataModal(props) {
     reportType,
     listCustomerCode,
     listCustomerOrderCode,
+    reportName,
   } = props;
   const { reportViewDataTableDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const dispatch = useDispatch();
@@ -138,6 +139,7 @@ export default function ViewReportDataModal(props) {
   const [sumaryDataa, setsumaryDataa] = useState([]);
   const [openDetail, setOpenDetail] = useState(false);
   const [tabIndex, setTabIndex] = React.useState(0);
+  const [isSynthetic, setIsSynthetic] = useState(false);
   const [exportData, setExportData] = useState({
     from_date: new Date(),
     to_date: new Date(),
@@ -179,6 +181,7 @@ export default function ViewReportDataModal(props) {
       product_code_list: listProductID,
       customer_code_list: listCustomerCode,
       customer_order_code_list: listCustomerOrderCode,
+      is_synthetic: isSynthetic,
     });
     handleDownload(url);
   };
@@ -209,6 +212,9 @@ export default function ViewReportDataModal(props) {
   }, [selectedDocument]);
   useEffect(() => {
     const fetchData = async () => {
+      if (reportType === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP') {
+        await setIsSynthetic(true);
+      }
       const getListViewData = await getViewDataForReporTemplate({
         supplier_id_list: listSupplier,
         part_id_list: listPart,
@@ -218,6 +224,7 @@ export default function ViewReportDataModal(props) {
         product_code_list: listProductID,
         customer_code_list: listCustomerCode,
         customer_order_code_list: listCustomerOrderCode,
+        is_synthetic: isSynthetic,
       });
       const listViewData =
         reportType === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP'
@@ -236,6 +243,10 @@ export default function ViewReportDataModal(props) {
           ? getListViewData?.list_data_product_inventory
           : reportType === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP'
           ? getListViewData?.list_use_of_material_supplier_detail
+          : reportType === 'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP'
+          ? getListViewData?.list_difference_data
+          : reportType === 'BAO_CAO_SU_DUNG_VAT_TU_THEO_DON_HANG'
+          ? getListViewData?.list_use_of_material_supplier_from_order
           : undefined;
 
       setListViewData(listViewData);
@@ -243,19 +254,19 @@ export default function ViewReportDataModal(props) {
     if (isOpen) {
       fetchData();
     }
-  }, [isOpen, listSupplier, listPart, reportID, fromDate, toDate, listProductID, listCustomerCode, listCustomerOrderCode, reportType]);
-  // useEffect(() => {
-  //   const convertData = async () => {
-  //     const getListViewDataWithDate = listViewData.map((event) => ({
-  //       ...event,
-  //       start: moment(event.start).toDate(),
-  //       end: moment(event.end).toDate(),
-  //     }));
-  //     setListViewData({ ...getListViewDataWithDate });
-  //   };
-  //   if (isOpen) convertData();
-  // }, [isOpen, listViewData]);
-
+  }, [
+    isOpen,
+    listSupplier,
+    listPart,
+    reportID,
+    fromDate,
+    toDate,
+    listProductID,
+    listCustomerCode,
+    listCustomerOrderCode,
+    reportType,
+    isSynthetic,
+  ]);
   const formats = {
     dayFormat: (date, culture, localizer) => localizer.format(date, 'dddd, DD/MM/YYYY', culture),
     agendaDateFormat: (date, culture, localizer) => localizer.format(date, 'DD/MM/YYYY', culture),
@@ -343,30 +354,17 @@ export default function ViewReportDataModal(props) {
         <DialogContent className={classes.dialogContent}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Tabs
-                value={tabIndex}
-                indicatorColor="primary"
-                textColor="primary"
-                onChange={handleChangeTab}
-                aria-label="simple tabs example"
-                variant="scrollable"
-              >
-                {/* <Tab
-                  className={classes.unUpperCase}
-                  label={
-                    <Typography className={classes.tabLabels} component="span" variant="subtitle1">
-                      <History />
-                      Chi tiết xuất nhập
-                    </Typography>
-                  }
-                  value={0}
-                  {...a11yProps(0)}
-                /> */}
-              </Tabs>
-            </Grid>
-            <Grid item xs={12}>
               <TabPanel value={tabIndex} index={0}>
                 <Grid container spacing={1}>
+                  <Grid item lg={12} md={12} xs={12}>
+                    <div style={{ textAlign: 'center' }}>
+                      <h1>{reportName}</h1>
+                      <span>
+                        Từ ngày {moment(fromDate).format('DD/MM/YYYY')} đến ngày {moment(toDate).format('DD/MM/YYYY')}
+                      </span>
+                    </div>
+                  </Grid>
+
                   <Grid item lg={12} md={12} xs={12}>
                     <div className={classes.tabItem}>
                       <div className={classes.tabItemBody}>

@@ -331,6 +331,8 @@ export const apiEndpoints = {
   get_activity_logs_list: '/Primary/?FlowAlias=bs_api_share_get_activity_logs&action=api',
   // Report
   get_list_material_report: '/Primary/?FlowAlias=bs_api_factory_get_list_material_report&action=api',
+  get_list_product_report: '/Primary/?FlowAlias=bs_api_factory_get_list_product_report&action=api',
+  get_list_production_report: '/Primary/?FlowAlias=bs_api_factory_get_list_production_report&action=api',
   get_list_report_type: '/Primary/?FlowAlias=bs_api_factory_get_list_report_type&action=api',
   get_list_work_order: '/Primary/?FlowAlias=bs_api_factory_get_list_work_order&action=api',
   create_new_material_report_file: '/Primary/?FlowAlias=bs_api_factory_create_new_material_report_file&action=api',
@@ -475,6 +477,12 @@ export const templateDocumentActions = {
 };
 export const MaterialReportActions = {
   list_material_report: 'TQT_REPORT_DEFAULT_OPEN_LIST_MATERIAL_REPORT',
+};
+export const ProductReportActions = {
+  list_product_report: 'TQT_REPORT_DEFAULT_OPEN_LIST_PRODUCT_REPORT',
+};
+export const ProductionReportActions = {
+  list_production_report: 'TQT_REPORT_DEFAULT_OPEN_LIST_PRODUCTION_REPORT',
 };
 
 export const productInventoryCheckActions = {
@@ -747,6 +755,16 @@ export const view = {
     detail: {
       save: 'TQT_SETTING_DEFAULT_EXCEL_TEMPLATE_SAVE_FORM_BUTTON',
       import: 'TQT_SETTING_DEFAULT_EXCEL_TEMPLATE_IMPORT_FORM_BUTTON',
+    },
+  },
+  ProductReport: {
+    list: {
+      create: 'TQT_REPORT_DEFAULT_SHOW_CREATE_NEW_PRODUCT_REPORT',
+    },
+  },
+  ProductionReport: {
+    list: {
+      create: 'TQT_REPORT_DEFAULT_SHOW_CREATE_NEW_PRODUCTION_REPORT',
     },
   },
   productInventoryCheck: {
