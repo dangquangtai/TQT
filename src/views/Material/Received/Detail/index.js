@@ -195,7 +195,7 @@ const ReceivedMaterialModal = () => {
   };
 
   const handleDeleteMaterial = (index, id) => {
-    if (id) {
+    if (id && selectedDocument?.id) {
       showConfirmPopup({
         title: 'Xóa vật tư',
         message: 'Bạn có chắc chắn muốn xóa vật tư này?',
@@ -306,7 +306,6 @@ const ReceivedMaterialModal = () => {
         ...item,
         received_id: selectedDocument?.id || '',
         material_order_id: item.requisition_id,
-        id: '',
         customer_order_code: item.order_code,
         customer_order_date: item.order_date,
       };
