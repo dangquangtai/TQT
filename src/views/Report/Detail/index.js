@@ -71,7 +71,7 @@ const MaterialReportModel = () => {
   const [selected, setSelected] = React.useState('');
   const dispatch = useDispatch();
 
-  const { materialReportDocument: openDialog } = useSelector((state) => state.floatingMenu);
+  const { materialReportDocument: openDialog, additionalParam } = useSelector((state) => state.floatingMenu);
   const [reportType, setReportType] = useState([]);
   const [workOrders, setWorkOrders] = useState([]);
   const [listCol, setlistCol] = useState([]);
@@ -90,7 +90,9 @@ const MaterialReportModel = () => {
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [listColDetail, setListColDetail] = useState([]);
   const [selectedReport, setSelectedReport] = useState('');
+  const [getreportName, setGetreportName] = useState('');
   const [autocompleteVersion, setAutocompleteVersion] = useState(0);
+  const [isDisableNext, setIsDisableNext] = useState(true);
   const [queryData, setQueryData] = useState({
     from_date: new Date(),
     to_date: new Date(),
@@ -109,23 +111,29 @@ const MaterialReportModel = () => {
   const [downloadURL, setDownloadURL] = useState('');
   const handleNext = async () => {
     if (activeStep === 1) {
-      await handleSubmited();
-      await setDataTableModal(true);
-      handleCloseDialog();
-    } else setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      const rs = await handleSubmited();
+      if (rs === false) {
+        await setDataTableModal(undefined);
+      } else {
+        await setDataTableModal(true);
+        handleCloseDialog();
+      }
+    } else {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      selectedReport === 'KH_XUAT_NHAP' ? setIsDisableNext(false) : setIsDisableNext(true);
+    }
   };
 
   const handleBack = () => {
-    // if (activeStep === 2) {
-    //   setlistCol(['']);
-    // }
-
+    setIsDisableNext(true);
+    setSelectedReport('');
+    setSelected('');
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
   const handleCloseDialog = () => {
     setDocumentToDefault();
-    dispatch({ type: FLOATING_MENU_CHANGE, materialReportDocument: false });
+    dispatch({ type: FLOATING_MENU_CHANGE, materialReportDocument: false, additionalParam: '' });
   };
 
   const handleOpenSnackbar = (type, text) => {
@@ -140,6 +148,8 @@ const MaterialReportModel = () => {
   const handleClick = (event, row) => {
     setQueryData({ ...queryData, report_type: row.id });
     setSelectedReport(row.id);
+    setGetreportName(row.value);
+    setIsDisableNext(false);
     if (activeStep === 0) {
       switch (row.id) {
         case 'TONG_HOP_TON_KHO_VAT_TU':
@@ -234,7 +244,7 @@ const MaterialReportModel = () => {
           ]);
           break;
         case 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP':
-          setlistCol(['STT', 'Mã vật tư', 'Tên vật tư', 'Đơn vị', 'Số lượng sử dụng']);
+          setlistCol(['STT', 'Mã vật tư', 'Tên vật tư', 'Nhà cung cấp', 'Đơn vị', 'Số lượng sử dụng']);
           setListColDetail([
             'Ngày tháng',
             'Mã vật tư',
@@ -246,6 +256,22 @@ const MaterialReportModel = () => {
             'Mã TP TQT',
             'SL sử dụng',
           ]);
+          break;
+        case 'BAO_CAO_SU_DUNG_VAT_TU_THEO_DON_HANG':
+          setlistCol([
+            'STT',
+            'Mã TP KH',
+            'Mã TP TQT',
+            'Tên thành phẩm',
+            'Mã vật tư sử dụng',
+            'Tên vật tư',
+            'Ngày sử dụng',
+            'Đơn vị',
+            'SL SD',
+          ]);
+          break;
+        case 'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP':
+          setlistCol(['STT', 'Mã vật tư', 'Tên vật tư', 'Đơn vị', 'SL thừa thiếu', '', '']);
           break;
         default:
           break;
@@ -287,6 +313,7 @@ const MaterialReportModel = () => {
       report_name: '',
       work_order_id: '',
     });
+    setIsDisableNext(true);
     setSelected('');
     setDownloadURL('');
     setActiveStep(0);
@@ -301,7 +328,8 @@ const MaterialReportModel = () => {
       if (
         selectedReport === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP' ||
         selectedReport === 'TONG_HOP_TON_KHO_VAT_TU' ||
-        selectedReport === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP'
+        selectedReport === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP' ||
+        selectedReport === 'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP'
       ) {
         const getListSupplier = await getAllSupplier();
         newListSupplier = [{ id: null, title: 'Chọn tất cả' }, ...getListSupplier];
@@ -332,11 +360,11 @@ const MaterialReportModel = () => {
     try {
       if (!queryData.work_order_id) {
         handleOpenSnackbar('error', 'Không được để trống kế hoạch sản xuất!');
-        return;
+        return false;
       }
       if (!queryData.report_name) {
         handleOpenSnackbar('error', 'Không được để trống tên report!');
-        return;
+        return false;
       }
       const getReportID = await createMaterialReportFile({
         from_date: queryData.from_date,
@@ -368,6 +396,7 @@ const MaterialReportModel = () => {
     } else {
       setSelectedCustomers(value.map((item) => item.id));
     }
+    setIsDisableNext(false);
   }
   function handleCustomerOrderChange(event, value) {
     if (value.some((item) => item.id === null)) {
@@ -375,6 +404,7 @@ const MaterialReportModel = () => {
     } else {
       setListSelectedCustomerOrderCodes(value.map((item) => item.id));
     }
+    setIsDisableNext(false);
   }
   function handleProductCodeChange(event, value) {
     if (value.some((item) => item.id === null)) {
@@ -382,6 +412,7 @@ const MaterialReportModel = () => {
     } else {
       setSelectedProducts(value.map((item) => item.id));
     }
+    setIsDisableNext(false);
   }
 
   function handlePartChange(event, value) {
@@ -390,6 +421,7 @@ const MaterialReportModel = () => {
     } else {
       setSelectedParts(value.map((item) => item.id));
     }
+    setIsDisableNext(false);
   }
 
   const checkToDate = (date, type) => {
@@ -459,7 +491,12 @@ const MaterialReportModel = () => {
           <span className={classes.tabItemLabelField}>Đặt tên report:</span>
           <TextField fullWidth variant="outlined" name="report_name" size="small" type="text" onChange={handleChanges} />
         </Grid>
-        {['KH_GIAO_HANG_CHO_NHA_CUNG_CAP', 'TONG_HOP_TON_KHO_VAT_TU', 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP'].includes(selectedReport) && (
+        {[
+          'KH_GIAO_HANG_CHO_NHA_CUNG_CAP',
+          'TONG_HOP_TON_KHO_VAT_TU',
+          'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP',
+          'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP',
+        ].includes(selectedReport) && (
           <>
             <Grid item xs={12}>
               <span className={classes.tabItemLabelField}>Nhà cung cấp:</span>
@@ -506,7 +543,7 @@ const MaterialReportModel = () => {
             </Grid>
           </>
         )}
-        {['KH_SAN_XUAT', 'BAO_CAO_THUC_TE_SAN_XUAT'].includes(selectedReport) && (
+        {['KH_SAN_XUAT', 'BAO_CAO_THUC_TE_SAN_XUAT', 'BAO_CAO_SU_DUNG_VAT_TU_THEO_DON_HANG'].includes(selectedReport) && (
           <>
             <Grid item xs={12}>
               <span className={classes.tabItemLabelField}>Mã đơn khách hàng:</span>
@@ -648,8 +685,19 @@ const MaterialReportModel = () => {
   }
   useEffect(() => {
     const fetchData = async () => {
-      const reporttype = await getAllMaterialReportType();
-      setReportType(reporttype);
+      console.log(additionalParam);
+      if (additionalParam === 'material') {
+        const reporttype = await getAllMaterialReportType('MATERIAL_REPORT');
+        setReportType(reporttype);
+      } else if (additionalParam === 'product') {
+        const reporttype = await getAllMaterialReportType('PRODUCT_REPORT');
+        setReportType(reporttype);
+      } else if (additionalParam === 'production') {
+        const reporttype = await getAllMaterialReportType('PRODUCTION_REPORT');
+        setReportType(reporttype);
+      } else {
+        console.log(additionalParam);
+      }
     };
     const fetchWorkOrderData = async () => {
       const workOrders = await getAllWorkOrder();
@@ -657,7 +705,7 @@ const MaterialReportModel = () => {
     };
     fetchData();
     fetchWorkOrderData();
-  }, []);
+  }, [additionalParam]);
 
   return (
     <React.Fragment>
@@ -674,6 +722,7 @@ const MaterialReportModel = () => {
         reportType={selectedReport}
         listColDetail={listColDetail}
         listCustomerOrderCode={listSelectedCustomerOrderCodes}
+        reportName={getreportName}
         handleClose={handleCloseViewReportDataModal}
         // handleSubmit={handleSubmitBroken}
         // handleOpenSnackbar={handleOpenSnackbar}
@@ -711,7 +760,7 @@ const MaterialReportModel = () => {
             </Button>
           )}
           {activeStep > 1 ? undefined : (
-            <Button variant="contained" color="primary" onClick={handleNext}>
+            <Button variant="contained" color="primary" disabled={isDisableNext} onClick={handleNext}>
               Tiếp tục
             </Button>
           )}
