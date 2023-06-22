@@ -25,7 +25,7 @@ import {
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Delete, History, AttachFileOutlined, DescriptionOutlined } from '@material-ui/icons';
+import { History, AttachFileOutlined, DescriptionOutlined } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { AddCircleOutline } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
@@ -224,6 +224,7 @@ const MaterialRequisitionModal = () => {
         quantity_in_piece: 0,
         order_code: '',
         order_date: new Date('0001-01-01T00:00:00.000Z'),
+        contract_id: '',
       },
     ]);
   };
@@ -249,6 +250,8 @@ const MaterialRequisitionModal = () => {
     const newMaterialList = [...materialList];
     const newMaterial = {
       contract_id: newItem?.id,
+      contract_title: newItem?.title,
+      contract_code: newItem?.contract_code,
     };
     newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
     setMaterialList(newMaterialList);
@@ -304,6 +307,7 @@ const MaterialRequisitionModal = () => {
   }, []);
 
   const isDisabled = selectedDocument?.status?.includes('RECEIVED');
+  const isDetail = selectedDocument?.id;
 
   return (
     <React.Fragment>
@@ -535,6 +539,7 @@ const MaterialRequisitionModal = () => {
                                     row={row}
                                     index={index}
                                     isDisabled={isDisabled}
+                                    isDetail={isDetail}
                                     handleDeleteMaterial={handleDeleteMaterial}
                                     handleChangeMaterialCode={handleChangeMaterialCode}
                                     classes={classes}

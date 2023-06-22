@@ -14,7 +14,6 @@ import {
 import React, { useEffect } from 'react';
 import { Delete } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
-import { useSelector } from 'react-redux';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { format } from 'date-fns';
@@ -27,19 +26,8 @@ const useRowStyles = makeStyles({
   },
 });
 const TableCollapse = (props) => {
-  const {
-    row,
-    index,
-    handleChangeMaterial,
-    handleChangeMaterialCode,
-    handleDeleteMaterial,
-    isDisabled,
-    isDetail,
-    classes,
-    handleChangeContract,
-  } = props;
+  const { row, index, isDisabled, isDetail, classes, handleChangeContract, handleChangeMaterial, handleDeleteMaterial } = props;
   const [open, setOpen] = React.useState(false);
-  const { materials } = useSelector((state) => state.metadata);
   const classesRow = useRowStyles();
   const [contracts, setContracts] = React.useState([]);
 
@@ -56,57 +44,32 @@ const TableCollapse = (props) => {
 
   return (
     <React.Fragment>
-      <TableRow className={classesRow.root}>
+      <TableRow className={classesRow.root} key={index}>
         <TableCell style={{ width: '5%' }}>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell align="left" style={{ width: '15%' }}>
-          <Autocomplete
-            options={materials}
-            getOptionLabel={(option) => option.part_code || ''}
-            fullWidth
-            size="small"
-            disabled={isDisabled}
-            value={materials.find((item) => item.part_code === row.part_code) || null}
-            onChange={(event, newValue) => handleChangeMaterialCode(index, newValue)}
-            renderInput={(params) => <TextField {...params} variant="outlined" />}
-          />
+        <TableCell align="left" style={{ width: '5%' }}>
+          {row?.order_code}
         </TableCell>
-        <TableCell align="left" className={classes.maxWidthCell} style={{ width: '20%' }}>
-          <Tooltip title={row?.part_name}>
-            <Autocomplete
-              options={materials}
-              getOptionLabel={(option) => option.title || ''}
-              fullWidth
-              size="small"
-              disabled={isDisabled}
-              value={materials.find((item) => item.part_code === row.part_code) || null}
-              onChange={(event, newValue) => handleChangeMaterialCode(index, newValue)}
-              renderInput={(params) => <TextField {...params} variant="outlined" />}
-            />
+        <TableCell align="left" style={{ width: '12%' }}>
+          <Tooltip title={row?.part_code}>
+            <span>{row?.part_code}</span>
           </Tooltip>
         </TableCell>
-        <TableCell align="left" style={{ width: '10%' }}>
-          <TextField
-            InputProps={{
-              inputProps: { min: 0 },
-            }}
-            fullWidth
-            variant="outlined"
-            name="quantity_in_piece"
-            type="number"
-            size="small"
-            disabled={isDisabled}
-            value={row?.quantity_in_piece || ''}
-            onChange={(e) => handleChangeMaterial(index, e)}
-          />
+        <TableCell align="left" className={classes.maxWidthCell} style={{ width: '15%' }}>
+          <Tooltip title={row?.part_name}>
+            <span>{row?.part_name}</span>
+          </Tooltip>
+        </TableCell>
+        <TableCell align="left" style={{ width: '5%' }}>
+          {row.quantity_in_piece}
         </TableCell>
         <TableCell align="left" style={{ width: '5%' }}>
           {row.unit_name}
         </TableCell>
-        <TableCell align="left" className={classes.maxWidthCell} style={{ width: '15%' }}>
+        <TableCell align="left" className={classes.maxWidthCell} style={{ width: '13%' }}>
           {isDetail ? (
             <Tooltip title={`${row?.contract_title}(${row?.contract_code})`}>
               <span>{`${row?.contract_title}(${row?.contract_code})`}</span>
@@ -122,6 +85,9 @@ const TableCollapse = (props) => {
               renderInput={(params) => <TextField {...params} variant="outlined" />}
             />
           )}
+        </TableCell>
+        <TableCell align="left" style={{ width: '5%' }}>
+          {row.order_date ? format(new Date(row.order_date), 'dd/MM/yyyy') : ''}
         </TableCell>
         <TableCell align="left" style={{ width: '15%' }}>
           <TextField

@@ -19,13 +19,11 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
-  Tooltip,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AttachFileOutlined, Delete, History, DescriptionOutlined } from '@material-ui/icons';
+import { AttachFileOutlined, History, DescriptionOutlined } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import useStyles from './../../../../utils/classes';
 import useView from './../../../../hooks/useView';
@@ -49,9 +47,9 @@ import {
 } from './../../../../services/api/Material/Purchase';
 import { popupWindow } from '../../../../utils/helper.js';
 import { getSupplierListByWorkOrder } from './../../../../services/api/Partner/Supplier';
-import { format as formatDate } from 'date-fns';
 import { createFileAttachment, deleteFileAttachment, getListFile } from '../../../../services/api/Attachment/FileAttachment';
 import ActivityLog from '../../../../component/ActivityLog/index.js';
+import TableCollapse from './collapse.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -260,6 +258,17 @@ const PurchaseMaterialModal = () => {
   const handleChangeSupplier = (e) => {
     setMaterialList([]);
     dispatch({ type: CLOSE_MODAL_MATERIAL });
+  };
+
+  const handleChangeContract = (index, newItem) => {
+    const newMaterialList = [...materialList];
+    const newMaterial = {
+      contract_id: newItem?.id,
+      contract_title: newItem?.title,
+      contract_code: newItem?.contract_code,
+    };
+    newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
+    setMaterialList(newMaterialList);
   };
 
   useEffect(() => {
@@ -525,11 +534,13 @@ const PurchaseMaterialModal = () => {
                             <Table size="small" stickyHeader>
                               <TableHead>
                                 <TableRow>
+                                  <TableCell />
                                   <TableCell align="left">Mã đơn KH</TableCell>
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">SL mua</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
+                                  <TableCell align="left">Hợp đồng</TableCell>
                                   <TableCell align="left">Ngày sản xuất</TableCell>
                                   <TableCell align="left">Ghi chú</TableCell>
                                   <TableCell align="left">Ghi chú 2</TableCell>
@@ -539,66 +550,17 @@ const PurchaseMaterialModal = () => {
                               </TableHead>
                               <TableBody>
                                 {materialList?.map((row, index) => (
-                                  <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '10%' }}>
-                                      {row?.order_code}
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '12%' }}>
-                                      <Tooltip title={row?.part_code}>
-                                        <span>{row?.part_code}</span>
-                                      </Tooltip>
-                                    </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '20%' }}>
-                                      <Tooltip title={row?.part_name}>
-                                        <span>{row?.part_name}</span>
-                                      </Tooltip>
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '8%' }}>
-                                      {row.quantity_in_piece}
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '5%' }}>
-                                      {row.unit_name}
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
-                                      {row.order_date ? formatDate(new Date(row.order_date), 'dd/MM/yyyy') : ''}
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '15%' }}>
-                                      <TextField
-                                        multiline
-                                        minRows={1}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="notes"
-                                        type="text"
-                                        size="small"
-                                        value={row.notes || ''}
-                                        onChange={(e) => handleChangeMaterial(index, e)}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
-                                      <TextField
-                                        multiline
-                                        minRows={1}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="notes2"
-                                        type="text"
-                                        size="small"
-                                        value={row.notes2 || ''}
-                                        onChange={(e) => handleChangeMaterial(index, e)}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '5%' }}>
-                                      {row.status_display}
-                                    </TableCell>
-                                    {!isDisabled && (
-                                      <TableCell align="center" style={{ width: '5%' }}>
-                                        <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>
-                                          <Delete />
-                                        </IconButton>
-                                      </TableCell>
-                                    )}
-                                  </TableRow>
+                                  <TableCollapse
+                                    row={row}
+                                    classes={classes}
+                                    index={index}
+                                    key={index}
+                                    handleChangeContract={handleChangeContract}
+                                    handleChangeMaterial={handleChangeMaterial}
+                                    handleDeleteMaterial={handleDeleteMaterial}
+                                    isDisabled={isDisabled}
+                                    isDetail={isDisabled}
+                                  />
                                 ))}
                               </TableBody>
                             </Table>
