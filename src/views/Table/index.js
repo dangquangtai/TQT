@@ -70,6 +70,7 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import ViewReportDataModal from '../Report/Detail/ViewDataTable';
 import { ContractService } from './../../services/api/Material/Contract';
 import { ProductRequisitionService } from './../../services/api/Product/Requisition';
+import { ProductContractService } from './../../services/api/Product/Contract';
 
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
@@ -486,6 +487,11 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, productRequisitionDocument: true });
         break;
+      case 'productContract':
+        detailDocument = await ProductContractService.detail(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, productContractDocument: true });
+        break;
       default:
         break;
     }
@@ -589,6 +595,9 @@ export default function GeneralTable(props) {
         break;
       case 'productRequisition':
         dispatch({ type: FLOATING_MENU_CHANGE, productRequisitionDocument: true });
+        break;
+      case 'productContract':
+        dispatch({ type: FLOATING_MENU_CHANGE, productContractDocument: true });
         break;
       default:
         break;

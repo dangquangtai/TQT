@@ -362,6 +362,7 @@ export const apiEndpoints = {
   update_contract: '/Primary/?FlowAlias=bs_api_factory_update_contract&action=api',
   get_contract_data: '/Primary/?FlowAlias=bs_api_factory_get_contract_data&action=api',
   get_contract_list_by_supplier_and_material: '/Primary/?FlowAlias=bs_api_factory_get_contract_list_by_supplier_and_material&action=api',
+  delete_contract_detail: '/Primary/?FlowAlias=bs_api_factory_delete_contract_detail&action=api',
 
   // Product Contract
   get_product_contract_list: '/Primary/?FlowAlias=bs_api_factory_get_product_contract_list&action=api',
@@ -369,8 +370,9 @@ export const apiEndpoints = {
   create_product_contract: '/Primary/?FlowAlias=bs_api_factory_create_product_contract&action=api',
   update_product_contract: '/Primary/?FlowAlias=bs_api_factory_update_product_contract&action=api',
   get_product_contract_data: '/Primary/?FlowAlias=bs_api_factory_get_product_contract_data&action=api',
-  get_product_contract_list_by_supplier_and_material:
+  get_product_contract_list_by_supplier_and_product:
     '/Primary/?FlowAlias=bs_api_factory_get_product_contract_list_by_supplier_and_material&action=api',
+  delete_product_contract_detail: '/Primary/?FlowAlias=bs_api_factory_delete_product_contract_detail&action=api',
 
   // Product Requisition
   get_product_requisition_list: '/Primary/?FlowAlias=bs_api_factory_get_product_requisition_list&action=api',
@@ -512,7 +514,9 @@ export const contractActions = {
 export const productRequisitionActions = {
   list: 'TQT_PRODUCT_DEFAULT_OPEN_REQUISTISION_LIST',
 };
-
+export const productContractActions = {
+  list: 'TQT_PRODUCT_DEFAULT_OPEN_CONTRACT_LIST',
+};
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
 export const pageUrls = {
   dashboard: '/dashboard/default',

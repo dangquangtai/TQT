@@ -18,7 +18,7 @@ import { useSelector } from 'react-redux';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { format } from 'date-fns';
-import { ContractService } from './../../../../services/api/Material/Contract';
+import { ProductContractService } from './../../../../services/api/Product/Contract';
 const useRowStyles = makeStyles({
   root: {
     '& > *': {
@@ -49,7 +49,7 @@ const TableCollapse = (props) => {
     if (isDisabled) return;
     if (!row.product_id) return;
     const fetch = async () => {
-      const res = await ContractService.getBySupplierAndMaterial({ product_id: row.product_id, supplier_id: row.supplier_id });
+      const res = await ProductContractService.getBySupplierAndProduct({ product_id: row.product_id, supplier_id: row.supplier_id });
       setContracts(res);
     };
     fetch();

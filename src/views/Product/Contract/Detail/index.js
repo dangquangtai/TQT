@@ -37,9 +37,9 @@ import FirebaseUpload from './../../../FloatingMenu/FirebaseUpload/index';
 import DatePicker from './../../../../component/DatePicker/index';
 import { createFileAttachment, deleteFileAttachment, getListFile } from '../../../../services/api/Attachment/FileAttachment';
 import ActivityLog from '../../../../component/ActivityLog/index.js';
-import { ContractService } from './../../../../services/api/Material/Contract';
+import { ProductContractService } from './../../../../services/api/Product/Contract';
+import NumberFormatCustom from './../../../../component/NumberFormatCustom/index';
 import { FormattedNumber } from 'react-intl';
-import NumberFormatCustom from '../../../../component/NumberFormatCustom/index.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -67,14 +67,14 @@ function a11yProps(index) {
   };
 }
 
-const ContractModal = () => {
+const ProductContractModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { form_buttons: formButtons } = useView();
   const { setConfirmPopup } = useConfirmPopup();
-  const { materials } = useSelector((state) => state.metadata);
+  const { products } = useSelector((state) => state.metadata);
   const saveButton = formButtons.find((button) => button.name === view.contract.detail.save);
-  const { contractDocument: openDialog } = useSelector((state) => state.floatingMenu);
+  const { productContractDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
   const [isOpenUpload, setIsOpenUpload] = useState(false);
   const [listFileData, setListFileData] = useState([]);
@@ -89,7 +89,7 @@ const ContractModal = () => {
   const [statusList, setStatusList] = useState([]);
   const [tabIndex, setTabIndex] = React.useState(0);
 
-  const [materialList, setMaterialList] = useState([]);
+  const [ProductList, setProductList] = useState([]);
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
@@ -125,7 +125,7 @@ const ContractModal = () => {
   };
   const handleCloseDialog = () => {
     setDocumentToDefault();
-    dispatch({ type: FLOATING_MENU_CHANGE, contractDocument: false });
+    dispatch({ type: FLOATING_MENU_CHANGE, productContractDocument: false });
   };
 
   const handleOpenSnackbar = (type, text) => {
@@ -142,18 +142,18 @@ const ContractModal = () => {
     setContractData({ contract_date: new Date(), notes: '' });
     setListFileData([]);
     setFileData([]);
-    setMaterialList([]);
+    setProductList([]);
     setTabIndex(0);
   };
 
   const handleSubmitForm = async () => {
     try {
       if (selectedDocument?.id) {
-        await ContractService.update({ ...contractData, detail_list: materialList });
-        handleOpenSnackbar('success', 'Cập nhật Đơn hàng mua vật tư thành công!');
+        await ProductContractService.update({ ...contractData, detail_list: ProductList });
+        handleOpenSnackbar('success', 'Cập nhật hợp đồng mua thành phẩm thành công!');
       } else {
-        await ContractService.create({ ...contractData, detail_list: materialList });
-        handleOpenSnackbar('success', 'Tạo mới Đơn hàng mua vật tư thành công!');
+        await ProductContractService.create({ ...contractData, detail_list: ProductList });
+        handleOpenSnackbar('success', 'Tạo mới hợp đồng mua thành phẩm thành công!');
       }
       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'contract' });
       handleCloseDialog();
@@ -171,19 +171,19 @@ const ContractModal = () => {
     setContractData({ ...contractData, [name]: value });
   };
 
-  const handleAddMaterial = () => {
+  const handleAddProduct = () => {
     if (!contractData.supplier_id) {
       handleOpenSnackbar('error', 'Vui lòng chọn nhà cung cấp!');
       return;
     }
-    setMaterialList([
-      ...materialList,
+    setProductList([
+      ...ProductList,
       {
         requisition_id: selectedDocument?.id || '',
         id: '',
-        part_id: '',
-        part_name: '',
-        part_code: '',
+        product_id: '',
+        product_name: '',
+        product_code: '',
         supplier_id: '',
         supplier_name: '',
         category_id: '',
@@ -191,17 +191,18 @@ const ContractModal = () => {
         status: '',
         unit_id: '',
         unit_name: '',
-        quantity_in_piece: 0,
+        quantity_in_box: 0,
+        unit_price: 0,
       },
     ]);
   };
 
-  const handleChangeMaterialCode = (index, newItem) => {
-    const newMaterialList = [...materialList];
-    const newMaterial = {
-      part_id: newItem?.id || '',
-      part_code: newItem?.part_code || '',
-      part_name: newItem?.title || '',
+  const handleChangeProductCode = (index, newItem) => {
+    const newProductList = [...ProductList];
+    const newProduct = {
+      product_id: newItem?.id || '',
+      product_code: newItem?.product_code || '',
+      product_name: newItem?.title || '',
       category_id: newItem?.category_id || '',
       category_name: newItem?.category_name || '',
       supplier_id: contractData?.supplier_id || '',
@@ -209,34 +210,34 @@ const ContractModal = () => {
       unit_id: newItem?.unit_id || '',
       unit_name: newItem?.unit_name || '',
     };
-    newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
-    setMaterialList(newMaterialList);
+    newProductList[index] = { ...newProductList[index], ...newProduct };
+    setProductList(newProductList);
   };
 
-  const handleChangeMaterial = (index, e) => {
+  const handleChangeProduct = (index, e) => {
     const { name, value } = e.target;
-    const newMaterialList = [...materialList];
-    newMaterialList[index] = { ...newMaterialList[index], [name]: value };
-    setMaterialList(newMaterialList);
+    const newProductList = [...ProductList];
+    newProductList[index] = { ...newProductList[index], [name]: value };
+    setProductList(newProductList);
   };
 
-  const handleDeleteMaterial = (index, id) => {
+  const handleDeleteProduct = (index, id) => {
     if (id) {
       showConfirmPopup({
-        title: 'Xóa vật tư',
-        message: 'Bạn có chắc chắn muốn xóa vật tư này?',
-        action: ContractService.deleteDetail,
+        title: 'Xóa thành phẩm',
+        message: 'Bạn có chắc chắn muốn xóa thành phẩm này?',
+        action: ProductContractService.deleteDetail,
         payload: id,
         onSuccess: () => {
-          const newMaterialList = [...materialList];
-          newMaterialList.splice(index, 1);
-          setMaterialList(newMaterialList);
+          const newProductList = [...ProductList];
+          newProductList.splice(index, 1);
+          setProductList(newProductList);
         },
       });
     } else {
-      const newMaterialList = [...materialList];
-      newMaterialList.splice(index, 1);
-      setMaterialList(newMaterialList);
+      const newProductList = [...ProductList];
+      newProductList.splice(index, 1);
+      setProductList(newProductList);
     }
   };
 
@@ -248,19 +249,19 @@ const ContractModal = () => {
     });
     setFileData({ ...fileData, id: selectedDocument?.id });
     fetchFileListData();
-    setMaterialList(selectedDocument?.detail_list);
+    setProductList(selectedDocument?.detail_list);
   }, [selectedDocument]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const { supplier_list, status_list } = await ContractService.getData();
+      const { supplier_list, status_list } = await ProductContractService.getData();
       setStatusList(status_list);
       setSupplier(supplier_list);
     };
     fetchData();
   }, []);
 
-  const isDisabled = selectedDocument?.status?.includes('RECEIVED');
+  const isDisabled = selectedDocument?.status?.includes('COMPLETED');
   const isDetail = selectedDocument?.id;
   return (
     <React.Fragment>
@@ -279,7 +280,7 @@ const ContractModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              {selectedDocument?.id ? 'Cập nhật Hợp đồng mua vật tư' : 'Tạo mới Hợp đồng mua vật tư'}
+              {selectedDocument?.id ? 'Cập nhật Hợp đồng mua thành phẩm' : 'Tạo mới Hợp đồng mua thành phẩm'}
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -428,9 +429,9 @@ const ContractModal = () => {
                     <Grid item lg={12} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>Danh sách vật tư</div>
-                          <Tooltip title="Thêm vật tư">
-                            <IconButton onClick={handleAddMaterial}>
+                          <div className={classes.tabItemLabel}>Danh sách thành phẩm</div>
+                          <Tooltip title="Thêm thành phẩm">
+                            <IconButton onClick={handleAddProduct}>
                               <AddCircleOutline />
                             </IconButton>
                           </Tooltip>
@@ -440,8 +441,8 @@ const ContractModal = () => {
                             <Table className={classes.tableSmall} aria-label="simple table" stickyHeader>
                               <TableHead>
                                 <TableRow>
-                                  <TableCell align="left">Mã vật tư</TableCell>
-                                  <TableCell align="left">Tên vật tư</TableCell>
+                                  <TableCell align="left">Mã thành phẩm</TableCell>
+                                  <TableCell align="left">Tên thành phẩm</TableCell>
                                   <TableCell align="left">SL đặt</TableCell>
                                   <TableCell align="left">Giá(VNĐ)</TableCell>
                                   <TableCell align="left">SL còn lại</TableCell>
@@ -452,30 +453,30 @@ const ContractModal = () => {
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {materialList?.map((row, index) => (
+                                {ProductList?.map((row, index) => (
                                   <TableRow key={index}>
                                     <TableCell align="left" style={{ width: '15%' }}>
                                       <Autocomplete
-                                        options={materials}
-                                        getOptionLabel={(option) => option.part_code || ''}
+                                        options={products}
+                                        getOptionLabel={(option) => option.product_code || ''}
                                         fullWidth
                                         size="small"
                                         disabled={isDisabled}
-                                        value={materials.find((item) => item.part_code === row.part_code) || null}
-                                        onChange={(event, newValue) => handleChangeMaterialCode(index, newValue)}
+                                        value={products.find((item) => item.product_code === row.product_code) || null}
+                                        onChange={(event, newValue) => handleChangeProductCode(index, newValue)}
                                         renderInput={(params) => <TextField {...params} variant="outlined" />}
                                       />
                                     </TableCell>
                                     <TableCell align="left" className={classes.maxWidthCell} style={{ width: '20%' }}>
-                                      <Tooltip title={row?.part_name}>
+                                      <Tooltip title={row?.product_name}>
                                         <Autocomplete
-                                          options={materials}
+                                          options={products}
                                           getOptionLabel={(option) => option.title || ''}
                                           fullWidth
                                           size="small"
                                           disabled={isDisabled}
-                                          value={materials.find((item) => item.part_code === row.part_code) || null}
-                                          onChange={(event, newValue) => handleChangeMaterialCode(index, newValue)}
+                                          value={products.find((item) => item.product_code === row.product_code) || null}
+                                          onChange={(event, newValue) => handleChangeProductCode(index, newValue)}
                                           renderInput={(params) => <TextField {...params} variant="outlined" />}
                                         />
                                       </Tooltip>
@@ -488,11 +489,11 @@ const ContractModal = () => {
                                         }}
                                         fullWidth
                                         variant="outlined"
-                                        name="quantity_in_piece"
+                                        name="quantity_in_box"
                                         size="small"
                                         disabled={isDisabled}
-                                        value={row?.quantity_in_piece || ''}
-                                        onChange={(e) => handleChangeMaterial(index, e)}
+                                        value={row?.quantity_in_box || ''}
+                                        onChange={(e) => handleChangeProduct(index, e)}
                                       />
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '12%' }}>
@@ -507,11 +508,11 @@ const ContractModal = () => {
                                         size="small"
                                         disabled={isDisabled}
                                         value={row?.unit_price || ''}
-                                        onChange={(e) => handleChangeMaterial(index, e)}
+                                        onChange={(e) => handleChangeProduct(index, e)}
                                       />
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '5%' }}>
-                                      <FormattedNumber value={row.remain_quantity_in_piece} />
+                                      <FormattedNumber value={row.remain_quantity_in_box} />
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '5%' }}>
                                       {row.unit_name}
@@ -526,7 +527,7 @@ const ContractModal = () => {
                                         type="text"
                                         size="small"
                                         value={row.notes || ''}
-                                        onChange={(e) => handleChangeMaterial(index, e)}
+                                        onChange={(e) => handleChangeProduct(index, e)}
                                       />
                                     </TableCell>
                                     {isDetail && (
@@ -536,7 +537,7 @@ const ContractModal = () => {
                                     )}
                                     {!isDisabled && (
                                       <TableCell align="center" style={{ width: '5%' }}>
-                                        <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>
+                                        <IconButton size="small" onClick={() => handleDeleteProduct(index, row.id)}>
                                           <Delete />
                                         </IconButton>
                                       </TableCell>
@@ -642,4 +643,4 @@ const ContractModal = () => {
   );
 };
 
-export default ContractModal;
+export default ProductContractModal;

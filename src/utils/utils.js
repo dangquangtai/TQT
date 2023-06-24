@@ -40,6 +40,7 @@ import {
   productInventoryCheckActions,
   contractActions,
   productRequisitionActions,
+  productContractActions,
 } from '../store/constant.js';
 
 export function getUrlByAction(selectedFolder) {
@@ -178,6 +179,9 @@ export function getUrlByAction(selectedFolder) {
     }
     case productRequisitionActions.list: {
       return apiEndpoints.get_product_requisition_list;
+    }
+    case productContractActions.list: {
+      return apiEndpoints.get_product_contract_list;
     }
     default: {
       return '';

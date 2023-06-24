@@ -32,4 +32,8 @@ export const ContractService = {
     const response = await axiosServices.post(apiEndpoints.get_contract_list_by_supplier_and_material, { part_id, supplier_id });
     return response.data.list;
   },
+  deleteDetail: async (id) => {
+    const response = await axiosServices.post(apiEndpoints.delete_contract_detail, { id });
+    return response.data;
+  },
 };

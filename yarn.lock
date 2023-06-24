@@ -10962,6 +10962,13 @@
   "resolved" "https://registry.npmjs.org/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz"
   "version" "3.0.4"
 
+"react-number-format@^5.2.2":
+  "integrity" "sha512-wCh64Z1HCwXcO2dbgkeYIaB+Rmp/fcsH8kAeRtUkc46dv1pIrgDjie2WkOqKBw8YqyqhwNdYgNFNQuuY+iGJ/g=="
+  "resolved" "https://registry.npmjs.org/react-number-format/-/react-number-format-5.2.2.tgz"
+  "version" "5.2.2"
+  dependencies:
+    "prop-types" "^15.7.2"
+
 "react-overlays@^5.2.1":
   "integrity" "sha512-GLLSOLWr21CqtJn8geSwQfoJufdt3mfdsnIiQswouuQ2MMPns+ihZklxvsTDKD3cR2tF8ELbi5xUsvqVhR6WvA=="
   "resolved" "https://registry.npmjs.org/react-overlays/-/react-overlays-5.2.1.tgz"
