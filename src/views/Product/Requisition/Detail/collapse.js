@@ -30,29 +30,30 @@ const TableCollapse = (props) => {
   const {
     row,
     index,
-    handleChangeMaterial,
-    handleChangeMaterialCode,
-    handleDeleteMaterial,
+    handleChangeProduct,
+    handleChangeProductCode,
+    handleDeleteProduct,
     isDisabled,
     isDetail,
     classes,
     handleChangeContract,
   } = props;
   const [open, setOpen] = React.useState(false);
-  const { materials } = useSelector((state) => state.metadata);
+  const { products } = useSelector((state) => state.metadata);
   const classesRow = useRowStyles();
   const [contracts, setContracts] = React.useState([]);
 
   const isCollapse = row?.received_detail?.length > 0;
 
   useEffect(() => {
-    if (!row.part_id) return;
+    if (isDisabled) return;
+    if (!row.product_id) return;
     const fetch = async () => {
-      const res = await ContractService.getBySupplierAndMaterial({ part_id: row.part_id, supplier_id: row.supplier_id });
+      const res = await ContractService.getBySupplierAndMaterial({ product_id: row.product_id, supplier_id: row.supplier_id });
       setContracts(res);
     };
     fetch();
-  }, [isDetail, row.part_id, row.supplier_id]);
+  }, [isDisabled, row.product_id, row.supplier_id]);
 
   return (
     <React.Fragment>
@@ -64,26 +65,26 @@ const TableCollapse = (props) => {
         </TableCell>
         <TableCell align="left" style={{ width: '15%' }}>
           <Autocomplete
-            options={materials}
-            getOptionLabel={(option) => option.part_code || ''}
+            options={products}
+            getOptionLabel={(option) => option.product_code || ''}
             fullWidth
             size="small"
             disabled={isDisabled}
-            value={materials.find((item) => item.part_code === row.part_code) || null}
-            onChange={(event, newValue) => handleChangeMaterialCode(index, newValue)}
+            value={products.find((item) => item.product_code === row.product_code) || null}
+            onChange={(event, newValue) => handleChangeProductCode(index, newValue)}
             renderInput={(params) => <TextField {...params} variant="outlined" />}
           />
         </TableCell>
         <TableCell align="left" className={classes.maxWidthCell} style={{ width: '20%' }}>
-          <Tooltip title={row?.part_name}>
+          <Tooltip title={row?.product_name}>
             <Autocomplete
-              options={materials}
+              options={products}
               getOptionLabel={(option) => option.title || ''}
               fullWidth
               size="small"
               disabled={isDisabled}
-              value={materials.find((item) => item.part_code === row.part_code) || null}
-              onChange={(event, newValue) => handleChangeMaterialCode(index, newValue)}
+              value={products.find((item) => item.product_code === row.product_code) || null}
+              onChange={(event, newValue) => handleChangeProductCode(index, newValue)}
               renderInput={(params) => <TextField {...params} variant="outlined" />}
             />
           </Tooltip>
@@ -95,19 +96,19 @@ const TableCollapse = (props) => {
             }}
             fullWidth
             variant="outlined"
-            name="quantity_in_piece"
+            name="quantity_in_box"
             type="number"
             size="small"
             disabled={isDisabled}
-            value={row?.quantity_in_piece || ''}
-            onChange={(e) => handleChangeMaterial(index, e)}
+            value={row?.quantity_in_box || ''}
+            onChange={(e) => handleChangeProduct(index, e)}
           />
         </TableCell>
         <TableCell align="left" style={{ width: '5%' }}>
           {row.unit_name}
         </TableCell>
         <TableCell align="left" className={classes.maxWidthCell} style={{ width: '15%' }}>
-          {isDetail ? (
+          {isDisabled ? (
             <Tooltip title={`${row?.contract_title}(${row?.contract_code})`}>
               <span>{`${row?.contract_title}(${row?.contract_code})`}</span>
             </Tooltip>
@@ -123,7 +124,7 @@ const TableCollapse = (props) => {
             />
           )}
         </TableCell>
-        <TableCell align="left" style={{ width: '15%' }}>
+        <TableCell align="left" style={{ width: '20%' }}>
           <TextField
             multiline
             minRows={1}
@@ -133,28 +134,15 @@ const TableCollapse = (props) => {
             type="text"
             size="small"
             value={row.notes || ''}
-            onChange={(e) => handleChangeMaterial(index, e)}
-          />
-        </TableCell>
-        <TableCell align="left" style={{ width: '10%' }}>
-          <TextField
-            multiline
-            minRows={1}
-            fullWidth
-            variant="outlined"
-            name="notes2"
-            type="text"
-            size="small"
-            value={row.notes2 || ''}
-            onChange={(e) => handleChangeMaterial(index, e)}
+            onChange={(e) => handleChangeProduct(index, e)}
           />
         </TableCell>
         <TableCell align="left" style={{ width: '5%' }}>
           {row.status_display}
         </TableCell>
         {!isDisabled && (
-          <TableCell align="center" style={{ width: '5%' }}>
-            <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>
+          <TableCell align="center" style={{ width: '10%' }}>
+            <IconButton onClick={() => handleDeleteProduct(index, row.id)}>
               <Delete />
             </IconButton>
           </TableCell>
@@ -169,8 +157,8 @@ const TableCollapse = (props) => {
                   <TableHead>
                     <TableRow>
                       <TableCell />
-                      <TableCell>Mã phiếu nhập vật tư</TableCell>
-                      <TableCell>Tên vật tư</TableCell>
+                      <TableCell>Mã phiếu nhập thành phẩm</TableCell>
+                      <TableCell>Tên thành phẩm</TableCell>
                       <TableCell>SL nhập</TableCell>
                       <TableCell>SL còn lại</TableCell>
                       <TableCell>Ngày nhập</TableCell>
@@ -183,10 +171,10 @@ const TableCollapse = (props) => {
                       <TableRow key={detail.id}>
                         <TableCell style={{ width: '5%' }} />
                         <TableCell style={{ width: '20%' }}>{detail.received_order_code}</TableCell>{' '}
-                        <TableCell style={{ width: '25%' }}>{detail.part_name}</TableCell>
-                        <TableCell style={{ width: '10%' }}>{detail.received_quantity_in_piece}</TableCell>
+                        <TableCell style={{ width: '25%' }}>{detail.product_name}</TableCell>
+                        <TableCell style={{ width: '10%' }}>{detail.received_quantity_in_box}</TableCell>
                         <TableCell style={{ width: '10%' }}>
-                          {Number(detail.remain_quantity_in_piece) - Number(detail.received_quantity_in_piece)}
+                          {Number(detail.remain_quantity_in_box) - Number(detail.received_quantity_in_box)}
                         </TableCell>
                         <TableCell style={{ width: '10%' }}>
                           {detail.received_order_date ? format(new Date(detail.received_order_date), 'dd/MM/yyyy') : ''}

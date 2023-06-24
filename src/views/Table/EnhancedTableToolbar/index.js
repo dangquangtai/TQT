@@ -100,6 +100,7 @@ const EnhancedTableToolbar = (props) => {
     buttonImportMaterialParts,
     handleImportMaterialsPartData,
     buttonCreateContract,
+    buttonCreateProductRequisition,
   } = props;
 
   const filterRef = useRef(null);
@@ -517,6 +518,13 @@ const EnhancedTableToolbar = (props) => {
                   <Grid item>
                     <Button variant="contained" color={'primary'} onClick={handleCreate}>
                       {buttonCreateContract.text}
+                    </Button>
+                  </Grid>
+                )}
+                {buttonCreateProductRequisition && (
+                  <Grid item>
+                    <Button variant="contained" color={'primary'} onClick={handleCreate}>
+                      {buttonCreateProductRequisition.text}
                     </Button>
                   </Grid>
                 )}

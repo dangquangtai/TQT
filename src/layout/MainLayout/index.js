@@ -50,6 +50,7 @@ import MaterialReportModel from '../../views/Report/Detail';
 import ProductInventoryCheckModal from '../../views/Product/InventoryCheck/Detail/index.js';
 import ImportMatetialPartsDataModal from '../../views/Material/MaterialPart/ImportData';
 import ContractModal from '../../views/Material/Contract/Detail/index.js';
+import ProductRequisitionModal from './../../views/Product/Requisition/Detail/index';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -197,6 +198,8 @@ const MainLayout = ({ children }) => {
         return <ProductInventoryCheckModal />;
       case 'contract':
         return <ContractModal />;
+      case 'productRequisition':
+        return <ProductRequisitionModal />;
       default:
         return null;
     }

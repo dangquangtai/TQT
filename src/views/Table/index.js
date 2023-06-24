@@ -69,6 +69,7 @@ import { downloadMaterialReportFile, getMaterialReportDetail } from '../../servi
 import GetAppIcon from '@material-ui/icons/GetApp';
 import ViewReportDataModal from '../Report/Detail/ViewDataTable';
 import { ContractService } from './../../services/api/Material/Contract';
+import { ProductRequisitionService } from './../../services/api/Product/Requisition';
 
 async function setFeatured(setFeaturedUrl, documentId, isFeatured) {
   return await axiosInstance.post(setFeaturedUrl, { outputtype: 'RawJson', id: documentId, value: isFeatured }).then((response) => {
@@ -190,6 +191,7 @@ export default function GeneralTable(props) {
   const buttonCreateMaterialReport = menuButtons.find((button) => button.name === view.MaterialReport.list.create);
   const buttonCreateProductInventoryCheck = menuButtons.find((button) => button.name === view.productInventoryCheck.list.create);
   const buttonCreateContract = menuButtons.find((button) => button.name === view.contract.list.create);
+  const buttonCreateProductRequisition = menuButtons.find((button) => button.name === view.productRequisition.list.create);
 
   const fetchDocument = (additionalQuery) => {
     const queries = { ...defaultQueries, ...additionalQuery };
@@ -479,6 +481,11 @@ export default function GeneralTable(props) {
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         dispatch({ type: FLOATING_MENU_CHANGE, contractDocument: true });
         break;
+      case 'productRequisition':
+        detailDocument = await ProductRequisitionService.detail(selectedDocument.id, setView);
+        dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
+        dispatch({ type: FLOATING_MENU_CHANGE, productRequisitionDocument: true });
+        break;
       default:
         break;
     }
@@ -579,6 +586,9 @@ export default function GeneralTable(props) {
         break;
       case 'contract':
         dispatch({ type: FLOATING_MENU_CHANGE, contractDocument: true });
+        break;
+      case 'productRequisition':
+        dispatch({ type: FLOATING_MENU_CHANGE, productRequisitionDocument: true });
         break;
       default:
         break;
@@ -1056,6 +1066,7 @@ export default function GeneralTable(props) {
     buttonImportMaterialParts,
     handleImportMaterialsPartData,
     buttonCreateContract,
+    buttonCreateProductRequisition,
   };
 
   return (
