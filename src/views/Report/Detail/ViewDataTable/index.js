@@ -212,7 +212,7 @@ export default function ViewReportDataModal(props) {
   }, [selectedDocument]);
   useEffect(() => {
     const fetchData = async () => {
-      if (reportType === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP') {
+      if (reportType === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP' || 'BAO_CAO_THEO_DOI_HOP_DONG') {
         await setIsSynthetic(true);
       }
       const getListViewData = await getViewDataForReporTemplate({
@@ -247,6 +247,8 @@ export default function ViewReportDataModal(props) {
           ? getListViewData?.list_difference_data
           : reportType === 'BAO_CAO_SU_DUNG_VAT_TU_THEO_DON_HANG'
           ? getListViewData?.list_use_of_material_supplier_from_order
+          : reportType === 'BAO_CAO_THEO_DOI_HOP_DONG'
+          ? getListViewData?.list_contract_view_data
           : undefined;
 
       setListViewData(listViewData);

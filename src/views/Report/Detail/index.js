@@ -273,6 +273,21 @@ const MaterialReportModel = () => {
         case 'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP':
           setlistCol(['STT', 'Mã vật tư', 'Tên vật tư', 'Đơn vị', 'SL thừa thiếu', '', '']);
           break;
+        case 'BAO_CAO_THEO_DOI_HOP_DONG':
+          setlistCol(['Ngày kí HĐ', 'Mã HĐ', 'Mã VT', 'Tên VT', 'Đơn vị', 'Số lượng', 'Đơn giá', 'SL đã giao', 'Còn lại chưa giao']);
+          setListColDetail([
+            'Mã NCC',
+            'Tên NCC',
+            'Mã HĐ',
+            'Mã VT',
+            'Tên VT',
+            'SL',
+            'Đơn vị',
+            'Giá',
+            'Ngày giao hàng thực tế',
+            'SL giao thực tế',
+          ]);
+          break;
         default:
           break;
       }
@@ -329,7 +344,8 @@ const MaterialReportModel = () => {
         selectedReport === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP' ||
         selectedReport === 'TONG_HOP_TON_KHO_VAT_TU' ||
         selectedReport === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP' ||
-        selectedReport === 'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP'
+        selectedReport === 'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP' ||
+        selectedReport === 'BAO_CAO_THEO_DOI_HOP_DONG'
       ) {
         const getListSupplier = await getAllSupplier();
         newListSupplier = [{ id: null, title: 'Chọn tất cả' }, ...getListSupplier];
@@ -496,6 +512,7 @@ const MaterialReportModel = () => {
           'TONG_HOP_TON_KHO_VAT_TU',
           'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP',
           'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP',
+          'BAO_CAO_THEO_DOI_HOP_DONG',
         ].includes(selectedReport) && (
           <>
             <Grid item xs={12}>
