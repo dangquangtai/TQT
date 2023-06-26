@@ -31,3 +31,5 @@ export const REMOVE_MATERIAL = '@order/REMOVE_MATERIAL';
 export const SET_MATERIAL = '@order/SET_MATERIAL';
 export const CLOSE_MODAL_MATERIAL = '@order/CLOSE_MODAL_MATERIAL';
 export const MATERIAL_RECEIVED = '@order/MATERIAL_RECEIVED';
+export const PRODUCT_RECEIVED = '@order/PRODUCT_RECEIVED';
+export const CLOSE_MODAL_PRODUCT = '@order/CLOSE_MODAL_PRODUCT';

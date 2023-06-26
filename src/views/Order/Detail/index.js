@@ -455,9 +455,9 @@ const OrderModal = () => {
                             <Table aria-label="simple table">
                               <TableHead>
                                 <TableRow>
-                                  <TableCell align="left">Mã sản phẩm</TableCell>
-                                  <TableCell align="left">Mã SP KH</TableCell>
-                                  <TableCell align="left">Tên sản phẩm</TableCell>
+                                  <TableCell align="left">Mã thành phẩm</TableCell>
+                                  <TableCell align="left">Mã TP KH</TableCell>
+                                  <TableCell align="left">Tên thành phẩm</TableCell>
                                   <TableCell align="left">SL cần</TableCell>
                                   {selectedDocument?.id && <TableCell align="left">Đã SX</TableCell>}
                                   {selectedDocument?.id && <TableCell align="left">SL Kho</TableCell>}

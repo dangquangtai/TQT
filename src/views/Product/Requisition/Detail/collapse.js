@@ -19,6 +19,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { format } from 'date-fns';
 import { ProductContractService } from './../../../../services/api/Product/Contract';
+import NumberFormatCustom from '../../../../component/NumberFormatCustom/index.js';
 const useRowStyles = makeStyles({
   root: {
     '& > *': {
@@ -93,11 +94,11 @@ const TableCollapse = (props) => {
           <TextField
             InputProps={{
               inputProps: { min: 0 },
+              inputComponent: NumberFormatCustom,
             }}
             fullWidth
             variant="outlined"
             name="quantity_in_box"
-            type="number"
             size="small"
             disabled={isDisabled}
             value={row?.quantity_in_box || ''}

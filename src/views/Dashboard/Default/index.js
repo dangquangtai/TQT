@@ -48,6 +48,7 @@ import {
   contractActions,
   productRequisitionActions,
   productContractActions,
+  productReceivedActions,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
 import { Redirect } from 'react-router-dom';
@@ -89,6 +90,7 @@ import ProductInventoryCheckWrapper from './../../Product/InventoryCheck/index';
 import ContractWrapper from './../../Material/Contract/index';
 import ProductRequisitionWrapper from './../../Product/Requisition/index';
 import ProductContractWrapper from './../../Product/Contract/index';
+import ReceivedProductWrapper from '../../Product/Received/index.js';
 
 const Default = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
@@ -137,6 +139,7 @@ const Default = () => {
   const availableContractCheckEndpoint = Object.values(contractActions);
   const availableProductRequisitionCheckEndpoint = Object.values(productRequisitionActions);
   const availableProductContractCheckEndpoint = Object.values(productContractActions);
+  const availableProductReceivedCheckEndpoint = Object.values(productReceivedActions);
 
   if (!selectedApp?.id) {
     return <Redirect to="/dashboard/app" />;
@@ -188,6 +191,7 @@ const Default = () => {
           {availableContractCheckEndpoint.includes(selectedFolder?.action) && <ContractWrapper />}
           {availableProductRequisitionCheckEndpoint.includes(selectedFolder?.action) && <ProductRequisitionWrapper />}
           {availableProductContractCheckEndpoint.includes(selectedFolder?.action) && <ProductContractWrapper />}
+          {availableProductReceivedCheckEndpoint.includes(selectedFolder?.action) && <ReceivedProductWrapper />}
         </Grid>
       )}
     </Grid>

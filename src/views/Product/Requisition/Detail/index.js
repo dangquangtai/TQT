@@ -200,6 +200,7 @@ const ProductRequisitionModal = () => {
     const newProduct = {
       product_id: newItem?.id || '',
       product_code: newItem?.product_code || '',
+      product_customer_code: newItem?.product_customer_code || '',
       product_name: newItem?.title || '',
       category_id: newItem?.category_id || '',
       category_name: newItem?.category_name || '',

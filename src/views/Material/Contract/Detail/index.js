@@ -192,6 +192,7 @@ const ContractModal = () => {
         unit_id: '',
         unit_name: '',
         quantity_in_piece: 0,
+        remain_quantity_in_piece: 0,
       },
     ]);
   };
@@ -443,8 +444,8 @@ const ContractModal = () => {
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">SL đặt</TableCell>
-                                  <TableCell align="left">Giá(VNĐ)</TableCell>
                                   <TableCell align="left">SL còn lại</TableCell>
+                                  <TableCell align="left">Giá(VNĐ)</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
                                   <TableCell align="left">Ghi chú</TableCell>
                                   {isDetail && <TableCell align="left">Trạng thái</TableCell>}
@@ -495,6 +496,9 @@ const ContractModal = () => {
                                         onChange={(e) => handleChangeMaterial(index, e)}
                                       />
                                     </TableCell>
+                                    <TableCell align="left" style={{ width: '5%' }}>
+                                      <FormattedNumber value={row.remain_quantity_in_piece} />
+                                    </TableCell>
                                     <TableCell align="left" style={{ width: '12%' }}>
                                       <TextField
                                         InputProps={{
@@ -509,9 +513,6 @@ const ContractModal = () => {
                                         value={row?.unit_price || ''}
                                         onChange={(e) => handleChangeMaterial(index, e)}
                                       />
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '5%' }}>
-                                      <FormattedNumber value={row.remain_quantity_in_piece} />
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '5%' }}>
                                       {row.unit_name}

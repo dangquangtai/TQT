@@ -52,6 +52,7 @@ import ImportMatetialPartsDataModal from '../../views/Material/MaterialPart/Impo
 import ContractModal from '../../views/Material/Contract/Detail/index.js';
 import ProductRequisitionModal from './../../views/Product/Requisition/Detail/index';
 import ProductContractModal from './../../views/Product/Contract/Detail/index';
+import ReceivedProductModal from '../../views/Product/Received/Detail/index.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -203,6 +204,8 @@ const MainLayout = ({ children }) => {
         return <ProductRequisitionModal />;
       case 'productContract':
         return <ProductContractModal />;
+      case 'productReceived':
+        return <ReceivedProductModal />;
       default:
         return null;
     }

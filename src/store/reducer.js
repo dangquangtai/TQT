@@ -16,6 +16,7 @@ import appReducer from './appReducer.js';
 import metadataReducer from './metadataReducer.js';
 import orderReducer from './orderReducer.js';
 import materialReducer from './materialReducer.js';
+import productReducer from './productReducer.js';
 
 const reducer = combineReducers({
   customization: customizationReducer,
@@ -34,6 +35,7 @@ const reducer = combineReducers({
   metadata: metadataReducer,
   order: orderReducer,
   material: materialReducer,
+  product: productReducer,
 });
 
 export default withReduxStateSync(reducer);

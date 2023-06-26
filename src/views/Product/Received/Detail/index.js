@@ -19,32 +19,29 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
-  Tooltip,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Delete, History, AttachFileOutlined, DescriptionOutlined } from '@material-ui/icons';
+import { History, AttachFileOutlined, DescriptionOutlined } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
-import { AddCircleOutline } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import useView from './../../../../hooks/useView';
 import useConfirmPopup from './../../../../hooks/useConfirmPopup';
 import { view } from './../../../../store/constant';
-import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CONFIRM_CHANGE } from './../../../../store/actions';
+import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CONFIRM_CHANGE, CLOSE_MODAL_PRODUCT } from './../../../../store/actions';
 import FirebaseUpload from './../../../FloatingMenu/FirebaseUpload/index';
 import DatePicker from './../../../../component/DatePicker/index';
+import { downloadFile, popupWindow } from './../../../../utils/helper';
 import { createFileAttachment, deleteFileAttachment, getListFile } from '../../../../services/api/Attachment/FileAttachment';
 import ActivityLog from '../../../../component/ActivityLog/index.js';
-import { ProductContractService } from './../../../../services/api/Product/Contract';
-import NumberFormatCustom from './../../../../component/NumberFormatCustom/index';
-import { FormattedNumber } from 'react-intl';
+import { ProductReceivedService } from './../../../../services/api/Product/Received';
+import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
+import Product from './product.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -59,7 +56,6 @@ TabPanel.propTypes = {
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
 };
-
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -67,33 +63,41 @@ function a11yProps(index) {
   };
 }
 
-const ProductContractModal = () => {
+const ReceivedProductModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { form_buttons: formButtons } = useView();
   const { setConfirmPopup } = useConfirmPopup();
-  const { products } = useSelector((state) => state.metadata);
-  const saveButton = formButtons.find((button) => button.name === view.contract.detail.save);
-  const { productContractDocument: openDialog } = useSelector((state) => state.floatingMenu);
+  const saveButton = formButtons.find((button) => button.name === view.productReceived.detail.save);
+  const exportButton = formButtons.find((button) => button.name === view.productReceived.detail.export);
+  const { productReceivedDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
+  const newWindow = React.useRef(null);
+  const { productReceived } = useSelector((state) => state.product);
   const [isOpenUpload, setIsOpenUpload] = useState(false);
   const [listFileData, setListFileData] = useState([]);
   const [fileData, setFileData] = useState([]);
-
-  const [contractData, setContractData] = useState({
-    contract_date: new Date(),
+  const [receivedProductData, setReceivedProductData] = useState({
+    received_date: new Date(),
+    received_by: '',
+    handled_by: '',
     notes: '',
   });
-
-  const [supplier, setSupplier] = useState([]);
+  const [ProductOrderDetailList, setProductOrderDetailList] = useState([]);
+  const [receivedDetailList, setReceivedDetailList] = useState([]);
   const [statusList, setStatusList] = useState([]);
-  const [tabIndex, setTabIndex] = React.useState(0);
+  const [supplierList, setSupplierList] = useState([]);
+  const [warehouseList, setWarehouseList] = useState([]);
 
-  const [ProductList, setProductList] = useState([]);
+  const [tabIndex, setTabIndex] = React.useState(0);
+  const [dialogUpload, setDialogUpload] = useState({
+    open: false,
+    type: '',
+  });
+
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
-
   const setURL = async (fileDataInput) => {
     console.log(fileDataInput?.file_name);
     const newFileData = { ...fileData, file_name: fileDataInput?.file_name, url: fileDataInput?.url };
@@ -101,7 +105,6 @@ const ProductContractModal = () => {
     const res = await createFileAttachment(newFileData);
     if (res) fetchFileListData();
   };
-
   const handleDeleteFile = async (id) => {
     showConfirmPopup({
       title: 'Xóa file',
@@ -112,6 +115,8 @@ const ProductContractModal = () => {
         fetchFileListData();
       },
     });
+    // const res = await deleteFileAttachment(id);
+    // if (res)
   };
   const fetchFileListData = async () => {
     const fileList = await getListFile(selectedDocument?.id);
@@ -125,7 +130,9 @@ const ProductContractModal = () => {
   };
   const handleCloseDialog = () => {
     setDocumentToDefault();
-    dispatch({ type: FLOATING_MENU_CHANGE, productContractDocument: false });
+    dispatch({ type: FLOATING_MENU_CHANGE, productReceivedDocument: false });
+    dispatch({ type: CLOSE_MODAL_PRODUCT });
+    if (newWindow.current) newWindow.current.close();
   };
 
   const handleOpenSnackbar = (type, text) => {
@@ -139,23 +146,31 @@ const ProductContractModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setContractData({ contract_date: new Date(), notes: '' });
+    setReceivedProductData({ received_date: new Date(), received_by: '', handled_by: '', notes: '' });
     setListFileData([]);
     setFileData([]);
-    setProductList([]);
+    setReceivedDetailList([]);
+    setProductOrderDetailList([]);
     setTabIndex(0);
+  };
+
+  const handleCloseDiaLog = () => {
+    setDialogUpload({
+      open: false,
+      type: '',
+    });
   };
 
   const handleSubmitForm = async () => {
     try {
       if (selectedDocument?.id) {
-        await ProductContractService.update({ ...contractData, detail_list: ProductList });
-        handleOpenSnackbar('success', 'Cập nhật hợp đồng mua thành phẩm thành công!');
+        await ProductReceivedService.update({ ...receivedProductData, received_detail: receivedDetailList });
+        handleOpenSnackbar('success', 'Cập nhật Phiếu nhập thành phẩm thành công!');
       } else {
-        await ProductContractService.create({ ...contractData, detail_list: ProductList });
-        handleOpenSnackbar('success', 'Tạo mới hợp đồng mua thành phẩm thành công!');
+        await ProductReceivedService.create({ ...receivedProductData, received_detail: receivedDetailList });
+        handleOpenSnackbar('success', 'Tạo mới Phiếu nhập thành phẩm thành công!');
       }
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'contract' });
+      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'receivedProduct' });
       handleCloseDialog();
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
@@ -168,106 +183,129 @@ const ProductContractModal = () => {
 
   const handleChanges = (e) => {
     const { name, value } = e.target;
-    setContractData({ ...contractData, [name]: value });
+    setReceivedProductData({ ...receivedProductData, [name]: value });
   };
 
-  const handleAddProduct = () => {
-    if (!contractData.supplier_id) {
+  const handleDeleteProduct = (index, id) => {
+    if (id && selectedDocument?.id) {
+      showConfirmPopup({
+        title: 'Xóa thành phẩm',
+        message: 'Bạn có chắc chắn muốn xóa thành phẩm này?',
+        action: null,
+        payload: id,
+        onSuccess: () => {
+          spliceProduct(index);
+        },
+      });
+    } else {
+      spliceProduct(index);
+    }
+  };
+
+  const spliceProduct = (index) => {
+    const newReceivedDetailList = [...receivedDetailList];
+    newReceivedDetailList.splice(index, 1);
+    setReceivedDetailList(newReceivedDetailList);
+    const newProductOrderDetailList = [...ProductOrderDetailList];
+    newProductOrderDetailList.splice(index, 1);
+    setProductOrderDetailList(newProductOrderDetailList);
+  };
+
+  const handleClickExport = async () => {
+    // var url = await exportProductReceived(receivedProductData.id);
+    // handleDownload(url);
+  };
+
+  const handleDownload = (url) => {
+    if (!url) {
+      handleOpenSnackbar('error', 'Không tìm thấy file!');
+      return;
+    }
+    downloadFile(url);
+    handleOpenSnackbar('success', 'Tải file thành công!');
+  };
+
+  const handleOpenShortageDialog = () => {
+    if (!receivedProductData.supplier_id) {
       handleOpenSnackbar('error', 'Vui lòng chọn nhà cung cấp!');
       return;
     }
-    setProductList([
-      ...ProductList,
-      {
-        requisition_id: selectedDocument?.id || '',
-        id: '',
-        product_id: '',
-        product_name: '',
-        product_code: '',
-        product_customer_code: '',
-        supplier_id: '',
-        supplier_name: '',
-        category_id: '',
-        category_name: '',
-        status: '',
-        unit_id: '',
-        unit_name: '',
-        quantity_in_box: 0,
-        unit_price: 0,
-        remain_quantity_in_box: 0,
-      },
-    ]);
+    if (!receivedProductData.warehouse_id) {
+      handleOpenSnackbar('error', 'Vui lòng chọn kho!');
+      return;
+    }
+    newWindow.current = popupWindow(
+      `/received/product?supplier=${receivedProductData.supplier_id}&warehouse=${receivedProductData.warehouse_id}`,
+      'thành phẩm'
+    );
   };
 
-  const handleChangeProductCode = (index, newItem) => {
-    const newProductList = [...ProductList];
+  const handleChangeOrder = (index, newItem) => {
+    const newReceivedDetailList = [...receivedDetailList];
     const newProduct = {
-      product_id: newItem?.id || '',
-      product_code: newItem?.product_code || '',
-      product_name: newItem?.title || '',
-      product_customer_code: newItem?.product_customer_code || '',
-      category_id: newItem?.category_id || '',
-      category_name: newItem?.category_name || '',
-      supplier_id: contractData?.supplier_id || '',
-      supplier_name: contractData?.supplier_name || '',
-      unit_id: newItem?.unit_id || '',
-      unit_name: newItem?.unit_name || '',
+      customer_order_id: newItem?.id,
+      customer_order_title: newItem?.title,
+      customer_order_code: newItem?.order_code,
     };
-    newProductList[index] = { ...newProductList[index], ...newProduct };
-    setProductList(newProductList);
+    newReceivedDetailList[index] = { ...newReceivedDetailList[index], ...newProduct };
+    setReceivedDetailList(newReceivedDetailList);
   };
 
   const handleChangeProduct = (index, e) => {
     const { name, value } = e.target;
-    const newProductList = [...ProductList];
-    newProductList[index] = { ...newProductList[index], [name]: value };
-    setProductList(newProductList);
-  };
-
-  const handleDeleteProduct = (index, id) => {
-    if (id) {
-      showConfirmPopup({
-        title: 'Xóa thành phẩm',
-        message: 'Bạn có chắc chắn muốn xóa thành phẩm này?',
-        action: ProductContractService.deleteDetail,
-        payload: id,
-        onSuccess: () => {
-          const newProductList = [...ProductList];
-          newProductList.splice(index, 1);
-          setProductList(newProductList);
-        },
-      });
-    } else {
-      const newProductList = [...ProductList];
-      newProductList.splice(index, 1);
-      setProductList(newProductList);
-    }
+    const newReceivedDetailList = [...receivedDetailList];
+    newReceivedDetailList[index][name] = value;
+    setReceivedDetailList(newReceivedDetailList);
   };
 
   useEffect(() => {
     if (!selectedDocument) return;
-    setContractData({
-      ...contractData,
+    setReceivedProductData({
+      ...receivedProductData,
       ...selectedDocument,
     });
     setFileData({ ...fileData, id: selectedDocument?.id });
     fetchFileListData();
-    setProductList(selectedDocument?.detail_list);
+    const receivedDetail = selectedDocument?.received_detail;
+    setReceivedDetailList(receivedDetail);
   }, [selectedDocument]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const { supplier_list, status_list } = await ProductContractService.getData();
+      const { status_list, warehouse_list } = await ProductReceivedService.getData();
       setStatusList(status_list);
-      setSupplier(supplier_list);
+      setWarehouseList(warehouse_list);
+      const suppliers = await getAllSupplier();
+      setSupplierList(suppliers);
     };
     fetchData();
   }, []);
 
-  const isDisabled = selectedDocument?.status?.includes('COMPLETED');
-  const isDetail = selectedDocument?.id;
+  const isDisabled = !!selectedDocument?.id;
+  const isCompleted = !!selectedDocument?.status?.includes('COMPLETED');
+
+  useEffect(() => {
+    if (productReceived === selectedDocument?.order_detail) return;
+    const newProduct = productReceived.map((item) => {
+      return {
+        ...item,
+        received_id: selectedDocument?.id || '',
+        requisition_order_id: item.requisition_id,
+        requisition_order_detail_id: item.id,
+      };
+    });
+    setReceivedDetailList(newProduct);
+  }, [productReceived]);
+  console.log(productReceived);
   return (
     <React.Fragment>
+      <FirebaseUpload
+        open={dialogUpload.open || false}
+        onSuccess={setURL}
+        onClose={handleCloseDiaLog}
+        type="image"
+        folder="receivedProduct"
+      />
       <Grid container>
         <Dialog
           open={openDialog || false}
@@ -283,7 +321,9 @@ const ProductContractModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              {selectedDocument?.id ? 'Cập nhật Hợp đồng mua thành phẩm' : 'Tạo mới Hợp đồng mua thành phẩm'}
+              {selectedDocument?.id
+                ? 'Cập nhật Phiếu nhập thành phẩm theo nhà cung cấp'
+                : 'Tạo mới Phiếu nhập thành phẩm theo nhà cung cấp'}
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -302,7 +342,7 @@ const ProductContractModal = () => {
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
                         <DescriptionOutlined />
-                        Chi tiết Hợp đồng
+                        Chi tiết
                       </Typography>
                     }
                     value={0}
@@ -338,39 +378,102 @@ const ProductContractModal = () => {
                     <Grid item lg={12} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>Chi tiết Hợp đồng</div>
+                          <div className={classes.tabItemLabel}>Nhập thành phẩm</div>
                         </div>
                         <div className={classes.tabItemBody}>
-                          <Grid container spacing={3} className={classes.gridItemInfo}>
+                          <Grid container spacing={2} className={classes.gridItemInfo}>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Mã hợp đồng(*):</span>
+                              <span className={classes.tabItemLabelField}>Mã phiếu(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
-                                name="contract_code"
+                                name="received_code"
                                 type="text"
                                 size="small"
-                                value={contractData.contract_code || ''}
+                                disabled={isDisabled}
+                                value={receivedProductData.received_code || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên hợp đồng(*):</span>
+                              <span className={classes.tabItemLabelField}>Tên phiếu nhập(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
                                 name="title"
                                 type="text"
                                 size="small"
-                                value={contractData.title || ''}
+                                value={receivedProductData.title || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày kí(*):</span>
+                              <span className={classes.tabItemLabelField}>Ngày nhận hàng(*):</span>
                               <DatePicker
-                                date={contractData.contract_date}
-                                onChange={(date) => setContractData({ ...contractData, contract_date: date })}
+                                date={receivedProductData.received_date}
+                                onChange={(date) => setReceivedProductData({ ...receivedProductData, received_date: date })}
+                                disabled={isDisabled}
+                              />
+                            </Grid>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Người nhận hàng(*):</span>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="received_by"
+                                type="text"
+                                size="small"
+                                value={receivedProductData.received_by || ''}
+                                onChange={handleChanges}
+                              />
+                            </Grid>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Nhà cung cấp(*):</span>
+                              <Autocomplete
+                                options={supplierList}
+                                size="small"
+                                getOptionLabel={(option) => option.title}
+                                onChange={(event, newValue) => {
+                                  setReceivedProductData({
+                                    ...receivedProductData,
+                                    supplier_id: newValue?.id || '',
+                                    supplier_name: newValue?.title || '',
+                                  });
+                                }}
+                                disabled={isDisabled}
+                                value={supplierList?.find((item) => item.id === receivedProductData.supplier_id) || null}
+                                renderInput={(params) => <TextField {...params} variant="outlined" />}
+                              />
+                            </Grid>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Nhà kho(*):</span>
+                              <TextField
+                                fullWidth
+                                name="warehouse_id"
+                                variant="outlined"
+                                select
+                                disabled={isDisabled}
+                                size="small"
+                                value={receivedProductData.warehouse_id || ''}
+                                onChange={handleChanges}
+                              >
+                                {warehouseList?.map((option) => (
+                                  <MenuItem key={option.id} value={option.id}>
+                                    {option.value}
+                                  </MenuItem>
+                                ))}
+                              </TextField>
+                            </Grid>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Người giao hàng(*):</span>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="handled_by"
+                                type="text"
+                                size="small"
+                                value={receivedProductData.handled_by || ''}
+                                onChange={handleChanges}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
@@ -381,7 +484,7 @@ const ProductContractModal = () => {
                                 variant="outlined"
                                 select
                                 size="small"
-                                value={contractData.status || ''}
+                                value={receivedProductData.status || ''}
                                 onChange={handleChanges}
                               >
                                 {statusList?.map((option) => (
@@ -391,27 +494,7 @@ const ProductContractModal = () => {
                                 ))}
                               </TextField>
                             </Grid>
-                            <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà cung cấp(*):</span>
-                              <Autocomplete
-                                id="combo-box-demo"
-                                options={supplier}
-                                getOptionLabel={(option) => option.title || ''}
-                                fullWidth
-                                disabled={isDisabled}
-                                size="small"
-                                value={supplier?.find((item) => item.id === contractData.supplier_id) || null}
-                                onChange={(event, newValue) => {
-                                  setContractData({
-                                    ...contractData,
-                                    supplier_id: newValue?.id,
-                                    supplier_name: newValue?.title,
-                                  });
-                                }}
-                                renderInput={(params) => <TextField {...params} variant="outlined" />}
-                              />
-                            </Grid>
-                            <Grid item lg={3} md={3} xs={3}>
+                            <Grid item lg={6} md={6} xs={6}>
                               <span className={classes.tabItemLabelField}>Ghi chú:</span>
                               <TextField
                                 fullWidth
@@ -421,7 +504,7 @@ const ProductContractModal = () => {
                                 name="notes"
                                 type="text"
                                 size="small"
-                                value={contractData.notes || ''}
+                                value={receivedProductData.notes || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
@@ -433,121 +516,36 @@ const ProductContractModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>Danh sách thành phẩm</div>
-                          <Tooltip title="Thêm thành phẩm">
-                            <IconButton onClick={handleAddProduct}>
-                              <AddCircleOutline />
-                            </IconButton>
-                          </Tooltip>
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
-                            <Table className={classes.tableSmall} aria-label="simple table" stickyHeader>
+                            <Table size="small" stickyHeader>
                               <TableHead>
                                 <TableRow>
-                                  <TableCell align="left">Mã thành phẩm</TableCell>
+                                  <TableCell align="left">Mã TP</TableCell>
                                   <TableCell align="left">Tên thành phẩm</TableCell>
-                                  <TableCell align="left">Mã TP KH</TableCell>
                                   <TableCell align="left">SL đặt</TableCell>
+                                  <TableCell align="left">SL đã nhập</TableCell>
                                   <TableCell align="left">SL còn lại</TableCell>
-                                  <TableCell align="left">Giá(VNĐ)</TableCell>
+                                  <TableCell align="left">SL nhập</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
+                                  <TableCell align="left">Đơn hàng</TableCell>
                                   <TableCell align="left">Ghi chú</TableCell>
-                                  {isDetail && <TableCell align="left">Trạng thái</TableCell>}
-                                  {!isDisabled && <TableCell align="center">Xoá</TableCell>}
+                                  {!isCompleted && <TableCell align="center">Xoá</TableCell>}
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {ProductList?.map((row, index) => (
-                                  <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '15%' }}>
-                                      <Autocomplete
-                                        options={products}
-                                        getOptionLabel={(option) => option.product_code || ''}
-                                        fullWidth
-                                        size="small"
-                                        disabled={isDisabled}
-                                        value={products.find((item) => item.product_code === row.product_code) || null}
-                                        onChange={(event, newValue) => handleChangeProductCode(index, newValue)}
-                                        renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '20%' }}>
-                                      <Tooltip title={row?.product_name}>
-                                        <Autocomplete
-                                          options={products}
-                                          getOptionLabel={(option) => option.title || ''}
-                                          fullWidth
-                                          size="small"
-                                          disabled={isDisabled}
-                                          value={products.find((item) => item.product_code === row.product_code) || null}
-                                          onChange={(event, newValue) => handleChangeProductCode(index, newValue)}
-                                          renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                        />
-                                      </Tooltip>
-                                    </TableCell>
-                                    <TableCell align="left">{row?.product_customer_code}</TableCell>
-                                    <TableCell align="left" style={{ width: '13%' }}>
-                                      <TextField
-                                        InputProps={{
-                                          inputProps: { min: 0 },
-                                          inputComponent: NumberFormatCustom,
-                                        }}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="quantity_in_box"
-                                        size="small"
-                                        disabled={isDisabled}
-                                        value={row?.quantity_in_box || ''}
-                                        onChange={(e) => handleChangeProduct(index, e)}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '5%' }}>
-                                      <FormattedNumber value={row.remain_quantity_in_box} />
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '12%' }}>
-                                      <TextField
-                                        InputProps={{
-                                          inputProps: { min: 0 },
-                                          inputComponent: NumberFormatCustom,
-                                        }}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="unit_price"
-                                        size="small"
-                                        disabled={isDisabled}
-                                        value={row?.unit_price || ''}
-                                        onChange={(e) => handleChangeProduct(index, e)}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '5%' }}>
-                                      {row.unit_name}
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '15%' }}>
-                                      <TextField
-                                        multiline
-                                        minRows={1}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="notes"
-                                        type="text"
-                                        size="small"
-                                        value={row.notes || ''}
-                                        onChange={(e) => handleChangeProduct(index, e)}
-                                      />
-                                    </TableCell>
-                                    {isDetail && (
-                                      <TableCell align="left" style={{ width: '10%' }}>
-                                        {row.status_display}
-                                      </TableCell>
-                                    )}
-                                    {!isDisabled && (
-                                      <TableCell align="center" style={{ width: '5%' }}>
-                                        <IconButton size="small" onClick={() => handleDeleteProduct(index, row.id)}>
-                                          <Delete />
-                                        </IconButton>
-                                      </TableCell>
-                                    )}
-                                  </TableRow>
+                                {receivedDetailList?.map((row, index) => (
+                                  <Product
+                                    index={index}
+                                    key={index}
+                                    classes={classes}
+                                    row={row}
+                                    handleChangeOrder={handleChangeOrder}
+                                    handleChangeProduct={handleChangeProduct}
+                                    handleDeleteProduct={handleDeleteProduct}
+                                    isCompleted={isCompleted}
+                                  />
                                 ))}
                               </TableBody>
                             </Table>
@@ -563,10 +561,10 @@ const ProductContractModal = () => {
                     onSuccess={setURL}
                     onClose={closeFirebaseDialog}
                     type="other"
-                    folder="File Import/Contract"
+                    folder="File Import/Delivery_Product"
                   />
                   <div className={`${classes.tabItemMentorAvatarBody}`} style={{ paddingBottom: 10, justifyContent: 'start' }}>
-                    {isDetail && (
+                    {selectedDocument?.id && (
                       <Button onClick={() => handleOpenDiaLog()} variant="default">
                         Thêm mới
                       </Button>
@@ -605,6 +603,9 @@ const ProductContractModal = () => {
                                 <a onClick={() => handleDeleteFile(file.id)} style={{ marginRight: 10, textDecoration: 'underline' }}>
                                   Xóa
                                 </a>
+                                {/* <button  style={{ textDecoration: 'underline' }}>
+                                  Xóa
+                                </button> */}
                               </div>
                             </div>
                           </div>
@@ -629,9 +630,19 @@ const ProductContractModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
+                {exportButton && selectedDocument?.id && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleClickExport}>
+                    {exportButton.text}
+                  </Button>
+                )}
                 {saveButton && selectedDocument?.id && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
                     {saveButton.text}
+                  </Button>
+                )}
+                {!selectedDocument?.id && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleOpenShortageDialog}>
+                    Danh sách thành phẩm
                   </Button>
                 )}
                 {!selectedDocument?.id && (
@@ -648,4 +659,4 @@ const ProductContractModal = () => {
   );
 };
 
-export default ProductContractModal;
+export default ReceivedProductModal;

@@ -25,6 +25,7 @@ export const initialState = {
   contractDocument: false,
   productRequisitionDocument: false,
   productContractDocument: false,
+  productReceivedDocument: false,
 };
 
 const floatingMenuReducer = (state = initialState, action) => {
@@ -73,6 +74,7 @@ const floatingMenuReducer = (state = initialState, action) => {
         contractDocument: action.contractDocument,
         productRequisitionDocument: action.productRequisitionDocument,
         productContractDocument: action.productContractDocument,
+        productReceivedDocument: action.productReceivedDocument,
       };
     default:
       return state;
