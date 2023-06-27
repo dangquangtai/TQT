@@ -305,6 +305,23 @@ const Row = (props) => {
         </>
       );
     }
+    if (reportType === 'BAO_CAO_THEO_DOI_HOP_DONG' || 'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM') {
+      const { contract_date, contract_code, part_code, part_name, unit_name, quantity_in_piece, remain_quantity_in_piece, unit_price } =
+        row;
+      return (
+        <>
+          <TableCell align="left">{contract_date ? contract_date : ''}</TableCell>
+          <TableCell align="left">{contract_code ? contract_code : ''}</TableCell>
+          <TableCell align="left">{part_code ? part_code : ''}</TableCell>
+          <TableCell align="left">{part_name ? part_name : ''}</TableCell>
+          <TableCell align="left">{unit_name ? unit_name : ''}</TableCell>
+          <TableCell align="left">{quantity_in_piece ? quantity_in_piece : ''}</TableCell>
+          <TableCell align="left">{unit_price ? unit_price : ''}</TableCell>
+          <TableCell align="left">{quantity_in_piece ? quantity_in_piece - remain_quantity_in_piece : 0}</TableCell>
+          <TableCell align="left">{remain_quantity_in_piece ? remain_quantity_in_piece : ''}</TableCell>
+        </>
+      );
+    }
   };
 
   const isDetail = row.detail && row.detail.length > 0;
@@ -324,6 +341,8 @@ const Row = (props) => {
               'TONG_HOP_TON_KHO_THANH_PHAM',
               'KH_GIAO_HANG_CHO_KHACH',
               'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP',
+              'BAO_CAO_THEO_DOI_HOP_DONG',
+              'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM',
             ].includes(reportType) && (
               <IconButton
                 aria-label="expand row"
@@ -494,6 +513,23 @@ const Row = (props) => {
                             <TableCell>{detailitm.used_quantity_in_piece}</TableCell>
                           ) : (
                             <TableCell>0</TableCell>
+                          )}
+                        </TableRow>
+                      ) : reportType === 'BAO_CAO_THEO_DOI_HOP_DONG' || 'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM' ? (
+                        <TableRow>
+                          {detailitm.supplier_code ? <TableCell>{detailitm.supplier_code}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.supplier_name ? <TableCell>{detailitm.supplier_name}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.contract_code ? <TableCell>{detailitm.contract_code}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.part_code ? <TableCell>{detailitm.part_code}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.part_name ? <TableCell>{detailitm.part_name}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.quantity_in_piece ? <TableCell>{detailitm.quantity_in_piece}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.unit_name ? <TableCell>{detailitm.unit_name}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.unit_price ? <TableCell>{detailitm.unit_price}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.received_date ? <TableCell>{detailitm.received_date}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.received_quantity_in_piece ? (
+                            <TableCell>{detailitm.received_quantity_in_piece}</TableCell>
+                          ) : (
+                            <TableCell></TableCell>
                           )}
                         </TableRow>
                       ) : undefined

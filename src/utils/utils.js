@@ -44,6 +44,7 @@ import {
   productRequisitionActions,
   productContractActions,
   productReceivedActions,
+  ContractReportActions,
 } from '../store/constant.js';
 
 export function getUrlByAction(selectedFolder) {
@@ -179,6 +180,9 @@ export function getUrlByAction(selectedFolder) {
     }
     case ProductionReportActions.list_production_report: {
       return apiEndpoints.get_list_production_report;
+    }
+    case ContractReportActions.list_contract_report: {
+      return apiEndpoints.get_list_contract_report;
     }
     case productInventoryCheckActions.list_product_inventory_check: {
       return apiEndpoints.get_product_inventory_check_list;

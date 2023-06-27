@@ -98,6 +98,7 @@ const EnhancedTableToolbar = (props) => {
     buttonCreateMaterialReport,
     buttonCreateProductReport,
     buttonCreateProductionReport,
+    buttonCreateContractReport,
     buttonCreateProductInventoryCheck,
     buttonImportMaterialParts,
     handleImportMaterialsPartData,
@@ -507,6 +508,13 @@ const EnhancedTableToolbar = (props) => {
                   <Grid item xs={6}>
                     <Button variant="contained" color={'primary'} onClick={handleCreate}>
                       {buttonCreateProductReport.text}
+                    </Button>
+                  </Grid>
+                )}
+                {buttonCreateContractReport && (
+                  <Grid item xs={6}>
+                    <Button variant="contained" color={'primary'} onClick={handleCreate}>
+                      {buttonCreateContractReport.text}
                     </Button>
                   </Grid>
                 )}

@@ -273,6 +273,36 @@ const MaterialReportModel = () => {
         case 'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP':
           setlistCol(['STT', 'Mã vật tư', 'Tên vật tư', 'Đơn vị', 'SL thừa thiếu', '', '']);
           break;
+        case 'BAO_CAO_THEO_DOI_HOP_DONG':
+          setlistCol(['Ngày kí HĐ', 'Mã HĐ', 'Mã VT', 'Tên VT', 'Đơn vị', 'Số lượng', 'Đơn giá', 'SL đã giao', 'Còn lại chưa giao']);
+          setListColDetail([
+            'Mã NCC',
+            'Tên NCC',
+            'Mã HĐ',
+            'Mã VT',
+            'Tên VT',
+            'SL',
+            'Đơn vị',
+            'Giá',
+            'Ngày giao hàng thực tế',
+            'SL giao thực tế',
+          ]);
+          break;
+        case 'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM':
+          setlistCol(['Ngày kí HĐ', 'Mã HĐ', 'Mã TP', 'Tên TP', 'Đơn vị', 'Số lượng', 'Đơn giá', 'SL đã giao', 'Còn lại chưa giao']);
+          setListColDetail([
+            'Mã NCC',
+            'Tên NCC',
+            'Mã HĐ',
+            'Mã TP',
+            'Tên TP',
+            'SL',
+            'Đơn vị',
+            'Giá',
+            'Ngày giao hàng thực tế',
+            'SL giao thực tế',
+          ]);
+          break;
         default:
           break;
       }
@@ -329,7 +359,8 @@ const MaterialReportModel = () => {
         selectedReport === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP' ||
         selectedReport === 'TONG_HOP_TON_KHO_VAT_TU' ||
         selectedReport === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP' ||
-        selectedReport === 'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP'
+        selectedReport === 'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP' ||
+        selectedReport === 'BAO_CAO_THEO_DOI_HOP_DONG'
       ) {
         const getListSupplier = await getAllSupplier();
         newListSupplier = [{ id: null, title: 'Chọn tất cả' }, ...getListSupplier];
@@ -343,7 +374,7 @@ const MaterialReportModel = () => {
         const listCustomerOrderCode = await getListCustomerOrderCode();
         newListCustomerOrderCode = [{ id: null, value: 'Chọn tất cả' }, ...listCustomerOrderCode];
       }
-      if (selectedReport === 'TONG_HOP_TON_KHO_THANH_PHAM') {
+      if (selectedReport === 'TONG_HOP_TON_KHO_THANH_PHAM' || selectedReport === 'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM') {
         const getProduct = await getAllProduct();
         newListProductCode = [{ id: null, value: 'Chọn tất cả' }, ...getProduct];
       }
@@ -496,6 +527,7 @@ const MaterialReportModel = () => {
           'TONG_HOP_TON_KHO_VAT_TU',
           'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP',
           'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP',
+          'BAO_CAO_THEO_DOI_HOP_DONG',
         ].includes(selectedReport) && (
           <>
             <Grid item xs={12}>
@@ -561,7 +593,7 @@ const MaterialReportModel = () => {
             </Grid>
           </>
         )}
-        {['TONG_HOP_TON_KHO_THANH_PHAM'].includes(selectedReport) && (
+        {['TONG_HOP_TON_KHO_THANH_PHAM', 'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM'].includes(selectedReport) && (
           <>
             <Grid item xs={12}>
               <span className={classes.tabItemLabelField}>Mã thành phẩm:</span>
@@ -694,6 +726,9 @@ const MaterialReportModel = () => {
         setReportType(reporttype);
       } else if (additionalParam === 'production') {
         const reporttype = await getAllMaterialReportType('PRODUCTION_REPORT');
+        setReportType(reporttype);
+      } else if (additionalParam === 'contract') {
+        const reporttype = await getAllMaterialReportType('CONTRACT_REPORT');
         setReportType(reporttype);
       } else {
         console.log(additionalParam);
