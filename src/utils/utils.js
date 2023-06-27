@@ -38,6 +38,8 @@ import {
   templateDocumentActions,
   MaterialReportActions,
   productInventoryCheckActions,
+  ProductReportActions,
+  ProductionReportActions,
   contractActions,
   productRequisitionActions,
   productContractActions,
@@ -171,6 +173,12 @@ export function getUrlByAction(selectedFolder) {
     }
     case MaterialReportActions.list_material_report: {
       return apiEndpoints.get_list_material_report;
+    }
+    case ProductReportActions.list_product_report: {
+      return apiEndpoints.get_list_product_report;
+    }
+    case ProductionReportActions.list_production_report: {
+      return apiEndpoints.get_list_production_report;
     }
     case productInventoryCheckActions.list_product_inventory_check: {
       return apiEndpoints.get_product_inventory_check_list;

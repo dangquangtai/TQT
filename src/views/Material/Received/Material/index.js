@@ -179,10 +179,7 @@ const MaterialModal = () => {
                                       <TableRow key={material.id}>
                                         <TableCell align="left">
                                           <Checkbox
-                                            checked={materialSelected?.some(
-                                              (item) =>
-                                                item.part_id === material.part_id && item.material_order_id === material.requisition_id
-                                            )}
+                                            checked={materialSelected?.some((item) => item.id === material.id)}
                                             onChange={(e) => handleChangeMaterial(material, e)}
                                             inputProps={{ 'aria-label': 'primary checkbox' }}
                                           />

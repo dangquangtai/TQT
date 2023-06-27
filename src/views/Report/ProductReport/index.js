@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { DOCUMENT_CHANGE } from '../../../store/actions.js';
 import MaterialReportTable from '../../Table';
 import { getUrlByAction } from './../../../utils/utils';
-const ProductionReportWrapper = () => {
+const ProductReportWrapper = () => {
   const dispatch = useDispatch();
 
   const { projects } = useSelector((state) => state.project);
@@ -11,7 +11,7 @@ const ProductionReportWrapper = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
   useEffect(() => {
     function fetchData() {
-      dispatch({ type: DOCUMENT_CHANGE, documentType: 'productionReport' });
+      dispatch({ type: DOCUMENT_CHANGE, documentType: 'productReport' });
     }
     if (selectedProject) {
       fetchData();
@@ -21,13 +21,13 @@ const ProductionReportWrapper = () => {
   return (
     <React.Fragment>
       <MaterialReportTable
-        tableTitle="Quản lý báo cáo sản xuất"
+        tableTitle="Quản lý báo cáo thành phẩm"
         url={getUrlByAction(selectedFolder)}
-        documentType="productionReport"
+        documentType="productReport"
         // setActiveUrl={apiEndpoints.active_material_Inventory}
       />
     </React.Fragment>
   );
 };
 
-export default ProductionReportWrapper;
+export default ProductReportWrapper;

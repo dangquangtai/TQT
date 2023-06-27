@@ -191,6 +191,8 @@ export default function GeneralTable(props) {
   const buttonExportMaterialInventory = menuButtons.find((button) => button.name === view.materialInventory.list.export);
   const buttonExportMaterialInventory2 = menuButtons.find((button) => button.name === view.materialInventory.list.export2);
   const buttonCreateMaterialReport = menuButtons.find((button) => button.name === view.MaterialReport.list.create);
+  const buttonCreateProductReport = menuButtons.find((button) => button.name === view.ProductReport.list.create);
+  const buttonCreateProductionReport = menuButtons.find((button) => button.name === view.ProductionReport.list.create);
   const buttonCreateProductInventoryCheck = menuButtons.find((button) => button.name === view.productInventoryCheck.list.create);
   const buttonCreateContract = menuButtons.find((button) => button.name === view.contract.list.create);
   const buttonCreateProductRequisition = menuButtons.find((button) => button.name === view.productRequisition.list.create);
@@ -284,11 +286,6 @@ export default function GeneralTable(props) {
   const handleChangeRowsPerPage = (event) => {
     fetchDocument({ page: 1, no_item_per_page: event.target.value, search_text, category_id });
     setPage(1);
-  };
-  const handleOpenMaterialReportView = async () => {
-    const detailDocument = await getMaterialReportDetail(selectedDocument.id);
-    dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
-    setOpenMaterialReportView(true);
   };
   const handleCloseMaterialReportView = () => setOpenMaterialReportView(false);
 
@@ -474,6 +471,8 @@ export default function GeneralTable(props) {
         dispatch({ type: FLOATING_MENU_CHANGE, productInventoryCheckDocument: true });
         break;
       case 'materialReport':
+      case 'productReport':
+      case 'productionReport':
         detailDocument = await getMaterialReportDetail(selectedDocument.id);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         await setmaterialReportViewData(detailDocument);
@@ -592,7 +591,13 @@ export default function GeneralTable(props) {
         dispatch({ type: FLOATING_MENU_CHANGE, productDocument: true });
         break;
       case 'materialReport':
-        dispatch({ type: FLOATING_MENU_CHANGE, materialReportDocument: true });
+        dispatch({ type: FLOATING_MENU_CHANGE, materialReportDocument: true, additionalParam: 'material' });
+        break;
+      case 'productReport':
+        dispatch({ type: FLOATING_MENU_CHANGE, materialReportDocument: true, additionalParam: 'product' });
+        break;
+      case 'productionReport':
+        dispatch({ type: FLOATING_MENU_CHANGE, materialReportDocument: true, additionalParam: 'production' });
         break;
       case 'productInventoryCheck':
         dispatch({ type: FLOATING_MENU_CHANGE, productInventoryCheckDocument: true });
@@ -1081,6 +1086,8 @@ export default function GeneralTable(props) {
     handleExportMaterialInventory2,
     handleExportMaterialInventory,
     buttonCreateMaterialReport,
+    buttonCreateProductReport,
+    buttonCreateProductionReport,
     buttonCreateProductInventoryCheck,
     buttonImportMaterialParts,
     handleImportMaterialsPartData,
@@ -1153,11 +1160,6 @@ export default function GeneralTable(props) {
                         />
                         <ViewReportDataModal
                           isOpen={openMaterialReportView}
-                          sumaryData={materialReportViewData}
-                          handleClose={handleCloseMaterialReportView}
-                        />
-                        <ViewReportDataModal
-                          isOpen={openMaterialReportView}
                           listSupplier={materialReportViewData.supplier_id_list}
                           listPart={materialReportViewData.part_id_list}
                           fromDate={materialReportViewData.from_date}
@@ -1169,6 +1171,7 @@ export default function GeneralTable(props) {
                           reportType={materialReportViewData.type_code}
                           listColDetail={materialReportViewData.list_column_detail}
                           listCustomerOrderCode={materialReportViewData.customer_order_id_list}
+                          reportName={materialReportViewData.type}
                           handleClose={handleCloseMaterialReportView}
                         />
                         <TableBody>

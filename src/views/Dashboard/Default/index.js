@@ -49,6 +49,8 @@ import {
   productRequisitionActions,
   productContractActions,
   productReceivedActions,
+  ProductReportActions,
+  ProductionReportActions,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
 import { Redirect } from 'react-router-dom';
@@ -91,6 +93,8 @@ import ContractWrapper from './../../Material/Contract/index';
 import ProductRequisitionWrapper from './../../Product/Requisition/index';
 import ProductContractWrapper from './../../Product/Contract/index';
 import ReceivedProductWrapper from '../../Product/Received/index.js';
+import ProductionReportWrapper from '../../Report/ProductionReport';
+import ProductReportWrapper from '../../Report/ProductReport';
 
 const Default = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
@@ -135,6 +139,8 @@ const Default = () => {
   const availableMaterialReturnEndpoint = Object.values(materialReturnActions);
   const availableTemplateDocumentEndpoint = Object.values(templateDocumentActions);
   const availableMaterialReportEndpoint = Object.values(MaterialReportActions);
+  const availableProductReportEndpoint = Object.values(ProductReportActions);
+  const availableProductionReportEndpoint = Object.values(ProductionReportActions);
   const availableProductInventoryCheckEndpoint = Object.values(productInventoryCheckActions);
   const availableContractCheckEndpoint = Object.values(contractActions);
   const availableProductRequisitionCheckEndpoint = Object.values(productRequisitionActions);
@@ -192,6 +198,8 @@ const Default = () => {
           {availableProductRequisitionCheckEndpoint.includes(selectedFolder?.action) && <ProductRequisitionWrapper />}
           {availableProductContractCheckEndpoint.includes(selectedFolder?.action) && <ProductContractWrapper />}
           {availableProductReceivedCheckEndpoint.includes(selectedFolder?.action) && <ReceivedProductWrapper />}
+          {availableProductionReportEndpoint.includes(selectedFolder?.action) && <ProductionReportWrapper />}
+          {availableProductReportEndpoint.includes(selectedFolder?.action) && <ProductReportWrapper />}
         </Grid>
       )}
     </Grid>

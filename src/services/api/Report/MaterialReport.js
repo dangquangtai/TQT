@@ -100,8 +100,8 @@ export const getAllWorkOrder = () => {
   });
 };
 
-export const getAllMaterialReportType = () => {
-  return axiosServices.post(apiEndpoints.get_list_report_type, {}).then((response) => {
+export const getAllMaterialReportType = (category) => {
+  return axiosServices.post(apiEndpoints.get_list_report_type, { category }).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
       return response.data.data;
     }
