@@ -47,6 +47,7 @@ import {
   productInventoryCheckActions,
   ProductReportActions,
   ProductionReportActions,
+  ContractReportActions,
 } from './../../../store/constant';
 import Summnary from './../Summary/index';
 import { Redirect } from 'react-router-dom';
@@ -87,6 +88,7 @@ import MaterialReportWrapper from '../../Report';
 import ProductInventoryCheckWrapper from './../../Product/InventoryCheck/index';
 import ProductionReportWrapper from '../../Report/ProductionReport';
 import ProductReportWrapper from '../../Report/ProductReport';
+import ContractReportWrapper from '../../Report/ContractReport';
 
 const Default = () => {
   const { selectedFolder } = useSelector((state) => state.folder);
@@ -133,6 +135,7 @@ const Default = () => {
   const availableMaterialReportEndpoint = Object.values(MaterialReportActions);
   const availableProductReportEndpoint = Object.values(ProductReportActions);
   const availableProductionReportEndpoint = Object.values(ProductionReportActions);
+  const availableContractReportEndpoint = Object.values(ContractReportActions);
   const availableProductInventoryCheckEndpoint = Object.values(productInventoryCheckActions);
 
   if (!selectedApp?.id) {
@@ -184,6 +187,7 @@ const Default = () => {
           {availableProductInventoryCheckEndpoint.includes(selectedFolder?.action) && <ProductInventoryCheckWrapper />}
           {availableProductionReportEndpoint.includes(selectedFolder?.action) && <ProductionReportWrapper />}
           {availableProductReportEndpoint.includes(selectedFolder?.action) && <ProductReportWrapper />}
+          {availableContractReportEndpoint.includes(selectedFolder?.action) && <ContractReportWrapper />}
         </Grid>
       )}
     </Grid>

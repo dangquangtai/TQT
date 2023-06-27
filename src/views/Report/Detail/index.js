@@ -727,6 +727,9 @@ const MaterialReportModel = () => {
       } else if (additionalParam === 'production') {
         const reporttype = await getAllMaterialReportType('PRODUCTION_REPORT');
         setReportType(reporttype);
+      } else if (additionalParam === 'contract') {
+        const reporttype = await getAllMaterialReportType('CONTRACT_REPORT');
+        setReportType(reporttype);
       } else {
         console.log(additionalParam);
       }

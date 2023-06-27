@@ -333,6 +333,7 @@ export const apiEndpoints = {
   get_list_material_report: '/Primary/?FlowAlias=bs_api_factory_get_list_material_report&action=api',
   get_list_product_report: '/Primary/?FlowAlias=bs_api_factory_get_list_product_report&action=api',
   get_list_production_report: '/Primary/?FlowAlias=bs_api_factory_get_list_production_report&action=api',
+  get_list_contract_report: '/Primary/?FlowAlias=bs_api_factory_get_list_contract_report&action=api',
   get_list_report_type: '/Primary/?FlowAlias=bs_api_factory_get_list_report_type&action=api',
   get_list_work_order: '/Primary/?FlowAlias=bs_api_factory_get_list_work_order&action=api',
   create_new_material_report_file: '/Primary/?FlowAlias=bs_api_factory_create_new_material_report_file&action=api',
@@ -483,6 +484,9 @@ export const ProductReportActions = {
 };
 export const ProductionReportActions = {
   list_production_report: 'TQT_REPORT_DEFAULT_OPEN_LIST_PRODUCTION_REPORT',
+};
+export const ContractReportActions = {
+  list_contract_report: 'TQT_REPORT_DEFAULT_OPEN_CONTRACT_REPORT',
 };
 
 export const productInventoryCheckActions = {
@@ -765,6 +769,11 @@ export const view = {
   ProductionReport: {
     list: {
       create: 'TQT_REPORT_DEFAULT_SHOW_CREATE_NEW_PRODUCTION_REPORT',
+    },
+  },
+  ContractReport: {
+    list: {
+      create: 'TQT_REPORT_DEFAULT_SHOW_CREATE_CONTRACT_REPORT',
     },
   },
   productInventoryCheck: {

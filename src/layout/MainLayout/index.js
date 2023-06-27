@@ -197,6 +197,8 @@ const MainLayout = ({ children }) => {
         return <MaterialReportModel />;
       case 'productionReport':
         return <MaterialReportModel />;
+      case 'contractReport':
+        return <MaterialReportModel />;
       case 'productInventoryCheck':
         return <ProductInventoryCheckModal />;
       default:
