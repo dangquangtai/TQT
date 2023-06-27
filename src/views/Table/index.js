@@ -189,6 +189,7 @@ export default function GeneralTable(props) {
   const buttonCreateMaterialReport = menuButtons.find((button) => button.name === view.MaterialReport.list.create);
   const buttonCreateProductReport = menuButtons.find((button) => button.name === view.ProductReport.list.create);
   const buttonCreateProductionReport = menuButtons.find((button) => button.name === view.ProductionReport.list.create);
+  const buttonCreateContractReport = menuButtons.find((button) => button.name === view.ContractReport.list.create);
   const buttonCreateProductInventoryCheck = menuButtons.find((button) => button.name === view.productInventoryCheck.list.create);
 
   const fetchDocument = (additionalQuery) => {
@@ -466,6 +467,7 @@ export default function GeneralTable(props) {
       case 'materialReport':
       case 'productReport':
       case 'productionReport':
+      case 'contractReport':
         detailDocument = await getMaterialReportDetail(selectedDocument.id);
         dispatch({ type: DOCUMENT_CHANGE, selectedDocument: detailDocument, documentType });
         await setmaterialReportViewData(detailDocument);
@@ -571,6 +573,9 @@ export default function GeneralTable(props) {
         break;
       case 'productionReport':
         dispatch({ type: FLOATING_MENU_CHANGE, materialReportDocument: true, additionalParam: 'production' });
+        break;
+      case 'contractReport':
+        dispatch({ type: FLOATING_MENU_CHANGE, materialReportDocument: true, additionalParam: 'contract' });
         break;
       case 'productInventoryCheck':
         dispatch({ type: FLOATING_MENU_CHANGE, productInventoryCheckDocument: true });
@@ -1047,6 +1052,7 @@ export default function GeneralTable(props) {
     buttonCreateMaterialReport,
     buttonCreateProductReport,
     buttonCreateProductionReport,
+    buttonCreateContractReport,
     buttonCreateProductInventoryCheck,
     buttonImportMaterialParts,
     handleImportMaterialsPartData,
