@@ -305,7 +305,7 @@ const Row = (props) => {
         </>
       );
     }
-    if (reportType === 'BAO_CAO_THEO_DOI_HOP_DONG') {
+    if (reportType === 'BAO_CAO_THEO_DOI_HOP_DONG' || 'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM') {
       const { contract_date, contract_code, part_code, part_name, unit_name, quantity_in_piece, remain_quantity_in_piece, unit_price } =
         row;
       return (
@@ -342,6 +342,7 @@ const Row = (props) => {
               'KH_GIAO_HANG_CHO_KHACH',
               'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP',
               'BAO_CAO_THEO_DOI_HOP_DONG',
+              'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM',
             ].includes(reportType) && (
               <IconButton
                 aria-label="expand row"
@@ -514,7 +515,7 @@ const Row = (props) => {
                             <TableCell>0</TableCell>
                           )}
                         </TableRow>
-                      ) : reportType === 'BAO_CAO_THEO_DOI_HOP_DONG' ? (
+                      ) : reportType === 'BAO_CAO_THEO_DOI_HOP_DONG' || 'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM' ? (
                         <TableRow>
                           {detailitm.supplier_code ? <TableCell>{detailitm.supplier_code}</TableCell> : <TableCell></TableCell>}
                           {detailitm.supplier_name ? <TableCell>{detailitm.supplier_name}</TableCell> : <TableCell></TableCell>}
