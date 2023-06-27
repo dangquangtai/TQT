@@ -86,14 +86,11 @@ const GoodsIssueModal = () => {
   const [orderList, setOrderList] = useState([]);
 
   const [tabIndex, setTabIndex] = React.useState(0);
-  const [dialogUpload, setDialogUpload] = useState({
-    open: false,
-    type: '',
-  });
 
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
+
   const setURL = async (fileDataInput) => {
     console.log(fileDataInput?.file_name);
     const newFileData = { ...fileData, file_name: fileDataInput?.file_name, url: fileDataInput?.url };
@@ -101,6 +98,7 @@ const GoodsIssueModal = () => {
     const res = await createFileAttachment(newFileData);
     if (res) fetchFileListData();
   };
+
   const handleDeleteFile = async (id) => {
     showConfirmPopup({
       title: 'Xóa file',
@@ -111,19 +109,21 @@ const GoodsIssueModal = () => {
         fetchFileListData();
       },
     });
-    // const res = await deleteFileAttachment(id);
-    // if (res)
   };
+
   const fetchFileListData = async () => {
     const fileList = await getListFile(selectedDocument?.id);
     setListFileData(fileList);
   };
+
   const handleOpenDiaLog = () => {
     setIsOpenUpload(true);
   };
+
   const closeFirebaseDialog = () => {
     setIsOpenUpload(false);
   };
+
   const handleCloseDialog = () => {
     setDocumentToDefault();
     dispatch({ type: FLOATING_MENU_CHANGE, goodsIssueDocument: false });
@@ -140,7 +140,7 @@ const GoodsIssueModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    setGoodsIssueData({ order_date: new Date() });
+    setGoodsIssueData({ order_date: new Date(), notes: '' });
     setIssueDetailList([]);
     setTabIndex(0);
   };

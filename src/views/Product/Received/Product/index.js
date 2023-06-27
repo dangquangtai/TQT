@@ -21,6 +21,7 @@ import { PRODUCT_RECEIVED } from '../../../../store/actions';
 import { useLocation } from 'react-router';
 import { format as formatDate } from 'date-fns';
 import { ProductReceivedService } from '../../../../services/api/Product/Received';
+import { FormattedNumber } from 'react-intl';
 
 const ProductModal = () => {
   const classes = useStyles();
@@ -160,6 +161,8 @@ const ProductModal = () => {
                                       <TableCell align="left">Mã TP</TableCell>
                                       <TableCell align="left">Mã TP KH</TableCell>
                                       <TableCell align="left">Tên thành phẩm</TableCell>
+                                      <TableCell align="left">Mã hợp đồng</TableCell>
+                                      <TableCell align="left">Giá(VNĐ)</TableCell>
                                       <TableCell align="left">SL đặt</TableCell>
                                       <TableCell align="left">SL đã nhập</TableCell>
                                       <TableCell align="left">SL còn lại</TableCell>
@@ -181,9 +184,19 @@ const ProductModal = () => {
                                         <TableCell align="left">{Product.product_code}</TableCell>{' '}
                                         <TableCell align="left">{Product.product_customer_code}</TableCell>
                                         <TableCell align="left">{Product.product_name}</TableCell>
-                                        <TableCell align="left">{Product.quantity_in_box}</TableCell>
-                                        <TableCell align="left">{Product.entered_quantity_in_box}</TableCell>
-                                        <TableCell align="left">{Product.remain_quantity_in_box}</TableCell>
+                                        <TableCell align="left">{Product.contract_code}</TableCell>
+                                        <TableCell align="left">
+                                          <FormattedNumber value={Product.unit_price || 0} />
+                                        </TableCell>
+                                        <TableCell align="left">
+                                          <FormattedNumber value={Product.quantity_in_box || 0} />
+                                        </TableCell>
+                                        <TableCell align="left">
+                                          <FormattedNumber value={Product.entered_quantity_in_box || 0} />
+                                        </TableCell>
+                                        <TableCell align="left">
+                                          <FormattedNumber value={Product.remain_quantity_in_box || 0} />
+                                        </TableCell>
                                         <TableCell align="left">{Product.unit_name}</TableCell>
                                         <TableCell align="left">
                                           {Product.requisition_order_date

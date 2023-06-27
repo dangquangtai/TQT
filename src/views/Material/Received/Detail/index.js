@@ -46,6 +46,8 @@ import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
 import { downloadFile, popupWindow } from './../../../../utils/helper';
 import { createFileAttachment, deleteFileAttachment, getListFile } from '../../../../services/api/Attachment/FileAttachment';
 import ActivityLog from '../../../../component/ActivityLog/index.js';
+import { FormattedNumber } from 'react-intl';
+import NumberFormatCustom from './../../../../component/NumberFormatCustom/index';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -541,6 +543,8 @@ const ReceivedMaterialModal = () => {
                                   {isWorkOrder && <TableCell align="left">Mã đơn hàng</TableCell>}
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
+                                  <TableCell align="left">Mã hợp đồng</TableCell>
+                                  <TableCell align="left">Giá(VND)</TableCell>
                                   <TableCell align="left">SL đặt</TableCell>
                                   <TableCell align="left">SL đã nhập</TableCell>
                                   <TableCell align="left">SL còn lại</TableCell>
@@ -568,23 +572,29 @@ const ReceivedMaterialModal = () => {
                                       </Tooltip>
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '5%' }}>
-                                      {row.quantity_in_piece}
+                                      {row.contract_code}
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '5%' }}>
-                                      {row.entered_quantity_in_piece}
+                                      <FormattedNumber value={row.unit_price || 0} />
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '5%' }}>
-                                      {row.remain_quantity_in_piece}
+                                      <FormattedNumber value={row.quantity_in_piece || 0} />
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '5%' }}>
+                                      <FormattedNumber value={row.entered_quantity_in_piece || 0} />
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '5%' }}>
+                                      <FormattedNumber value={row.remain_quantity_in_piece || 0} />
                                     </TableCell>
                                     <TableCell align="left" style={{ width: '10%' }}>
                                       <TextField
                                         InputProps={{
                                           inputProps: { min: 0 },
+                                          inputComponent: NumberFormatCustom,
                                         }}
                                         fullWidth
                                         variant="outlined"
                                         name="received_quantity_in_piece"
-                                        type="number"
                                         size="small"
                                         value={row?.received_quantity_in_piece || ''}
                                         disabled={isCompleted}

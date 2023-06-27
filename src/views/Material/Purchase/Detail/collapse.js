@@ -37,7 +37,7 @@ const TableCollapse = (props) => {
     if (!row.part_id && isDetail) return;
     const fetch = async () => {
       const res = await ContractService.getBySupplierAndMaterial({ part_id: row.part_id, supplier_id: row.supplier_id });
-      setContracts(res);
+      setContracts(res || []);
     };
     fetch();
   }, [isDetail, row.part_id, row.supplier_id]);
@@ -71,16 +71,16 @@ const TableCollapse = (props) => {
         </TableCell>
         <TableCell align="left" className={classes.maxWidthCell} style={{ width: '13%' }}>
           {isDetail ? (
-            <Tooltip title={`${row?.contract_title}(${row?.contract_code})`}>
-              <span>{`${row?.contract_title}(${row?.contract_code})`}</span>
+            <Tooltip title={row?.contract_code}>
+              <span>{row?.contract_code}</span>
             </Tooltip>
           ) : (
             <Autocomplete
               options={contracts}
-              getOptionLabel={(option) => option.title || ''}
+              getOptionLabel={(option) => option.contract_code || ''}
               fullWidth
               size="small"
-              value={contracts.find((item) => item.id === row.contract_id) || null}
+              value={contracts.find((item) => item.requisition_id === row.contract_id) || null}
               onChange={(event, newValue) => handleChangeContract(index, newValue)}
               renderInput={(params) => <TextField {...params} variant="outlined" />}
             />

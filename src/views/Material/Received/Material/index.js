@@ -14,6 +14,7 @@ import {
   Table,
   Paper,
   Checkbox,
+  Tooltip,
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import useStyles from './../../../../utils/classes';
@@ -21,6 +22,7 @@ import { MATERIAL_RECEIVED } from './../../../../store/actions';
 import { useLocation } from 'react-router';
 import { format as formatDate } from 'date-fns';
 import { getMaterialOrderList } from '../../../../services/api/Material/Received';
+import { FormattedNumber } from 'react-intl';
 
 const MaterialModal = () => {
   const classes = useStyles();
@@ -159,12 +161,14 @@ const MaterialModal = () => {
                                         />
                                       </TableCell>
                                       {isWorkOrder && <TableCell align="left">Mã Đơn KH</TableCell>}
-                                      <TableCell align="left">Mã Đơn mua hàng</TableCell>
+                                      <TableCell align="left">Mã Đơn MH</TableCell>
                                       <TableCell align="left">Mã vật tư</TableCell>
                                       <TableCell align="left">Tên vật tư</TableCell>
-                                      <TableCell align="left">Số lượng đặt</TableCell>
-                                      <TableCell align="left">Số lượng đã nhập</TableCell>
-                                      <TableCell align="left">Số lượng còn lại</TableCell>
+                                      <TableCell align="left">Mã hợp đồng</TableCell>
+                                      <TableCell align="left">Giá(VNĐ)</TableCell>
+                                      <TableCell align="left">SL đặt</TableCell>
+                                      <TableCell align="left">SL đã nhập</TableCell>
+                                      <TableCell align="left">SL còn lại</TableCell>
                                       <TableCell align="left">Đơn vị</TableCell>
                                       {isWorkOrder && <TableCell align="left">Ngày sản xuất</TableCell>}
                                       <TableCell align="left">Ngày mua hàng</TableCell>
@@ -186,10 +190,24 @@ const MaterialModal = () => {
                                         {isWorkOrder && <TableCell align="left">{material.order_code}</TableCell>}
                                         <TableCell align="left">{material.requisition_order_code}</TableCell>
                                         <TableCell align="left">{material.part_code}</TableCell>
-                                        <TableCell align="left">{material.part_name}</TableCell>
-                                        <TableCell align="left">{material.quantity_in_piece}</TableCell>
-                                        <TableCell align="left">{material.entered_quantity_in_piece}</TableCell>
-                                        <TableCell align="left">{material.remain_quantity_in_piece}</TableCell>
+                                        <TableCell className={classes.maxWidthCell} align="left">
+                                          <Tooltip title={material.part_name}>
+                                            <span>{material.part_name}</span>
+                                          </Tooltip>
+                                        </TableCell>
+                                        <TableCell align="left">{material.contract_code}</TableCell>
+                                        <TableCell align="left">
+                                          <FormattedNumber value={material.unit_price || 0} />
+                                        </TableCell>
+                                        <TableCell align="left">
+                                          <FormattedNumber value={material.quantity_in_piece || 0} />
+                                        </TableCell>
+                                        <TableCell align="left">
+                                          <FormattedNumber value={material.entered_quantity_in_piece || 0} />
+                                        </TableCell>
+                                        <TableCell align="left">
+                                          <FormattedNumber value={material.remain_quantity_in_piece || 0} />
+                                        </TableCell>
                                         <TableCell align="left">{material.unit_name}</TableCell>
                                         {isWorkOrder && (
                                           <TableCell align="left">

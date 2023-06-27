@@ -20,6 +20,7 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { format } from 'date-fns';
 import { ProductContractService } from './../../../../services/api/Product/Contract';
 import NumberFormatCustom from '../../../../component/NumberFormatCustom/index.js';
+import { FormattedNumber } from 'react-intl';
 const useRowStyles = makeStyles({
   root: {
     '& > *': {
@@ -64,7 +65,7 @@ const TableCollapse = (props) => {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell align="left" style={{ width: '15%' }}>
+        <TableCell style={{ width: 200 }}>
           <Autocomplete
             options={products}
             getOptionLabel={(option) => option.product_code || ''}
@@ -76,7 +77,7 @@ const TableCollapse = (props) => {
             renderInput={(params) => <TextField {...params} variant="outlined" />}
           />
         </TableCell>
-        <TableCell align="left" className={classes.maxWidthCell} style={{ width: '20%' }}>
+        <TableCell style={{ width: 300 }}>
           <Tooltip title={row?.product_name}>
             <Autocomplete
               options={products}
@@ -90,7 +91,7 @@ const TableCollapse = (props) => {
             />
           </Tooltip>
         </TableCell>
-        <TableCell align="left" style={{ width: '10%' }}>
+        <TableCell style={{ width: 150 }}>
           <TextField
             InputProps={{
               inputProps: { min: 0 },
@@ -105,27 +106,33 @@ const TableCollapse = (props) => {
             onChange={(e) => handleChangeProduct(index, e)}
           />
         </TableCell>
-        <TableCell align="left" style={{ width: '5%' }}>
-          {row.unit_name}
+        <TableCell>{row.unit_name}</TableCell>
+        <TableCell>
+          <Tooltip title={row?.contract_code}>
+            {isDetail ? (
+              <span>{row?.contract_code}</span>
+            ) : (
+              <Autocomplete
+                options={contracts}
+                getOptionLabel={(option) => option.contract_code || ''}
+                fullWidth
+                size="small"
+                value={contracts.find((item) => item.contract_id === row.contract_id) || null}
+                onChange={(event, newValue) => handleChangeContract(index, newValue)}
+                renderInput={(params) => <TextField {...params} variant="outlined" />}
+              />
+            )}
+          </Tooltip>
         </TableCell>
-        <TableCell align="left" className={classes.maxWidthCell} style={{ width: '15%' }}>
-          {isDisabled ? (
-            <Tooltip title={`${row?.contract_title}(${row?.contract_code})`}>
-              <span>{`${row?.contract_title}(${row?.contract_code})`}</span>
-            </Tooltip>
-          ) : (
-            <Autocomplete
-              options={contracts}
-              getOptionLabel={(option) => option.title || ''}
-              fullWidth
-              size="small"
-              value={contracts.find((item) => item.id === row.contract_id) || null}
-              onChange={(event, newValue) => handleChangeContract(index, newValue)}
-              renderInput={(params) => <TextField {...params} variant="outlined" />}
-            />
-          )}
+        {!isDetail && (
+          <TableCell>
+            <FormattedNumber value={row.unplanned_quantity_in_box || 0} />
+          </TableCell>
+        )}
+        <TableCell>
+          <FormattedNumber value={row.unit_price || 0} />
         </TableCell>
-        <TableCell align="left" style={{ width: '20%' }}>
+        <TableCell style={{ width: 200 }}>
           <TextField
             multiline
             minRows={1}
@@ -138,11 +145,9 @@ const TableCollapse = (props) => {
             onChange={(e) => handleChangeProduct(index, e)}
           />
         </TableCell>
-        <TableCell align="left" style={{ width: '5%' }}>
-          {row.status_display}
-        </TableCell>
+        {isDetail && <TableCell>{row.status_display}</TableCell>}
         {!isDisabled && (
-          <TableCell align="center" style={{ width: '10%' }}>
+          <TableCell align="center">
             <IconButton onClick={() => handleDeleteProduct(index, row.id)}>
               <Delete />
             </IconButton>

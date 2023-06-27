@@ -448,11 +448,17 @@ const ProductContractModal = () => {
                                   <TableCell align="left">Tên thành phẩm</TableCell>
                                   <TableCell align="left">Mã TP KH</TableCell>
                                   <TableCell align="left">SL đặt</TableCell>
-                                  <TableCell align="left">SL còn lại</TableCell>
+                                  {isDetail && (
+                                    <>
+                                      <TableCell align="left">SL đã nhập</TableCell>
+                                      <TableCell align="left">SL còn lại</TableCell>
+                                      <TableCell align="left">SL đã lên KH</TableCell>
+                                      <TableCell align="left">SL chưa lên KH</TableCell>
+                                    </>
+                                  )}
                                   <TableCell align="left">Giá(VNĐ)</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
                                   <TableCell align="left">Ghi chú</TableCell>
-                                  {isDetail && <TableCell align="left">Trạng thái</TableCell>}
                                   {!isDisabled && <TableCell align="center">Xoá</TableCell>}
                                 </TableRow>
                               </TableHead>
@@ -501,9 +507,22 @@ const ProductContractModal = () => {
                                         onChange={(e) => handleChangeProduct(index, e)}
                                       />
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '5%' }}>
-                                      <FormattedNumber value={row.remain_quantity_in_box} />
-                                    </TableCell>
+                                    {isDetail && (
+                                      <>
+                                        <TableCell align="left" style={{ width: '5%' }}>
+                                          <FormattedNumber value={row.received_quantity_in_box} />
+                                        </TableCell>
+                                        <TableCell align="left" style={{ width: '5%' }}>
+                                          <FormattedNumber value={row.remain_quantity_in_box} />
+                                        </TableCell>
+                                        <TableCell align="left" style={{ width: '5%' }}>
+                                          <FormattedNumber value={row.ordered_quantity_in_box} />
+                                        </TableCell>
+                                        <TableCell align="left" style={{ width: '5%' }}>
+                                          <FormattedNumber value={row.remain_quantity_in_box - row.ordered_quantity_in_box} />
+                                        </TableCell>
+                                      </>
+                                    )}
                                     <TableCell align="left" style={{ width: '12%' }}>
                                       <TextField
                                         InputProps={{
@@ -535,11 +554,6 @@ const ProductContractModal = () => {
                                         onChange={(e) => handleChangeProduct(index, e)}
                                       />
                                     </TableCell>
-                                    {isDetail && (
-                                      <TableCell align="left" style={{ width: '10%' }}>
-                                        {row.status_display}
-                                      </TableCell>
-                                    )}
                                     {!isDisabled && (
                                       <TableCell align="center" style={{ width: '5%' }}>
                                         <IconButton size="small" onClick={() => handleDeleteProduct(index, row.id)}>

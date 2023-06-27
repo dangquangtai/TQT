@@ -438,17 +438,23 @@ const ContractModal = () => {
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
-                            <Table className={classes.tableSmall} aria-label="simple table" stickyHeader>
+                            <Table size="small" stickyHeader>
                               <TableHead>
                                 <TableRow>
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">SL đặt</TableCell>
-                                  <TableCell align="left">SL còn lại</TableCell>
+                                  {isDetail && (
+                                    <>
+                                      <TableCell align="left">SL đã nhập</TableCell>
+                                      <TableCell align="left">SL còn lại</TableCell>
+                                      <TableCell align="left">SL đã lên KH</TableCell>
+                                      <TableCell align="left">SL chưa lên KH</TableCell>
+                                    </>
+                                  )}
                                   <TableCell align="left">Giá(VNĐ)</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
                                   <TableCell align="left">Ghi chú</TableCell>
-                                  {isDetail && <TableCell align="left">Trạng thái</TableCell>}
                                   {!isDisabled && <TableCell align="center">Xoá</TableCell>}
                                 </TableRow>
                               </TableHead>
@@ -481,7 +487,7 @@ const ContractModal = () => {
                                         />
                                       </Tooltip>
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '13%' }}>
+                                    <TableCell align="left" style={{ width: '10%' }}>
                                       <TextField
                                         InputProps={{
                                           inputProps: { min: 0 },
@@ -496,10 +502,23 @@ const ContractModal = () => {
                                         onChange={(e) => handleChangeMaterial(index, e)}
                                       />
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '5%' }}>
-                                      <FormattedNumber value={row.remain_quantity_in_piece} />
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '12%' }}>
+                                    {isDetail && (
+                                      <>
+                                        <TableCell align="left" style={{ width: '5%' }}>
+                                          <FormattedNumber value={row.received_quantity_in_piece} />
+                                        </TableCell>
+                                        <TableCell align="left" style={{ width: '5%' }}>
+                                          <FormattedNumber value={row.remain_quantity_in_piece} />
+                                        </TableCell>
+                                        <TableCell align="left" style={{ width: '5%' }}>
+                                          <FormattedNumber value={row.ordered_quantity_in_piece} />
+                                        </TableCell>
+                                        <TableCell align="left" style={{ width: '5%' }}>
+                                          <FormattedNumber value={row.remain_quantity_in_piece - row.ordered_quantity_in_piece} />
+                                        </TableCell>
+                                      </>
+                                    )}
+                                    <TableCell align="left" style={{ width: '10%' }}>
                                       <TextField
                                         InputProps={{
                                           inputProps: { min: 0 },
@@ -530,11 +549,6 @@ const ContractModal = () => {
                                         onChange={(e) => handleChangeMaterial(index, e)}
                                       />
                                     </TableCell>
-                                    {isDetail && (
-                                      <TableCell align="left" style={{ width: '10%' }}>
-                                        {row.status_display}
-                                      </TableCell>
-                                    )}
                                     {!isDisabled && (
                                       <TableCell align="center" style={{ width: '5%' }}>
                                         <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>

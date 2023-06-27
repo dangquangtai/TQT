@@ -524,6 +524,8 @@ const ReceivedProductModal = () => {
                                 <TableRow>
                                   <TableCell align="left">Mã TP</TableCell>
                                   <TableCell align="left">Tên thành phẩm</TableCell>
+                                  <TableCell align="left">Mã hợp đồng</TableCell>
+                                  <TableCell align="left">Giá(VND)</TableCell>
                                   <TableCell align="left">SL đặt</TableCell>
                                   <TableCell align="left">SL đã nhập</TableCell>
                                   <TableCell align="left">SL còn lại</TableCell>

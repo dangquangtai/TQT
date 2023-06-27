@@ -19,6 +19,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { format } from 'date-fns';
 import { ContractService } from './../../../../services/api/Material/Contract';
+import { FormattedNumber } from 'react-intl';
 const useRowStyles = makeStyles({
   root: {
     '& > *': {
@@ -49,7 +50,7 @@ const TableCollapse = (props) => {
     if (!row.part_id) return;
     const fetch = async () => {
       const res = await ContractService.getBySupplierAndMaterial({ part_id: row.part_id, supplier_id: row.supplier_id });
-      setContracts(res);
+      setContracts(res || []);
     };
     fetch();
   }, [isDetail, row.part_id, row.supplier_id]);
@@ -57,12 +58,12 @@ const TableCollapse = (props) => {
   return (
     <React.Fragment>
       <TableRow className={classesRow.root}>
-        <TableCell style={{ width: '5%' }}>
+        <TableCell>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell align="left" style={{ width: '15%' }}>
+        <TableCell style={{ width: 180 }}>
           <Autocomplete
             options={materials}
             getOptionLabel={(option) => option.part_code || ''}
@@ -74,7 +75,7 @@ const TableCollapse = (props) => {
             renderInput={(params) => <TextField {...params} variant="outlined" />}
           />
         </TableCell>
-        <TableCell align="left" className={classes.maxWidthCell} style={{ width: '20%' }}>
+        <TableCell style={{ width: 250 }}>
           <Tooltip title={row?.part_name}>
             <Autocomplete
               options={materials}
@@ -88,7 +89,7 @@ const TableCollapse = (props) => {
             />
           </Tooltip>
         </TableCell>
-        <TableCell align="left" style={{ width: '10%' }}>
+        <TableCell style={{ width: 150 }}>
           <TextField
             InputProps={{
               inputProps: { min: 0 },
@@ -103,27 +104,33 @@ const TableCollapse = (props) => {
             onChange={(e) => handleChangeMaterial(index, e)}
           />
         </TableCell>
-        <TableCell align="left" style={{ width: '5%' }}>
-          {row.unit_name}
+        <TableCell>{row.unit_name}</TableCell>
+        <TableCell>
+          <Tooltip title={row?.contract_code}>
+            {isDetail ? (
+              <span>{row?.contract_code}</span>
+            ) : (
+              <Autocomplete
+                options={contracts}
+                getOptionLabel={(option) => option.contract_code || ''}
+                fullWidth
+                size="small"
+                value={contracts.find((item) => item.contract_id === row.contract_id) || null}
+                onChange={(event, newValue) => handleChangeContract(index, newValue)}
+                renderInput={(params) => <TextField {...params} variant="outlined" />}
+              />
+            )}
+          </Tooltip>
         </TableCell>
-        <TableCell align="left" className={classes.maxWidthCell} style={{ width: '15%' }}>
-          {isDetail ? (
-            <Tooltip title={`${row?.contract_title}(${row?.contract_code})`}>
-              <span>{`${row?.contract_title}(${row?.contract_code})`}</span>
-            </Tooltip>
-          ) : (
-            <Autocomplete
-              options={contracts}
-              getOptionLabel={(option) => option.title || ''}
-              fullWidth
-              size="small"
-              value={contracts.find((item) => item.id === row.contract_id) || null}
-              onChange={(event, newValue) => handleChangeContract(index, newValue)}
-              renderInput={(params) => <TextField {...params} variant="outlined" />}
-            />
-          )}
+        {!isDetail && (
+          <TableCell>
+            <FormattedNumber value={row.unplanned_quantity_in_piece || 0} />
+          </TableCell>
+        )}
+        <TableCell>
+          <FormattedNumber value={row.unit_price || 0} />
         </TableCell>
-        <TableCell align="left" style={{ width: '15%' }}>
+        <TableCell style={{ width: 200 }}>
           <TextField
             multiline
             minRows={1}
@@ -136,7 +143,7 @@ const TableCollapse = (props) => {
             onChange={(e) => handleChangeMaterial(index, e)}
           />
         </TableCell>
-        <TableCell align="left" style={{ width: '10%' }}>
+        <TableCell style={{ width: 150 }}>
           <TextField
             multiline
             minRows={1}
@@ -149,11 +156,9 @@ const TableCollapse = (props) => {
             onChange={(e) => handleChangeMaterial(index, e)}
           />
         </TableCell>
-        <TableCell align="left" style={{ width: '5%' }}>
-          {row.status_display}
-        </TableCell>
+        {isDetail && <TableCell>{row.status_display}</TableCell>}
         {!isDisabled && (
-          <TableCell align="center" style={{ width: '5%' }}>
+          <TableCell align="center">
             <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>
               <Delete />
             </IconButton>
@@ -184,9 +189,13 @@ const TableCollapse = (props) => {
                         <TableCell style={{ width: '5%' }} />
                         <TableCell style={{ width: '20%' }}>{detail.received_order_code}</TableCell>{' '}
                         <TableCell style={{ width: '25%' }}>{detail.part_name}</TableCell>
-                        <TableCell style={{ width: '10%' }}>{detail.received_quantity_in_piece}</TableCell>
                         <TableCell style={{ width: '10%' }}>
-                          {Number(detail.remain_quantity_in_piece) - Number(detail.received_quantity_in_piece)}
+                          <FormattedNumber value={detail.received_quantity_in_piece || 0} />
+                        </TableCell>
+                        <TableCell style={{ width: '10%' }}>
+                          <FormattedNumber
+                            value={Number(detail.remain_quantity_in_piece) - Number(detail.received_quantity_in_piece) || 0}
+                          />
                         </TableCell>
                         <TableCell style={{ width: '10%' }}>
                           {detail.received_order_date ? format(new Date(detail.received_order_date), 'dd/MM/yyyy') : ''}

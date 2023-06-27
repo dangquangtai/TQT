@@ -32,13 +32,19 @@ const Product = ({ index, row, classes, isCompleted, handleChangeOrder, handleCh
         </Tooltip>
       </TableCell>
       <TableCell align="left" style={{ width: '5%' }}>
-        <FormattedNumber value={row.quantity_in_box} />
+        {row.contract_code}
       </TableCell>
       <TableCell align="left" style={{ width: '5%' }}>
-        <FormattedNumber value={row.entered_quantity_in_box} />
+        <FormattedNumber value={row.unit_price || 0} />
       </TableCell>
       <TableCell align="left" style={{ width: '5%' }}>
-        <FormattedNumber value={row.remain_quantity_in_box} />
+        <FormattedNumber value={row.quantity_in_box || 0} />
+      </TableCell>
+      <TableCell align="left" style={{ width: '5%' }}>
+        <FormattedNumber value={row.entered_quantity_in_box || 0} />
+      </TableCell>
+      <TableCell align="left" style={{ width: '5%' }}>
+        <FormattedNumber value={row.remain_quantity_in_box || 0} />
       </TableCell>
       <TableCell align="left" style={{ width: '10%' }}>
         <TextField
@@ -60,8 +66,8 @@ const Product = ({ index, row, classes, isCompleted, handleChangeOrder, handleCh
       </TableCell>
       <TableCell align="left" className={classes.maxWidthCell} style={{ width: '15%' }}>
         {isCompleted ? (
-          <Tooltip title={`${row?.customer_order_title}(${row?.customer_order_code})`}>
-            <span>{`${row?.customer_order_title}(${row?.customer_order_code})`}</span>
+          <Tooltip title={row?.customer_order_code}>
+            <span>{row?.customer_order_code}</span>
           </Tooltip>
         ) : (
           <Autocomplete

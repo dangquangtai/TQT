@@ -249,10 +249,13 @@ const MaterialRequisitionModal = () => {
   const handleChangeContract = (index, newItem) => {
     const newMaterialList = [...materialList];
     const newMaterial = {
-      contract_id: newItem?.id,
-      contract_title: newItem?.title,
+      contract_id: newItem?.contract_id,
+      contract_title: newItem?.contract_title,
       contract_code: newItem?.contract_code,
+      unit_price: newItem?.unit_price,
+      unplanned_quantity_in_piece: Number(newItem.remain_quantity_in_piece) - Number(newItem?.ordered_quantity_in_piece),
     };
+    console.log(newMaterial);
     newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
     setMaterialList(newMaterialList);
   };
@@ -516,7 +519,7 @@ const MaterialRequisitionModal = () => {
                           </Tooltip>
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
-                          <TableContainer style={{ maxHeight: 500 }} component={Paper}>
+                          <TableContainer style={{ maxHeight: 500, overflowX: 'auto' }} component={Paper}>
                             <Table size="small" stickyHeader>
                               <TableHead>
                                 <TableRow>
@@ -526,9 +529,11 @@ const MaterialRequisitionModal = () => {
                                   <TableCell align="left">SL cần</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
                                   <TableCell align="left">Hợp đồng</TableCell>
+                                  {!isDetail && <TableCell align="left">SL còn lại</TableCell>}
+                                  <TableCell align="left">Giá(VNĐ)</TableCell>
                                   <TableCell align="left">Ghi chú</TableCell>
                                   <TableCell align="left">Ghi chú 2</TableCell>
-                                  <TableCell align="left">Trạng thái</TableCell>
+                                  {isDetail && <TableCell align="left">Trạng thái</TableCell>}
                                   {!isDisabled && <TableCell align="center">Xoá</TableCell>}
                                 </TableRow>
                               </TableHead>
