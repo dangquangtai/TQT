@@ -288,6 +288,21 @@ const MaterialReportModel = () => {
             'SL giao thực tế',
           ]);
           break;
+        case 'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM':
+          setlistCol(['Ngày kí HĐ', 'Mã HĐ', 'Mã TP', 'Tên TP', 'Đơn vị', 'Số lượng', 'Đơn giá', 'SL đã giao', 'Còn lại chưa giao']);
+          setListColDetail([
+            'Mã NCC',
+            'Tên NCC',
+            'Mã HĐ',
+            'Mã TP',
+            'Tên TP',
+            'SL',
+            'Đơn vị',
+            'Giá',
+            'Ngày giao hàng thực tế',
+            'SL giao thực tế',
+          ]);
+          break;
         default:
           break;
       }
@@ -359,7 +374,7 @@ const MaterialReportModel = () => {
         const listCustomerOrderCode = await getListCustomerOrderCode();
         newListCustomerOrderCode = [{ id: null, value: 'Chọn tất cả' }, ...listCustomerOrderCode];
       }
-      if (selectedReport === 'TONG_HOP_TON_KHO_THANH_PHAM') {
+      if (selectedReport === 'TONG_HOP_TON_KHO_THANH_PHAM' || selectedReport === 'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM') {
         const getProduct = await getAllProduct();
         newListProductCode = [{ id: null, value: 'Chọn tất cả' }, ...getProduct];
       }
@@ -578,7 +593,7 @@ const MaterialReportModel = () => {
             </Grid>
           </>
         )}
-        {['TONG_HOP_TON_KHO_THANH_PHAM'].includes(selectedReport) && (
+        {['TONG_HOP_TON_KHO_THANH_PHAM', 'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM'].includes(selectedReport) && (
           <>
             <Grid item xs={12}>
               <span className={classes.tabItemLabelField}>Mã thành phẩm:</span>
