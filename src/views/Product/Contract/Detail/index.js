@@ -452,8 +452,6 @@ const ProductContractModal = () => {
                                     <>
                                       <TableCell align="left">SL đã nhập</TableCell>
                                       <TableCell align="left">SL còn lại</TableCell>
-                                      <TableCell align="left">SL đã lên KH</TableCell>
-                                      <TableCell align="left">SL chưa lên KH</TableCell>
                                     </>
                                   )}
                                   <TableCell align="left">Giá(VNĐ)</TableCell>
@@ -514,12 +512,6 @@ const ProductContractModal = () => {
                                         </TableCell>
                                         <TableCell align="left" style={{ width: '5%' }}>
                                           <FormattedNumber value={row.remain_quantity_in_box} />
-                                        </TableCell>
-                                        <TableCell align="left" style={{ width: '5%' }}>
-                                          <FormattedNumber value={row.ordered_quantity_in_box} />
-                                        </TableCell>
-                                        <TableCell align="left" style={{ width: '5%' }}>
-                                          <FormattedNumber value={row.remain_quantity_in_box - row.ordered_quantity_in_box} />
                                         </TableCell>
                                       </>
                                     )}

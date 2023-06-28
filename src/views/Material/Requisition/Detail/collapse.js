@@ -124,7 +124,7 @@ const TableCollapse = (props) => {
         </TableCell>
         {!isDetail && (
           <TableCell>
-            <FormattedNumber value={row.unplanned_quantity_in_piece || 0} />
+            <FormattedNumber value={row.remain_quantity_in_piece || 0} />
           </TableCell>
         )}
         <TableCell>

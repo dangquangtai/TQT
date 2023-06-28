@@ -218,7 +218,6 @@ const ProductRequisitionModal = () => {
       contract_title: newItem?.contract_title,
       contract_code: newItem?.contract_code,
       unit_price: newItem?.unit_price,
-      unplanned_quantity_in_box: Number(newItem.remain_quantity_in_box) - Number(newItem?.ordered_quantity_in_box),
     };
     newProductList[index] = { ...newProductList[index], ...newProduct };
     setProductList(newProductList);

@@ -253,7 +253,6 @@ const MaterialRequisitionModal = () => {
       contract_title: newItem?.contract_title,
       contract_code: newItem?.contract_code,
       unit_price: newItem?.unit_price,
-      unplanned_quantity_in_piece: Number(newItem.remain_quantity_in_piece) - Number(newItem?.ordered_quantity_in_piece),
     };
     console.log(newMaterial);
     newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
