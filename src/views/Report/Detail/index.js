@@ -258,17 +258,8 @@ const MaterialReportModel = () => {
           ]);
           break;
         case 'BAO_CAO_SU_DUNG_VAT_TU_THEO_DON_HANG':
-          setlistCol([
-            'STT',
-            'Mã TP KH',
-            'Mã TP TQT',
-            'Tên thành phẩm',
-            'Mã vật tư sử dụng',
-            'Tên vật tư',
-            'Ngày sử dụng',
-            'Đơn vị',
-            'SL SD',
-          ]);
+          setlistCol(['STT', 'Mã TP KH', 'Mã TP TQT', 'Tên thành phẩm', '']);
+          setListColDetail(['Mã vật tư sử dụng', 'Tên vật tư', 'Ngày sử dụng', 'Đơn vị', 'SL SD']);
           break;
         case 'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP':
           setlistCol(['STT', 'Mã vật tư', 'Tên vật tư', 'Đơn vị', 'SL thừa thiếu', '', '']);
