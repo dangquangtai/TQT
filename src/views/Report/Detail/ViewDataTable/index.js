@@ -212,7 +212,13 @@ export default function ViewReportDataModal(props) {
   }, [selectedDocument]);
   useEffect(() => {
     const fetchData = async () => {
-      if (reportType === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP' || 'BAO_CAO_THEO_DOI_HOP_DONG' || 'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM') {
+      if (
+        reportType === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP' ||
+        'BAO_CAO_THEO_DOI_HOP_DONG' ||
+        'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM' ||
+        'TONG_HOP_TON_KHO_VAT_TU' ||
+        'TONG_HOP_TON_KHO_THANH_PHAM'
+      ) {
         await setIsSynthetic(true);
       }
       const getListViewData = await getViewDataForReporTemplate({
@@ -380,7 +386,7 @@ export default function ViewReportDataModal(props) {
                                   <TableCell />
                                   {listCol?.map((col, index) => (
                                     <React.Fragment key={index}>
-                                      {['Tồn đầu', 'Nhập', 'Xuất', 'Tồn cuối'].includes(col) ? (
+                                      {['Tồn đầu', 'Nhập', 'Xuất', 'Tồn cuối'].includes(col) && reportType === 'TONG_HOP_TON_KHO_VAT_TU' ? (
                                         <TableCell colSpan={2} align="center" style={{ width: '10%' }}>
                                           {col}
                                           <TableRow>
