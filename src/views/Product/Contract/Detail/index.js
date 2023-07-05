@@ -40,6 +40,7 @@ import ActivityLog from '../../../../component/ActivityLog/index.js';
 import { ProductContractService } from './../../../../services/api/Product/Contract';
 import NumberFormatCustom from './../../../../component/NumberFormatCustom/index';
 import { FormattedNumber } from 'react-intl';
+import TableCollapse from './collapse.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -444,6 +445,7 @@ const ProductContractModal = () => {
                             <Table className={classes.tableSmall} aria-label="simple table" stickyHeader>
                               <TableHead>
                                 <TableRow>
+                                  <TableCell />
                                   <TableCell align="left">Mã thành phẩm</TableCell>
                                   <TableCell align="left">Tên thành phẩm</TableCell>
                                   <TableCell align="left">Mã TP KH</TableCell>
@@ -462,98 +464,16 @@ const ProductContractModal = () => {
                               </TableHead>
                               <TableBody>
                                 {ProductList?.map((row, index) => (
-                                  <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '15%' }}>
-                                      <Autocomplete
-                                        options={products}
-                                        getOptionLabel={(option) => option.product_code || ''}
-                                        fullWidth
-                                        size="small"
-                                        disabled={isDisabled}
-                                        value={products.find((item) => item.product_code === row.product_code) || null}
-                                        onChange={(event, newValue) => handleChangeProductCode(index, newValue)}
-                                        renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '20%' }}>
-                                      <Tooltip title={row?.product_name}>
-                                        <Autocomplete
-                                          options={products}
-                                          getOptionLabel={(option) => option.title || ''}
-                                          fullWidth
-                                          size="small"
-                                          disabled={isDisabled}
-                                          value={products.find((item) => item.product_code === row.product_code) || null}
-                                          onChange={(event, newValue) => handleChangeProductCode(index, newValue)}
-                                          renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                        />
-                                      </Tooltip>
-                                    </TableCell>
-                                    <TableCell align="left">{row?.product_customer_code}</TableCell>
-                                    <TableCell align="left" style={{ width: '13%' }}>
-                                      <TextField
-                                        InputProps={{
-                                          inputProps: { min: 0 },
-                                          inputComponent: NumberFormatCustom,
-                                        }}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="quantity_in_box"
-                                        size="small"
-                                        disabled={isDisabled}
-                                        value={row?.quantity_in_box || ''}
-                                        onChange={(e) => handleChangeProduct(index, e)}
-                                      />
-                                    </TableCell>
-                                    {isDetail && (
-                                      <>
-                                        <TableCell align="left" style={{ width: '5%' }}>
-                                          <FormattedNumber value={row.received_quantity_in_box} />
-                                        </TableCell>
-                                        <TableCell align="left" style={{ width: '5%' }}>
-                                          <FormattedNumber value={row.remain_quantity_in_box} />
-                                        </TableCell>
-                                      </>
-                                    )}
-                                    <TableCell align="left" style={{ width: '12%' }}>
-                                      <TextField
-                                        InputProps={{
-                                          inputProps: { min: 0 },
-                                          inputComponent: NumberFormatCustom,
-                                        }}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="unit_price"
-                                        size="small"
-                                        disabled={isDisabled}
-                                        value={row?.unit_price || ''}
-                                        onChange={(e) => handleChangeProduct(index, e)}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '5%' }}>
-                                      {row.unit_name}
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '15%' }}>
-                                      <TextField
-                                        multiline
-                                        minRows={1}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="notes"
-                                        type="text"
-                                        size="small"
-                                        value={row.notes || ''}
-                                        onChange={(e) => handleChangeProduct(index, e)}
-                                      />
-                                    </TableCell>
-                                    {!isDisabled && (
-                                      <TableCell align="center" style={{ width: '5%' }}>
-                                        <IconButton size="small" onClick={() => handleDeleteProduct(index, row.id)}>
-                                          <Delete />
-                                        </IconButton>
-                                      </TableCell>
-                                    )}
-                                  </TableRow>
+                                  <TableCollapse
+                                    index={index}
+                                    row={row}
+                                    handleChangeProduct={handleChangeProduct}
+                                    handleChangeProductCode={handleChangeProductCode}
+                                    isDetail={isDetail}
+                                    isDisabled={isDisabled}
+                                    handleDeleteProduct={handleDeleteProduct}
+                                    classes={classes}
+                                  />
                                 ))}
                               </TableBody>
                             </Table>
