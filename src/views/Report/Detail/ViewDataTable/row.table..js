@@ -69,7 +69,7 @@ const Row = (props) => {
   const classesTable = usetableStyles();
   const handleDownload = (url) => {
     if (!url) {
-      handleOpenSnackbar('error', 'Khôn   g tìm thấy file!');
+      handleOpenSnackbar('error', 'Không tìm thấy file!');
       return;
     }
     downloadFile(url);
@@ -277,17 +277,14 @@ const Row = (props) => {
       );
     }
     if (reportType === 'BAO_CAO_SU_DUNG_VAT_TU_THEO_DON_HANG') {
-      const { product_customer_code, product_code, product_name, part_code, part_name, unit_name, used_quantity_in_piece } = row;
+      const { part_id, part_code, part_name } = row;
       return (
         <>
           <TableCell align="left">{index + 1}</TableCell>
-          <TableCell align="left">{product_customer_code ? product_customer_code : ''}</TableCell>
-          <TableCell align="left">{product_code ? product_code : ''}</TableCell>
-          <TableCell align="left">{product_name ? product_name : ''}</TableCell>
+          <TableCell align="left">{part_id ? part_id : ''}</TableCell>
           <TableCell align="left">{part_code ? part_code : ''}</TableCell>
           <TableCell align="left">{part_name ? part_name : ''}</TableCell>
-          <TableCell align="left">{unit_name ? unit_name : ''}</TableCell>
-          <TableCell align="left">{used_quantity_in_piece ? used_quantity_in_piece : 0}</TableCell>
+          <TableCell align="left"></TableCell>
         </>
       );
     }
@@ -367,7 +364,7 @@ const Row = (props) => {
                     <TableRow>
                       {listColDetail?.map((Coldt, index) => (
                         <React.Fragment key={index}>
-                          {['Tồn đầu', 'Nhập', 'Xuất', 'Tồn cuối'].includes(Coldt) ? (
+                          {['Tồn đầu', 'Nhập', 'Xuất', 'Tồn cuối'].includes(Coldt) && reportType === 'TONG_HOP_TON_KHO_VAT_TU' ? (
                             <TableCell colSpan={2} align="center" style={{ width: '10%' }}>
                               {Coldt}
                               <TableRow>
@@ -528,6 +525,18 @@ const Row = (props) => {
                           {detailitm.received_date ? <TableCell>{detailitm.received_date}</TableCell> : <TableCell></TableCell>}
                           {detailitm.received_quantity_in_piece ? (
                             <TableCell>{detailitm.received_quantity_in_piece}</TableCell>
+                          ) : (
+                            <TableCell></TableCell>
+                          )}
+                        </TableRow>
+                      ) : reportType === 'BAO_CAO_SU_DUNG_VAT_TU_THEO_DON_HANG' ? (
+                        <TableRow>
+                          {detailitm.part_code ? <TableCell>{detailitm.part_code}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.part_name ? <TableCell>{detailitm.part_name}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.supplier_name ? <TableCell>{detailitm.supplier_name}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.unit_name ? <TableCell>{detailitm.unit_name}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.used_quantity_in_piece ? (
+                            <TableCell>{detailitm.used_quantity_in_piece}</TableCell>
                           ) : (
                             <TableCell></TableCell>
                           )}
