@@ -217,7 +217,8 @@ export default function ViewReportDataModal(props) {
         'BAO_CAO_THEO_DOI_HOP_DONG' ||
         'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM' ||
         'TONG_HOP_TON_KHO_VAT_TU' ||
-        'TONG_HOP_TON_KHO_THANH_PHAM'
+        'TONG_HOP_TON_KHO_THANH_PHAM' ||
+        'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP'
       ) {
         await setIsSynthetic(true);
       }
