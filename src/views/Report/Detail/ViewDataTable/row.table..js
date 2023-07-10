@@ -541,6 +541,17 @@ const Row = (props) => {
                             <TableCell></TableCell>
                           )}
                         </TableRow>
+                      ) : reportType === 'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP' ? (
+                        <TableRow>
+                          {detailitm.production_date ? <TableCell>{detailitm.production_date}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.explain ? <TableCell>{detailitm.explain}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.unit_name ? <TableCell>{detailitm.unit_name}</TableCell> : <TableCell></TableCell>}
+                          {detailitm.difference_quantity_in_piece ? (
+                            <TableCell>{detailitm.difference_quantity_in_piece}</TableCell>
+                          ) : (
+                            <TableCell></TableCell>
+                          )}
+                        </TableRow>
                       ) : undefined
                     )}
                   </TableBody>
