@@ -341,6 +341,7 @@ const Row = (props) => {
               'BAO_CAO_THEO_DOI_HOP_DONG',
               'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM',
               'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP',
+              'BAO_CAO_THUC_TE_SAN_XUAT',
             ].includes(reportType) && (
               <IconButton
                 aria-label="expand row"
@@ -467,13 +468,81 @@ const Row = (props) => {
                         )}
                         {reportType === 'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP' && (
                           <>
-                            {detailitm.production_date ? (
-                              <TableCell>{'fdsfs' + detailitm.production_date}</TableCell>
+                            {detailitm.production_date ? <TableCell>{detailitm.production_date}</TableCell> : <TableCell></TableCell>}
+                            {detailitm.explain ? <TableCell>{detailitm.explain}</TableCell> : <TableCell></TableCell>}
+                            {detailitm.unit_name ? <TableCell>{detailitm.unit_name}</TableCell> : <TableCell></TableCell>}
+                            {detailitm.difference_quantity_in_piece ? (
+                              <TableCell>{detailitm.difference_quantity_in_piece}</TableCell>
                             ) : (
                               <TableCell></TableCell>
                             )}
-                            {detailitm.explain ? <TableCell>{detailitm.explain}</TableCell> : <TableCell></TableCell>}
-                            {detailitm.unit_name ? <TableCell>{detailitm.unit_name}</TableCell> : <TableCell></TableCell>}
+                          </>
+                        )}
+                        {reportType === 'BAO_CAO_THUC_TE_SAN_XUAT' && (
+                          <>
+                            {detailitm.part_code ? <TableCell>{detailitm.part_code}</TableCell> : <TableCell></TableCell>}
+                            {detailitm.part_name ? <TableCell>{detailitm.part_name}</TableCell> : <TableCell></TableCell>}
+                            {detailitm.supplier_name ? <TableCell>{detailitm.supplier_name}</TableCell> : <TableCell></TableCell>}
+                            {detailitm.requisition_quantity_in_piece ? (
+                              <TableCell>{detailitm.requisition_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.requisition_quantity_in_piece ? (
+                              <TableCell>{detailitm.requisition_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.cosumed_quantity_in_piece ? (
+                              <TableCell>{detailitm.cosumed_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.received_quantity_in_piece ? (
+                              <TableCell>{detailitm.received_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.dirty_quantity_in_piece ? (
+                              <TableCell>{detailitm.dirty_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.weaving_for_sale_quantity_in_piece ? (
+                              <TableCell>{detailitm.weaving_for_sale_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.weaving_for_return_quantity_in_piece ? (
+                              <TableCell>{detailitm.weaving_for_return_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.sewing_error_quantity_in_piece ? (
+                              <TableCell>{detailitm.sewing_error_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.eraser_error_quantity_in_piece ? (
+                              <TableCell>{detailitm.eraser_error_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.torn_quantity_in_piece ? (
+                              <TableCell>{detailitm.torn_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.broken_quantity_in_piece ? (
+                              <TableCell>{detailitm.broken_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.broken_quantity_in_piece_percent ? (
+                              <TableCell>{detailitm.broken_quantity_in_piece_percent}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
                             {detailitm.difference_quantity_in_piece ? (
                               <TableCell>{detailitm.difference_quantity_in_piece}</TableCell>
                             ) : (
