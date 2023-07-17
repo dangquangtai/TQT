@@ -564,15 +564,15 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   scroll: {
-    height: 60,
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignContent: 'flexStart',
+    // height: 60,
+    // display: 'flex',
+    // flexWrap: 'wrap',
+    // alignContent: 'flexStart',
     width: '100%',
-    overflowY: 'scroll',
-    '&::-webkit-scrollbar': {
-      display: 'none',
-    },
+    // overflowY: 'scroll',
+    // '&::-webkit-scrollbar': {
+    //   display: 'none',
+    // },
     fontSize: '12px',
   },
   tabItemNoBorder: {
