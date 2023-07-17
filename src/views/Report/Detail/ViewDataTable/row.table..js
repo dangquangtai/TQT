@@ -340,6 +340,7 @@ const Row = (props) => {
               'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP',
               'BAO_CAO_THEO_DOI_HOP_DONG',
               'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM',
+              'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP',
             ].includes(reportType) && (
               <IconButton
                 aria-label="expand row"
