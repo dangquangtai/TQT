@@ -242,6 +242,22 @@ const MaterialReportModel = () => {
             'Số lượng thực tế',
             'Trạng thái',
           ]);
+          setListColDetail([
+            'Mã vt',
+            'Tên vt',
+            'NCC',
+            'SL xuất',
+            'SL SD',
+            'SL nhập',
+            'Bẩn + ố vàng',
+            'Dệt bán',
+            'Lỗi may',
+            'Lỗi tẩy',
+            'Rách',
+            'Tổng SL hỏng',
+            'Tỷ lệ hỏng',
+            'Chênh lệch',
+          ]);
           break;
         case 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP':
           setlistCol(['STT', 'Mã vật tư', 'Tên vật tư', 'Nhà cung cấp', 'Đơn vị', 'Số lượng sử dụng']);
