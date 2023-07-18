@@ -217,7 +217,9 @@ export default function ViewReportDataModal(props) {
         'BAO_CAO_THEO_DOI_HOP_DONG' ||
         'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM' ||
         'TONG_HOP_TON_KHO_VAT_TU' ||
-        'TONG_HOP_TON_KHO_THANH_PHAM'
+        'TONG_HOP_TON_KHO_THANH_PHAM' ||
+        'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP' ||
+        'BAO_CAO_THUC_TE_SAN_XUAT'
       ) {
         await setIsSynthetic(true);
       }
@@ -428,7 +430,7 @@ export default function ViewReportDataModal(props) {
                             startAccessor="start"
                             endAccessor="end"
                             // contentHeight="auto"
-                            style={{ minHeight: 550 }}
+                            style={{ minHeight: 1000 }}
                             components={{ event: Event }}
                             step={30}
                             selectable={false}

@@ -242,6 +242,22 @@ const MaterialReportModel = () => {
             'Số lượng thực tế',
             'Trạng thái',
           ]);
+          setListColDetail([
+            'Mã vt',
+            'Tên vt',
+            'NCC',
+            'SL xuất',
+            'SL SD',
+            'SL nhập',
+            'Bẩn + ố vàng',
+            'Dệt bán',
+            'Lỗi may',
+            'Lỗi tẩy',
+            'Rách',
+            'Tổng SL hỏng',
+            'Tỷ lệ hỏng',
+            'Chênh lệch',
+          ]);
           break;
         case 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP':
           setlistCol(['STT', 'Mã vật tư', 'Tên vật tư', 'Nhà cung cấp', 'Đơn vị', 'Số lượng sử dụng']);
@@ -263,6 +279,7 @@ const MaterialReportModel = () => {
           break;
         case 'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP':
           setlistCol(['STT', 'Mã vật tư', 'Tên vật tư', 'Đơn vị', 'SL thừa thiếu', '', '']);
+          setListColDetail(['Ngày sản xuất', 'Diễn giải', 'Đơn vị', 'Số lượng thừa thiếu']);
           break;
         case 'BAO_CAO_THEO_DOI_HOP_DONG':
           setlistCol(['Ngày kí HĐ', 'Mã HĐ', 'Mã VT', 'Tên VT', 'Đơn vị', 'Số lượng', 'Đơn giá', 'SL đã giao', 'Còn lại chưa giao']);

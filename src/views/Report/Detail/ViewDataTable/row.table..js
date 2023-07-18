@@ -340,6 +340,8 @@ const Row = (props) => {
               'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP',
               'BAO_CAO_THEO_DOI_HOP_DONG',
               'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM',
+              'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP',
+              'BAO_CAO_THUC_TE_SAN_XUAT',
             ].includes(reportType) && (
               <IconButton
                 aria-label="expand row"
@@ -380,169 +382,176 @@ const Row = (props) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {row?.detail?.map((detailitm) =>
-                      reportType === 'KH_GIAO_HANG_CHO_KHACH' ? (
-                        <TableRow>
-                          {detailitm.product__code ? <TableCell>{detailitm.product__code}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.product__customer__code ? (
+                    {row?.detail?.map((detailitm) => (
+                      <TableRow>
+                        {reportType === 'KH_GIAO_HANG_CHO_KHACH' && (
+                          <>
+                            <TableCell>{detailitm.product__code}</TableCell>
                             <TableCell>{detailitm.product__customer__code}</TableCell>
-                          ) : (
-                            <TableCell></TableCell>
-                          )}
-                          {detailitm.product__name ? <TableCell>{detailitm.product__name}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.unit__name ? <TableCell>{detailitm.unit__name}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.quantity__in__box ? <TableCell>{detailitm.quantity__in__box}</TableCell> : <TableCell>0</TableCell>}
-                          {detailitm.production_quantity_in_box ? (
-                            <TableCell>{detailitm.production_quantity_in_box}</TableCell>
-                          ) : (
-                            <TableCell>0</TableCell>
-                          )}
-                          {detailitm.order_quantity_in_box ? (
-                            <TableCell>{detailitm.order_quantity_in_box}</TableCell>
-                          ) : (
-                            <TableCell>0</TableCell>
-                          )}
-                          {detailitm.specific_list_supplier_string ? (
+                            <TableCell>{detailitm.product__name}</TableCell>
+                            <TableCell>{detailitm.unit__name}</TableCell>
+                            <TableCell>{detailitm.quantity__in__box || 0}</TableCell>
+                            <TableCell>{detailitm.production_quantity_in_box || 0}</TableCell>
+                            <TableCell>{detailitm.order_quantity_in_box || 0}</TableCell>
                             <TableCell>{detailitm.specific_list_supplier_string}</TableCell>
-                          ) : (
-                            <TableCell></TableCell>
-                          )}
-                        </TableRow>
-                      ) : reportType === 'TONG_HOP_TON_KHO_VAT_TU' ? (
-                        <TableRow>
-                          {detailitm.order_date ? <TableCell>{detailitm.order_date}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.category_name ? <TableCell>{detailitm.category_name}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.supplier_name ? <TableCell>{detailitm.supplier_name}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.part_code ? <TableCell>{detailitm.part_code}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.part_name ? <TableCell>{detailitm.part_name}</TableCell> : <TableCell>0</TableCell>}
-                          {detailitm.unit_name ? <TableCell>{detailitm.unit_name}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.explain ? <TableCell>{detailitm.explain}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.beginning_quantity_in_piece ? (
+                          </>
+                        )}
+                        {reportType === 'TONG_HOP_TON_KHO_VAT_TU' && (
+                          <>
+                            <TableCell>{detailitm.order_date}</TableCell>
+                            <TableCell>{detailitm.category_name}</TableCell>
+                            <TableCell>{detailitm.supplier_name}</TableCell>
+                            <TableCell>{detailitm.part_code}</TableCell>
+                            <TableCell>{detailitm.part_name || 0}</TableCell>
+                            <TableCell>{detailitm.unit_name}</TableCell>
+                            <TableCell>{detailitm.explain}</TableCell>
                             <TableCell>{detailitm.beginning_quantity_in_piece}</TableCell>
-                          ) : (
-                            <TableCell></TableCell>
-                          )}
-                          {detailitm.broken_beginning_quantity_in_piece ? (
                             <TableCell>{detailitm.broken_beginning_quantity_in_piece}</TableCell>
-                          ) : (
-                            <TableCell></TableCell>
-                          )}
-                          {detailitm.received_quantity_in_piece ? (
                             <TableCell>{detailitm.received_quantity_in_piece}</TableCell>
-                          ) : (
-                            <TableCell></TableCell>
-                          )}
-                          {detailitm.broken_received_quantity_in_piece ? (
                             <TableCell>{detailitm.broken_received_quantity_in_piece}</TableCell>
-                          ) : (
-                            <TableCell></TableCell>
-                          )}
-                          {detailitm.requisition_quantity_in_piece ? (
                             <TableCell>{detailitm.requisition_quantity_in_piece}</TableCell>
-                          ) : (
-                            <TableCell></TableCell>
-                          )}
-                          {detailitm.broken_requisition_quantity_in_piece ? (
                             <TableCell>{detailitm.broken_requisition_quantity_in_piece}</TableCell>
-                          ) : (
-                            <TableCell></TableCell>
-                          )}
-                          {detailitm.inventory_quantity_in_piece ? (
                             <TableCell>{detailitm.inventory_quantity_in_piece}</TableCell>
-                          ) : (
-                            <TableCell></TableCell>
-                          )}
-                          {detailitm.broken_inventory_quantity_in_piece ? (
                             <TableCell>{detailitm.broken_inventory_quantity_in_piece}</TableCell>
-                          ) : (
-                            <TableCell></TableCell>
-                          )}
-                        </TableRow>
-                      ) : reportType === 'TONG_HOP_TON_KHO_THANH_PHAM' ? (
-                        <TableRow>
-                          {detailitm.order_date ? <TableCell>{detailitm.order_date}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.product_customer_code ? (
+                          </>
+                        )}
+                        {reportType === 'TONG_HOP_TON_KHO_THANH_PHAM' && (
+                          <>
+                            <TableCell>{detailitm.order_date}</TableCell>
                             <TableCell>{detailitm.product_customer_code}</TableCell>
-                          ) : (
-                            <TableCell></TableCell>
-                          )}
-                          {detailitm.product_code ? <TableCell>{detailitm.product_code}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.product_name ? <TableCell>{detailitm.product_name}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.unit_name ? <TableCell>{detailitm.unit_name}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.explain ? <TableCell>{detailitm.explain}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.order_code ? <TableCell>{detailitm.order_code}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.initial_quantity_in_box ? (
-                            <TableCell>{detailitm.initial_quantity_in_box}</TableCell>
-                          ) : (
-                            <TableCell>0</TableCell>
-                          )}
-                          {detailitm.received_quantity_in_box ? (
-                            <TableCell>{detailitm.received_quantity_in_box}</TableCell>
-                          ) : (
-                            <TableCell>0</TableCell>
-                          )}
-                          {detailitm.requisition_quantity_in_box ? (
-                            <TableCell>{detailitm.requisition_quantity_in_box}</TableCell>
-                          ) : (
-                            <TableCell>0</TableCell>
-                          )}
-                          {detailitm.final_quantity_in_box ? (
-                            <TableCell>{detailitm.final_quantity_in_box}</TableCell>
-                          ) : (
-                            <TableCell>0</TableCell>
-                          )}
-                        </TableRow>
-                      ) : reportType === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP' ? (
-                        <TableRow>
-                          {detailitm.order_date ? <TableCell>{detailitm.order_date}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.part_code ? <TableCell>{detailitm.part_code}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.part_name ? <TableCell>{detailitm.part_name}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.unit_name ? <TableCell>{detailitm.unit_name}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.explain ? <TableCell>{detailitm.explain}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.customer_order_code ? <TableCell>{detailitm.customer_order_code}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.product_customer_code ? (
+                            <TableCell>{detailitm.product_code}</TableCell>
+                            <TableCell>{detailitm.product_name}</TableCell>
+                            <TableCell>{detailitm.unit_name}</TableCell>
+                            <TableCell>{detailitm.explain}</TableCell>
+                            <TableCell>{detailitm.order_code}</TableCell>
+                            <TableCell>{detailitm.initial_quantity_in_box || 0}</TableCell>
+                            <TableCell>{detailitm.received_quantity_in_box || 0}</TableCell>
+                            <TableCell>{detailitm.requisition_quantity_in_box || 0}</TableCell>
+                            <TableCell>{detailitm.final_quantity_in_box || 0}</TableCell>
+                          </>
+                        )}
+                        {reportType === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP' && (
+                          <>
+                            <TableCell>{detailitm.order_date}</TableCell>
+                            <TableCell>{detailitm.part_code}</TableCell>
+                            <TableCell>{detailitm.part_name}</TableCell>
+                            <TableCell>{detailitm.unit_name}</TableCell>
+                            <TableCell>{detailitm.explain}</TableCell>
+                            <TableCell>{detailitm.customer_order_code}</TableCell>
                             <TableCell>{detailitm.product_customer_code}</TableCell>
-                          ) : (
-                            <TableCell></TableCell>
-                          )}
-                          {detailitm.product_code ? <TableCell>{detailitm.product_code}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.used_quantity_in_piece ? (
-                            <TableCell>{detailitm.used_quantity_in_piece}</TableCell>
-                          ) : (
-                            <TableCell>0</TableCell>
-                          )}
-                        </TableRow>
-                      ) : reportType === 'BAO_CAO_THEO_DOI_HOP_DONG' || 'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM' ? (
-                        <TableRow>
-                          {detailitm.supplier_code ? <TableCell>{detailitm.supplier_code}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.supplier_name ? <TableCell>{detailitm.supplier_name}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.contract_code ? <TableCell>{detailitm.contract_code}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.part_code ? <TableCell>{detailitm.part_code}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.part_name ? <TableCell>{detailitm.part_name}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.quantity_in_piece ? <TableCell>{detailitm.quantity_in_piece}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.unit_name ? <TableCell>{detailitm.unit_name}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.unit_price ? <TableCell>{detailitm.unit_price}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.received_date ? <TableCell>{detailitm.received_date}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.received_quantity_in_piece ? (
+                            <TableCell>{detailitm.product_code}</TableCell>
+                            <TableCell>{detailitm.used_quantity_in_piece || 0}</TableCell>
+                          </>
+                        )}
+                        {(reportType === 'BAO_CAO_THEO_DOI_HOP_DONG' || reportType === 'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM') && (
+                          <>
+                            <TableCell>{detailitm.supplier_code}</TableCell>
+                            <TableCell>{detailitm.supplier_name}</TableCell>
+                            <TableCell>{detailitm.contract_code}</TableCell>
+                            <TableCell>{detailitm.part_code}</TableCell>
+                            <TableCell>{detailitm.part_name}</TableCell>
+                            <TableCell>{detailitm.quantity_in_piece}</TableCell>
+                            <TableCell>{detailitm.unit_name}</TableCell>
+                            <TableCell>{detailitm.unit_price}</TableCell>
+                            <TableCell>{detailitm.received_date}</TableCell>
                             <TableCell>{detailitm.received_quantity_in_piece}</TableCell>
-                          ) : (
-                            <TableCell></TableCell>
-                          )}
-                        </TableRow>
-                      ) : reportType === 'BAO_CAO_SU_DUNG_VAT_TU_THEO_DON_HANG' ? (
-                        <TableRow>
-                          {detailitm.part_code ? <TableCell>{detailitm.part_code}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.part_name ? <TableCell>{detailitm.part_name}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.supplier_name ? <TableCell>{detailitm.supplier_name}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.unit_name ? <TableCell>{detailitm.unit_name}</TableCell> : <TableCell></TableCell>}
-                          {detailitm.used_quantity_in_piece ? (
+                          </>
+                        )}
+                        {reportType === 'BAO_CAO_SU_DUNG_VAT_TU_THEO_DON_HANG' && (
+                          <>
+                            <TableCell>{detailitm.part_code}</TableCell>
+                            <TableCell>{detailitm.part_name}</TableCell>
+                            <TableCell>{detailitm.supplier_name}</TableCell>
+                            <TableCell>{detailitm.unit_name}</TableCell>
                             <TableCell>{detailitm.used_quantity_in_piece}</TableCell>
-                          ) : (
-                            <TableCell></TableCell>
-                          )}
-                        </TableRow>
-                      ) : undefined
-                    )}
+                          </>
+                        )}
+                        {reportType === 'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP' && (
+                          <>
+                            {detailitm.production_date ? <TableCell>{detailitm.production_date}</TableCell> : <TableCell></TableCell>}
+                            {detailitm.explain ? <TableCell>{detailitm.explain}</TableCell> : <TableCell></TableCell>}
+                            {detailitm.unit_name ? <TableCell>{detailitm.unit_name}</TableCell> : <TableCell></TableCell>}
+                            {detailitm.difference_quantity_in_piece ? (
+                              <TableCell>{detailitm.difference_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                          </>
+                        )}
+                        {reportType === 'BAO_CAO_THUC_TE_SAN_XUAT' && (
+                          <>
+                            {detailitm.part_code ? <TableCell>{detailitm.part_code}</TableCell> : <TableCell></TableCell>}
+                            {detailitm.part_name ? <TableCell>{detailitm.part_name}</TableCell> : <TableCell></TableCell>}
+                            {detailitm.supplier_name ? <TableCell>{detailitm.supplier_name}</TableCell> : <TableCell></TableCell>}
+                            {detailitm.requisition_quantity_in_piece ? (
+                              <TableCell>{detailitm.requisition_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.requisition_quantity_in_piece ? (
+                              <TableCell>{detailitm.requisition_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.cosumed_quantity_in_piece ? (
+                              <TableCell>{detailitm.cosumed_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.received_quantity_in_piece ? (
+                              <TableCell>{detailitm.received_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.dirty_quantity_in_piece ? (
+                              <TableCell>{detailitm.dirty_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.weaving_for_sale_quantity_in_piece ? (
+                              <TableCell>{detailitm.weaving_for_sale_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.weaving_for_return_quantity_in_piece ? (
+                              <TableCell>{detailitm.weaving_for_return_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.sewing_error_quantity_in_piece ? (
+                              <TableCell>{detailitm.sewing_error_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.eraser_error_quantity_in_piece ? (
+                              <TableCell>{detailitm.eraser_error_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.torn_quantity_in_piece ? (
+                              <TableCell>{detailitm.torn_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.broken_quantity_in_piece ? (
+                              <TableCell>{detailitm.broken_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.broken_quantity_in_piece_percent ? (
+                              <TableCell>{detailitm.broken_quantity_in_piece_percent}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                            {detailitm.difference_quantity_in_piece ? (
+                              <TableCell>{detailitm.difference_quantity_in_piece}</TableCell>
+                            ) : (
+                              <TableCell></TableCell>
+                            )}
+                          </>
+                        )}
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
               </Box>
