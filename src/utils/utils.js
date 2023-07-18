@@ -40,6 +40,10 @@ import {
   productInventoryCheckActions,
   ProductReportActions,
   ProductionReportActions,
+  contractActions,
+  productRequisitionActions,
+  productContractActions,
+  productReceivedActions,
   ContractReportActions,
 } from '../store/constant.js';
 
@@ -182,6 +186,18 @@ export function getUrlByAction(selectedFolder) {
     }
     case productInventoryCheckActions.list_product_inventory_check: {
       return apiEndpoints.get_product_inventory_check_list;
+    }
+    case contractActions.list: {
+      return apiEndpoints.get_contract_list;
+    }
+    case productRequisitionActions.list: {
+      return apiEndpoints.get_product_requisition_list;
+    }
+    case productContractActions.list: {
+      return apiEndpoints.get_product_contract_list;
+    }
+    case productReceivedActions.list: {
+      return apiEndpoints.get_product_received_list;
     }
     default: {
       return '';

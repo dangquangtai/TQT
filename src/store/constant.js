@@ -357,6 +357,41 @@ export const apiEndpoints = {
   import_product_inventory_check: '/Primary/?FlowAlias=bs_api_factory_import_product_inventory_check&action=api',
   apply_product_inventory_check: '/Primary/?FlowAlias=bs_api_factory_apply_product_inventory_check&action=api',
   remove_product_inventory_check: '/Primary/?FlowAlias=bs_api_factory_remove_product_inventory_check&action=api',
+
+  // Contract
+  get_contract_list: '/Primary/?FlowAlias=bs_api_factory_get_contract_list&action=api',
+  get_contract_detail: '/Primary/?FlowAlias=bs_api_factory_get_contract_detail&action=api',
+  create_contract: '/Primary/?FlowAlias=bs_api_factory_create_contract&action=api',
+  update_contract: '/Primary/?FlowAlias=bs_api_factory_update_contract&action=api',
+  get_contract_data: '/Primary/?FlowAlias=bs_api_factory_get_contract_data&action=api',
+  get_contract_list_by_supplier_and_material: '/Primary/?FlowAlias=bs_api_factory_get_contract_list_by_supplier_and_material&action=api',
+  delete_contract_detail: '/Primary/?FlowAlias=bs_api_factory_delete_contract_detail&action=api',
+
+  // Product Contract
+  get_product_contract_list: '/Primary/?FlowAlias=bs_api_factory_get_product_contract_list&action=api',
+  get_product_contract_detail: '/Primary/?FlowAlias=bs_api_factory_get_product_contract_detail&action=api',
+  create_product_contract: '/Primary/?FlowAlias=bs_api_factory_create_product_contract&action=api',
+  update_product_contract: '/Primary/?FlowAlias=bs_api_factory_update_product_contract&action=api',
+  get_product_contract_data: '/Primary/?FlowAlias=bs_api_factory_get_product_contract_data&action=api',
+  get_product_contract_list_by_supplier_and_product:
+    '/Primary/?FlowAlias=bs_api_factory_get_product_contract_list_by_supplier_and_material&action=api',
+  delete_product_contract_detail: '/Primary/?FlowAlias=bs_api_factory_delete_product_contract_detail&action=api',
+
+  // Product Requisition
+  get_product_requisition_list: '/Primary/?FlowAlias=bs_api_factory_get_product_requisition_list&action=api',
+  get_product_requisition_detail: '/Primary/?FlowAlias=bs_api_factory_get_product_requisition_detail&action=api',
+  create_product_requisition: '/Primary/?FlowAlias=bs_api_factory_create_product_requisition&action=api',
+  update_product_requisition: '/Primary/?FlowAlias=bs_api_factory_update_product_requisition&action=api',
+  get_product_requisition_data: '/Primary/?FlowAlias=bs_api_factory_get_product_requisition_data&action=api',
+  get_ordered_product_requisition: '/Primary/?FlowAlias=bs_api_factory_get_ordered_product_requisition&action=api',
+
+  // Product Received
+  get_product_received_list: '/Primary/?FlowAlias=bs_api_factory_get_product_received_list&action=api',
+  get_product_received_detail: '/Primary/?FlowAlias=bs_api_factory_get_product_received_detail&action=api',
+  create_product_received: '/Primary/?FlowAlias=bs_api_factory_create_product_received&action=api',
+  update_product_received: '/Primary/?FlowAlias=bs_api_factory_update_product_received&action=api',
+  get_product_received_data: '/Primary/?FlowAlias=bs_api_factory_get_product_received_data&action=api',
+  get_order_by_product: '/Primary/?FlowAlias=bs_api_factory_get_order_by_product&action=api',
 };
 
 export const apiDomain = 'https://upload.truebpm.vn';
@@ -493,6 +528,21 @@ export const productInventoryCheckActions = {
   list_product_inventory_check: 'TQT_PRODUCT_DEFAULT_OPEN_PRODUCT_INVENTORY_CHECK',
 };
 
+export const contractActions = {
+  list: 'TQT_MATERIAL_DEFAULT_OPEN_CONTRACT_LIST',
+};
+
+export const productRequisitionActions = {
+  list: 'TQT_PRODUCT_DEFAULT_OPEN_REQUISTISION_LIST',
+};
+
+export const productContractActions = {
+  list: 'TQT_PRODUCT_DEFAULT_OPEN_CONTRACT_LIST',
+};
+
+export const productReceivedActions = {
+  list: 'TQT_PRODUCT_DEFAULT_OPEN_RECEIVED_LIST',
+};
 export const tinyMCESecretKey = '7kiqm5c7crs3mdgf1lgiq973xn7kdxtf6ohasxhmkb2mpc45';
 export const pageUrls = {
   dashboard: '/dashboard/default',
@@ -785,6 +835,31 @@ export const view = {
       import: 'TQT_PRODUCT_DEFAULT_PRODUCT_INVENTORY_CHECK_IMPORT_FORM_BUTTON',
       apply: 'TQT_PRODUCT_DEFAULT_PRODUCT_INVENTORY_CHECK_APPLY_FORM_BUTTON',
       remove: 'TQT_PRODUCT_DEFAULT_PRODUCT_INVENTORY_CHECK_REMOVE_FORM_BUTTON',
+    },
+  },
+  contract: {
+    list: {
+      create: 'TQT_MATERIAL_DEFAULT_CONTRACT_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_MATERIAL_DEFAULT_CONTRACT_SAVE_FORM_BUTTON',
+    },
+  },
+  productRequisition: {
+    list: {
+      create: 'TQT_PRODUCT_DEFAULT_PRODUCT_REQUISITION_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_PRODUCT_DEFAULT_PRODUCT_REQUISITION_SAVE_FORM_BUTTON',
+    },
+  },
+  productReceived: {
+    list: {
+      create: 'TQT_PRODUCT_DEFAULT_RECEIVED_CREATE_MENU_BUTTON',
+    },
+    detail: {
+      save: 'TQT_PRODUCT_DEFAULT_RECEIVED_SAVE_FORM_BUTTON',
+      export: '',
     },
   },
 };

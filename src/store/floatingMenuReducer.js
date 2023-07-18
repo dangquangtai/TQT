@@ -22,6 +22,10 @@ export const initialState = {
   workOrderDocument: false,
   profileDocument: false,
   materialReportDocument: false,
+  contractDocument: false,
+  productRequisitionDocument: false,
+  productContractDocument: false,
+  productReceivedDocument: false,
   additionalParam: '',
 };
 
@@ -68,6 +72,10 @@ const floatingMenuReducer = (state = initialState, action) => {
         productInventoryCheckDocument: action.productInventoryCheckDocument,
         reportViewDataTableDocument: action.reportViewDataTableDocument,
         importMaterialPartsDataDocument: action.importMaterialPartsDataDocument,
+        contractDocument: action.contractDocument,
+        productRequisitionDocument: action.productRequisitionDocument,
+        productContractDocument: action.productContractDocument,
+        productReceivedDocument: action.productReceivedDocument,
         additionalParam: action.additionalParam,
       };
     default:

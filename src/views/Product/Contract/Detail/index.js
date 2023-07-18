@@ -19,36 +19,27 @@ import {
   TableHead,
   TableRow,
   Paper,
+  IconButton,
+  Tooltip,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AttachFileOutlined, History, DescriptionOutlined } from '@material-ui/icons';
+import { Delete, History, AttachFileOutlined, DescriptionOutlined } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
+import { AddCircleOutline } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
 import useView from './../../../../hooks/useView';
 import useConfirmPopup from './../../../../hooks/useConfirmPopup';
 import { view } from './../../../../store/constant';
-import {
-  FLOATING_MENU_CHANGE,
-  SNACKBAR_OPEN,
-  DOCUMENT_CHANGE,
-  CONFIRM_CHANGE,
-  CLOSE_MODAL_MATERIAL,
-  SET_MATERIAL,
-} from './../../../../store/actions';
+import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CONFIRM_CHANGE } from './../../../../store/actions';
 import FirebaseUpload from './../../../FloatingMenu/FirebaseUpload/index';
 import DatePicker from './../../../../component/DatePicker/index';
-import {
-  createPurchaseMaterial,
-  deletePurchaseMaterialDetail,
-  getPurchaseMaterialStatus,
-  updatePurchaseMaterial,
-} from './../../../../services/api/Material/Purchase';
-import { popupWindow } from '../../../../utils/helper.js';
-import { getSupplierListByWorkOrder } from './../../../../services/api/Partner/Supplier';
 import { createFileAttachment, deleteFileAttachment, getListFile } from '../../../../services/api/Attachment/FileAttachment';
 import ActivityLog from '../../../../component/ActivityLog/index.js';
+import { ProductContractService } from './../../../../services/api/Product/Contract';
+import NumberFormatCustom from './../../../../component/NumberFormatCustom/index';
+import { FormattedNumber } from 'react-intl';
 import TableCollapse from './collapse.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -77,40 +68,33 @@ function a11yProps(index) {
   };
 }
 
-const PurchaseMaterialModal = () => {
+const ProductContractModal = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { form_buttons: formButtons } = useView();
   const { setConfirmPopup } = useConfirmPopup();
-  const { materialBuy } = useSelector((state) => state.material);
-  const saveButton = formButtons.find((button) => button.name === view.purchaseMaterial.detail.save);
-  const { purchaseMaterialDocument: openDialog } = useSelector((state) => state.floatingMenu);
+  const { products } = useSelector((state) => state.metadata);
+  const saveButton = formButtons.find((button) => button.name === view.contract.detail.save);
+  const { productContractDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
-
-  const [purchaseMaterialData, setPurchaseMaterialData] = useState({
-    order_date: new Date(),
-    delivery_date: new Date(),
-    is_workorer: true,
-    notes: '',
-  });
-  const [supplier, setSupplier] = useState([]);
-  const [statusList, setStatusList] = useState([]);
-  const [warehouseList, setWarehouseList] = useState([]);
-  const [tabIndex, setTabIndex] = React.useState(0);
   const [isOpenUpload, setIsOpenUpload] = useState(false);
   const [listFileData, setListFileData] = useState([]);
   const [fileData, setFileData] = useState([]);
-  const [dialogUpload, setDialogUpload] = useState({
-    open: false,
-    type: '',
+
+  const [contractData, setContractData] = useState({
+    contract_date: new Date(),
+    notes: '',
   });
 
-  const [materialList, setMaterialList] = useState([]);
+  const [supplier, setSupplier] = useState([]);
+  const [statusList, setStatusList] = useState([]);
+  const [tabIndex, setTabIndex] = React.useState(0);
+
+  const [ProductList, setProductList] = useState([]);
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
 
-  const newWindow = React.useRef(null);
   const setURL = async (fileDataInput) => {
     console.log(fileDataInput?.file_name);
     const newFileData = { ...fileData, file_name: fileDataInput?.file_name, url: fileDataInput?.url };
@@ -118,6 +102,7 @@ const PurchaseMaterialModal = () => {
     const res = await createFileAttachment(newFileData);
     if (res) fetchFileListData();
   };
+
   const handleDeleteFile = async (id) => {
     showConfirmPopup({
       title: 'Xóa file',
@@ -128,8 +113,6 @@ const PurchaseMaterialModal = () => {
         fetchFileListData();
       },
     });
-    // const res = await deleteFileAttachment(id);
-    // if (res)
   };
   const fetchFileListData = async () => {
     const fileList = await getListFile(selectedDocument?.id);
@@ -143,9 +126,7 @@ const PurchaseMaterialModal = () => {
   };
   const handleCloseDialog = () => {
     setDocumentToDefault();
-    dispatch({ type: FLOATING_MENU_CHANGE, purchaseMaterialDocument: false });
-    dispatch({ type: CLOSE_MODAL_MATERIAL });
-    if (newWindow.current) newWindow.current.close();
+    dispatch({ type: FLOATING_MENU_CHANGE, productContractDocument: false });
   };
 
   const handleOpenSnackbar = (type, text) => {
@@ -159,45 +140,23 @@ const PurchaseMaterialModal = () => {
   };
 
   const setDocumentToDefault = async () => {
-    dispatch({ type: SET_MATERIAL, payload: [] });
-    setPurchaseMaterialData({ order_date: new Date(), delivery_date: new Date(), is_workorer: true, notes: '' });
+    setContractData({ contract_date: new Date(), notes: '' });
     setListFileData([]);
     setFileData([]);
-    setMaterialList([]);
+    setProductList([]);
     setTabIndex(0);
-  };
-  // const setURL = (image) => {
-  //   if (dialogUpload.type === 'image') {
-  //     setPurchaseMaterialData({ ...purchaseMaterialData, image_url: image });
-  //   } else if (dialogUpload.type === 'banner') {
-  //     setPurchaseMaterialData({ ...purchaseMaterialData, banner_url: image });
-  //   }
-  // };
-
-  // const handleOpenDiaLog = (type) => {
-  //   setDialogUpload({
-  //     open: true,
-  //     type: type,
-  //   });
-  // };
-
-  const handleCloseDiaLog = () => {
-    setDialogUpload({
-      open: false,
-      type: '',
-    });
   };
 
   const handleSubmitForm = async () => {
     try {
       if (selectedDocument?.id) {
-        await updatePurchaseMaterial({ ...purchaseMaterialData, order_detail: materialList });
-        handleOpenSnackbar('success', 'Cập nhật Đơn hàng mua vật tư thành công!');
+        await ProductContractService.update({ ...contractData, detail_list: ProductList });
+        handleOpenSnackbar('success', 'Cập nhật hợp đồng mua thành phẩm thành công!');
       } else {
-        await createPurchaseMaterial({ ...purchaseMaterialData, order_detail: materialList });
-        handleOpenSnackbar('success', 'Tạo mới Đơn hàng mua vật tư thành công!');
+        await ProductContractService.create({ ...contractData, detail_list: ProductList });
+        handleOpenSnackbar('success', 'Tạo mới hợp đồng mua thành phẩm thành công!');
       }
-      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'purchaseMaterial' });
+      dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'contract' });
       handleCloseDialog();
     } catch (error) {
       handleOpenSnackbar('error', 'Có lỗi xảy ra, vui lòng thử lại!');
@@ -210,121 +169,106 @@ const PurchaseMaterialModal = () => {
 
   const handleChanges = (e) => {
     const { name, value } = e.target;
-    setPurchaseMaterialData({ ...purchaseMaterialData, [name]: value });
+    setContractData({ ...contractData, [name]: value });
   };
 
-  const handleChangeMaterial = (index, e) => {
-    const { name, value } = e.target;
-    const newMaterialList = [...materialList];
-    newMaterialList[index] = { ...newMaterialList[index], [name]: value };
-    setMaterialList(newMaterialList);
-  };
-
-  const handleDeleteMaterial = (index, id) => {
-    if (id) {
-      showConfirmPopup({
-        title: 'Xóa vật tư',
-        message: 'Bạn có chắc chắn muốn xóa vật tư này?',
-        action: deletePurchaseMaterialDetail,
-        payload: id,
-        onSuccess: () => {
-          const newMaterialList = [...materialList];
-          newMaterialList.splice(index, 1);
-          setMaterialList(newMaterialList);
-        },
-      });
-    } else {
-      const newMaterialList = [...materialList];
-      newMaterialList.splice(index, 1);
-      setMaterialList(newMaterialList);
-    }
-  };
-
-  const handleOpenShortageDialog = () => {
-    if (!purchaseMaterialData.supplier_id) {
+  const handleAddProduct = () => {
+    if (!contractData.supplier_id) {
       handleOpenSnackbar('error', 'Vui lòng chọn nhà cung cấp!');
       return;
     }
-    if (!purchaseMaterialData.warehouse_id) {
-      handleOpenSnackbar('error', 'Vui lòng chọn kho!');
-      return;
-    }
-    newWindow.current = popupWindow(
-      `/dashboard/material?supplier=${purchaseMaterialData.supplier_id}&warehouse=${purchaseMaterialData.warehouse_id}`,
-      'Vật tư thiếu'
-    );
+    setProductList([
+      ...ProductList,
+      {
+        requisition_id: selectedDocument?.id || '',
+        id: '',
+        product_id: '',
+        product_name: '',
+        product_code: '',
+        product_customer_code: '',
+        supplier_id: '',
+        supplier_name: '',
+        category_id: '',
+        category_name: '',
+        status: '',
+        unit_id: '',
+        unit_name: '',
+        quantity_in_box: 0,
+        unit_price: 0,
+        remain_quantity_in_box: 0,
+      },
+    ]);
   };
 
-  const handleChangeSupplier = (e) => {
-    setMaterialList([]);
-    dispatch({ type: CLOSE_MODAL_MATERIAL });
-  };
-
-  const handleChangeContract = (index, newItem) => {
-    const newMaterialList = [...materialList];
-    const newMaterial = {
-      contract_id: newItem?.id,
-      contract_title: newItem?.title,
-      contract_code: newItem?.contract_code,
+  const handleChangeProductCode = (index, newItem) => {
+    const newProductList = [...ProductList];
+    const newProduct = {
+      product_id: newItem?.id || '',
+      product_code: newItem?.product_code || '',
+      product_name: newItem?.title || '',
+      product_customer_code: newItem?.product_customer_code || '',
+      category_id: newItem?.category_id || '',
+      category_name: newItem?.category_name || '',
+      supplier_id: contractData?.supplier_id || '',
+      supplier_name: contractData?.supplier_name || '',
+      unit_id: newItem?.unit_id || '',
+      unit_name: newItem?.unit_name || '',
     };
-    newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
-    setMaterialList(newMaterialList);
+    newProductList[index] = { ...newProductList[index], ...newProduct };
+    setProductList(newProductList);
+  };
+
+  const handleChangeProduct = (index, e) => {
+    const { name, value } = e.target;
+    const newProductList = [...ProductList];
+    newProductList[index] = { ...newProductList[index], [name]: value };
+    setProductList(newProductList);
+  };
+
+  const handleDeleteProduct = (index, id) => {
+    if (id) {
+      showConfirmPopup({
+        title: 'Xóa thành phẩm',
+        message: 'Bạn có chắc chắn muốn xóa thành phẩm này?',
+        action: ProductContractService.deleteDetail,
+        payload: id,
+        onSuccess: () => {
+          const newProductList = [...ProductList];
+          newProductList.splice(index, 1);
+          setProductList(newProductList);
+        },
+      });
+    } else {
+      const newProductList = [...ProductList];
+      newProductList.splice(index, 1);
+      setProductList(newProductList);
+    }
   };
 
   useEffect(() => {
     if (!selectedDocument) return;
-    setPurchaseMaterialData({
-      ...purchaseMaterialData,
+    setContractData({
+      ...contractData,
       ...selectedDocument,
     });
     setFileData({ ...fileData, id: selectedDocument?.id });
     fetchFileListData();
-    setMaterialList(selectedDocument?.order_detail);
-    dispatch({ type: SET_MATERIAL, payload: selectedDocument?.order_detail });
+    setProductList(selectedDocument?.detail_list);
   }, [selectedDocument]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const supplier = await getSupplierListByWorkOrder();
-      setSupplier(supplier);
-      const { warehouse_list, status_list } = await getPurchaseMaterialStatus();
+      const { supplier_list, status_list } = await ProductContractService.getData();
       setStatusList(status_list);
-      setWarehouseList(warehouse_list);
+      setSupplier(supplier_list);
     };
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (materialBuy === selectedDocument?.order_detail) return;
-    const newMaterial = materialBuy.map((item) => {
-      return {
-        ...item,
-        material_daily_requisition_id: item.id,
-        requisition_id: selectedDocument?.id || '',
-        id: '',
-        notes: '',
-      };
-    });
-    setMaterialList(newMaterial);
-  }, [materialBuy]);
-
-  useEffect(() => {
-    window.onbeforeunload = function (event) {
-      handleCloseDialog();
-    };
-  }, []);
-
-  const isDisabled = !!selectedDocument?.id;
-
+  const isDisabled = selectedDocument?.status?.includes('COMPLETED');
+  const isDetail = selectedDocument?.id;
   return (
     <React.Fragment>
-      {/* <FirebaseUpload
-        open={dialogUpload.open || false}
-        onSuccess={setURL}
-        onClose={handleCloseDiaLog}
-        type="image"
-        folder="PurchaseMaterial"
-      /> */}
       <Grid container>
         <Dialog
           open={openDialog || false}
@@ -340,7 +284,7 @@ const PurchaseMaterialModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              {selectedDocument?.id ? 'Cập nhật đơn hàng mua vật tư' : 'Tạo mới đơn hàng mua vật tư'}
+              {selectedDocument?.id ? 'Cập nhật Hợp đồng mua thành phẩm' : 'Tạo mới Hợp đồng mua thành phẩm'}
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -359,7 +303,7 @@ const PurchaseMaterialModal = () => {
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
                         <DescriptionOutlined />
-                        Chi tiết Đơn hàng
+                        Chi tiết Hợp đồng
                       </Typography>
                     }
                     value={0}
@@ -395,98 +339,40 @@ const PurchaseMaterialModal = () => {
                     <Grid item lg={12} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>Mua vật tư</div>
+                          <div className={classes.tabItemLabel}>Chi tiết Hợp đồng</div>
                         </div>
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={3} className={classes.gridItemInfo}>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Mã đơn mua hàng(*):</span>
+                              <span className={classes.tabItemLabelField}>Mã hợp đồng(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
-                                name="order_code"
+                                name="contract_code"
                                 type="text"
                                 size="small"
-                                disabled={isDisabled}
-                                value={purchaseMaterialData.order_code || ''}
+                                value={contractData.contract_code || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên đơn hàng(*):</span>
+                              <span className={classes.tabItemLabelField}>Tên hợp đồng(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
                                 name="title"
                                 type="text"
                                 size="small"
-                                value={purchaseMaterialData.title || ''}
+                                value={contractData.title || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày lập đơn hàng(*):</span>
+                              <span className={classes.tabItemLabelField}>Ngày kí(*):</span>
                               <DatePicker
-                                date={purchaseMaterialData.order_date}
-                                onChange={(date) => setPurchaseMaterialData({ ...purchaseMaterialData, order_date: date })}
-                                disabled={isDisabled}
+                                date={contractData.contract_date}
+                                onChange={(date) => setContractData({ ...contractData, contract_date: date })}
                               />
-                            </Grid>
-                            <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày giao hàng(*):</span>
-                              <DatePicker
-                                date={purchaseMaterialData.delivery_date}
-                                onChange={(date) => setPurchaseMaterialData({ ...purchaseMaterialData, delivery_date: date })}
-                              />
-                            </Grid>
-                            <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà cung cấp(*):</span>
-                              {isDisabled ? (
-                                <TextField
-                                  fullWidth
-                                  variant="outlined"
-                                  size="small"
-                                  value={purchaseMaterialData.supplier_name || ''}
-                                  disabled
-                                />
-                              ) : (
-                                <Autocomplete
-                                  id="combo-box-demo"
-                                  options={supplier}
-                                  getOptionLabel={(option) => option.title || ''}
-                                  fullWidth
-                                  size="small"
-                                  value={supplier?.find((item) => item.id === purchaseMaterialData.supplier_id) || null}
-                                  onChange={(event, newValue) => {
-                                    setPurchaseMaterialData({
-                                      ...purchaseMaterialData,
-                                      supplier_id: newValue?.id,
-                                      supplier_name: newValue?.title,
-                                    });
-                                    handleChangeSupplier();
-                                  }}
-                                  renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                />
-                              )}
-                            </Grid>
-                            <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà kho(*):</span>
-                              <TextField
-                                fullWidth
-                                name="warehouse_id"
-                                variant="outlined"
-                                select
-                                disabled={isDisabled}
-                                size="small"
-                                value={purchaseMaterialData.warehouse_id || ''}
-                                onChange={handleChanges}
-                              >
-                                {warehouseList?.map((option) => (
-                                  <MenuItem key={option.id} value={option.id}>
-                                    {option.value}
-                                  </MenuItem>
-                                ))}
-                              </TextField>
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
                               <span className={classes.tabItemLabelField}>Trạng thái(*):</span>
@@ -496,7 +382,7 @@ const PurchaseMaterialModal = () => {
                                 variant="outlined"
                                 select
                                 size="small"
-                                value={purchaseMaterialData.status || ''}
+                                value={contractData.status || ''}
                                 onChange={handleChanges}
                               >
                                 {statusList?.map((option) => (
@@ -505,6 +391,26 @@ const PurchaseMaterialModal = () => {
                                   </MenuItem>
                                 ))}
                               </TextField>
+                            </Grid>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Nhà cung cấp(*):</span>
+                              <Autocomplete
+                                id="combo-box-demo"
+                                options={supplier}
+                                getOptionLabel={(option) => option.title || ''}
+                                fullWidth
+                                disabled={isDisabled}
+                                size="small"
+                                value={supplier?.find((item) => item.id === contractData.supplier_id) || null}
+                                onChange={(event, newValue) => {
+                                  setContractData({
+                                    ...contractData,
+                                    supplier_id: newValue?.id,
+                                    supplier_name: newValue?.title,
+                                  });
+                                }}
+                                renderInput={(params) => <TextField {...params} variant="outlined" />}
+                              />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
                               <span className={classes.tabItemLabelField}>Ghi chú:</span>
@@ -516,7 +422,7 @@ const PurchaseMaterialModal = () => {
                                 name="notes"
                                 type="text"
                                 size="small"
-                                value={purchaseMaterialData.notes || ''}
+                                value={contractData.notes || ''}
                                 onChange={handleChanges}
                               />
                             </Grid>
@@ -527,39 +433,46 @@ const PurchaseMaterialModal = () => {
                     <Grid item lg={12} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
-                          <div className={classes.tabItemLabel}>Danh sách vật tư</div>
+                          <div className={classes.tabItemLabel}>Danh sách thành phẩm</div>
+                          <Tooltip title="Thêm thành phẩm">
+                            <IconButton onClick={handleAddProduct}>
+                              <AddCircleOutline />
+                            </IconButton>
+                          </Tooltip>
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
-                            <Table size="small" stickyHeader>
+                            <Table className={classes.tableSmall} aria-label="simple table" stickyHeader>
                               <TableHead>
                                 <TableRow>
                                   <TableCell />
-                                  <TableCell align="left">Mã đơn KH</TableCell>
-                                  <TableCell align="left">Mã vật tư</TableCell>
-                                  <TableCell align="left">Tên vật tư</TableCell>
-                                  <TableCell align="left">SL mua</TableCell>
+                                  <TableCell align="left">Mã thành phẩm</TableCell>
+                                  <TableCell align="left">Tên thành phẩm</TableCell>
+                                  <TableCell align="left">Mã TP KH</TableCell>
+                                  <TableCell align="left">SL đặt</TableCell>
+                                  {isDetail && (
+                                    <>
+                                      <TableCell align="left">SL đã nhập</TableCell>
+                                      <TableCell align="left">SL còn lại</TableCell>
+                                    </>
+                                  )}
+                                  <TableCell align="left">Giá(VNĐ)</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
-                                  <TableCell align="left">Hợp đồng</TableCell>
-                                  <TableCell align="left">Ngày sản xuất</TableCell>
                                   <TableCell align="left">Ghi chú</TableCell>
-                                  <TableCell align="left">Ghi chú 2</TableCell>
-                                  <TableCell align="left">Trạng thái</TableCell>
                                   {!isDisabled && <TableCell align="center">Xoá</TableCell>}
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {materialList?.map((row, index) => (
+                                {ProductList?.map((row, index) => (
                                   <TableCollapse
-                                    row={row}
-                                    classes={classes}
                                     index={index}
-                                    key={index}
-                                    handleChangeContract={handleChangeContract}
-                                    handleChangeMaterial={handleChangeMaterial}
-                                    handleDeleteMaterial={handleDeleteMaterial}
+                                    row={row}
+                                    handleChangeProduct={handleChangeProduct}
+                                    handleChangeProductCode={handleChangeProductCode}
+                                    isDetail={isDetail}
                                     isDisabled={isDisabled}
-                                    isDetail={isDisabled}
+                                    handleDeleteProduct={handleDeleteProduct}
+                                    classes={classes}
                                   />
                                 ))}
                               </TableBody>
@@ -576,10 +489,10 @@ const PurchaseMaterialModal = () => {
                     onSuccess={setURL}
                     onClose={closeFirebaseDialog}
                     type="other"
-                    folder="File Import/PurchaseMaterial"
+                    folder="File Import/Contract"
                   />
                   <div className={`${classes.tabItemMentorAvatarBody}`} style={{ paddingBottom: 10, justifyContent: 'start' }}>
-                    {selectedDocument?.id && (
+                    {isDetail && (
                       <Button onClick={() => handleOpenDiaLog()} variant="default">
                         Thêm mới
                       </Button>
@@ -618,9 +531,6 @@ const PurchaseMaterialModal = () => {
                                 <a onClick={() => handleDeleteFile(file.id)} style={{ marginRight: 10, textDecoration: 'underline' }}>
                                   Xóa
                                 </a>
-                                {/* <button  style={{ textDecoration: 'underline' }}>
-                                  Xóa
-                                </button> */}
                               </div>
                             </div>
                           </div>
@@ -645,11 +555,6 @@ const PurchaseMaterialModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
-                {!isDisabled && (
-                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleOpenShortageDialog}>
-                    Chi tiết vật tư thiếu
-                  </Button>
-                )}
                 {saveButton && selectedDocument?.id && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
                     {saveButton.text}
@@ -669,4 +574,4 @@ const PurchaseMaterialModal = () => {
   );
 };
 
-export default PurchaseMaterialModal;
+export default ProductContractModal;

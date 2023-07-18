@@ -36,7 +36,7 @@ export const updateProduct = (data) => {
     .post(apiEndpoints.update_product, data)
     .then((response) => {
       if (response.status === 200 && response.data.return === 200) {
-        return true;
+        return response.data;
       }
       return false;
     })

@@ -176,10 +176,10 @@ const ProductModal = () => {
         ...productData,
         part_list: partList,
       });
-      if (update) {
-        handleOpenSnackbar('success', 'Cập nhật Thành phẩm thành công!');
+      if (update.code === 200) {
+        handleOpenSnackbar('success', update.message);
       } else {
-        handleOpenSnackbar('error', 'Cập nhật Thành phẩm thất bại!');
+        handleOpenSnackbar('error', update.message);
       }
       dispatch({ type: DOCUMENT_CHANGE, selectedDocument: null, documentType: 'product' });
       handleCloseDialog();

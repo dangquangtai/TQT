@@ -45,6 +45,10 @@ import {
   templateDocumentActions,
   MaterialReportActions,
   productInventoryCheckActions,
+  contractActions,
+  productRequisitionActions,
+  productContractActions,
+  productReceivedActions,
   ProductReportActions,
   ProductionReportActions,
   ContractReportActions,
@@ -86,6 +90,10 @@ import ReturnMaterialWrapper from './../../Material/Return/index';
 import ExcelDocumentWrapper from '../../Setting/DocumentTemplate/ExcelDocument';
 import MaterialReportWrapper from '../../Report';
 import ProductInventoryCheckWrapper from './../../Product/InventoryCheck/index';
+import ContractWrapper from './../../Material/Contract/index';
+import ProductRequisitionWrapper from './../../Product/Requisition/index';
+import ProductContractWrapper from './../../Product/Contract/index';
+import ReceivedProductWrapper from '../../Product/Received/index.js';
 import ProductionReportWrapper from '../../Report/ProductionReport';
 import ProductReportWrapper from '../../Report/ProductReport';
 import ContractReportWrapper from '../../Report/ContractReport';
@@ -137,6 +145,10 @@ const Default = () => {
   const availableProductionReportEndpoint = Object.values(ProductionReportActions);
   const availableContractReportEndpoint = Object.values(ContractReportActions);
   const availableProductInventoryCheckEndpoint = Object.values(productInventoryCheckActions);
+  const availableContractCheckEndpoint = Object.values(contractActions);
+  const availableProductRequisitionCheckEndpoint = Object.values(productRequisitionActions);
+  const availableProductContractCheckEndpoint = Object.values(productContractActions);
+  const availableProductReceivedCheckEndpoint = Object.values(productReceivedActions);
 
   if (!selectedApp?.id) {
     return <Redirect to="/dashboard/app" />;
@@ -185,6 +197,10 @@ const Default = () => {
           {availableTemplateDocumentEndpoint.includes(selectedFolder?.action) && <ExcelDocumentWrapper />}
           {availableMaterialReportEndpoint.includes(selectedFolder?.action) && <MaterialReportWrapper />}
           {availableProductInventoryCheckEndpoint.includes(selectedFolder?.action) && <ProductInventoryCheckWrapper />}
+          {availableContractCheckEndpoint.includes(selectedFolder?.action) && <ContractWrapper />}
+          {availableProductRequisitionCheckEndpoint.includes(selectedFolder?.action) && <ProductRequisitionWrapper />}
+          {availableProductContractCheckEndpoint.includes(selectedFolder?.action) && <ProductContractWrapper />}
+          {availableProductReceivedCheckEndpoint.includes(selectedFolder?.action) && <ReceivedProductWrapper />}
           {availableProductionReportEndpoint.includes(selectedFolder?.action) && <ProductionReportWrapper />}
           {availableProductReportEndpoint.includes(selectedFolder?.action) && <ProductReportWrapper />}
           {availableContractReportEndpoint.includes(selectedFolder?.action) && <ContractReportWrapper />}

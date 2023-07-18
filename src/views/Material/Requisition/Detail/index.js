@@ -25,7 +25,7 @@ import {
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Delete, History, AttachFileOutlined, DescriptionOutlined } from '@material-ui/icons';
+import { History, AttachFileOutlined, DescriptionOutlined } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { AddCircleOutline } from '@material-ui/icons';
 import useStyles from './../../../../utils/classes';
@@ -44,6 +44,7 @@ import {
 } from './../../../../services/api/Material/Purchase';
 import { createFileAttachment, deleteFileAttachment, getListFile } from '../../../../services/api/Attachment/FileAttachment';
 import ActivityLog from '../../../../component/ActivityLog/index.js';
+import TableCollapse from './collapse.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -213,14 +214,17 @@ const MaterialRequisitionModal = () => {
         part_id: '',
         part_name: '',
         part_code: '',
-        supplier_id: '',
-        supplier_name: '',
+        supplier_id: materialRequisitionData?.supplier_id || '',
+        supplier_name: materialRequisitionData?.supplier_name || '',
         category_id: '',
         category_name: '',
         status: '',
         unit_id: '',
         unit_name: '',
         quantity_in_piece: 0,
+        order_code: '',
+        order_date: new Date('0001-01-01T00:00:00.000Z'),
+        contract_id: '',
       },
     ]);
   };
@@ -233,13 +237,24 @@ const MaterialRequisitionModal = () => {
       part_name: newItem?.title || '',
       category_id: newItem?.category_id || '',
       category_name: newItem?.category_name || '',
-      supplier_id: materialRequisitionData?.supplier_id || '',
-      supplier_name: materialRequisitionData?.supplier_name || '',
       unit_id: newItem?.unit_id || '',
       unit_name: newItem?.unit_name || '',
       order_code: '',
       order_date: new Date('0001-01-01T00:00:00.000Z'),
     };
+    newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
+    setMaterialList(newMaterialList);
+  };
+
+  const handleChangeContract = (index, newItem) => {
+    const newMaterialList = [...materialList];
+    const newMaterial = {
+      contract_id: newItem?.contract_id,
+      contract_title: newItem?.contract_title,
+      contract_code: newItem?.contract_code,
+      unit_price: newItem?.unit_price,
+    };
+    console.log(newMaterial);
     newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
     setMaterialList(newMaterialList);
   };
@@ -293,7 +308,8 @@ const MaterialRequisitionModal = () => {
     fetchData();
   }, []);
 
-  const isDisabled = materialRequisitionData.status?.includes('RECEIVED');
+  const isDisabled = selectedDocument?.status?.includes('RECEIVED');
+  const isDetail = selectedDocument?.id;
 
   return (
     <React.Fragment>
@@ -496,110 +512,44 @@ const MaterialRequisitionModal = () => {
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>Danh sách vật tư</div>
                           <Tooltip title="Thêm vật tư">
-                            <IconButton onClick={handleAddMaterial}>
+                            <IconButton size="small" onClick={handleAddMaterial}>
                               <AddCircleOutline />
                             </IconButton>
                           </Tooltip>
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
-                          <TableContainer style={{ maxHeight: 500 }} component={Paper}>
-                            <Table className={classes.tableSmall} aria-label="simple table" stickyHeader>
+                          <TableContainer style={{ maxHeight: 500, overflowX: 'auto' }} component={Paper}>
+                            <Table size="small" stickyHeader>
                               <TableHead>
                                 <TableRow>
+                                  <TableCell />
                                   <TableCell align="left">Mã vật tư</TableCell>
                                   <TableCell align="left">Tên vật tư</TableCell>
                                   <TableCell align="left">SL cần</TableCell>
                                   <TableCell align="left">Đơn vị</TableCell>
+                                  <TableCell align="left">Hợp đồng</TableCell>
+                                  {!isDetail && <TableCell align="left">SL còn lại</TableCell>}
+                                  <TableCell align="left">Giá(VNĐ)</TableCell>
                                   <TableCell align="left">Ghi chú</TableCell>
                                   <TableCell align="left">Ghi chú 2</TableCell>
-                                  <TableCell align="left">Trạng thái</TableCell>
+                                  {isDetail && <TableCell align="left">Trạng thái</TableCell>}
                                   {!isDisabled && <TableCell align="center">Xoá</TableCell>}
                                 </TableRow>
                               </TableHead>
                               <TableBody>
                                 {materialList?.map((row, index) => (
-                                  <TableRow key={index}>
-                                    <TableCell align="left" style={{ width: '20%' }}>
-                                      <Autocomplete
-                                        options={materials}
-                                        getOptionLabel={(option) => option.part_code || ''}
-                                        fullWidth
-                                        size="small"
-                                        disabled={isDisabled}
-                                        value={materials.find((item) => item.part_code === row.part_code) || null}
-                                        onChange={(event, newValue) => handleChangeMaterialCode(index, newValue)}
-                                        renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ width: '25%' }}>
-                                      <Tooltip title={row?.part_name}>
-                                        <Autocomplete
-                                          options={materials}
-                                          getOptionLabel={(option) => option.title || ''}
-                                          fullWidth
-                                          size="small"
-                                          disabled={isDisabled}
-                                          value={materials.find((item) => item.part_code === row.part_code) || null}
-                                          onChange={(event, newValue) => handleChangeMaterialCode(index, newValue)}
-                                          renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                        />
-                                      </Tooltip>
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '15%' }}>
-                                      <TextField
-                                        InputProps={{
-                                          inputProps: { min: 0 },
-                                        }}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="quantity_in_piece"
-                                        type="number"
-                                        size="small"
-                                        disabled={isDisabled}
-                                        value={row?.quantity_in_piece || ''}
-                                        onChange={(e) => handleChangeMaterial(index, e)}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '5%' }}>
-                                      {row.unit_name}
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '15%' }}>
-                                      <TextField
-                                        multiline
-                                        minRows={1}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="notes"
-                                        type="text"
-                                        size="small"
-                                        value={row.notes || ''}
-                                        onChange={(e) => handleChangeMaterial(index, e)}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '10%' }}>
-                                      <TextField
-                                        multiline
-                                        minRows={1}
-                                        fullWidth
-                                        variant="outlined"
-                                        name="notes2"
-                                        type="text"
-                                        size="small"
-                                        value={row.notes2 || ''}
-                                        onChange={(e) => handleChangeMaterial(index, e)}
-                                      />
-                                    </TableCell>
-                                    <TableCell align="left" style={{ width: '5%' }}>
-                                      {row.status_display}
-                                    </TableCell>
-                                    {!isDisabled && (
-                                      <TableCell align="center" style={{ width: '5%' }}>
-                                        <IconButton onClick={() => handleDeleteMaterial(index, row.id)}>
-                                          <Delete />
-                                        </IconButton>
-                                      </TableCell>
-                                    )}
-                                  </TableRow>
+                                  <TableCollapse
+                                    key={index}
+                                    row={row}
+                                    index={index}
+                                    isDisabled={isDisabled}
+                                    isDetail={isDetail}
+                                    handleDeleteMaterial={handleDeleteMaterial}
+                                    handleChangeMaterialCode={handleChangeMaterialCode}
+                                    classes={classes}
+                                    handleChangeMaterial={handleChangeMaterial}
+                                    handleChangeContract={handleChangeContract}
+                                  />
                                 ))}
                               </TableBody>
                             </Table>
