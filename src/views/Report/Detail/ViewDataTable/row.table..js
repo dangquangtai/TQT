@@ -346,7 +346,7 @@ const Row = (props) => {
               <IconButton
                 aria-label="expand row"
                 size="small"
-                onClick={() => handleDownloadFile(row.part_id, row.supplier_id, row.product_id, row.customer_id)}
+                onClick={() => handleDownloadFile(row.part_id, row.supplier_id, row.product_id, row.customer_id, row.customer_order_id)}
               >
                 <GetAppIcon></GetAppIcon>
               </IconButton>
@@ -483,11 +483,6 @@ const Row = (props) => {
                             {detailitm.part_code ? <TableCell>{detailitm.part_code}</TableCell> : <TableCell></TableCell>}
                             {detailitm.part_name ? <TableCell>{detailitm.part_name}</TableCell> : <TableCell></TableCell>}
                             {detailitm.supplier_name ? <TableCell>{detailitm.supplier_name}</TableCell> : <TableCell></TableCell>}
-                            {detailitm.requisition_quantity_in_piece ? (
-                              <TableCell>{detailitm.requisition_quantity_in_piece}</TableCell>
-                            ) : (
-                              <TableCell></TableCell>
-                            )}
                             {detailitm.requisition_quantity_in_piece ? (
                               <TableCell>{detailitm.requisition_quantity_in_piece}</TableCell>
                             ) : (
