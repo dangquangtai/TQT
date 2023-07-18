@@ -251,6 +251,7 @@ const MaterialReportModel = () => {
             'SL nhập',
             'Bẩn + ố vàng',
             'Dệt bán',
+            'Dệt trả',
             'Lỗi may',
             'Lỗi tẩy',
             'Rách',

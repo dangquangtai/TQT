@@ -488,11 +488,6 @@ const Row = (props) => {
                             ) : (
                               <TableCell></TableCell>
                             )}
-                            {detailitm.requisition_quantity_in_piece ? (
-                              <TableCell>{detailitm.requisition_quantity_in_piece}</TableCell>
-                            ) : (
-                              <TableCell></TableCell>
-                            )}
                             {detailitm.cosumed_quantity_in_piece ? (
                               <TableCell>{detailitm.cosumed_quantity_in_piece}</TableCell>
                             ) : (
