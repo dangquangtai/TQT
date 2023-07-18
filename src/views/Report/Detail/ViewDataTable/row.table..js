@@ -346,7 +346,7 @@ const Row = (props) => {
               <IconButton
                 aria-label="expand row"
                 size="small"
-                onClick={() => handleDownloadFile(row.part_id, row.supplier_id, row.product_id, row.customer_id)}
+                onClick={() => handleDownloadFile(row.part_id, row.supplier_id, row.product_id, row.customer_id, row.customer_order_id)}
               >
                 <GetAppIcon></GetAppIcon>
               </IconButton>
