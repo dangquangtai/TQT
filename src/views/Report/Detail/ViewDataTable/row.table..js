@@ -84,7 +84,7 @@ const Row = (props) => {
       alertSeverity: type,
     });
   };
-  const handleDownloadFile = async (part_id, supplier_id, product_id, customer_id) => {
+  const handleDownloadFile = async (part_id, supplier_id, product_id, customer_id, customer_order_id) => {
     console.log(part_id);
     const url = await addMaterialReportFileToReport({
       from_date: fromDate,
@@ -94,7 +94,7 @@ const Row = (props) => {
       part_id_list: [part_id],
       product_code_list: [product_id],
       customer_code_list: [customer_id],
-      customer_order_code_list: [],
+      customer_order_code_list: [customer_order_id],
       is_synthetic: false,
     });
     dispatch({ type: DOCUMENT_CHANGE, documentType: 'materialReport' });
