@@ -262,8 +262,9 @@ const ContractModal = () => {
     fetchData();
   }, []);
 
-  const isDisabled = selectedDocument?.status?.includes('RECEIVED');
+  const isDisabled = selectedDocument?.status?.includes('COMPLETED');
   const isDetail = selectedDocument?.id;
+
   return (
     <React.Fragment>
       <Grid container>
@@ -431,11 +432,13 @@ const ContractModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>Danh sách vật tư</div>
-                          <Tooltip title="Thêm vật tư">
-                            <IconButton onClick={handleAddMaterial}>
-                              <AddCircleOutline />
-                            </IconButton>
-                          </Tooltip>
+                          {!isDisabled && (
+                            <Tooltip title="Thêm vật tư">
+                              <IconButton onClick={handleAddMaterial}>
+                                <AddCircleOutline />
+                              </IconButton>
+                            </Tooltip>
+                          )}
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>

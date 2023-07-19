@@ -45,6 +45,7 @@ import {
 import { createFileAttachment, deleteFileAttachment, getListFile } from '../../../../services/api/Attachment/FileAttachment';
 import ActivityLog from '../../../../component/ActivityLog/index.js';
 import TableCollapse from './collapse.js';
+import { ContractService } from '../../../../services/api/Material/Contract.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -77,7 +78,6 @@ const MaterialRequisitionModal = () => {
   const dispatch = useDispatch();
   const { form_buttons: formButtons } = useView();
   const { setConfirmPopup } = useConfirmPopup();
-  const { materials } = useSelector((state) => state.metadata);
   const saveButton = formButtons.find((button) => button.name === view.purchaseMaterial.detail.save);
   const { materialRequisitionDocument: openDialog } = useSelector((state) => state.floatingMenu);
   const { selectedDocument } = useSelector((state) => state.document);
@@ -100,6 +100,8 @@ const MaterialRequisitionModal = () => {
   });
 
   const [materialList, setMaterialList] = useState([]);
+  const [contractList, setContractList] = useState([]);
+
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
@@ -153,6 +155,7 @@ const MaterialRequisitionModal = () => {
     setListFileData([]);
     setFileData([]);
     setMaterialList([]);
+    setContractList([]);
     setTabIndex(0);
   };
   // const setURL = (image) => {
@@ -239,6 +242,7 @@ const MaterialRequisitionModal = () => {
       category_name: newItem?.category_name || '',
       unit_id: newItem?.unit_id || '',
       unit_name: newItem?.unit_name || '',
+      unit_price: newItem?.unit_price,
       order_code: '',
       order_date: new Date('0001-01-01T00:00:00.000Z'),
     };
@@ -249,12 +253,11 @@ const MaterialRequisitionModal = () => {
   const handleChangeContract = (index, newItem) => {
     const newMaterialList = [...materialList];
     const newMaterial = {
-      contract_id: newItem?.contract_id,
-      contract_title: newItem?.contract_title,
+      contract_id: newItem?.contract_id || newItem?.id,
+      contract_title: newItem?.contract_title || newItem?.title,
       contract_code: newItem?.contract_code,
       unit_price: newItem?.unit_price,
     };
-    console.log(newMaterial);
     newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
     setMaterialList(newMaterialList);
   };
@@ -299,11 +302,15 @@ const MaterialRequisitionModal = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const supplier = await getAllSupplier();
+      const [supplier, { warehouse_list, status_list }, contract_list] = await Promise.all([
+        getAllSupplier(),
+        getPurchaseMaterialStatus(),
+        ContractService.getContractUnfinished(),
+      ]);
       setSupplier(supplier);
-      const { warehouse_list, status_list } = await getPurchaseMaterialStatus();
       setStatusList(status_list);
       setWarehouseList(warehouse_list);
+      setContractList(contract_list);
     };
     fetchData();
   }, []);
@@ -549,6 +556,7 @@ const MaterialRequisitionModal = () => {
                                     classes={classes}
                                     handleChangeMaterial={handleChangeMaterial}
                                     handleChangeContract={handleChangeContract}
+                                    contractList={contractList}
                                   />
                                 ))}
                               </TableBody>

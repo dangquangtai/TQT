@@ -91,6 +91,7 @@ const ProductContractModal = () => {
   const [tabIndex, setTabIndex] = React.useState(0);
 
   const [ProductList, setProductList] = useState([]);
+
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
@@ -258,7 +259,7 @@ const ProductContractModal = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { supplier_list, status_list } = await ProductContractService.getData();
+      const [{ supplier_list, status_list }] = await Promise.all([ProductContractService.getData()]);
       setStatusList(status_list);
       setSupplier(supplier_list);
     };
@@ -434,11 +435,13 @@ const ProductContractModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>Danh sách thành phẩm</div>
-                          <Tooltip title="Thêm thành phẩm">
-                            <IconButton onClick={handleAddProduct}>
-                              <AddCircleOutline />
-                            </IconButton>
-                          </Tooltip>
+                          {!isDisabled && (
+                            <Tooltip title="Thêm thành phẩm">
+                              <IconButton onClick={handleAddProduct}>
+                                <AddCircleOutline />
+                              </IconButton>
+                            </Tooltip>
+                          )}
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>

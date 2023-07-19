@@ -366,6 +366,8 @@ export const apiEndpoints = {
   get_contract_data: '/Primary/?FlowAlias=bs_api_factory_get_contract_data&action=api',
   get_contract_list_by_supplier_and_material: '/Primary/?FlowAlias=bs_api_factory_get_contract_list_by_supplier_and_material&action=api',
   delete_contract_detail: '/Primary/?FlowAlias=bs_api_factory_delete_contract_detail&action=api',
+  get_material_contract_unfinished: '/Primary/?FlowAlias=bs_api_factory_get_material_contract_unfinished&action=api',
+  get_material_contract_detail: '/Primary/?FlowAlias=bs_api_factory_get_material_contract_detail&action=api',
 
   // Product Contract
   get_product_contract_list: '/Primary/?FlowAlias=bs_api_factory_get_product_contract_list&action=api',
@@ -376,6 +378,8 @@ export const apiEndpoints = {
   get_product_contract_list_by_supplier_and_product:
     '/Primary/?FlowAlias=bs_api_factory_get_product_contract_list_by_supplier_and_material&action=api',
   delete_product_contract_detail: '/Primary/?FlowAlias=bs_api_factory_delete_product_contract_detail&action=api',
+  get_product_contract_unfinished: '/Primary/?FlowAlias=bs_api_factory_get_product_contract_unfinished&action=api',
+  get_product_contract_detail_list: '/Primary/?FlowAlias=bs_api_factory_get_product_contract_detail_list&action=api',
 
   // Product Requisition
   get_product_requisition_list: '/Primary/?FlowAlias=bs_api_factory_get_product_requisition_list&action=api',

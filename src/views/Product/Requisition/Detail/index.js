@@ -39,6 +39,7 @@ import ActivityLog from '../../../../component/ActivityLog/index.js';
 import TableCollapse from './collapse.js';
 import { ProductRequisitionService } from '../../../../services/api/Product/Requisition.js';
 import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
+import { ProductContractService } from '../../../../services/api/Product/Contract.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -88,6 +89,8 @@ const ProductRequisitionModal = () => {
   const [tabIndex, setTabIndex] = React.useState(0);
 
   const [ProductList, setProductList] = useState([]);
+  const [contractList, setContractList] = useState([]);
+
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
@@ -142,6 +145,7 @@ const ProductRequisitionModal = () => {
     setFileData([]);
     setProductList([]);
     setTabIndex(0);
+    setContractList([]);
   };
 
   const handleSubmitForm = async () => {
@@ -206,6 +210,7 @@ const ProductRequisitionModal = () => {
       category_name: newItem?.category_name || '',
       unit_id: newItem?.unit_id || '',
       unit_name: newItem?.unit_name || '',
+      unit_price: newItem?.unit_price,
     };
     newProductList[index] = { ...newProductList[index], ...newProduct };
     setProductList(newProductList);
@@ -214,8 +219,8 @@ const ProductRequisitionModal = () => {
   const handleChangeContract = (index, newItem) => {
     const newProductList = [...ProductList];
     const newProduct = {
-      contract_id: newItem?.contract_id,
-      contract_title: newItem?.contract_title,
+      contract_id: newItem?.contract_id || newItem?.id,
+      contract_title: newItem?.contract_title || newItem?.title,
       contract_code: newItem?.contract_code,
       unit_price: newItem?.unit_price,
     };
@@ -263,11 +268,15 @@ const ProductRequisitionModal = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const supplier = await getAllSupplier();
+      const [supplier, { warehouse_list, status_list }, contract_list] = await Promise.all([
+        getAllSupplier(),
+        ProductRequisitionService.getData(),
+        ProductContractService.getContractUnfinished(),
+      ]);
       setSupplier(supplier);
-      const { warehouse_list, status_list } = await ProductRequisitionService.getData();
       setStatusList(status_list);
       setWarehouseList(warehouse_list);
+      setContractList(contract_list);
     };
     fetchData();
   }, []);
@@ -505,6 +514,7 @@ const ProductRequisitionModal = () => {
                                     classes={classes}
                                     handleChangeProduct={handleChangeProduct}
                                     handleChangeContract={handleChangeContract}
+                                    contractList={contractList}
                                   />
                                 ))}
                               </TableBody>

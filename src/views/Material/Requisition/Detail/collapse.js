@@ -38,22 +38,38 @@ const TableCollapse = (props) => {
     isDetail,
     classes,
     handleChangeContract,
+    contractList,
   } = props;
   const [open, setOpen] = React.useState(false);
-  const { materials } = useSelector((state) => state.metadata);
+  const { materials: metaMaterials } = useSelector((state) => state.metadata);
   const classesRow = useRowStyles();
   const [contracts, setContracts] = React.useState([]);
+  const [materials, setMaterials] = React.useState([]);
 
   const isCollapse = row?.received_detail?.length > 0;
 
   useEffect(() => {
-    if (!row.part_id) return;
+    if (!row.part_id || row.contract_id) return;
     const fetch = async () => {
       const res = await ContractService.getBySupplierAndMaterial({ part_id: row.part_id, supplier_id: row.supplier_id });
       setContracts(res || []);
     };
     fetch();
-  }, [isDetail, row.part_id, row.supplier_id]);
+  }, [row.part_id, row.supplier_id, row.contract_id]);
+
+  useEffect(() => {
+    if (!row.contract_id || row.part_id) return;
+    const fetch = async () => {
+      const res = await ContractService.getContractDetail(row.contract_id);
+      setMaterials(res || []);
+    };
+    fetch();
+  }, [row.part_id, row.contract_id]);
+
+  useEffect(() => {
+    if (!row.part_id) setContracts(contractList);
+    if (!row.contract_id) setMaterials(metaMaterials);
+  }, [contractList, metaMaterials, row.contract_id, row.part_id]);
 
   return (
     <React.Fragment>
@@ -79,7 +95,7 @@ const TableCollapse = (props) => {
           <Tooltip title={row?.part_name}>
             <Autocomplete
               options={materials}
-              getOptionLabel={(option) => option.title || ''}
+              getOptionLabel={(option) => option.title || option.part_name}
               fullWidth
               size="small"
               disabled={isDisabled}
@@ -115,7 +131,7 @@ const TableCollapse = (props) => {
                 getOptionLabel={(option) => option.contract_code || ''}
                 fullWidth
                 size="small"
-                value={contracts.find((item) => item.contract_id === row.contract_id) || null}
+                // value={contracts.find((item) => item.contract_id === row.contract_id) || null}
                 onChange={(event, newValue) => handleChangeContract(index, newValue)}
                 renderInput={(params) => <TextField {...params} variant="outlined" />}
               />

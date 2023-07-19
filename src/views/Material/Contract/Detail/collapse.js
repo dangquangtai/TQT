@@ -39,7 +39,7 @@ const TableCollapse = (props) => {
   return (
     <React.Fragment>
       <TableRow key={index} className={classesRow.root}>
-        <TableCell>
+        <TableCell style={{ width: '5%' }}>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
