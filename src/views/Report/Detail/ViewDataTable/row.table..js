@@ -162,6 +162,8 @@ const Row = (props) => {
         broken_requisition_quantity_in_piece,
         inventory_quantity_in_piece,
         broken_inventory_quantity_in_piece,
+        unit_price,
+        sum_price,
       } = row;
       return (
         <>
@@ -178,6 +180,8 @@ const Row = (props) => {
           <TableCell align="left">{broken_requisition_quantity_in_piece ? broken_requisition_quantity_in_piece : ''}</TableCell>
           <TableCell align="left">{inventory_quantity_in_piece ? inventory_quantity_in_piece : ''}</TableCell>
           <TableCell align="left">{broken_inventory_quantity_in_piece ? broken_inventory_quantity_in_piece : ''}</TableCell>
+          <TableCell align="left">{unit_price ? unit_price : ''}</TableCell>
+          <TableCell align="left">{sum_price ? sum_price : ''}</TableCell>
         </>
       );
     }
@@ -413,6 +417,8 @@ const Row = (props) => {
                             <TableCell>{detailitm.broken_requisition_quantity_in_piece}</TableCell>
                             <TableCell>{detailitm.inventory_quantity_in_piece}</TableCell>
                             <TableCell>{detailitm.broken_inventory_quantity_in_piece}</TableCell>
+                            <TableCell>{detailitm.unit_price}</TableCell>
+                            <TableCell>{detailitm.sum_price}</TableCell>
                           </>
                         )}
                         {reportType === 'TONG_HOP_TON_KHO_THANH_PHAM' && (

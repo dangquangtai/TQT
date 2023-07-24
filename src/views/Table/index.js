@@ -507,6 +507,8 @@ export default function GeneralTable(props) {
   const downloadFileOption = async (event, selectedDocument) => {
     switch (documentType) {
       case 'materialReport':
+      case 'productReport':
+      case 'productionReport':
         console.log(documentType);
         const url = await downloadMaterialReportFile(selectedDocument.id);
         handleDownload(url);
