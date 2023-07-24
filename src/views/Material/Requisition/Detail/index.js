@@ -237,12 +237,13 @@ const MaterialRequisitionModal = () => {
     const newMaterial = {
       part_id: newItem?.id || '',
       part_code: newItem?.part_code || '',
-      part_name: newItem?.title || '',
+      part_name: newItem?.title || newItem?.part_name || '',
       category_id: newItem?.category_id || '',
       category_name: newItem?.category_name || '',
       unit_id: newItem?.unit_id || '',
       unit_name: newItem?.unit_name || '',
       unit_price: newItem?.unit_price,
+      remain_quantity_in_piece: newItem?.remain_quantity_in_piece,
       order_code: '',
       order_date: new Date('0001-01-01T00:00:00.000Z'),
     };
@@ -257,6 +258,7 @@ const MaterialRequisitionModal = () => {
       contract_title: newItem?.contract_title || newItem?.title,
       contract_code: newItem?.contract_code,
       unit_price: newItem?.unit_price,
+      remain_quantity_in_piece: newItem?.remain_quantity_in_piece,
     };
     newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
     setMaterialList(newMaterialList);

@@ -205,12 +205,13 @@ const ProductRequisitionModal = () => {
       product_id: newItem?.id || '',
       product_code: newItem?.product_code || '',
       product_customer_code: newItem?.product_customer_code || '',
-      product_name: newItem?.title || '',
+      product_name: newItem?.title || newItem?.product_name || '',
       category_id: newItem?.category_id || '',
       category_name: newItem?.category_name || '',
       unit_id: newItem?.unit_id || '',
       unit_name: newItem?.unit_name || '',
       unit_price: newItem?.unit_price,
+      remain_quantity_in_box: newItem?.remain_quantity_in_box,
     };
     newProductList[index] = { ...newProductList[index], ...newProduct };
     setProductList(newProductList);
@@ -223,6 +224,7 @@ const ProductRequisitionModal = () => {
       contract_title: newItem?.contract_title || newItem?.title,
       contract_code: newItem?.contract_code,
       unit_price: newItem?.unit_price,
+      remain_quantity_in_box: newItem?.remain_quantity_in_box,
     };
     newProductList[index] = { ...newProductList[index], ...newProduct };
     setProductList(newProductList);
