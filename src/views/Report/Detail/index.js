@@ -153,7 +153,19 @@ const MaterialReportModel = () => {
     if (activeStep === 0) {
       switch (row.id) {
         case 'TONG_HOP_TON_KHO_VAT_TU':
-          setlistCol(['Danh mục', 'Nhà cung cấp', 'Mã vật tư', 'Tên vật tư', 'Đơn vị', 'Tồn đầu', 'Nhập', 'Xuất', 'Tồn cuối']);
+          setlistCol([
+            'Danh mục',
+            'Nhà cung cấp',
+            'Mã vật tư',
+            'Tên vật tư',
+            'Đơn vị',
+            'Tồn đầu',
+            'Nhập',
+            'Xuất',
+            'Tồn cuối',
+            'Đơn giá',
+            'Trị giá',
+          ]);
           setListColDetail([
             'Ngày tháng',
             'Danh mục',
@@ -166,6 +178,8 @@ const MaterialReportModel = () => {
             'Nhập',
             'Xuất',
             'Tồn cuối',
+            'Đơn giá',
+            'Trị giá',
           ]);
           break;
         case 'TONG_HOP_TON_KHO_THANH_PHAM':

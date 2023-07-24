@@ -48,6 +48,8 @@ import {
   getViewDataForReporTemplate,
 } from '../../../../services/api/Report/MaterialReport';
 import Row from './row.table.';
+import { display } from '@material-ui/system';
+import { margin } from '@mui/system';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -140,6 +142,7 @@ export default function ViewReportDataModal(props) {
   const [openDetail, setOpenDetail] = useState(false);
   const [tabIndex, setTabIndex] = React.useState(0);
   const [isSynthetic, setIsSynthetic] = useState(false);
+  const [isCompact, setisCompact] = useState(false);
   const [exportData, setExportData] = useState({
     from_date: new Date(),
     to_date: new Date(),
@@ -182,6 +185,7 @@ export default function ViewReportDataModal(props) {
       customer_code_list: listCustomerCode,
       customer_order_code_list: listCustomerOrderCode,
       is_synthetic: isSynthetic,
+      is_compact: isCompact,
     });
     handleDownload(url);
   };
@@ -222,6 +226,9 @@ export default function ViewReportDataModal(props) {
         'BAO_CAO_THUC_TE_SAN_XUAT'
       ) {
         await setIsSynthetic(true);
+      }
+      if (reportType === 'KH_GIAO_HANG_CHO_KHACH') {
+        setisCompact(true);
       }
       const getListViewData = await getViewDataForReporTemplate({
         supplier_id_list: listSupplier,
@@ -460,13 +467,22 @@ export default function ViewReportDataModal(props) {
                 Đóng
               </Button>
             </Grid>
-            {['KH_XUAT_NHAP'].includes(reportType) ? null : (
-              <Grid item className={classes.gridItemInfoButtonWrap}>
-                <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleExportReportTemplate}>
-                  Xuất File
-                </Button>
-              </Grid>
-            )}
+            <Grid style={{ display: 'flex' }}>
+              {['KH_XUAT_NHAP'].includes(reportType) ? null : (
+                <Grid item className={classes.gridItemInfoButtonWrap}>
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleExportReportTemplate}>
+                    Xuất File
+                  </Button>
+                </Grid>
+              )}
+              {['KH_GIAO_HANG_CHO_KHACH'].includes(reportType) ? (
+                <Grid item className={classes.gridItemInfoButtonWrap} style={{ marginLeft: 10 }}>
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleExportReportTemplate}>
+                    Xuất file rút gọn
+                  </Button>
+                </Grid>
+              ) : undefined}
+            </Grid>
           </Grid>
         </DialogActions>
       </Dialog>
