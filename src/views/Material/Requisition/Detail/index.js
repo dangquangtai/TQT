@@ -302,18 +302,22 @@ const MaterialRequisitionModal = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const [supplier, { warehouse_list, status_list }, contract_list] = await Promise.all([
-        getAllSupplier(),
-        getPurchaseMaterialStatus(),
-        ContractService.getContractUnfinished(),
-      ]);
+      const [supplier, { warehouse_list, status_list }] = await Promise.all([getAllSupplier(), getPurchaseMaterialStatus()]);
       setSupplier(supplier);
       setStatusList(status_list);
       setWarehouseList(warehouse_list);
-      setContractList(contract_list);
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const [contract_list] = await Promise.all([ContractService.getContractUnfinished(materialRequisitionData.supplier_id)]);
+      setContractList(contract_list);
+    };
+    if (materialRequisitionData.supplier_id) fetchData();
+    else setContractList([]);
+  }, [materialRequisitionData.supplier_id]);
 
   const isDisabled = selectedDocument?.status?.includes('RECEIVED');
   const isDetail = selectedDocument?.id;

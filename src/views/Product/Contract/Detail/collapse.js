@@ -69,7 +69,18 @@ const TableCollapse = (props) => {
             />
           </Tooltip>
         </TableCell>
-        <TableCell align="left">{row?.product_customer_code}</TableCell>
+        <TableCell align="left">
+          <Autocomplete
+            options={products}
+            getOptionLabel={(option) => option.product_customer_code || ''}
+            fullWidth
+            size="small"
+            disabled={isDisabled}
+            value={products.find((item) => item.product_code === row.product_code) || null}
+            onChange={(event, newValue) => handleChangeProductCode(index, newValue)}
+            renderInput={(params) => <TextField {...params} variant="outlined" />}
+          />
+        </TableCell>
         <TableCell align="left" style={{ width: '13%' }}>
           <TextField
             InputProps={{

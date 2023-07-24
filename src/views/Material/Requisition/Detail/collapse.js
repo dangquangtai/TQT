@@ -71,6 +71,10 @@ const TableCollapse = (props) => {
     if (!row.contract_id) setMaterials(metaMaterials);
   }, [contractList, metaMaterials, row.contract_id, row.part_id]);
 
+  useEffect(() => {
+    setMaterials(metaMaterials);
+  }, []);
+
   return (
     <React.Fragment>
       <TableRow className={classesRow.root}>
