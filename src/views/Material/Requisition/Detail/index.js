@@ -235,7 +235,7 @@ const MaterialRequisitionModal = () => {
   const handleChangeMaterialCode = (index, newItem) => {
     const newMaterialList = [...materialList];
     const newMaterial = {
-      part_id: newItem?.id || '',
+      part_id: newItem?.part_id || newItem?.id || '',
       part_code: newItem?.part_code || '',
       part_name: newItem?.title || newItem?.part_name || '',
       category_id: newItem?.category_id || '',

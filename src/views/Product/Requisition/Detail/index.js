@@ -202,7 +202,7 @@ const ProductRequisitionModal = () => {
   const handleChangeProductCode = (index, newItem) => {
     const newProductList = [...ProductList];
     const newProduct = {
-      product_id: newItem?.id || '',
+      product_id: newItem?.product_id || newItem?.id || '',
       product_code: newItem?.product_code || '',
       product_customer_code: newItem?.product_customer_code || '',
       product_name: newItem?.title || newItem?.product_name || '',
