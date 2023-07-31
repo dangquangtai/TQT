@@ -388,6 +388,7 @@ export const apiEndpoints = {
   update_product_requisition: '/Primary/?FlowAlias=bs_api_factory_update_product_requisition&action=api',
   get_product_requisition_data: '/Primary/?FlowAlias=bs_api_factory_get_product_requisition_data&action=api',
   get_ordered_product_requisition: '/Primary/?FlowAlias=bs_api_factory_get_ordered_product_requisition&action=api',
+  export_product_received: '/Primary/?FlowAlias=bs_api_factory_export_production_product_received&action=api',
 
   // Product Received
   get_product_received_list: '/Primary/?FlowAlias=bs_api_factory_get_product_received_list&action=api',
@@ -863,7 +864,7 @@ export const view = {
     },
     detail: {
       save: 'TQT_PRODUCT_DEFAULT_RECEIVED_SAVE_FORM_BUTTON',
-      export: '',
+      export: 'TQT_PRODUCT_DEFAULT_RECEIVED_EXPORT_MENU_BUTTON',
     },
   },
 };
