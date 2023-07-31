@@ -212,8 +212,8 @@ const ReceivedProductModal = () => {
   };
 
   const handleClickExport = async () => {
-    // var url = await exportProductReceived(receivedProductData.id);
-    // handleDownload(url);
+    var url = await ProductReceivedService.exportProductReceived(receivedProductData.id);
+    handleDownload(url);
   };
 
   const handleDownload = (url) => {

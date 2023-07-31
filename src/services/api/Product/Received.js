@@ -36,4 +36,17 @@ export const ProductReceivedService = {
     const response = await axiosServices.post(apiEndpoints.get_ordered_product_requisition, { supplier_id, warehouse_id });
     return response.data;
   },
+  exportProductReceived: async (id) => {
+    return axiosServices
+      .post(apiEndpoints.export_product_received, { id })
+      .then((response) => {
+        if (response.status === 200 && response.data.return === 200) {
+          return response.data.url;
+        }
+        return '';
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  },
 };
