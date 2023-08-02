@@ -174,20 +174,32 @@ export default function ViewReportDataModal(props) {
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
+  useEffect(() => {
+    if (isCompact === true) {
+      handleExportReportTemplate();
+    }
+  }, [isCompact]);
   const handleExportReportTemplate = async () => {
-    const url = await addMaterialReportFileToReport({
-      from_date: fromDate,
-      to_date: toDate,
-      report_id: reportID,
-      supplier_id_list: listSupplier,
-      part_id_list: listPart,
-      product_code_list: listProductID,
-      customer_code_list: listCustomerCode,
-      customer_order_code_list: listCustomerOrderCode,
-      is_synthetic: isSynthetic,
-      is_compact: isCompact,
-    });
+    const addMaterialReportFile = async () => {
+      const url = await addMaterialReportFileToReport({
+        from_date: fromDate,
+        to_date: toDate,
+        report_id: reportID,
+        supplier_id_list: listSupplier,
+        part_id_list: listPart,
+        product_code_list: listProductID,
+        customer_code_list: listCustomerCode,
+        customer_order_code_list: listCustomerOrderCode,
+        is_synthetic: isSynthetic,
+        is_compact: isCompact,
+      });
+      return url;
+    };
+
+    const url = await addMaterialReportFile();
     handleDownload(url);
+
+    setisCompact(false);
   };
   const handleOpenSnackbar = (type, text) => {
     dispatch({
@@ -227,9 +239,7 @@ export default function ViewReportDataModal(props) {
       ) {
         await setIsSynthetic(true);
       }
-      if (reportType === 'KH_GIAO_HANG_CHO_KHACH') {
-        setisCompact(true);
-      }
+
       const getListViewData = await getViewDataForReporTemplate({
         supplier_id_list: listSupplier,
         part_id_list: listPart,
@@ -477,7 +487,7 @@ export default function ViewReportDataModal(props) {
               )}
               {['KH_GIAO_HANG_CHO_KHACH'].includes(reportType) ? (
                 <Grid item className={classes.gridItemInfoButtonWrap} style={{ marginLeft: 10 }}>
-                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleExportReportTemplate}>
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={() => setisCompact(true)}>
                     Xuất file rút gọn
                   </Button>
                 </Grid>
