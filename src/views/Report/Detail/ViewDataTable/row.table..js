@@ -469,6 +469,7 @@ const Row = (props) => {
                             <TableCell>{detailitm.part_code}</TableCell>
                             <TableCell>{detailitm.part_name}</TableCell>
                             <TableCell>{detailitm.supplier_name}</TableCell>
+                            <TableCell>{detailitm.order_date}</TableCell>
                             <TableCell>{detailitm.unit_name}</TableCell>
                             <TableCell>{detailitm.used_quantity_in_piece}</TableCell>
                           </>
