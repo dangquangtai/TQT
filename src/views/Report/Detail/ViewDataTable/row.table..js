@@ -96,6 +96,7 @@ const Row = (props) => {
       customer_code_list: [customer_id],
       customer_order_code_list: [customer_order_id],
       is_synthetic: false,
+      is_compact: false,
     });
     dispatch({ type: DOCUMENT_CHANGE, documentType: 'materialReport' });
     handleDownload(url);
