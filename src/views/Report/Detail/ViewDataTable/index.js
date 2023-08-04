@@ -335,6 +335,7 @@ export default function ViewReportDataModal(props) {
         style={{
           Width: '100%',
           whiteSpace: 'break-spaces',
+          wordBreak: 'break-all',
         }}
       >
         {event.requisition_title}
