@@ -48,8 +48,6 @@ import {
   getViewDataForReporTemplate,
 } from '../../../../services/api/Report/MaterialReport';
 import Row from './row.table.';
-import { display } from '@material-ui/system';
-import { margin } from '@mui/system';
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -142,7 +140,6 @@ export default function ViewReportDataModal(props) {
   const [openDetail, setOpenDetail] = useState(false);
   const [tabIndex, setTabIndex] = React.useState(0);
   const [isSynthetic, setIsSynthetic] = useState(false);
-  const [isCompact, setisCompact] = useState(false);
   const [exportData, setExportData] = useState({
     from_date: new Date(),
     to_date: new Date(),
@@ -174,32 +171,19 @@ export default function ViewReportDataModal(props) {
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
-  useEffect(() => {
-    if (isCompact === true) {
-      handleExportReportTemplate();
-    }
-  }, [isCompact]);
   const handleExportReportTemplate = async () => {
-    const addMaterialReportFile = async () => {
-      const url = await addMaterialReportFileToReport({
-        from_date: fromDate,
-        to_date: toDate,
-        report_id: reportID,
-        supplier_id_list: listSupplier,
-        part_id_list: listPart,
-        product_code_list: listProductID,
-        customer_code_list: listCustomerCode,
-        customer_order_code_list: listCustomerOrderCode,
-        is_synthetic: isSynthetic,
-        is_compact: isCompact,
-      });
-      return url;
-    };
-
-    const url = await addMaterialReportFile();
+    const url = await addMaterialReportFileToReport({
+      from_date: fromDate,
+      to_date: toDate,
+      report_id: reportID,
+      supplier_id_list: listSupplier,
+      part_id_list: listPart,
+      product_code_list: listProductID,
+      customer_code_list: listCustomerCode,
+      customer_order_code_list: listCustomerOrderCode,
+      is_synthetic: isSynthetic,
+    });
     handleDownload(url);
-
-    setisCompact(false);
   };
   const handleOpenSnackbar = (type, text) => {
     dispatch({
@@ -228,18 +212,9 @@ export default function ViewReportDataModal(props) {
   }, [selectedDocument]);
   useEffect(() => {
     const fetchData = async () => {
-      if (
-        reportType === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP' ||
-        'BAO_CAO_THEO_DOI_HOP_DONG' ||
-        'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM' ||
-        'TONG_HOP_TON_KHO_VAT_TU' ||
-        'TONG_HOP_TON_KHO_THANH_PHAM' ||
-        'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP' ||
-        'BAO_CAO_THUC_TE_SAN_XUAT'
-      ) {
+      if (reportType === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP') {
         await setIsSynthetic(true);
       }
-
       const getListViewData = await getViewDataForReporTemplate({
         supplier_id_list: listSupplier,
         part_id_list: listPart,
@@ -272,10 +247,6 @@ export default function ViewReportDataModal(props) {
           ? getListViewData?.list_difference_data
           : reportType === 'BAO_CAO_SU_DUNG_VAT_TU_THEO_DON_HANG'
           ? getListViewData?.list_use_of_material_supplier_from_order
-          : reportType === 'BAO_CAO_THEO_DOI_HOP_DONG'
-          ? getListViewData?.list_contract_view_data
-          : reportType === 'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM'
-          ? getListViewData?.list_product_contract_view_data
           : undefined;
 
       setListViewData(listViewData);
@@ -354,6 +325,7 @@ export default function ViewReportDataModal(props) {
         style={{
           Width: '100%',
           whiteSpace: 'break-spaces',
+          wordBreak: 'break-all',
         }}
       >
         {event.received_title}
@@ -363,6 +335,7 @@ export default function ViewReportDataModal(props) {
         style={{
           Width: '100%',
           whiteSpace: 'break-spaces',
+          wordBreak: 'break-all',
         }}
       >
         {event.requisition_title}
@@ -405,7 +378,7 @@ export default function ViewReportDataModal(props) {
                                   <TableCell />
                                   {listCol?.map((col, index) => (
                                     <React.Fragment key={index}>
-                                      {['Tồn đầu', 'Nhập', 'Xuất', 'Tồn cuối'].includes(col) && reportType === 'TONG_HOP_TON_KHO_VAT_TU' ? (
+                                      {['Tồn đầu', 'Nhập', 'Xuất', 'Tồn cuối'].includes(col) ? (
                                         <TableCell colSpan={2} align="center" style={{ width: '10%' }}>
                                           {col}
                                           <TableRow>
@@ -477,22 +450,13 @@ export default function ViewReportDataModal(props) {
                 Đóng
               </Button>
             </Grid>
-            <Grid style={{ display: 'flex' }}>
-              {['KH_XUAT_NHAP'].includes(reportType) ? null : (
-                <Grid item className={classes.gridItemInfoButtonWrap}>
-                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleExportReportTemplate}>
-                    Xuất File
-                  </Button>
-                </Grid>
-              )}
-              {['KH_GIAO_HANG_CHO_KHACH'].includes(reportType) ? (
-                <Grid item className={classes.gridItemInfoButtonWrap} style={{ marginLeft: 10 }}>
-                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={() => setisCompact(true)}>
-                    Xuất file rút gọn
-                  </Button>
-                </Grid>
-              ) : undefined}
-            </Grid>
+            {['KH_XUAT_NHAP'].includes(reportType) ? null : (
+              <Grid item className={classes.gridItemInfoButtonWrap}>
+                <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleExportReportTemplate}>
+                  Xuất File
+                </Button>
+              </Grid>
+            )}
           </Grid>
         </DialogActions>
       </Dialog>
