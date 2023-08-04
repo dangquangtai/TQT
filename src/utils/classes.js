@@ -564,7 +564,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   scroll: {
-    height: 60,
+    height: 157,
     display: 'flex',
     flexWrap: 'wrap',
     alignContent: 'flexStart',
