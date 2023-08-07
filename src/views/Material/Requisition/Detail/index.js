@@ -524,11 +524,13 @@ const MaterialRequisitionModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>Danh sách vật tư</div>
-                          <Tooltip title="Thêm vật tư">
-                            <IconButton size="small" onClick={handleAddMaterial}>
-                              <AddCircleOutline />
-                            </IconButton>
-                          </Tooltip>
+                          {!isDisabled && (
+                            <Tooltip title="Thêm vật tư">
+                              <IconButton size="small" onClick={handleAddMaterial}>
+                                <AddCircleOutline />
+                              </IconButton>
+                            </Tooltip>
+                          )}
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500, overflowX: 'auto' }} component={Paper}>
@@ -550,21 +552,39 @@ const MaterialRequisitionModal = () => {
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {materialList?.map((row, index) => (
-                                  <TableCollapse
-                                    key={index}
-                                    row={row}
-                                    index={index}
-                                    isDisabled={isDisabled}
-                                    isDetail={isDetail}
-                                    handleDeleteMaterial={handleDeleteMaterial}
-                                    handleChangeMaterialCode={handleChangeMaterialCode}
-                                    classes={classes}
-                                    handleChangeMaterial={handleChangeMaterial}
-                                    handleChangeContract={handleChangeContract}
-                                    contractList={contractList}
-                                  />
-                                ))}
+                                {!isDisabled
+                                  ? contractList &&
+                                    contractList.length > 0 &&
+                                    materialList?.map((row, index) => (
+                                      <TableCollapse
+                                        key={index}
+                                        row={row}
+                                        index={index}
+                                        isDisabled={isDisabled}
+                                        isDetail={isDetail}
+                                        handleDeleteMaterial={handleDeleteMaterial}
+                                        handleChangeMaterialCode={handleChangeMaterialCode}
+                                        classes={classes}
+                                        handleChangeMaterial={handleChangeMaterial}
+                                        handleChangeContract={handleChangeContract}
+                                        contractList={contractList}
+                                      />
+                                    ))
+                                  : materialList?.map((row, index) => (
+                                      <TableCollapse
+                                        key={index}
+                                        row={row}
+                                        index={index}
+                                        isDisabled={isDisabled}
+                                        isDetail={isDetail}
+                                        handleDeleteMaterial={handleDeleteMaterial}
+                                        handleChangeMaterialCode={handleChangeMaterialCode}
+                                        classes={classes}
+                                        handleChangeMaterial={handleChangeMaterial}
+                                        handleChangeContract={handleChangeContract}
+                                        contractList={contractList}
+                                      />
+                                    ))}
                               </TableBody>
                             </Table>
                           </TableContainer>

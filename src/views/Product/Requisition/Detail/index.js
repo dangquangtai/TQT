@@ -483,11 +483,13 @@ const ProductRequisitionModal = () => {
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>Danh sách thành phẩm</div>
-                          <Tooltip title="Thêm thành phẩm">
-                            <IconButton size="small" onClick={handleAddProduct}>
-                              <AddCircleOutline />
-                            </IconButton>
-                          </Tooltip>
+                          {!isDisabled && (
+                            <Tooltip title="Thêm thành phẩm">
+                              <IconButton size="small" onClick={handleAddProduct}>
+                                <AddCircleOutline />
+                              </IconButton>
+                            </Tooltip>
+                          )}
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
@@ -508,21 +510,39 @@ const ProductRequisitionModal = () => {
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {ProductList?.map((row, index) => (
-                                  <TableCollapse
-                                    key={index}
-                                    row={row}
-                                    index={index}
-                                    isDisabled={isDisabled}
-                                    isDetail={isDetail}
-                                    handleDeleteProduct={handleDeleteProduct}
-                                    handleChangeProductCode={handleChangeProductCode}
-                                    classes={classes}
-                                    handleChangeProduct={handleChangeProduct}
-                                    handleChangeContract={handleChangeContract}
-                                    contractList={contractList}
-                                  />
-                                ))}
+                                {!isDisabled
+                                  ? contractList &&
+                                    contractList.length > 0 &&
+                                    ProductList?.map((row, index) => (
+                                      <TableCollapse
+                                        key={index}
+                                        row={row}
+                                        index={index}
+                                        isDisabled={isDisabled}
+                                        isDetail={isDetail}
+                                        handleDeleteProduct={handleDeleteProduct}
+                                        handleChangeProductCode={handleChangeProductCode}
+                                        classes={classes}
+                                        handleChangeProduct={handleChangeProduct}
+                                        handleChangeContract={handleChangeContract}
+                                        contractList={contractList}
+                                      />
+                                    ))
+                                  : ProductList?.map((row, index) => (
+                                      <TableCollapse
+                                        key={index}
+                                        row={row}
+                                        index={index}
+                                        isDisabled={isDisabled}
+                                        isDetail={isDetail}
+                                        handleDeleteProduct={handleDeleteProduct}
+                                        handleChangeProductCode={handleChangeProductCode}
+                                        classes={classes}
+                                        handleChangeProduct={handleChangeProduct}
+                                        handleChangeContract={handleChangeContract}
+                                        contractList={contractList}
+                                      />
+                                    ))}
                               </TableBody>
                             </Table>
                           </TableContainer>

@@ -17,17 +17,7 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableHead(props) {
-  const {
-    classes,
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-    displayOptions,
-    documentType,
-  } = props;
+  const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, displayOptions, documentType } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -36,6 +26,10 @@ function EnhancedTableHead(props) {
     const index = headCells.findIndex((item) => item.id === 'fullname');
     if (index !== -1) headCells[index].label = 'Họ tên';
   }
+
+  const replaceOrder = (order) => {
+    return order?.replace('_', '__');
+  };
 
   return (
     <TableHead>
@@ -59,22 +53,20 @@ function EnhancedTableHead(props) {
                 key={headCell.id}
                 align={headCell.numeric ? 'right' : 'left'}
                 padding={headCell.disablePadding ? 'none' : 'normal'}
-                sortDirection={orderBy === headCell.id ? order : false}
+                sortDirection={orderBy === replaceOrder(headCell.id) ? order : false}
                 style={{ maxWidth: headCell.maxWidth, position: 'relative' }}
               >
                 {headCell.id === 'menuButtons' ? (
                   <></>
                 ) : (
                   <TableSortLabel
-                    active={orderBy === headCell.id}
-                    direction={orderBy === headCell.id ? order : 'asc'}
-                    onClick={createSortHandler(headCell.id)}
+                    active={orderBy === replaceOrder(headCell.id)}
+                    direction={orderBy === replaceOrder(headCell.id) ? order : 'asc'}
+                    onClick={createSortHandler(replaceOrder(headCell.id))}
                   >
                     {headCell.label}
-                    {orderBy === headCell.id ? (
-                      <span className={classes.visuallyHidden}>
-                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                      </span>
+                    {orderBy === replaceOrder(headCell.id) ? (
+                      <span className={classes.visuallyHidden}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</span>
                     ) : null}
                   </TableSortLabel>
                 )}

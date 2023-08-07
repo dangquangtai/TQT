@@ -239,7 +239,7 @@ export default function GeneralTable(props) {
 
   const handleRequestSort = (event, property) => {
     const isAsc = order_by === property && order_type === 'asc';
-    fetchDocument(url, documentType, project_id, folder_id, {
+    fetchDocument({
       page: 1,
       order_by: property,
       order_type: isAsc ? 'desc' : 'asc',
@@ -280,12 +280,12 @@ export default function GeneralTable(props) {
 
   const handleChangePage = (event, newPage) => {
     let page = newPage + 1;
-    fetchDocument({ page: page, search_text, category_id });
+    fetchDocument({ page: page, search_text, category_id, order_by, order_type });
     setPage(page);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    fetchDocument({ page: 1, no_item_per_page: event.target.value, search_text, category_id });
+    fetchDocument({ page: 1, no_item_per_page: event.target.value, search_text, category_id, order_by, order_type });
     setPage(1);
   };
   const handleCloseMaterialReportView = () => setOpenMaterialReportView(false);
@@ -660,7 +660,7 @@ export default function GeneralTable(props) {
 
   const reloadCurrentDocuments = (page = 1) => {
     setSelected([]);
-    fetchDocument({ page: pageCurrent, search_text });
+    fetchDocument({ page: pageCurrent, search_text, order_by, order_type });
   };
 
   const showConfirmPopup = ({

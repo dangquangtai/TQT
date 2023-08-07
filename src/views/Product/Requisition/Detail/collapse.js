@@ -74,6 +74,7 @@ const TableCollapse = (props) => {
 
   useEffect(() => {
     setProducts(metaProducts);
+    setContracts(contractList);
   }, []);
 
   return (
@@ -128,7 +129,7 @@ const TableCollapse = (props) => {
         <TableCell>{row.unit_name}</TableCell>
         <TableCell>
           <Tooltip title={row?.contract_code}>
-            {isDetail ? (
+            {isDisabled ? (
               <span>{row?.contract_code}</span>
             ) : (
               <Autocomplete
@@ -136,7 +137,7 @@ const TableCollapse = (props) => {
                 getOptionLabel={(option) => option.contract_code || ''}
                 fullWidth
                 size="small"
-                // value={contracts.find((item) => item.contract_id === row.contract_id) || null}
+                value={contracts.find((item) => item.contract_id || item.id === row.contract_id) || null}
                 onChange={(event, newValue) => handleChangeContract(index, newValue)}
                 renderInput={(params) => <TextField {...params} variant="outlined" />}
               />
