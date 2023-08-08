@@ -198,12 +198,12 @@ const ProductModal = () => {
   }, [selectedDocument]);
 
   useEffect(() => {
-    if (openDialog === false) return;
+    if (!openDialog) return;
     const fetchData = async () => {
       const loadData = await getMaterialLoadData();
       setDataUnitList(loadData?.data_unit_list);
       const materialList = await getAllMaterialPart();
-      setMaterials(materialList);
+      setMaterials(materialList || []);
     };
 
     fetchData();
@@ -453,14 +453,14 @@ const ProductModal = () => {
                                         size="small"
                                         options={materials}
                                         fullWidth
-                                        getOptionLabel={(option) => option.part_code}
+                                        getOptionLabel={(option) => option.part_code || ''}
                                         value={partList[index] || null}
-                                        getOptionSelected={(option, value) => option.id === value.part_id}
+                                        // getOptionSelected={(option, value) => option.id === value.part_id}
                                         onChange={(event, newValue) => handleChangePart(index, newValue)}
                                         renderInput={(params) => <TextField {...params} variant="outlined" />}
                                       />
                                     </TableCell>
-                                    <TableCell align="left" style={{ width: '40%', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                    <TableCell align="left" className={classes.maxWidthCell}>
                                       <Tooltip title={row?.part_name || ''}>
                                         <span>{row?.part_name || ''}</span>
                                       </Tooltip>
@@ -478,7 +478,9 @@ const ProductModal = () => {
                                         onChange={(e) => handleChangeQuantity(index, e.target.value)}
                                       />
                                     </TableCell>
-                                    <TableCell align="left">{row.unit_name}</TableCell>
+                                    <TableCell align="left" style={{ width: '5%' }}>
+                                      {row.unit_name}
+                                    </TableCell>
                                     <TableCell align="left" style={{ width: '5%' }}>
                                       <Tooltip title="Xóa">
                                         <IconButton onClick={() => handleDeletePart(index)}>
