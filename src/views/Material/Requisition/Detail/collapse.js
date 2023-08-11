@@ -97,10 +97,10 @@ const TableCollapse = (props) => {
           />
         </TableCell>
         <TableCell style={{ width: 250 }}>
-          <Tooltip title={row?.part_name}>
+          <Tooltip title={row?.part_name || ''}>
             <Autocomplete
               options={materials}
-              getOptionLabel={(option) => option.title || option.part_name}
+              getOptionLabel={(option) => option.title || option.part_name || ''}
               fullWidth
               size="small"
               disabled={isDisabled}
