@@ -75,7 +75,7 @@ const TableCollapse = (props) => {
     setMaterials(metaMaterials);
     setContracts(contractList);
   }, []);
-
+  console.log(materials, contracts, row);
   return (
     <React.Fragment>
       <TableRow className={classesRow.root}>
@@ -136,7 +136,7 @@ const TableCollapse = (props) => {
                 getOptionLabel={(option) => option.contract_code || ''}
                 fullWidth
                 size="small"
-                value={contracts.find((item) => item.contract_id || item.id === row.contract_id) || null}
+                value={contracts.find((item) => item.contract_id === row.contract_id || item.id === row.contract_id) || null}
                 onChange={(event, newValue) => handleChangeContract(index, newValue)}
                 renderInput={(params) => <TextField {...params} variant="outlined" />}
               />

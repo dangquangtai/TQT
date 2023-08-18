@@ -453,7 +453,7 @@ const DailyMaterialReceivedModal = () => {
                                   <TableCell align="left">Nhà cung cấp</TableCell>
                                   <TableCell align="left">SL xuất</TableCell>
                                   <TableCell align="left">SL sử dụng</TableCell>
-                                  <TableCell align="left">SL nhập</TableCell>
+                                  <TableCell align="left">SL nhập lại</TableCell>
                                   <TableCell align="left">SL hỏng</TableCell>
                                   <TableCell align="left">Chênh lệch</TableCell>
                                   <TableCell align="left">Hỏng</TableCell>

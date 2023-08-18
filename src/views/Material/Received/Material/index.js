@@ -171,7 +171,7 @@ const MaterialModal = () => {
                                       <TableCell align="left">SL còn lại</TableCell>
                                       <TableCell align="left">Đơn vị</TableCell>
                                       {isWorkOrder && <TableCell align="left">Ngày sản xuất</TableCell>}
-                                      <TableCell align="left">Ngày mua hàng</TableCell>
+                                      <TableCell align="left">Ngày giao hàng</TableCell>
                                     </TableRow>
                                   </TableHead>
                                   <TableBody>
@@ -212,9 +212,7 @@ const MaterialModal = () => {
                                           </TableCell>
                                         )}
                                         <TableCell align="left">
-                                          {material.requisition_order_date
-                                            ? formatDate(new Date(material.requisition_order_date), 'dd/MM/yyyy')
-                                            : ''}
+                                          {material.delivery_date ? formatDate(new Date(material.delivery_date), 'dd/MM/yyyy') : ''}
                                         </TableCell>
                                       </TableRow>
                                     ))}

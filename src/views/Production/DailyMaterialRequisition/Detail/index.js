@@ -292,7 +292,7 @@ const DailyMaterialRequisitionModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên phiếu nhập:</span>
+                              <span className={classes.tabItemLabelField}>Tên phiếu xuất:</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -304,7 +304,7 @@ const DailyMaterialRequisitionModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày nhập kho:</span>
+                              <span className={classes.tabItemLabelField}>Ngày xuất kho:</span>
                               <DatePicker
                                 disabled={true}
                                 date={dailyMaterialRequisitionData.order_date}
