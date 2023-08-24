@@ -294,10 +294,11 @@ const Row = (props) => {
       );
     }
     if (reportType === 'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP') {
-      const { difference_quantity_in_piece, part_code, part_name, unit_name } = row;
+      const { difference_quantity_in_piece, part_code, part_name, unit_name, supplier_name } = row;
       return (
         <>
           <TableCell align="left">{index + 1}</TableCell>
+          <TableCell align="left">{supplier_name ? supplier_name : ''}</TableCell>
           <TableCell align="left">{part_code ? part_code : ''}</TableCell>
           <TableCell align="left">{part_name ? part_name : ''}</TableCell>
           <TableCell align="left">{unit_name ? unit_name : ''}</TableCell>
