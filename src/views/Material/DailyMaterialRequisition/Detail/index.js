@@ -242,13 +242,13 @@ const DeliveryMaterialModal = () => {
       supplier_name: newItem?.supplier_name || '',
     };
     newMaterialList[index] = { ...newMaterialList[index], ...newMaterial };
-    if (
-      deliveryDetailList?.some((item) => item.part_id === newMaterialList[index].part_id) &&
-      deliveryDetailList?.some((item) => item.supplier_id === newItem?.supplier_id)
-    ) {
-      handleOpenSnackbar('error', 'Vật tư đã tồn tại!');
-      return;
-    }
+    // if (
+    //   deliveryDetailList?.some((item) => item.part_id === newMaterialList[index].part_id) &&
+    //   deliveryDetailList?.some((item) => item.supplier_id === newItem?.supplier_id)
+    // ) {
+    //   handleOpenSnackbar('error', 'Vật tư đã tồn tại!');
+    //   return;
+    // }
     setDeliveryDetailList(newMaterialList);
   };
   const getPartListByReceivedDetail = async (detail_list) => {
@@ -481,7 +481,7 @@ const DeliveryMaterialModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên phiếu nhập(*):</span>
+                              <span className={classes.tabItemLabelField}>Tên phiếu xuất(*):</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -493,9 +493,9 @@ const DeliveryMaterialModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày nhận hàng(*):</span>
+                              <span className={classes.tabItemLabelField}>Ngày xuất kho(*):</span>
                               <DatePicker
-                                date={deliveryMaterialData.received_date}
+                                date={deliveryMaterialData.order_date}
                                 onChange={(date) => setDeliveryMaterialData({ ...deliveryMaterialData, order_date: date })}
                               />
                             </Grid>

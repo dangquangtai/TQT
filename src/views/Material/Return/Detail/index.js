@@ -217,8 +217,8 @@ const ReturnMaterialModal = () => {
     fetchData();
   }, [returnMaterialData.supplier_id, returnMaterialData.warehouse_id]);
 
-  const isDisabled = !!returnMaterialData?.id;
-  const isDisabledSave = returnMaterialData?.status === 'STATUS_COMPLETED';
+  const isDisabled = !!selectedDocument?.id;
+  const isDisabledSave = selectedDocument?.status === 'STATUS_COMPLETED';
 
   return (
     <React.Fragment>
@@ -331,8 +331,8 @@ const ReturnMaterialModal = () => {
                             <Grid item lg={3} md={3} xs={3}>
                               <span className={classes.tabItemLabelField}>Ngày xuất kho(*):</span>
                               <DatePicker
-                                disabled={isDisabled}
-                                date={returnMaterialData.return_date}
+                                disabled={isDisabledSave}
+                                date={returnMaterialData.order_date}
                                 onChange={(date) => setReturnMaterialData({ ...returnMaterialData, order_date: date })}
                               />
                             </Grid>
