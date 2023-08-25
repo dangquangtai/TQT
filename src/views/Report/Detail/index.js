@@ -293,7 +293,7 @@ const MaterialReportModel = () => {
           setListColDetail(['Mã vật tư sử dụng', 'Tên vật tư', 'Nhà cung cấp', 'Ngày sử dụng', 'Đơn vị', 'SL SD']);
           break;
         case 'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP':
-          setlistCol(['STT', 'Mã vật tư', 'Tên vật tư', 'Đơn vị', 'SL thừa thiếu', '', '']);
+          setlistCol(['STT', 'NCC', 'Mã vật tư', 'Tên vật tư', 'Đơn vị', 'SL thừa thiếu', '', '']);
           setListColDetail(['Ngày sản xuất', 'Diễn giải', 'Đơn vị', 'Số lượng thừa thiếu']);
           break;
         case 'BAO_CAO_THEO_DOI_HOP_DONG':
