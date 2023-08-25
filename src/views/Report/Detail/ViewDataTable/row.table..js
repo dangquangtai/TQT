@@ -408,7 +408,7 @@ const Row = (props) => {
                             <TableCell>{detailitm.category_name}</TableCell>
                             <TableCell>{detailitm.supplier_name}</TableCell>
                             <TableCell>{detailitm.part_code}</TableCell>
-                            <TableCell>{detailitm.part_name || 0}</TableCell>
+                            <TableCell>{detailitm.part_name || ''}</TableCell>
                             <TableCell>{detailitm.unit_name}</TableCell>
                             <TableCell>{detailitm.explain}</TableCell>
                             <TableCell>{detailitm.beginning_quantity_in_piece}</TableCell>
