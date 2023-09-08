@@ -45,9 +45,9 @@ export const updateMaterialCategory = (data) => {
     });
 };
 
-export const getAllMaterialCategory = (page = 1, no_item_per_page = 10, search_text = '') => {
+export const getAllMaterialCategory = (page = 1, no_item_per_page = 10, search_text = '', order_by = '', order_type = '') => {
   return axiosServices
-    .post(apiEndpoints.get_material_category_list, { page, no_item_per_page, search_text })
+    .post(apiEndpoints.get_material_category_list, { page, no_item_per_page, search_text, order_by, order_type })
     .then((response) => {
       if (response.status === 200 && response.data.return === 200) {
         return response.data;
