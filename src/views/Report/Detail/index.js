@@ -35,12 +35,14 @@ import {
   getAllWorkOrder,
   getListCustomerOrderCode,
   getListPart,
+  getListSupplierFromMaterialCategory,
 } from '../../../services/api/Report/MaterialReport';
 import moment from 'moment/moment.js';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { getAllSupplier } from '../../../services/api/Partner/Supplier';
 import ViewReportDataModal from './ViewDataTable';
 import { useMemo } from 'react';
+import { getAllMaterialCategory } from '../../../services/api/Setting/MaterialCategory';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -77,10 +79,12 @@ const MaterialReportModel = () => {
   const [listCol, setlistCol] = useState([]);
   const [rowData, setRowData] = useState(['11/02/2023', 'test']);
   const [listSupplier, setlistSupplier] = useState([]);
+  const [listMaterialCategory, setlistMaterialCategory] = useState([]);
   const [listCustomerOderCode, setListCustomerOderCode] = useState([]);
   const [listSelectedCustomerOrderCodes, setListSelectedCustomerOrderCodes] = useState([]);
   const [listPart, setListPart] = useState([]);
   const [selectedSuppliers, setSelectedSuppliers] = useState([]);
+  const [selectedMaterialCategory, setselectedMaterialCategory] = useState([]);
   const [dataTableModal, setDataTableModal] = useState(false);
   const [selectedParts, setSelectedParts] = useState([]);
   const [reportID, setReportID] = useState('');
@@ -332,7 +336,13 @@ const MaterialReportModel = () => {
     }
     setSelected(row);
   };
-
+  const handleChangeMaterialCategory = (event, value) => {
+    if (value.some((item) => item.id === null)) {
+      setselectedMaterialCategory(listMaterialCategory.map((item) => item.id));
+    } else {
+      setselectedMaterialCategory(value.map((item) => item.id));
+    }
+  };
   const handleChangeSupplier = (event, value) => {
     if (value.some((item) => item.id === null)) {
       setSelectedSuppliers(listSupplier.map((item) => item.id));
@@ -354,10 +364,32 @@ const MaterialReportModel = () => {
       setAutocompleteVersion((prev) => prev + 1);
     }
   }, [selectedSuppliers]);
+  const fetchCategoryData = useCallback(() => {
+    if (selectedMaterialCategory.length !== 0) {
+      getListSupplierFromMaterialCategory({ category_list: selectedMaterialCategory })
+        .then((listSupplier) => {
+          setlistSupplier([{ id: null, value: 'Chọn tất cả' }, ...listSupplier]);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      setlistSupplier([]);
+      setAutocompleteVersion((prev) => prev + 1);
+    }
+  }, [selectedMaterialCategory]);
+  useEffect(() => {
+    fetchData();
+    fetchCategoryData();
+  }, [fetchData, fetchCategoryData]);
+  useEffect(() => {
+    fetchCategoryData();
+  }, [fetchCategoryData]);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    fetchCategoryData();
+  }, [fetchData, fetchCategoryData]);
 
   const setDocumentToDefault = async () => {
     setQueryData({
@@ -377,6 +409,7 @@ const MaterialReportModel = () => {
       let newListCustomerCode = [];
       let newListProductCode = [];
       let newListCustomerOrderCode = [];
+      let newListMaterialCategory = [];
 
       if (
         selectedReport === 'KH_GIAO_HANG_CHO_NHA_CUNG_CAP' ||
@@ -385,8 +418,9 @@ const MaterialReportModel = () => {
         selectedReport === 'BAO_CAO_THUA_THIEU_VAT_TU_NHA_CUNG_CAP' ||
         selectedReport === 'BAO_CAO_THEO_DOI_HOP_DONG'
       ) {
-        const getListSupplier = await getAllSupplier();
-        newListSupplier = [{ id: null, title: 'Chọn tất cả' }, ...getListSupplier];
+        const getDataListMaterialCategory = await getAllMaterialCategory();
+        const getListMaterialCategory = getDataListMaterialCategory.list;
+        newListMaterialCategory = [{ id: null, category_name: 'Chọn tất cả' }, ...getListMaterialCategory];
       }
 
       if (selectedReport === 'KH_GIAO_HANG_CHO_KHACH') {
@@ -402,7 +436,8 @@ const MaterialReportModel = () => {
         newListProductCode = [{ id: null, value: 'Chọn tất cả' }, ...getProduct];
       }
       setListCustomerOderCode((prevListSupplier) => [...newListCustomerOrderCode]);
-      setlistSupplier((prevListSupplier) => [...newListSupplier]);
+      setlistMaterialCategory((prevListMaterialCategory) => [...newListMaterialCategory]);
+      // setlistSupplier((prevListSupplier) => [...newListSupplier]);
       setListCustomerCode((prevListCustomerCode) => [...newListCustomerCode]);
       setListProductID((prevListCustomerCode) => [...newListProductCode]);
     };
@@ -554,11 +589,23 @@ const MaterialReportModel = () => {
         ].includes(selectedReport) && (
           <>
             <Grid item xs={12}>
+              <span className={classes.tabItemLabelField}>Danh mục vật tư:</span>
+              <Autocomplete
+                options={listMaterialCategory}
+                multiple={true}
+                getOptionLabel={(option) => option.category_name}
+                fullWidth
+                onChange={(e, value) => handleChangeMaterialCategory(e, value)}
+                size="small"
+                renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
+              />
+            </Grid>
+            <Grid item xs={12}>
               <span className={classes.tabItemLabelField}>Nhà cung cấp:</span>
               <Autocomplete
                 options={listSupplier}
                 multiple={true}
-                getOptionLabel={(option) => option.title}
+                getOptionLabel={(option) => option.value}
                 fullWidth
                 onChange={(e, value) => handleChangeSupplier(e, value)}
                 size="small"
