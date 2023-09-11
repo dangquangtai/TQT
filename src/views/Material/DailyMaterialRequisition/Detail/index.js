@@ -46,6 +46,8 @@ import {
 } from '../../../../services/api/Material/DailyRequisitionMaterial';
 import { createFileAttachment, deleteFileAttachment, getListFile } from '../../../../services/api/Attachment/FileAttachment';
 import ActivityLog from '../../../../component/ActivityLog/index.js';
+import { exportMaterialRequisition } from '../../../../services/api/Production/MaterialRequisition';
+import { downloadFile } from '../../../../utils/helper';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -142,7 +144,20 @@ const DeliveryMaterialModal = () => {
   const closeFirebaseDialog = () => {
     setIsOpenUpload(false);
   };
-
+  const handleExportFile = async () => {
+    const get_url = await exportMaterialRequisition(deliveryMaterialData.id || '');
+    handleDownload(get_url);
+    // const res = await deleteFileAttachment(id);
+    // if (res)
+  };
+  const handleDownload = (url) => {
+    if (!url) {
+      handleOpenSnackbar('error', 'Không tìm thấy file!');
+      return;
+    }
+    downloadFile(url);
+    handleOpenSnackbar('success', 'Tải file thành công!');
+  };
   const handleSubmitForm = async () => {
     try {
       if (selectedDocument?.id) {
@@ -728,6 +743,11 @@ const DeliveryMaterialModal = () => {
                 </Button>
               </Grid>
               <Grid item className={classes.gridItemInfoButtonWrap}>
+                {selectedDocument?.id && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleExportFile}>
+                    In phiếu
+                  </Button>
+                )}
                 {saveButton && selectedDocument?.id && (
                   <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSubmitForm}>
                     {saveButton.text}

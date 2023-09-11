@@ -37,3 +37,14 @@ export const exportDailyMaterialRequisition = (id) => {
     })
     .catch((error) => {});
 };
+export const exportMaterialRequisition = (id) => {
+  return axiosServices
+    .post(apiEndpoints.get_link_download_requisition_note, { id: id })
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return response.data.url;
+      }
+      return '';
+    })
+    .catch((error) => {});
+};
