@@ -53,8 +53,7 @@ export const getReturnMaterialData = () => {
 export const getMaterialBrokenList = (warehouse_id, supplier_id) => {
   return axiosServices.post(apiEndpoints.get_material_broken_list, { warehouse_id, supplier_id }).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
-      const { list } = response.data;
-      return list;
+      return response.data;
     }
     return [];
   });

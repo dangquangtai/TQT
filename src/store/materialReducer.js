@@ -4,6 +4,7 @@ export const initialState = {
   material: null,
   materialBuy: [],
   materialReceived: [],
+  materialReturn: [],
 };
 
 const materialReducer = (state = initialState, action) => {
@@ -31,6 +32,11 @@ const materialReducer = (state = initialState, action) => {
       return {
         ...state,
         materialReceived: action.payload,
+      };
+    case actionTypes.MATERIAL_RETURN:
+      return {
+        ...state,
+        materialReturn: action.payload,
       };
     case actionTypes.CLOSE_MODAL_MATERIAL:
       return {

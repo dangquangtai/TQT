@@ -33,3 +33,4 @@ export const CLOSE_MODAL_MATERIAL = '@order/CLOSE_MODAL_MATERIAL';
 export const MATERIAL_RECEIVED = '@order/MATERIAL_RECEIVED';
 export const PRODUCT_RECEIVED = '@order/PRODUCT_RECEIVED';
 export const CLOSE_MODAL_PRODUCT = '@order/CLOSE_MODAL_PRODUCT';
+export const MATERIAL_RETURN = '@material/MATERIAL_RETURN';
