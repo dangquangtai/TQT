@@ -41,7 +41,7 @@ import {
 } from './../../../../services/api/Material/Return';
 import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
 import BrokenModal from './../../../Dialog/Broken/index';
-import { downloadFile } from './../../../../utils/helper';
+import { downloadFile, popupWindow } from './../../../../utils/helper';
 import ActivityLog from '../../../../component/ActivityLog/index.js';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -89,6 +89,8 @@ const ReturnMaterialModal = () => {
     index: null,
     list: [],
   });
+  const newWindow = React.useRef(null);
+  const { materialReturn } = useSelector((state) => state.material);
 
   const [tabIndex, setTabIndex] = React.useState(0);
 
@@ -99,6 +101,7 @@ const ReturnMaterialModal = () => {
   const handleCloseDialog = () => {
     setDocumentToDefault();
     dispatch({ type: FLOATING_MENU_CHANGE, returnMaterialDocument: false });
+    if (newWindow.current) newWindow.current.close();
   };
 
   const handleOpenSnackbar = (type, text) => {
@@ -185,6 +188,21 @@ const ReturnMaterialModal = () => {
     setReturnDetailList(newReturnDetailList);
   };
 
+  const handleOpenDialog = () => {
+    if (!returnMaterialData.supplier_id) {
+      handleOpenSnackbar('error', 'Vui lòng chọn nhà cung cấp!');
+      return;
+    }
+    if (!returnMaterialData.warehouse_id) {
+      handleOpenSnackbar('error', 'Vui lòng chọn kho!');
+      return;
+    }
+    newWindow.current = popupWindow(
+      `/return/material?supplier=${returnMaterialData.supplier_id}&warehouse=${returnMaterialData.warehouse_id}`,
+      'Vật tư'
+    );
+  };
+
   useEffect(() => {
     if (!selectedDocument) return;
     setReturnMaterialData({
@@ -206,16 +224,26 @@ const ReturnMaterialModal = () => {
     fetchData();
   }, []);
 
+  // useEffect(() => {
+  //   if (selectedDocument?.id) return;
+  //   if (!returnMaterialData.supplier_id) return;
+  //   if (!returnMaterialData.warehouse_id) return;
+  //   const fetchData = async () => {
+  //     const res = await getMaterialBrokenList(returnMaterialData.warehouse_id, returnMaterialData.supplier_id);
+  //     setReturnDetailList(res);
+  //   };
+  //   fetchData();
+  // }, [returnMaterialData.supplier_id, returnMaterialData.warehouse_id]);
+
   useEffect(() => {
-    if (selectedDocument?.id) return;
-    if (!returnMaterialData.supplier_id) return;
-    if (!returnMaterialData.warehouse_id) return;
-    const fetchData = async () => {
-      const res = await getMaterialBrokenList(returnMaterialData.warehouse_id, returnMaterialData.supplier_id);
-      setReturnDetailList(res);
-    };
-    fetchData();
-  }, [returnMaterialData.supplier_id, returnMaterialData.warehouse_id]);
+    if (materialReturn === selectedDocument?.detail_list) return;
+    const newMaterial = materialReturn.map((item) => {
+      return {
+        ...item,
+      };
+    });
+    setReturnDetailList(newMaterial);
+  }, [materialReturn]);
 
   const isDisabled = !!selectedDocument?.id;
   const isDisabledSave = selectedDocument?.status === 'STATUS_COMPLETED';
@@ -537,6 +565,11 @@ const ReturnMaterialModal = () => {
                     onClick={handleSubmitForm}
                   >
                     {saveButton.text}
+                  </Button>
+                )}
+                {!selectedDocument?.id && (
+                  <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleOpenDialog}>
+                    Danh sách vật tư
                   </Button>
                 )}
                 {!selectedDocument?.id && (

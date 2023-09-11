@@ -25,6 +25,7 @@ import {
   SET_MATERIAL,
   MATERIAL_RECEIVED,
   PRODUCT_RECEIVED,
+  MATERIAL_RETURN,
 } from './store/actions.js';
 
 const syncConfig = {
@@ -39,6 +40,7 @@ const syncConfig = {
     CLOSE_MODAL_MATERIAL,
     MATERIAL_RECEIVED,
     PRODUCT_RECEIVED,
+    MATERIAL_RETURN,
   ],
 };
 const middlewares = [createStateSyncMiddleware(syncConfig)];
