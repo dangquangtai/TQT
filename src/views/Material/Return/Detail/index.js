@@ -215,10 +215,9 @@ const ReturnMaterialModal = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { status, warehouses } = await getReturnMaterialData();
-      setStatusList(status);
-      setWarehouseList(warehouses);
-      const suppliers = await getAllSupplier();
+      const [data, suppliers] = await Promise.all([getReturnMaterialData(), getAllSupplier()]);
+      setStatusList(data?.status);
+      setWarehouseList(data?.warehouses);
       setSupplierList(suppliers);
     };
     fetchData();

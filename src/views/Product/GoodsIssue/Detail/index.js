@@ -201,10 +201,9 @@ const GoodsIssueModal = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { status, warehouses } = await getGoodsIssueData();
-      setStatusList(status);
-      setWarehouseList(warehouses);
-      const orders = await getOrderByStatus('STATUS_INPROGRESS');
+      const [data, orders] = await Promise.all([getGoodsIssueData(), getOrderByStatus('STATUS_INPROGRESS')]);
+      setStatusList(data?.status);
+      setWarehouseList(data?.warehouses);
       setOrderList(orders);
     };
     fetchData();

@@ -288,10 +288,9 @@ const ReceivedMaterialModal = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { status, warehouses } = await getReceivedMaterialStatus();
-      setStatusList(status);
-      setWarehouseList(warehouses);
-      const suppliers = await getAllSupplier();
+      const [data, suppliers] = await Promise.all([getReceivedMaterialStatus(), getAllSupplier()]);
+      setStatusList(data?.status);
+      setWarehouseList(data?.warehouses);
       setSupplierList(suppliers);
     };
     fetchData();

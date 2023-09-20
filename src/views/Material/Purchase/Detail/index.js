@@ -285,11 +285,10 @@ const PurchaseMaterialModal = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const supplier = await getSupplierListByWorkOrder();
-      setSupplier(supplier);
-      const { warehouse_list, status_list } = await getPurchaseMaterialStatus();
-      setStatusList(status_list);
-      setWarehouseList(warehouse_list);
+      const [data, suppliers] = await Promise.all([getPurchaseMaterialStatus(), getSupplierListByWorkOrder()]);
+      setSupplier(suppliers);
+      setStatusList(data?.status_list);
+      setWarehouseList(data?.warehouse_list);
     };
     fetchData();
   }, []);

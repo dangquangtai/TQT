@@ -272,10 +272,9 @@ const ReceivedProductModal = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { status_list, warehouse_list } = await ProductReceivedService.getData();
-      setStatusList(status_list);
-      setWarehouseList(warehouse_list);
-      const suppliers = await getAllSupplier();
+      const [data, suppliers] = await Promise.all([ProductReceivedService.getData(), getAllSupplier()]);
+      setStatusList(data?.status_list);
+      setWarehouseList(data?.warehouse_list);
       setSupplierList(suppliers);
     };
     fetchData();
