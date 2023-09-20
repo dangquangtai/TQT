@@ -35,7 +35,9 @@ import {
   getAllWorkOrder,
   getListCustomerOrderCode,
   getListPart,
+  getListPartForMaterialReport,
   getListSupplierFromMaterialCategory,
+  getListSupplierFromMaterialCategoryForMaterialReport,
 } from '../../../services/api/Report/MaterialReport';
 import moment from 'moment/moment.js';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
@@ -352,13 +354,23 @@ const MaterialReportModel = () => {
   };
   const fetchData = useCallback(() => {
     if (selectedSuppliers.length !== 0) {
-      getListPart({ list_supplier_id: selectedSuppliers })
-        .then((PartCodes) => {
-          setListPart([{ id: null, value: 'Chọn tất cả' }, ...PartCodes]);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (selectedReport === 'BAO_CAO_THEO_DOI_HOP_DONG') {
+        getListPartForMaterialReport({ list_supplier_id: selectedSuppliers })
+          .then((PartCodes) => {
+            setListPart([{ id: null, value: 'Chọn tất cả' }, ...PartCodes]);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        getListPart({ list_supplier_id: selectedSuppliers })
+          .then((PartCodes) => {
+            setListPart([{ id: null, value: 'Chọn tất cả' }, ...PartCodes]);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     } else {
       setListPart([]);
       setAutocompleteVersion((prev) => prev + 1);
@@ -366,13 +378,23 @@ const MaterialReportModel = () => {
   }, [selectedSuppliers]);
   const fetchCategoryData = useCallback(() => {
     if (selectedMaterialCategory.length !== 0) {
-      getListSupplierFromMaterialCategory({ category_list: selectedMaterialCategory })
-        .then((listSupplier) => {
-          setlistSupplier([{ id: null, value: 'Chọn tất cả' }, ...listSupplier]);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (selectedReport === 'BAO_CAO_THEO_DOI_HOP_DONG') {
+        getListSupplierFromMaterialCategoryForMaterialReport({ category_list: selectedMaterialCategory })
+          .then((listSupplier) => {
+            setlistSupplier([{ id: null, value: 'Chọn tất cả' }, ...listSupplier]);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        getListSupplierFromMaterialCategory({ category_list: selectedMaterialCategory })
+          .then((listSupplier) => {
+            setlistSupplier([{ id: null, value: 'Chọn tất cả' }, ...listSupplier]);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     } else {
       setlistSupplier([]);
       setAutocompleteVersion((prev) => prev + 1);
@@ -380,16 +402,10 @@ const MaterialReportModel = () => {
   }, [selectedMaterialCategory]);
   useEffect(() => {
     fetchData();
-    fetchCategoryData();
-  }, [fetchData, fetchCategoryData]);
+  }, [fetchData]);
   useEffect(() => {
     fetchCategoryData();
   }, [fetchCategoryData]);
-
-  useEffect(() => {
-    fetchData();
-    fetchCategoryData();
-  }, [fetchData, fetchCategoryData]);
 
   const setDocumentToDefault = async () => {
     setQueryData({
