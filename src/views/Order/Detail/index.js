@@ -1,5 +1,4 @@
 import {
-  Snackbar,
   Box,
   Button,
   Dialog,
@@ -34,15 +33,16 @@ import FirebaseUpload from './../../FloatingMenu/FirebaseUpload/index';
 import useConfirmPopup from './../../../hooks/useConfirmPopup';
 import { AttachFileOutlined, Delete, DescriptionOutlined, History } from '@material-ui/icons';
 import { getCustomerList } from './../../../services/api/Partner/Customer';
-import { getStatusList, updateOrder } from '../../../services/api/Order/index.js';
+import { getStatusList, updateOrder, createOrder, deleteOrderDetail } from '../../../services/api/Order/index.js';
 import { Autocomplete } from '@material-ui/lab';
 import DatePicker from '../../../component/DatePicker/index.js';
 import { AddCircleOutline } from '@material-ui/icons';
 import { getAllProduct } from '../../../services/api/Product/Product.js';
-import { createOrder, deleteOrderDetail } from './../../../services/api/Order/index';
 import { SNACKBAR_OPEN } from './../../../store/actions';
 import { createFileAttachment, deleteFileAttachment, getListFile } from '../../../services/api/Attachment/FileAttachment';
 import ActivityLog from '../../../component/ActivityLog/index.js';
+import NumberFormatCustom from './../../../component/NumberFormatCustom/index';
+import { FormattedNumber } from 'react-intl';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -86,13 +86,10 @@ const OrderModal = () => {
   const [isOpenUpload, setIsOpenUpload] = useState(false);
   const [listFileData, setListFileData] = useState([]);
   const [fileData, setFileData] = useState([]);
-  const [dialogUpload, setDialogUpload] = useState({
-    open: false,
-    type: '',
-  });
-
   const [products, setProducts] = useState([]);
   const [productList, setProductList] = useState([]);
+  const [containers, setContainers] = useState([]);
+
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
@@ -136,8 +133,6 @@ const OrderModal = () => {
         fetchFileListData();
       },
     });
-    // const res = await deleteFileAttachment(id);
-    // if (res)
   };
   const fetchFileListData = async () => {
     const fileList = await getListFile(selectedDocument?.id);
@@ -148,12 +143,6 @@ const OrderModal = () => {
   };
   const closeFirebaseDialog = () => {
     setIsOpenUpload(false);
-  };
-  const handleCloseDiaLog = () => {
-    setDialogUpload({
-      open: false,
-      type: '',
-    });
   };
 
   const handleSubmitForm = async () => {
@@ -200,6 +189,8 @@ const OrderModal = () => {
         unit_name: '',
         quantity_in_box: 0,
         quantity_produced: 0,
+        unit_volume: 0,
+        unit_price: 0,
       },
       ...productList,
     ]);
@@ -214,6 +205,8 @@ const OrderModal = () => {
       product_customer_code: product?.product_customer_code || '',
       unit_id: product?.unit_id || '',
       unit_name: product?.unit_name || '',
+      unit_volume: product?.unit_volume || '',
+      unit_price: 0,
     };
     newProductList[index] = { ...newProductList[index], ...newProduct };
     setProductList(newProductList);
@@ -259,10 +252,10 @@ const OrderModal = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const resCustomer = await getCustomerList();
-      setCustomer(resCustomer);
-      const res = await getStatusList();
-      setStatusList(res);
+      const [customers, data] = await Promise.all([getCustomerList(), getStatusList()]);
+      setCustomer(customers);
+      setStatusList(data?.status);
+      setContainers(data?.containers);
     };
     fetchData();
     getProductList();
@@ -274,7 +267,6 @@ const OrderModal = () => {
 
   return (
     <React.Fragment>
-      {/* <FirebaseUpload open={dialogUpload.open || false} onSuccess={setURL} onClose={handleCloseDiaLog} type="image" folder="Order" /> */}
       <Grid container>
         <Dialog
           open={openDialog || false}
@@ -433,6 +425,24 @@ const OrderModal = () => {
                                 ))}
                               </TextField>
                             </Grid>
+                            <Grid item lg={3} md={3} xs={3}>
+                              <span className={classes.tabItemLabelField}>Container:</span>
+                              <TextField
+                                fullWidth
+                                name="container"
+                                variant="outlined"
+                                select
+                                size="small"
+                                value={orderData.container || ''}
+                                onChange={handleChanges}
+                              >
+                                {containers?.map((option) => (
+                                  <MenuItem key={option} value={option}>
+                                    {option}
+                                  </MenuItem>
+                                ))}
+                              </TextField>
+                            </Grid>
                           </Grid>
                         </div>
                       </div>
@@ -462,7 +472,8 @@ const OrderModal = () => {
                                   {selectedDocument?.id && <TableCell align="left">Đã SX</TableCell>}
                                   {selectedDocument?.id && <TableCell align="left">SL Kho</TableCell>}
                                   <TableCell align="left">Đơn vị</TableCell>
-                                  {/* {selectedDocument?.id && <TableCell align="left">Trạng thái</TableCell>} */}
+                                  <TableCell align="left">Số khối</TableCell>
+                                  <TableCell align="left">Đơn giá(VNĐ)</TableCell>
                                   <TableCell align="center">Xoá</TableCell>
                                 </TableRow>
                               </TableHead>
@@ -482,7 +493,7 @@ const OrderModal = () => {
                                       />
                                     </TableCell>
                                     <TableCell align="left">{row?.product_customer_code}</TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell}>
+                                    <TableCell align="left" className={classes.maxWidthCell} style={{ maxWidth: 350 }}>
                                       <Tooltip title={row?.product_name}>
                                         <span>{row?.product_name}</span>
                                       </Tooltip>
@@ -513,7 +524,24 @@ const OrderModal = () => {
                                       </TableCell>
                                     )}
                                     <TableCell align="left">{row.unit_name}</TableCell>
-                                    {/* {selectedDocument?.id && <TableCell align="left">{row.status_display}</TableCell>} */}
+                                    <TableCell align="left" style={{ width: '120px' }}>
+                                      <FormattedNumber value={row.unit_volume * row.quantity_in_box} />
+                                    </TableCell>
+                                    <TableCell align="left" style={{ width: '150px' }}>
+                                      <TextField
+                                        InputProps={{
+                                          inputProps: { min: 0 },
+                                          inputComponent: NumberFormatCustom,
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
+                                        name="unit_price"
+                                        size="small"
+                                        disabled={selectedDocument?.status === 'STATUS_OPEN' ? false : !selectedDocument ? false : true}
+                                        value={row?.unit_price || ''}
+                                        onChange={(e) => handleChangeProduct(index, e)}
+                                      />
+                                    </TableCell>
                                     <TableCell align="center">
                                       <IconButton
                                         onClick={() => handleDeleteProduct(index, row.id)}

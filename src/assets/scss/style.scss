@@ -139,3 +139,11 @@
     white-space: unset;
   }
 }
+
+.required-star {
+  color: $error;
+  font-weight: 700;
+  font-size: 13px;
+  vertical-align: top;
+  margin-left: 2px;
+}
