@@ -50,7 +50,8 @@ export const getStatusList = () => {
     .post(apiEndpoints.get_status_list, {})
     .then((response) => {
       if (response.status === 200 && response.data.return === 200) {
-        return response.data.list;
+        const { status, containers } = response.data;
+        return { status, containers };
       }
       return [];
     })

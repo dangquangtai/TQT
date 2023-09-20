@@ -38,6 +38,7 @@ import { updateProduct } from '../../../../services/api/Product/Product.js';
 import { SNACKBAR_OPEN } from './../../../../store/actions';
 import { getMaterialLoadData } from '../../../../services/api/Material/MaterialPart';
 import { getAllMaterialPart } from './../../../../services/api/Material/MaterialPart';
+import NumberFormatCustom from './../../../../component/NumberFormatCustom/index';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
@@ -176,7 +177,7 @@ const ProductModal = () => {
         ...productData,
         part_list: partList,
       });
-      if (update.code === 200) {
+      if (update.return === 200) {
         handleOpenSnackbar('success', update.message);
       } else {
         handleOpenSnackbar('error', update.message);
@@ -200,9 +201,8 @@ const ProductModal = () => {
   useEffect(() => {
     if (!openDialog) return;
     const fetchData = async () => {
-      const loadData = await getMaterialLoadData();
+      const [loadData, materialList] = await Promise.all([getMaterialLoadData(), getAllMaterialPart()]);
       setDataUnitList(loadData?.data_unit_list);
-      const materialList = await getAllMaterialPart();
       setMaterials(materialList || []);
     };
 
@@ -262,7 +262,7 @@ const ProductModal = () => {
               <Grid item xs={12}>
                 <TabPanel value={tabIndex} index={0}>
                   <Grid container spacing={1}>
-                    <Grid item lg={12} md={12} xs={12}>
+                    <Grid item lg={6} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>
@@ -278,6 +278,7 @@ const ProductModal = () => {
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
+                                multiline
                                 variant="outlined"
                                 name="product_code"
                                 size="small"
@@ -322,8 +323,23 @@ const ProductModal = () => {
                               />
                             </Grid>
                           </Grid>
+                          <Grid container className={classes.gridItemInfo} alignItems="center">
+                            <Grid item lg={4} md={4} xs={4}>
+                              <span className={classes.tabItemLabelField}>Hoạt động:</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={8}>
+                              <Switch
+                                checked={productData.is_active || true}
+                                onChange={(e) => setProductData({ ...productData, is_active: e.target.checked })}
+                                color="primary"
+                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                              />
+                            </Grid>
+                          </Grid>
                         </div>
                       </div>
+                    </Grid>
+                    <Grid item lg={6} md={12} xs={12}>
                       <div className={classes.tabItem}>
                         <div className={classes.tabItemTitle}>
                           <div className={classes.tabItemLabel}>
@@ -332,22 +348,6 @@ const ProductModal = () => {
                           </div>
                         </div>
                         <div className={classes.tabItemBody}>
-                          <Grid container className={classes.gridItem} alignItems="center">
-                            <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Số lượng thành phẩm/thùng(*):</span>
-                            </Grid>
-                            <Grid item lg={8} md={8} xs={8}>
-                              <TextField
-                                fullWidth
-                                variant="outlined"
-                                name="no_piece_per_box"
-                                value={productData.no_piece_per_box || ''}
-                                size="small"
-                                type="number"
-                                onChange={handleChanges}
-                              />
-                            </Grid>
-                          </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
                               <span className={classes.tabItemLabelField}>Đơn vị(*):</span>
@@ -372,6 +372,22 @@ const ProductModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
+                              <span className={classes.tabItemLabelField}>Số lượng thành phẩm/thùng(*):</span>
+                            </Grid>
+                            <Grid item lg={8} md={8} xs={8}>
+                              <TextField
+                                fullWidth
+                                variant="outlined"
+                                name="no_piece_per_box"
+                                value={productData.no_piece_per_box || ''}
+                                size="small"
+                                type="number"
+                                onChange={handleChanges}
+                              />
+                            </Grid>
+                          </Grid>
+                          <Grid container className={classes.gridItem} alignItems="center">
+                            <Grid item lg={4} md={4} xs={4}>
                               <span className={classes.tabItemLabelField}>Năng suất 1 công nhân trong 8h(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
@@ -388,29 +404,20 @@ const ProductModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Thể tích 1 đơn vị:</span>
+                              <span className={classes.tabItemLabelField}>Thể tích 1 đơn vị(*):</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
                                 fullWidth
                                 variant="outlined"
-                                name="volume"
-                                value={productData.volume || ''}
+                                name="unit_volume"
+                                value={productData.unit_volume || ''}
                                 size="small"
                                 onChange={handleChanges}
-                              />
-                            </Grid>
-                          </Grid>
-                          <Grid container className={classes.gridItemInfo} alignItems="center">
-                            <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Hoạt động:</span>
-                            </Grid>
-                            <Grid item lg={8} md={8} xs={8}>
-                              <Switch
-                                checked={productData.is_active || true}
-                                onChange={(e) => setProductData({ ...productData, is_active: e.target.checked })}
-                                color="primary"
-                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                InputProps={{
+                                  inputProps: { min: 0 },
+                                  inputComponent: NumberFormatCustom,
+                                }}
                               />
                             </Grid>
                           </Grid>
