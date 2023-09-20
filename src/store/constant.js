@@ -343,6 +343,10 @@ export const apiEndpoints = {
   download_material_report_file: '/Primary/?FlowAlias=bs_api_factory_download_material_report_file&action=api',
   get_list_supplier_from_list_material_category: '/Primary/?FlowAlias=bs_api_factory_get_list_supplier_from_material_category&action=api',
   get_list_material_from_list_supplier_id: '/Primary/?FlowAlias=bs_api_factory_get_list_material_from_list_supplier&action=api',
+  get_list_supplier_from_list_material_category_for_contract_report:
+    '/Primary/?FlowAlias=bs_api_factory_get_list_supplier_from_list_material_for_contract_report&action=api',
+  get_list_material_from_list_supplier_id_for_contract_report:
+    '/Primary/?FlowAlias=bs_api_factory_get_list_material_from_list_supplier_for_contract_report&action=api',
   get_material_inventory_synthesis: '/Primary/?FlowAlias=bs_api_factory_get_material_inventory_synthesis&action=api',
   get_view_data_for_report_template: '/Primary/?FlowAlias=bs_api_factory_get_view_data_for_report_template&action=api',
   get_list_product_for_report: '/Primary/?FlowAlias=bs_api_factory_get_list_product_for_report&action=api',
