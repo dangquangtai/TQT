@@ -278,7 +278,7 @@ const InventoryCheckModal = () => {
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
                         <History />
-                        Chi tiết
+                        Lịch sử thay đổi
                       </Typography>
                     }
                     value={1}

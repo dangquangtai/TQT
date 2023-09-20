@@ -243,7 +243,7 @@ const ProductInventoryCheckModal = () => {
         >
           <DialogTitle className={classes.dialogTitle}>
             <Grid item xs={12} style={{ textTransform: 'uppercase' }}>
-              Kiểm kê kho vật tư
+              Kiểm kê kho thành phẩm
             </Grid>
           </DialogTitle>
           <DialogContent className={classes.dialogContent}>
@@ -273,7 +273,7 @@ const ProductInventoryCheckModal = () => {
                     label={
                       <Typography className={classes.tabLabels} component="span" variant="subtitle1">
                         <History />
-                        Chi tiết
+                        Lịch sử thay đổi
                       </Typography>
                     }
                     value={1}
