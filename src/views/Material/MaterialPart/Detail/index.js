@@ -202,7 +202,9 @@ const MaterialPartModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã vật tư(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Mã vật tư<sup className="required-star">*</sup>
+                              </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -219,7 +221,9 @@ const MaterialPartModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tên vật tư(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Tên vật tư<sup className="required-star">*</sup>
+                              </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -237,7 +241,9 @@ const MaterialPartModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Danh mục(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Danh mục<sup className="required-star">*</sup>
+                              </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -259,7 +265,9 @@ const MaterialPartModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Màu sắc(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Màu sắc<sup className="required-star">*</sup>
+                              </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -281,7 +289,9 @@ const MaterialPartModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Đơn vị(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Đơn vị<sup className="required-star">*</sup>
+                              </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -303,7 +313,7 @@ const MaterialPartModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Đơn vị đo:</span>
+                              <span className={classes.tabItemLabelField}>Đơn vị đo</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -325,7 +335,7 @@ const MaterialPartModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Hoạt động:</span>
+                              <span className={classes.tabItemLabelField}>Hoạt động</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <Switch
@@ -349,7 +359,7 @@ const MaterialPartModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Chiều dài:</span>
+                              <span className={classes.tabItemLabelField}>Chiều dài</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -365,7 +375,7 @@ const MaterialPartModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Chiều rộng:</span>
+                              <span className={classes.tabItemLabelField}>Chiều rộng</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -381,7 +391,7 @@ const MaterialPartModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Chiều ngang:</span>
+                              <span className={classes.tabItemLabelField}>Chiều ngang</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -397,7 +407,7 @@ const MaterialPartModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Trọng lượng:</span>
+                              <span className={classes.tabItemLabelField}>Trọng lượng</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -413,7 +423,7 @@ const MaterialPartModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mẫu may:</span>
+                              <span className={classes.tabItemLabelField}>Mẫu may</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -429,7 +439,7 @@ const MaterialPartModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã quy cách:</span>
+                              <span className={classes.tabItemLabelField}>Mã quy cách</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField

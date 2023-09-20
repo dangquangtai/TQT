@@ -240,7 +240,7 @@ const AccountPermissionModal = () => {
                         </div>
                         <Grid container className={classes.gridItemInfo} alignItems="center">
                           <Grid item lg={4} md={4} xs={4}>
-                            <span className={classes.tabItemLabelField}>Mã nhân viên: </span>
+                            <span className={classes.tabItemLabelField}>Mã nhân viên</span>
                           </Grid>
                           <Grid item lg={8} md={8} xs={8}>
                             <TextField
@@ -256,7 +256,7 @@ const AccountPermissionModal = () => {
                         </Grid>
                         <Grid container className={classes.gridItemInfo} alignItems="center">
                           <Grid item lg={4} md={4} xs={4}>
-                            <span className={classes.tabItemLabelField}>Họ và tên: </span>
+                            <span className={classes.tabItemLabelField}>Họ và tên</span>
                           </Grid>
                           <Grid item lg={8} md={8} xs={8}>
                             <TextField
@@ -284,7 +284,7 @@ const AccountPermissionModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Nhóm phân quyền:</span>
+                              <span className={classes.tabItemLabelField}>Nhóm phân quyền</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={12}>
                               <Autocomplete
@@ -300,7 +300,7 @@ const AccountPermissionModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Nhóm người dùng:</span>
+                              <span className={classes.tabItemLabelField}>Nhóm người dùng</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={12}>
                               <Autocomplete

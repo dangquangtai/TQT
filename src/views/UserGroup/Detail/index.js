@@ -242,7 +242,7 @@ const UserGroupModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Mã: </span>
+                              <span className={classes.tabItemLabelField}>Mã</span>
                             </Grid>
                             <Grid item lg={9} md={9} xs={9}>
                               <TextField
@@ -257,7 +257,7 @@ const UserGroupModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên: </span>
+                              <span className={classes.tabItemLabelField}>Tên</span>
                             </Grid>
                             <Grid item lg={9} md={9} xs={9}>
                               <TextField
@@ -272,7 +272,7 @@ const UserGroupModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center" spacing={1}>
                             <Grid item lg={3} md={3} xs={12}>
-                              <span className={classes.tabItemLabelField}>Danh sách tài khoản:</span>
+                              <span className={classes.tabItemLabelField}>Danh sách tài khoản</span>
                             </Grid>
                             <Grid item lg={4} md={4} xs={12}>
                               <Autocomplete

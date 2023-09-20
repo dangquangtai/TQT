@@ -399,7 +399,9 @@ const ReceivedMaterialModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={2} className={classes.gridItemInfo}>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Mã phiếu(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Mã phiếu<sup className="required-star">*</sup>
+                              </span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -412,7 +414,9 @@ const ReceivedMaterialModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên phiếu nhập(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Tên phiếu nhập<sup className="required-star">*</sup>
+                              </span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -424,7 +428,9 @@ const ReceivedMaterialModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày nhận hàng(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Ngày nhận hàng<sup className="required-star">*</sup>
+                              </span>
                               <DatePicker
                                 date={receivedMaterialData.received_date}
                                 onChange={(date) => setReceivedMaterialData({ ...receivedMaterialData, received_date: date })}
@@ -432,7 +438,9 @@ const ReceivedMaterialModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Người nhận hàng(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Người nhận hàng<sup className="required-star">*</sup>
+                              </span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -444,7 +452,9 @@ const ReceivedMaterialModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà cung cấp(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Nhà cung cấp<sup className="required-star">*</sup>
+                              </span>
                               <Autocomplete
                                 options={supplierList}
                                 size="small"
@@ -462,7 +472,9 @@ const ReceivedMaterialModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà kho(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Nhà kho<sup className="required-star">*</sup>
+                              </span>
                               <TextField
                                 fullWidth
                                 name="warehouse_id"
@@ -481,7 +493,9 @@ const ReceivedMaterialModal = () => {
                               </TextField>
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Người giao hàng(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Người giao hàng<sup className="required-star">*</sup>
+                              </span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -493,7 +507,9 @@ const ReceivedMaterialModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Trạng thái(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Trạng thái<sup className="required-star">*</sup>
+                              </span>
                               <TextField
                                 fullWidth
                                 name="status"
@@ -511,7 +527,7 @@ const ReceivedMaterialModal = () => {
                               </TextField>
                             </Grid>
                             <Grid item lg={6} md={6} xs={6}>
-                              <span className={classes.tabItemLabelField}>Ghi chú:</span>
+                              <span className={classes.tabItemLabelField}>Ghi chú</span>
                               <TextField
                                 fullWidth
                                 multiline

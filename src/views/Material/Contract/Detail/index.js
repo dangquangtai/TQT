@@ -342,7 +342,9 @@ const ContractModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={3} className={classes.gridItemInfo}>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Mã hợp đồng(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Mã hợp đồng<sup className="required-star">*</sup>
+                              </span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -354,7 +356,9 @@ const ContractModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên hợp đồng(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Tên hợp đồng<sup className="required-star">*</sup>
+                              </span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -366,14 +370,18 @@ const ContractModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày kí(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Ngày kí<sup className="required-star">*</sup>
+                              </span>
                               <DatePicker
                                 date={contractData.contract_date}
                                 onChange={(date) => setContractData({ ...contractData, contract_date: date })}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Trạng thái(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Trạng thái<sup className="required-star">*</sup>
+                              </span>
                               <TextField
                                 fullWidth
                                 name="status"
@@ -391,7 +399,9 @@ const ContractModal = () => {
                               </TextField>
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà cung cấp(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Nhà cung cấp<sup className="required-star">*</sup>
+                              </span>
                               <Autocomplete
                                 id="combo-box-demo"
                                 options={supplier}
@@ -411,7 +421,7 @@ const ContractModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ghi chú:</span>
+                              <span className={classes.tabItemLabelField}>Ghi chú</span>
                               <TextField
                                 fullWidth
                                 multiline

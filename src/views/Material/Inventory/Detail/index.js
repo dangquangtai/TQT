@@ -250,7 +250,7 @@ const InventoryModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã vật tư:</span>
+                              <span className={classes.tabItemLabelField}>Mã vật tư</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -266,7 +266,7 @@ const InventoryModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tên vật tư:</span>
+                              <span className={classes.tabItemLabelField}>Tên vật tư</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -282,7 +282,7 @@ const InventoryModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Danh mục:</span>
+                              <span className={classes.tabItemLabelField}>Danh mục</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -298,7 +298,7 @@ const InventoryModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Nhà cung cấp:</span>
+                              <span className={classes.tabItemLabelField}>Nhà cung cấp</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -326,7 +326,7 @@ const InventoryModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Kho:</span>
+                              <span className={classes.tabItemLabelField}>Kho</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -348,7 +348,7 @@ const InventoryModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Số lượng:</span>
+                              <span className={classes.tabItemLabelField}>Số lượng</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -364,7 +364,7 @@ const InventoryModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Số lượng hỏng:</span>
+                              <span className={classes.tabItemLabelField}>Số lượng hỏng</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -380,7 +380,7 @@ const InventoryModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Ghi chú:</span>
+                              <span className={classes.tabItemLabelField}>Ghi chú</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField

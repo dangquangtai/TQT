@@ -278,7 +278,7 @@ const AccountModal = () => {
                           <div className={`${classes.tabItemBody}`}>
                             <Grid container className={classes.gridItemInfo} alignItems="center">
                               <Grid item lg={4} md={4} xs={4}>
-                                <span className={classes.tabItemLabelField}>Mật khẩu cũ(*): </span>
+                                <span className={classes.tabItemLabelField}>Mật khẩu cũ<sup className="required-star">*</sup> </span>
                               </Grid>
                               <Grid item lg={8} md={8} xs={8}>
                                 <TextField
@@ -294,7 +294,7 @@ const AccountModal = () => {
                             </Grid>
                             <Grid container className={classes.gridItemInfo} alignItems="center">
                               <Grid item lg={4} md={4} xs={4}>
-                                <span className={classes.tabItemLabelField}>Mật khẩu mới(*): </span>
+                                <span className={classes.tabItemLabelField}>Mật khẩu mới<sup className="required-star">*</sup> </span>
                               </Grid>
                               <Grid item lg={8} md={8} xs={8}>
                                 <TextField
@@ -310,7 +310,7 @@ const AccountModal = () => {
                             </Grid>
                             <Grid container className={classes.gridItemInfo} alignItems="center">
                               <Grid item lg={4} md={4} xs={4}>
-                                <span className={classes.tabItemLabelField}>Nhập lại mật khẩu mới(*): </span>
+                                <span className={classes.tabItemLabelField}>Nhập lại mật khẩu mới<sup className="required-star">*</sup> </span>
                               </Grid>
                               <Grid item lg={8} md={8} xs={8}>
                                 <TextField
@@ -340,7 +340,9 @@ const AccountModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã nhân viên(*): </span>
+                              <span className={classes.tabItemLabelField}>
+                                Mã nhân viên<sup className="required-star">*</sup>{' '}
+                              </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -355,7 +357,9 @@ const AccountModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Họ và tên(*): </span>
+                              <span className={classes.tabItemLabelField}>
+                                Họ và tên<sup className="required-star">*</sup>{' '}
+                              </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -371,7 +375,7 @@ const AccountModal = () => {
 
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Ngày sinh:</span>
+                              <span className={classes.tabItemLabelField}>Ngày sinh</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -387,7 +391,9 @@ const AccountModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Email(*): </span>
+                              <span className={classes.tabItemLabelField}>
+                                Email<sup className="required-star">*</sup>{' '}
+                              </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -404,7 +410,7 @@ const AccountModal = () => {
 
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>SĐT:</span>
+                              <span className={classes.tabItemLabelField}>SĐT</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={12}>
                               <TextField
@@ -420,7 +426,7 @@ const AccountModal = () => {
 
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Giới tính:</span>
+                              <span className={classes.tabItemLabelField}>Giới tính</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={12}>
                               <Select
@@ -439,7 +445,7 @@ const AccountModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Tỉnh:</span>
+                              <span className={classes.tabItemLabelField}>Tỉnh</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={12}>
                               <Select
@@ -458,7 +464,7 @@ const AccountModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Địa chỉ:</span>
+                              <span className={classes.tabItemLabelField}>Địa chỉ</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={12}>
                               <TextField
@@ -473,7 +479,7 @@ const AccountModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Chức danh:</span>
+                              <span className={classes.tabItemLabelField}>Chức danh</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={12}>
                               <TextField
@@ -488,7 +494,7 @@ const AccountModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={12}>
-                              <span className={classes.tabItemLabelField}>Hoạt động:</span>
+                              <span className={classes.tabItemLabelField}>Hoạt động</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={12}>
                               <FormControlLabel

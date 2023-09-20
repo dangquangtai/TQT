@@ -300,7 +300,7 @@ const InventoryCheckModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tiêu đề:</span>
+                              <span className={classes.tabItemLabelField}>Tiêu đề</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -316,7 +316,7 @@ const InventoryCheckModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã kiểm kê:</span>
+                              <span className={classes.tabItemLabelField}>Mã kiểm kê</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -333,7 +333,7 @@ const InventoryCheckModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Loại kiểm kê:</span>
+                              <span className={classes.tabItemLabelField}>Loại kiểm kê</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -355,7 +355,7 @@ const InventoryCheckModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Kho vật tư:</span>
+                              <span className={classes.tabItemLabelField}>Kho vật tư</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -377,7 +377,7 @@ const InventoryCheckModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Ngày kiểm kê:</span>
+                              <span className={classes.tabItemLabelField}>Ngày kiểm kê</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <DatePicker
@@ -421,7 +421,7 @@ const InventoryCheckModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Trạng thái:</span>
+                              <span className={classes.tabItemLabelField}>Trạng thái</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -443,7 +443,7 @@ const InventoryCheckModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Kiểm tra bởi:</span>
+                              <span className={classes.tabItemLabelField}>Kiểm tra bởi</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField fullWidth disabled variant="outlined" value={inventoryCheckData.checked_by} size="small" />
@@ -451,7 +451,7 @@ const InventoryCheckModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Xác nhận bởi:</span>
+                              <span className={classes.tabItemLabelField}>Xác nhận bởi</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField fullWidth disabled variant="outlined" value={inventoryCheckData.verified_by} size="small" />

@@ -234,7 +234,7 @@ const ProcessRoleModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>App: </span>
+                              <span className={classes.tabItemLabelField}>App</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <Select
@@ -258,7 +258,7 @@ const ProcessRoleModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Process: </span>
+                              <span className={classes.tabItemLabelField}>Process</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <Select
@@ -282,7 +282,7 @@ const ProcessRoleModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tên chức vụ: </span>
+                              <span className={classes.tabItemLabelField}>Tên chức vụ</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -302,7 +302,7 @@ const ProcessRoleModal = () => {
 
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã: </span>
+                              <span className={classes.tabItemLabelField}>Mã</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -321,7 +321,7 @@ const ProcessRoleModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Rank: </span>
+                              <span className={classes.tabItemLabelField}>Rank</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField

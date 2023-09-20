@@ -169,7 +169,9 @@ const WorkshopModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã xưởng(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Mã xưởng<sup className="required-star">*</sup>
+                              </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -185,7 +187,9 @@ const WorkshopModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tên xưởng(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Tên xưởng<sup className="required-star">*</sup>
+                              </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -201,7 +205,9 @@ const WorkshopModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Số người làm(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Số người làm<sup className="required-star">*</sup>
+                              </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -218,7 +224,9 @@ const WorkshopModal = () => {
 
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Số giờ làm(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Số giờ làm<sup className="required-star">*</sup>
+                              </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -234,7 +242,7 @@ const WorkshopModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Địa chỉ:</span>
+                              <span className={classes.tabItemLabelField}>Địa chỉ</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -252,7 +260,9 @@ const WorkshopModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItem} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tỉnh thành(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Tỉnh thành<sup className="required-star">*</sup>
+                              </span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -274,7 +284,7 @@ const WorkshopModal = () => {
                           </Grid>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Hoạt động:</span>
+                              <span className={classes.tabItemLabelField}>Hoạt động</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <Switch

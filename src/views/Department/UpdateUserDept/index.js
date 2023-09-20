@@ -160,7 +160,7 @@ export default function UserDepartModal({ isOpen, department_code, handleClose }
           <div id="modal-modal-description" sx={{ mt: 2 }}>
             <Grid container className={classes.gridItem} alignItems="center">
               <Grid item lg={2} md={2} xs={12}>
-                <span className={classes.tabItemLabelField}>Chức danh:</span>
+                <span className={classes.tabItemLabelField}>Chức danh</span>
               </Grid>
               <Grid item lg={4} md={4} xs={12}>
                 <Select
@@ -177,7 +177,7 @@ export default function UserDepartModal({ isOpen, department_code, handleClose }
                 </Select>
               </Grid>
               <Grid item lg={2} md={2} xs={12}>
-                <span className={classes.tabItemLabelField}>Tài khoản:</span>
+                <span className={classes.tabItemLabelField}>Tài khoản</span>
               </Grid>
               <Grid item lg={2} md={2} xs={12}>
                 <Select

@@ -158,15 +158,15 @@ export default function ExportMaterialInventoryModal() {
           </div>
           <Grid container className={classes.gridItemInfo} spacing={2}>
             <Grid item lg={4} md={4} xs={4}>
-              <span className={classes.tabItemLabelField}>Từ ngày:</span>
+              <span className={classes.tabItemLabelField}>Từ ngày</span>
               <DatePicker date={exportData.from_date} onChange={(date) => checkToDate(date)} />
             </Grid>
             <Grid item lg={4} md={4} xs={4}>
-              <span className={classes.tabItemLabelField}>Đến ngày:</span>
+              <span className={classes.tabItemLabelField}>Đến ngày</span>
               <DatePicker date={exportData.to_date} onChange={(date) => checkToDate(date, 'to_date')} />
             </Grid>
             <Grid item lg={4} md={4} xs={4}>
-              <span className={classes.tabItemLabelField}>Nhà cung cấp:</span>
+              <span className={classes.tabItemLabelField}>Nhà cung cấp</span>
 
               <Autocomplete
                 // value={supplierList}

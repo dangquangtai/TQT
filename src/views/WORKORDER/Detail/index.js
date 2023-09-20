@@ -1120,7 +1120,9 @@ const WorkorderModal = () => {
                             <Grid item lg={7} md={7} xs={12}>
                               <Grid container className={classes.gridItemInfo} alignItems="center" spacing={1}>
                                 <Grid item lg={3} md={3} xs={3}>
-                                  <span className={classes.tabItemLabelField}>Mã hoạch sản xuất(*): </span>
+                                  <span className={classes.tabItemLabelField}>
+                                    Mã hoạch sản xuất<sup className="required-star">*</sup>{' '}
+                                  </span>
                                   <TextField
                                     fullWidth
                                     variant="outlined"
@@ -1133,7 +1135,9 @@ const WorkorderModal = () => {
                                 </Grid>
 
                                 <Grid item lg={6} md={6} xs={6}>
-                                  <span className={classes.tabItemLabelField}>Tên kế hoạch sản xuất(*): </span>
+                                  <span className={classes.tabItemLabelField}>
+                                    Tên kế hoạch sản xuất<sup className="required-star">*</sup>{' '}
+                                  </span>
                                   <TextField
                                     fullWidth
                                     variant="outlined"
@@ -1145,7 +1149,7 @@ const WorkorderModal = () => {
                                   />
                                 </Grid>
                                 <Grid item lg={3} md={3} xs={3}>
-                                  {/* <span className={classes.tabItemLabelField}>Trạng thái: </span>
+                                  {/* <span className={classes.tabItemLabelField}>Trạng thái</span>
                                   <TextField
                                     select
                                     fullWidth
@@ -1162,7 +1166,7 @@ const WorkorderModal = () => {
                                         </MenuItem>
                                       ))}
                                   </TextField> */}
-                                  <span className={classes.tabItemLabelField}>Xưởng: </span>
+                                  <span className={classes.tabItemLabelField}>Xưởng</span>
                                   <TextField
                                     select
                                     fullWidth
@@ -1184,7 +1188,7 @@ const WorkorderModal = () => {
 
                               <Grid container className={classes.gridItemInfo} alignItems="center" spacing={1}>
                                 <Grid item lg={3} md={3} xs={3}>
-                                  <span className={classes.tabItemLabelField}>Thời gian bắt đầu:</span>
+                                  <span className={classes.tabItemLabelField}>Thời gian bắt đầu</span>
                                   {/* <TextField
                                     fullWidth
                                     type="date"
@@ -1199,7 +1203,7 @@ const WorkorderModal = () => {
                                 </Grid>
 
                                 <Grid item lg={3} md={3} xs={3}>
-                                  <span className={classes.tabItemLabelField}>Thời gian kết thúc:</span>
+                                  <span className={classes.tabItemLabelField}>Thời gian kết thúc</span>
                                   {/* <TextField
                                     fullWidth
                                     type="date"
@@ -1212,7 +1216,7 @@ const WorkorderModal = () => {
                                   <DatePicker date={workorder.to_date} onChange={(date) => setToDate(date)} />
                                 </Grid>
                                 {/* <Grid item lg={3} md={3} xs={3}>
-                                  <span className={classes.tabItemLabelField}>Xưởng: </span>
+                                  <span className={classes.tabItemLabelField}>Xưởng</span>
                                   <TextField
                                     select
                                     fullWidth
@@ -1232,7 +1236,7 @@ const WorkorderModal = () => {
                                 </Grid> */}
 
                                 <Grid item lg={3} md={3} xs={3}>
-                                  <span className={classes.tabItemLabelField}>Kho vật tư:</span>
+                                  <span className={classes.tabItemLabelField}>Kho vật tư</span>
                                   <TextField
                                     select
                                     fullWidth
@@ -1252,7 +1256,7 @@ const WorkorderModal = () => {
                                 </Grid>
 
                                 <Grid item lg={3} md={3} xs={3}>
-                                  <span className={classes.tabItemLabelField}>Kho thành phẩm:</span>
+                                  <span className={classes.tabItemLabelField}>Kho thành phẩm</span>
                                   <TextField
                                     select
                                     fullWidth

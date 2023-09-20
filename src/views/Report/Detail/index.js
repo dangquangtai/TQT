@@ -573,7 +573,7 @@ const MaterialReportModel = () => {
     return (
       <Grid container className={classes.gridItemInfo} spacing={2}>
         <Grid item xs={12}>
-          <span className={classes.tabItemLabelField}>Chọn kế hoạch sản xuất:</span>
+          <span className={classes.tabItemLabelField}>Chọn kế hoạch sản xuất</span>
           <Autocomplete
             options={workOrders}
             getOptionLabel={(option) => option.value}
@@ -585,15 +585,15 @@ const MaterialReportModel = () => {
           />
         </Grid>
         <Grid item lg={6} md={6} xs={6}>
-          <span className={classes.tabItemLabelField}>Từ ngày:</span>
+          <span className={classes.tabItemLabelField}>Từ ngày</span>
           <DatePicker date={queryData.from_date} onChange={(date) => checkToDate(date)} />
         </Grid>
         <Grid item lg={6} md={6} xs={6}>
-          <span className={classes.tabItemLabelField}>Đến ngày:</span>
+          <span className={classes.tabItemLabelField}>Đến ngày</span>
           <DatePicker date={queryData.to_date} onChange={(date) => checkToDate(date, 'to_date')} />
         </Grid>
         <Grid item xs={12}>
-          <span className={classes.tabItemLabelField}>Đặt tên report:</span>
+          <span className={classes.tabItemLabelField}>Đặt tên report</span>
           <TextField fullWidth variant="outlined" name="report_name" size="small" type="text" onChange={handleChanges} />
         </Grid>
         {[
@@ -605,7 +605,7 @@ const MaterialReportModel = () => {
         ].includes(selectedReport) && (
           <>
             <Grid item xs={12}>
-              <span className={classes.tabItemLabelField}>Danh mục vật tư:</span>
+              <span className={classes.tabItemLabelField}>Danh mục vật tư</span>
               <Autocomplete
                 options={listMaterialCategory}
                 multiple={true}
@@ -617,7 +617,7 @@ const MaterialReportModel = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <span className={classes.tabItemLabelField}>Nhà cung cấp:</span>
+              <span className={classes.tabItemLabelField}>Nhà cung cấp</span>
               <Autocomplete
                 options={listSupplier}
                 multiple={true}
@@ -629,7 +629,7 @@ const MaterialReportModel = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <span className={classes.tabItemLabelField}>Mã vật tư:</span>
+              <span className={classes.tabItemLabelField}>Mã vật tư</span>
               <Autocomplete
                 options={listPart}
                 key={autocompleteVersion}
@@ -646,7 +646,7 @@ const MaterialReportModel = () => {
         {['KH_GIAO_HANG_CHO_KHACH'].includes(selectedReport) && (
           <>
             <Grid item xs={12}>
-              <span className={classes.tabItemLabelField}>Mã khách hàng:</span>
+              <span className={classes.tabItemLabelField}>Mã khách hàng</span>
               <Autocomplete
                 options={listCustomerCode}
                 multiple={true}
@@ -664,7 +664,7 @@ const MaterialReportModel = () => {
         {['KH_SAN_XUAT', 'BAO_CAO_THUC_TE_SAN_XUAT', 'BAO_CAO_SU_DUNG_VAT_TU_THEO_DON_HANG'].includes(selectedReport) && (
           <>
             <Grid item xs={12}>
-              <span className={classes.tabItemLabelField}>Mã đơn khách hàng:</span>
+              <span className={classes.tabItemLabelField}>Mã đơn khách hàng</span>
               <Autocomplete
                 options={listCustomerOderCode}
                 multiple={true}
@@ -682,7 +682,7 @@ const MaterialReportModel = () => {
         {['TONG_HOP_TON_KHO_THANH_PHAM', 'BAO_CAO_THEO_DOI_HOP_DONG_THANH_PHAM'].includes(selectedReport) && (
           <>
             <Grid item xs={12}>
-              <span className={classes.tabItemLabelField}>Mã thành phẩm:</span>
+              <span className={classes.tabItemLabelField}>Mã thành phẩm</span>
               <Autocomplete
                 options={listProductID}
                 multiple={true}

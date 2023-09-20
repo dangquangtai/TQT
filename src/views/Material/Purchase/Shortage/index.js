@@ -124,10 +124,10 @@ const ShortageModal = () => {
                             <div className={classes.tabItemBody}>
                               <Grid container spacing={2} alignItems="center">
                                 <Grid item>
-                                  <span className={classes.tabItemLabelField}>Nhà cung cấp: </span> {data.supplier}
+                                  <span className={classes.tabItemLabelField}>Nhà cung cấp</span> {data.supplier}
                                 </Grid>
                                 <Grid item>
-                                  <span className={classes.tabItemLabelField}>Kho vật tư: </span>
+                                  <span className={classes.tabItemLabelField}>Kho vật tư</span>
                                   {data.warehouse}
                                 </Grid>
                               </Grid>

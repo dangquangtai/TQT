@@ -408,7 +408,9 @@ const MaterialRequisitionModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={3} className={classes.gridItemInfo}>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Mã đơn mua hàng(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Mã đơn mua hàng<sup className="required-star">*</sup>
+                              </span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -420,7 +422,9 @@ const MaterialRequisitionModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên đơn mua hàng(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Tên đơn mua hàng<sup className="required-star">*</sup>
+                              </span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -432,21 +436,27 @@ const MaterialRequisitionModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày lập đơn hàng(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Ngày lập đơn hàng<sup className="required-star">*</sup>
+                              </span>
                               <DatePicker
                                 date={materialRequisitionData.order_date}
                                 onChange={(date) => setMaterialRequisitionData({ ...materialRequisitionData, order_date: date })}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày giao hàng(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Ngày giao hàng<sup className="required-star">*</sup>
+                              </span>
                               <DatePicker
                                 date={materialRequisitionData.delivery_date}
                                 onChange={(date) => setMaterialRequisitionData({ ...materialRequisitionData, delivery_date: date })}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà cung cấp(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Nhà cung cấp<sup className="required-star">*</sup>
+                              </span>
                               <Autocomplete
                                 id="combo-box-demo"
                                 options={supplier}
@@ -466,7 +476,9 @@ const MaterialRequisitionModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà kho(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Nhà kho<sup className="required-star">*</sup>
+                              </span>
                               <TextField
                                 fullWidth
                                 name="warehouse_id"
@@ -485,7 +497,9 @@ const MaterialRequisitionModal = () => {
                               </TextField>
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Trạng thái(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Trạng thái<sup className="required-star">*</sup>
+                              </span>
                               <TextField
                                 fullWidth
                                 name="status"
@@ -503,7 +517,7 @@ const MaterialRequisitionModal = () => {
                               </TextField>
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ghi chú:</span>
+                              <span className={classes.tabItemLabelField}>Ghi chú</span>
                               <TextField
                                 fullWidth
                                 multiline

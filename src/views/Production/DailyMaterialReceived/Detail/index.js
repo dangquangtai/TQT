@@ -353,7 +353,7 @@ const DailyMaterialReceivedModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={2} className={classes.gridItemInfo}>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Mã phiếu:</span>
+                              <span className={classes.tabItemLabelField}>Mã phiếu</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -365,7 +365,7 @@ const DailyMaterialReceivedModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên phiếu nhập:</span>
+                              <span className={classes.tabItemLabelField}>Tên phiếu nhập</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -377,7 +377,7 @@ const DailyMaterialReceivedModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày nhập kho:</span>
+                              <span className={classes.tabItemLabelField}>Ngày nhập kho</span>
                               <DatePicker
                                 disabled={true}
                                 date={dailyMaterialReceivedData.order_date}
@@ -385,7 +385,7 @@ const DailyMaterialReceivedModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà kho:</span>
+                              <span className={classes.tabItemLabelField}>Nhà kho</span>
                               <TextField
                                 fullWidth
                                 name="warehouse_id"
@@ -403,7 +403,7 @@ const DailyMaterialReceivedModal = () => {
                               </TextField>
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Trạng thái:</span>
+                              <span className={classes.tabItemLabelField}>Trạng thái</span>
                               <TextField
                                 fullWidth
                                 name="status"
@@ -421,7 +421,7 @@ const DailyMaterialReceivedModal = () => {
                               </TextField>
                             </Grid>
                             <Grid item lg={9} md={9} xs={9}>
-                              <span className={classes.tabItemLabelField}>Ghi chú:</span>
+                              <span className={classes.tabItemLabelField}>Ghi chú</span>
                               <TextField
                                 fullWidth
                                 multiline

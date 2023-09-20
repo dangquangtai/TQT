@@ -239,7 +239,7 @@ const RoleModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tên chức vụ: </span>
+                              <span className={classes.tabItemLabelField}>Tên chức vụ</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -259,7 +259,7 @@ const RoleModal = () => {
 
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mã chức vụ: </span>
+                              <span className={classes.tabItemLabelField}>Mã chức vụ</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -279,7 +279,7 @@ const RoleModal = () => {
 
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Loại phòng ban: </span>
+                              <span className={classes.tabItemLabelField}>Loại phòng ban</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <Select

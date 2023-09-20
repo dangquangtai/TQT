@@ -317,7 +317,7 @@ const GoodsReceiptModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={2} className={classes.gridItemInfo}>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Mã phiếu:</span>
+                              <span className={classes.tabItemLabelField}>Mã phiếu</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -329,7 +329,7 @@ const GoodsReceiptModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên phiếu nhập:</span>
+                              <span className={classes.tabItemLabelField}>Tên phiếu nhập</span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -341,7 +341,7 @@ const GoodsReceiptModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày nhập kho:</span>
+                              <span className={classes.tabItemLabelField}>Ngày nhập kho</span>
                               <DatePicker
                                 disabled={true}
                                 date={goodsReceiptData.order_date}
@@ -349,7 +349,7 @@ const GoodsReceiptModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà kho:</span>
+                              <span className={classes.tabItemLabelField}>Nhà kho</span>
                               <TextField
                                 fullWidth
                                 name="warehouse_id"
@@ -367,7 +367,7 @@ const GoodsReceiptModal = () => {
                               </TextField>
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Kế hoạch sản xuất:</span>
+                              <span className={classes.tabItemLabelField}>Kế hoạch sản xuất</span>
                               <Autocomplete
                                 options={workOrderList || []}
                                 size="small"
@@ -384,7 +384,7 @@ const GoodsReceiptModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày thực hiện:</span>
+                              <span className={classes.tabItemLabelField}>Ngày thực hiện</span>
                               <TextField
                                 fullWidth
                                 name="daily_work_order_id"
@@ -403,7 +403,7 @@ const GoodsReceiptModal = () => {
                               </TextField>
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Trạng thái:</span>
+                              <span className={classes.tabItemLabelField}>Trạng thái</span>
                               <TextField
                                 fullWidth
                                 name="status"
@@ -421,7 +421,7 @@ const GoodsReceiptModal = () => {
                               </TextField>
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ghi chú:</span>
+                              <span className={classes.tabItemLabelField}>Ghi chú</span>
                               <TextField
                                 fullWidth
                                 multiline

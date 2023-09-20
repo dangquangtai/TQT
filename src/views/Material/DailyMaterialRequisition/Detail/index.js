@@ -484,7 +484,9 @@ const DeliveryMaterialModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container spacing={2} className={classes.gridItemInfo}>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Mã phiếu(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Mã phiếu<sup className="required-star">*</sup>
+                              </span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -496,7 +498,9 @@ const DeliveryMaterialModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Tên phiếu xuất(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Tên phiếu xuất<sup className="required-star">*</sup>
+                              </span>
                               <TextField
                                 fullWidth
                                 variant="outlined"
@@ -508,14 +512,18 @@ const DeliveryMaterialModal = () => {
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Ngày xuất kho(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Ngày xuất kho<sup className="required-star">*</sup>
+                              </span>
                               <DatePicker
                                 date={deliveryMaterialData.order_date}
                                 onChange={(date) => setDeliveryMaterialData({ ...deliveryMaterialData, order_date: date })}
                               />
                             </Grid>
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Nhà kho(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Nhà kho<sup className="required-star">*</sup>
+                              </span>
                               <TextField
                                 fullWidth
                                 name="warehouse_id"
@@ -534,7 +542,9 @@ const DeliveryMaterialModal = () => {
                             </Grid>
 
                             <Grid item lg={3} md={3} xs={3}>
-                              <span className={classes.tabItemLabelField}>Trạng thái(*):</span>
+                              <span className={classes.tabItemLabelField}>
+                                Trạng thái<sup className="required-star">*</sup>
+                              </span>
                               <TextField
                                 fullWidth
                                 name="status"
@@ -553,7 +563,7 @@ const DeliveryMaterialModal = () => {
                             </Grid>
 
                             <Grid item lg={6} md={6} xs={6}>
-                              <span className={classes.tabItemLabelField}>Ghi chú:</span>
+                              <span className={classes.tabItemLabelField}>Ghi chú</span>
                               <TextField
                                 fullWidth
                                 multiline

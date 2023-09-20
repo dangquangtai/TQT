@@ -244,7 +244,7 @@ const DepartmentModal = () => {
                         <div className={classes.tabItemBody}>
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Tên phòng ban: </span>
+                              <span className={classes.tabItemLabelField}>Tên phòng ban</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
@@ -264,7 +264,7 @@ const DepartmentModal = () => {
 
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Trực thuộc phòng ban: </span>
+                              <span className={classes.tabItemLabelField}>Trực thuộc phòng ban</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <Select
@@ -293,7 +293,7 @@ const DepartmentModal = () => {
 
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Loại phòng ban: </span>
+                              <span className={classes.tabItemLabelField}>Loại phòng ban</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <Select
@@ -321,7 +321,7 @@ const DepartmentModal = () => {
                           </Grid>
                           {/* <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                                <span className={classes.tabItemLabelField}>Chức vụ: </span>
+                                <span className={classes.tabItemLabelField}>Chức vụ</span>
                               </Grid>
                               <Grid item lg={8} md={8} xs={8}>
                               
@@ -347,7 +347,7 @@ const DepartmentModal = () => {
                           </Grid> */}
                           <Grid container className={classes.gridItemInfo} alignItems="center">
                             <Grid item lg={4} md={4} xs={4}>
-                              <span className={classes.tabItemLabelField}>Mô tả: </span>
+                              <span className={classes.tabItemLabelField}>Mô tả</span>
                             </Grid>
                             <Grid item lg={8} md={8} xs={8}>
                               <TextField
