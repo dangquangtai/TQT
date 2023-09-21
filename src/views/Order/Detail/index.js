@@ -398,15 +398,14 @@ const OrderModal = () => {
                                 Khách hàng<sup className="required-star">*</sup>
                               </span>
                               <Autocomplete
-                                id="combo-box-demo"
                                 options={customer}
                                 getOptionLabel={(option) => option.value || ''}
                                 fullWidth
                                 size="small"
-                                value={customer?.find((item) => item.id === selectedDocument?.customer_id) || null}
                                 onChange={(event, newValue) => {
                                   setOrderData({ ...orderData, customer_id: newValue?.id });
                                 }}
+                                value={customer?.find((item) => item.id === orderData?.customer_id) || null}
                                 renderInput={(params) => <TextField {...params} variant="outlined" />}
                               />
                             </Grid>
