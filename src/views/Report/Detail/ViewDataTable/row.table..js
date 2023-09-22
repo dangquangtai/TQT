@@ -248,6 +248,8 @@ const Row = (props) => {
         product_code,
         product_name,
         unit_name,
+        initial_price,
+        final_price,
         order_code,
         initial_quantity_in_box,
         received_quantity_in_box,
@@ -261,10 +263,12 @@ const Row = (props) => {
           <TableCell align="left">{product_name ? product_name : ''}</TableCell>
           <TableCell align="left">{unit_name ? unit_name : ''}</TableCell>
           <TableCell align="left">{order_code ? order_code : ''}</TableCell>
-          <TableCell align="left">{initial_quantity_in_box ? initial_quantity_in_box : ''}</TableCell>
+          <TableCell align="left">{initial_quantity_in_box ? initial_quantity_in_box : 0}</TableCell>
+          <TableCell align="left">{initial_price ? initial_price : 0}</TableCell>
           <TableCell align="left">{received_quantity_in_box ? received_quantity_in_box : 0}</TableCell>
           <TableCell align="left">{requisition_quantity_in_box ? requisition_quantity_in_box : 0}</TableCell>
-          <TableCell align="left">{final_quantity_in_box ? final_quantity_in_box : ''}</TableCell>
+          <TableCell align="left">{final_quantity_in_box ? final_quantity_in_box : 0}</TableCell>
+          <TableCell align="left">{final_price ? final_price : 0}</TableCell>
         </>
       );
     }
@@ -381,6 +385,33 @@ const Row = (props) => {
                                 <TableCell align="center">SL hỏng</TableCell>
                               </TableRow>
                             </TableCell>
+                          ) : ['Tồn đầu kỳ', 'Tồn cuối kỳ'].includes(Coldt) && reportType === 'TONG_HOP_TON_KHO_THANH_PHAM' ? (
+                            <TableCell colSpan={2} align="center" style={{ width: '10%' }}>
+                              {Coldt}
+                              <TableRow>
+                                <TableCell align="center" className={classesTable.cellData}>
+                                  &nbsp;&nbsp;&nbsp; SL&nbsp;&nbsp;
+                                </TableCell>
+                                <TableCell align="center" className={classesTable.cellData}>
+                                  Trị giá
+                                </TableCell>
+                              </TableRow>
+                            </TableCell>
+                          ) : ['Nhập', 'Xuất'].includes(Coldt) && reportType === 'TONG_HOP_TON_KHO_THANH_PHAM' ? (
+                            <TableCell colSpan={3} align="center" style={{ width: '10%' }}>
+                              {Coldt}
+                              <TableRow>
+                                <TableCell align="center" className={classesTable.cellData}>
+                                  &nbsp;&nbsp;&nbsp; SL&nbsp;&nbsp;
+                                </TableCell>
+                                <TableCell align="center" className={classesTable.cellData}>
+                                  Đơn giá
+                                </TableCell>
+                                <TableCell align="center" className={classesTable.cellData}>
+                                  Trị giá
+                                </TableCell>
+                              </TableRow>
+                            </TableCell>
                           ) : (
                             <TableCell align="left">{Coldt}</TableCell>
                           )}
@@ -434,9 +465,21 @@ const Row = (props) => {
                             <TableCell>{detailitm.explain}</TableCell>
                             <TableCell>{detailitm.order_code}</TableCell>
                             <TableCell>{detailitm.initial_quantity_in_box || 0}</TableCell>
-                            <TableCell>{detailitm.received_quantity_in_box || 0}</TableCell>
+                            <TableCell>{detailitm.initial_price || 0}</TableCell>
+                            <TableCell align="center" className={classesTable.cellData} style={{ width: '10%' }}>
+                              {detailitm.received_quantity_in_box || 0}
+                            </TableCell>
+                            <TableCell align="center" className={classesTable.cellData}>
+                              {detailitm.received_unit_price || 0}
+                            </TableCell>
+                            <TableCell align="center" className={classesTable.cellData}>
+                              {detailitm.received_price || 0}
+                            </TableCell>
                             <TableCell>{detailitm.requisition_quantity_in_box || 0}</TableCell>
+                            <TableCell>{detailitm.requisition_unit_price || 0}</TableCell>
+                            <TableCell>{detailitm.requisition_price || 0}</TableCell>
                             <TableCell>{detailitm.final_quantity_in_box || 0}</TableCell>
+                            <TableCell>{detailitm.final_price || 0}</TableCell>
                           </>
                         )}
                         {reportType === 'BAO_CAO_SU_DUNG_VAT_TU_NHA_CUNG_CAP' && (

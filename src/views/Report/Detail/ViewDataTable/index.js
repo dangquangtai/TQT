@@ -405,7 +405,8 @@ export default function ViewReportDataModal(props) {
                                   <TableCell />
                                   {listCol?.map((col, index) => (
                                     <React.Fragment key={index}>
-                                      {['Tồn đầu', 'Nhập', 'Xuất', 'Tồn cuối'].includes(col) ? (
+                                      {['Tồn đầu', 'Nhập', 'Xuất', 'Tồn cuối'].includes(col) &&
+                                      reportType !== 'TONG_HOP_TON_KHO_THANH_PHAM' ? (
                                         <TableCell colSpan={2} align="center" style={{ width: '10%' }}>
                                           {col}
                                           <TableRow>
@@ -414,6 +415,19 @@ export default function ViewReportDataModal(props) {
                                             </TableCell>
                                             <TableCell align="center" className={classesTable.cellData}>
                                               SL hỏng
+                                            </TableCell>
+                                          </TableRow>
+                                        </TableCell>
+                                      ) : ['Tồn đầu kỳ', 'Tồn cuối kỳ'].includes(col) && reportType === 'TONG_HOP_TON_KHO_THANH_PHAM' ? (
+                                        <TableCell colSpan={2} align="center" style={{ width: '10%' }}>
+                                          {col}
+                                          <TableRow>
+                                            <TableCell align="center" className={classesTable.cellData}>
+                                              &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; SL&nbsp;&nbsp;
+                                            </TableCell>
+                                            <TableCell align="center" className={classesTable.cellData}>
+                                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                                              &nbsp;&nbsp;&nbsp;Trị giá
                                             </TableCell>
                                           </TableRow>
                                         </TableCell>
