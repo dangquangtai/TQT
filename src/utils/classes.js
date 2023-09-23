@@ -580,6 +580,16 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '8px',
     marginBottom: '8px',
   },
+  totalContainer: {
+    position: 'relative',
+    height: 50,
+    '& div': {
+      transform: 'translateY(-50%)',
+      top: '50%',
+      paddingLeft: 16,
+      position: 'absolute',
+    },
+  },
 }));
 
 export default useStyles;

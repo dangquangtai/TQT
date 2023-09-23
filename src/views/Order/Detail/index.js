@@ -23,7 +23,7 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useView from '../../../hooks/useView';
 import { FLOATING_MENU_CHANGE, DOCUMENT_CHANGE, CONFIRM_CHANGE } from '../../../store/actions.js';
@@ -115,6 +115,7 @@ const OrderModal = () => {
     setFileData([]);
     setProductList([]);
     setTabIndex(0);
+    setPosition({});
   };
   const setURL = async (fileDataInput) => {
     console.log(fileDataInput?.file_name);
@@ -189,11 +190,13 @@ const OrderModal = () => {
         unit_name: '',
         quantity_in_box: 0,
         quantity_produced: 0,
+        quantity_in_warehouse: 0,
         unit_volume: 0,
         unit_price: 0,
       },
       ...productList,
     ]);
+    handleRefsChange();
   };
 
   const handleChangeProductCode = (index, product) => {
@@ -210,6 +213,7 @@ const OrderModal = () => {
     };
     newProductList[index] = { ...newProductList[index], ...newProduct };
     setProductList(newProductList);
+    handleRefsChange();
   };
 
   const handleChangeProduct = (index, e) => {
@@ -217,6 +221,7 @@ const OrderModal = () => {
     const newProductList = [...productList];
     newProductList[index] = { ...newProductList[index], [name]: value };
     setProductList(newProductList);
+    handleRefsChange();
   };
 
   const handleDeleteProduct = (index, id) => {
@@ -248,6 +253,7 @@ const OrderModal = () => {
     setFileData({ ...fileData, id: selectedDocument?.id });
     fetchFileListData();
     setProductList(selectedDocument?.order_detail);
+    handleRefsChange();
   }, [selectedDocument]);
 
   useEffect(() => {
@@ -262,6 +268,41 @@ const OrderModal = () => {
     return () => {
       setCustomer([]);
       setStatusList([]);
+    };
+  }, []);
+
+  const slCanRef = useRef(null);
+  const slSXRef = useRef(null);
+  const slKhoRef = useRef(null);
+  const soKhoiRef = useRef(null);
+  const triGiaRef = useRef(null);
+
+  const [position, setPosition] = useState({
+    slCan: 0,
+    slSX: 0,
+    slKho: 0,
+    soKhoi: 0,
+    triGia: 0,
+  });
+
+  const handleRefsChange = () => {
+    if (slCanRef.current && soKhoiRef.current && triGiaRef.current) {
+      setTimeout(() => {
+        setPosition({
+          slCan: slCanRef.current.offsetLeft,
+          slSX: slSXRef.current?.offsetLeft,
+          slKho: slKhoRef.current?.offsetLeft,
+          soKhoi: soKhoiRef.current.offsetLeft,
+          triGia: triGiaRef.current.offsetLeft,
+        });
+      }, 100);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', handleRefsChange);
+    return () => {
+      window.removeEventListener('resize', handleRefsChange);
     };
   }, []);
 
@@ -475,18 +516,33 @@ const OrderModal = () => {
                         </div>
                         <div className={classes.tabItemBody} style={{ paddingBottom: '8px' }}>
                           <TableContainer style={{ maxHeight: 500 }} component={Paper}>
-                            <Table aria-label="simple table">
+                            <Table size="small">
                               <TableHead>
                                 <TableRow>
                                   <TableCell align="left">Mã thành phẩm</TableCell>
                                   <TableCell align="left">Mã TP KH</TableCell>
                                   <TableCell align="left">Tên thành phẩm</TableCell>
-                                  <TableCell align="left">SL cần</TableCell>
-                                  {selectedDocument?.id && <TableCell align="left">Đã SX</TableCell>}
-                                  {selectedDocument?.id && <TableCell align="left">SL Kho</TableCell>}
+                                  <TableCell ref={slCanRef} align="left">
+                                    SL cần
+                                  </TableCell>
+                                  {selectedDocument?.id && (
+                                    <>
+                                      <TableCell ref={slSXRef} align="left">
+                                        Đã SX
+                                      </TableCell>
+                                      <TableCell ref={slKhoRef} align="left">
+                                        SL Kho
+                                      </TableCell>
+                                    </>
+                                  )}
                                   <TableCell align="left">Đơn vị</TableCell>
-                                  <TableCell align="left">Số khối</TableCell>
+                                  <TableCell ref={soKhoiRef} align="left">
+                                    Số khối
+                                  </TableCell>
                                   <TableCell align="left">Đơn giá(VNĐ)</TableCell>
+                                  <TableCell ref={triGiaRef} align="left">
+                                    Trị giá(VNĐ)
+                                  </TableCell>
                                   <TableCell align="center">Xoá</TableCell>
                                 </TableRow>
                               </TableHead>
@@ -505,8 +561,10 @@ const OrderModal = () => {
                                         renderInput={(params) => <TextField {...params} variant="outlined" />}
                                       />
                                     </TableCell>
-                                    <TableCell align="left">{row?.product_customer_code}</TableCell>
-                                    <TableCell align="left" className={classes.maxWidthCell} style={{ maxWidth: 350 }}>
+                                    <TableCell align="left" style={{ width: '150px' }}>
+                                      {row?.product_customer_code}
+                                    </TableCell>
+                                    <TableCell align="left" className={classes.maxWidthCell} style={{ maxWidth: 280 }}>
                                       <Tooltip title={row?.product_name}>
                                         <span>{row?.product_name}</span>
                                       </Tooltip>
@@ -555,6 +613,9 @@ const OrderModal = () => {
                                         onChange={(e) => handleChangeProduct(index, e)}
                                       />
                                     </TableCell>
+                                    <TableCell align="left" style={{ width: '120px' }}>
+                                      <FormattedNumber value={row.unit_price * row.quantity_in_box} />
+                                    </TableCell>
                                     <TableCell align="center">
                                       <IconButton
                                         onClick={() => handleDeleteProduct(index, row.id)}
@@ -568,6 +629,44 @@ const OrderModal = () => {
                               </TableBody>
                             </Table>
                           </TableContainer>
+                          <div className={classes.totalContainer}>
+                            <div style={{ left: 0 }}>
+                              <strong>Tổng:</strong>
+                            </div>
+                            <div style={{ left: position.slCan }}>
+                              <FormattedNumber value={productList?.reduce((total, item) => total + Number(item?.quantity_in_box), 0)} />
+                            </div>
+                            {selectedDocument?.id && (
+                              <>
+                                <div style={{ left: position.slSX }}>
+                                  <FormattedNumber
+                                    value={productList?.reduce((total, item) => total + Number(item?.quantity_produced), 0)}
+                                  />
+                                </div>
+                                <div style={{ left: position.slKho }}>
+                                  <FormattedNumber
+                                    value={productList?.reduce((total, item) => total + Number(item?.quantity_in_warehouse), 0)}
+                                  />
+                                </div>
+                              </>
+                            )}
+                            <div style={{ left: position.soKhoi }}>
+                              <FormattedNumber
+                                value={productList?.reduce(
+                                  (total, item) => total + Number(item?.unit_volume) * Number(item?.quantity_in_box),
+                                  0
+                                )}
+                              />
+                            </div>
+                            <div style={{ left: position.triGia }}>
+                              <FormattedNumber
+                                value={productList?.reduce(
+                                  (total, item) => total + Number(item?.unit_price) * Number(item?.quantity_in_box),
+                                  0
+                                )}
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </Grid>
