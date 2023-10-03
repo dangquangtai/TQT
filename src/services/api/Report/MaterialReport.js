@@ -35,21 +35,23 @@ export const createMaterialReportFile = (data) => {
     return '';
   });
 };
-export const getListPart = (list_supplier_id) => {
-  return axiosServices.post(apiEndpoints.get_list_material_from_list_supplier_id, list_supplier_id).then((response) => {
+export const getListPart = (list_supplier_id, list_category_id) => {
+  return axiosServices.post(apiEndpoints.get_list_material_from_list_supplier_id, list_supplier_id, list_category_id).then((response) => {
     if (response.status === 200 && response.data.return === 200) {
       return response.data.list;
     }
     return '';
   });
 };
-export const getListPartForMaterialReport = (list_supplier_id) => {
-  return axiosServices.post(apiEndpoints.get_list_material_from_list_supplier_id_for_contract_report, list_supplier_id).then((response) => {
-    if (response.status === 200 && response.data.return === 200) {
-      return response.data.list;
-    }
-    return '';
-  });
+export const getListPartForMaterialReport = (list_supplier_id, list_category_id) => {
+  return axiosServices
+    .post(apiEndpoints.get_list_material_from_list_supplier_id_for_contract_report, list_supplier_id, list_category_id)
+    .then((response) => {
+      if (response.status === 200 && response.data.return === 200) {
+        return response.data.list;
+      }
+      return '';
+    });
 };
 export const getListSupplierFromMaterialCategory = (category_list) => {
   return axiosServices.post(apiEndpoints.get_list_supplier_from_list_material_category, category_list).then((response) => {
