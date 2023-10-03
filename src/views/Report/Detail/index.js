@@ -355,7 +355,7 @@ const MaterialReportModel = () => {
   const fetchData = useCallback(() => {
     if (selectedSuppliers.length !== 0) {
       if (selectedReport === 'BAO_CAO_THEO_DOI_HOP_DONG') {
-        getListPartForMaterialReport({ list_supplier_id: selectedSuppliers })
+        getListPartForMaterialReport({ list_supplier_id: selectedSuppliers, list_category_id: selectedMaterialCategory })
           .then((PartCodes) => {
             setListPart([{ id: null, value: 'Chọn tất cả' }, ...PartCodes]);
           })
@@ -363,7 +363,7 @@ const MaterialReportModel = () => {
             console.log(error);
           });
       } else {
-        getListPart({ list_supplier_id: selectedSuppliers })
+        getListPart({ list_supplier_id: selectedSuppliers, list_category_id: selectedMaterialCategory })
           .then((PartCodes) => {
             setListPart([{ id: null, value: 'Chọn tất cả' }, ...PartCodes]);
           })
