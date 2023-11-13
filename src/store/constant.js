@@ -403,6 +403,8 @@ export const apiEndpoints = {
   update_product_received: '/Primary/?FlowAlias=bs_api_factory_update_product_received&action=api',
   get_product_received_data: '/Primary/?FlowAlias=bs_api_factory_get_product_received_data&action=api',
   get_order_by_product: '/Primary/?FlowAlias=bs_api_factory_get_order_by_product&action=api',
+
+  send_email_workorder: '/Primary/?FlowAlias=bs_api_tqt_send_email_workorder&action=api',
 };
 
 export const apiDomain = 'https://upload.truebpm.vn';

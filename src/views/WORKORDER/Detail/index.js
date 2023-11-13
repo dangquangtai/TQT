@@ -36,7 +36,6 @@ import { Autocomplete } from '@material-ui/lab';
 import { month, weekday } from './../data';
 import { Delete } from '@material-ui/icons';
 import { AddCircleOutline } from '@material-ui/icons';
-import { downloadFile } from './../../../utils/helper';
 import {
   getStatusList,
   createWorkorOrder,
@@ -45,7 +44,6 @@ import {
   getLink,
   getWorkOrderRequest,
   deleteWorkOrderDetail,
-  deleteWorkOrderRequest,
   createWorkOrderDetailList,
   createWorkOrderRequest,
   getWorkShopList,
@@ -54,6 +52,7 @@ import {
   checkMaterial,
   generateDailyOrder,
   getDetailWorkorOrder2,
+  sendEmailWO,
 } from '../../../services/api/Workorder/index.js';
 import { exportDailyMaterialReceived } from '../../../services/api/Production/MaterialReceived';
 import { exportGoodsReceiptByWorkOrder } from '../../../services/api/Product/GoodsReceipt';
@@ -140,7 +139,7 @@ const WorkorderModal = () => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const virtuoso = useRef(null);
   const [dropdownData, setDopDownData] = useState([]);
-
+  const [isButtonSendEmail, setIsButtonSendEmail] = useState(false);
   const handleChangeTab = (event, newValue) => {
     setTabIndex(newValue);
   };
@@ -366,10 +365,12 @@ const WorkorderModal = () => {
       text: 'Vui lòng chờ trong giây lát. Báo cáo đang được tải xuống',
     });
 
-    let link = await getLink(productionDailyRequestList[indexDate].id);
-    let link2 = await exportDailyMaterialReceived(productionDailyRequestList[indexDate].id);
-    let link3 = await exportDailyMaterialRequisition(productionDailyRequestList[indexDate].id);
-    let link4 = await exportGoodsReceiptByWorkOrder(productionDailyRequestList[indexDate].id);
+    const [link, link2, link3, link4] = await Promise.all([
+      getLink(productionDailyRequestList[indexDate].id),
+      exportDailyMaterialReceived(productionDailyRequestList[indexDate].id),
+      exportDailyMaterialRequisition(productionDailyRequestList[indexDate].id),
+      exportGoodsReceiptByWorkOrder(productionDailyRequestList[indexDate].id),
+    ]);
 
     handleDownload(link);
     handleDownload(link2);
@@ -641,6 +642,7 @@ const WorkorderModal = () => {
     setProductList([]);
     setProductionDailyRequest([]);
     setTabIndex(0);
+    setIsButtonSendEmail(false);
   };
 
   const popupWindow = (url, title) => {
@@ -711,13 +713,16 @@ const WorkorderModal = () => {
     return total.toFixed(1);
   };
   const fetchStatus = async () => {
-    let status = await getStatusList();
-    setProductionStatus(status);
-    let workshop = await getWorkShopList();
+    const [status, workshop, material, productwh] = await Promise.all([
+      getStatusList(),
+      getWorkShopList(),
+      getMaterialWHSList(),
+      getProductWHSList(),
+    ]);
+    setIsButtonSendEmail(status.is_send_email);
+    setProductionStatus(status.list);
     setWorkShopList([...workshop]);
-    let material = await getMaterialWHSList();
     setMaterialWHSList([...material]);
-    let productwh = await getProductWHSList();
     setProductWHSList([...productwh]);
     setWorkorder({ ...workorder, workshop_id: workshop[0].Key, materialwh_id: material[0].id, productwh_id: productwh[0].Key });
     setWorkShopID(workshop[0].Key);
@@ -942,6 +947,14 @@ const WorkorderModal = () => {
         </TableRow>
       </>
     );
+  };
+  const handleSendEmailWO = async () => {
+    const res = await sendEmailWO();
+    setSnackbarStatus({
+      isOpen: true,
+      type: 'success',
+      text: res,
+    });
   };
   useEffect(() => {
     setDopDownData(orderRedux.orderDetail || []);
@@ -1502,8 +1515,14 @@ const WorkorderModal = () => {
               </Grid>
               <Grid item>
                 <Grid container spacing={2} justifyContent="flex-end">
+                  {isButtonSendEmail && (
+                    <Grid item>
+                      <Button variant="contained" style={{ background: 'rgb(97, 42, 255)' }} onClick={handleSendEmailWO}>
+                        Gửi email
+                      </Button>
+                    </Grid>
+                  )}
                   <Grid item>
-                    {/* <Link to={`/dashboard/workorder/${workorder.id}`} target="_blank" rel="noopener noreferrer"> */}
                     <Button
                       variant="contained"
                       style={{ background: 'rgb(97, 42, 255)' }}
@@ -1511,7 +1530,6 @@ const WorkorderModal = () => {
                     >
                       Mục tiêu sản xuất
                     </Button>
-                    {/* </Link> */}
                   </Grid>
                   {!workorder.id && (
                     <>

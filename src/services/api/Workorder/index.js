@@ -50,7 +50,7 @@ export const getStatusList = () => {
     .post(apiEndpoints.get_work_order_status_list, {})
     .then((response) => {
       if (response.status === 200 && response.data.return === 200) {
-        return response.data.list;
+        return response.data;
       }
       return [];
     })
@@ -258,4 +258,12 @@ export const generateDailyOrder = (work_order_id, daily_work_order_id) => {
       }
       return false;
     });
+};
+export const sendEmailWO = () => {
+  return axiosServices.post(apiEndpoints.send_email_workorder, {}).then((response) => {
+    if (response.status === 200 && response.data.return === 200) {
+      return response.data.message;
+    }
+    return 'Có lỗi xảy ra. Vui lòng thử lại sau';
+  });
 };
