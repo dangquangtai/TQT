@@ -8,6 +8,7 @@ import { SNACKBAR_OPEN, DOCUMENT_CHANGE } from './../../../../store/actions';
 import { downloadFile } from '../../../../utils/helper';
 import { useDispatch } from 'react-redux';
 import { FormattedNumber } from 'react-intl';
+import { format } from 'date-fns';
 
 const useRowStyles = makeStyles({
   root: {
@@ -119,17 +120,17 @@ const Row = (props) => {
       } = row;
       return (
         <>
-          <TableCell align="left">{order_date ? order_date : ''}</TableCell>
+          <TableCell align="left">{delivery_date ? format(new Date(delivery_date), 'dd/MM/yyyy') : ''}</TableCell>
           <TableCell align="left">{supplier_name ? supplier_name : ''}</TableCell>
           <TableCell align="left">{order_code ? order_code : ''}</TableCell>
           <TableCell align="left">{part_code ? part_code : ''}</TableCell>
           <TableCell align="left">{part_name ? part_name : ''}</TableCell>
           <TableCell align="left">{unit_name ? unit_name : ''}</TableCell>
           <TableCell align="left">{quantity_in_piece ? <FormattedNumber value={quantity_in_piece} /> : 0}</TableCell>
-          <TableCell align="left">{customer_order_code ? production_date : ''}</TableCell>
+          <TableCell align="left">{customer_order_code ? format(new Date(production_date), 'dd/MM/yyyy') : ''}</TableCell>
           <TableCell align="left">{customer_order_code ? customer_order_code : ''}</TableCell>
           <TableCell align="left">{status_display ? status_display : ''}</TableCell>
-          <TableCell align="left">{delivery_date ? delivery_date : ''}</TableCell>
+          <TableCell align="left">{order_date ? format(new Date(order_date), 'dd/MM/yyyy') : ''}</TableCell>
           <TableCell align="left">{received_quantity_in_piece ? <FormattedNumber value={received_quantity_in_piece} /> : 0}</TableCell>
           <TableCell align="left">{notes ? notes : ''}</TableCell>
         </>
