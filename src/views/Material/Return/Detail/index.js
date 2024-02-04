@@ -24,19 +24,17 @@ import {
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { format as formatDate } from 'date-fns';
 import { History, AttachFileOutlined, DescriptionOutlined } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import useStyles from './../../../../utils/classes';
 import useView from './../../../../hooks/useView';
 import { view } from './../../../../store/constant';
-import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE } from './../../../../store/actions';
+import { FLOATING_MENU_CHANGE, SNACKBAR_OPEN, DOCUMENT_CHANGE, CLOSE_MODAL_MATERIAL } from './../../../../store/actions';
 import DatePicker from './../../../../component/DatePicker/index';
 import {
   createReturnMaterial,
   updateReturnMaterial,
   getReturnMaterialData,
-  getMaterialBrokenList,
   exportReturnMaterial,
 } from './../../../../services/api/Material/Return';
 import { getAllSupplier } from '../../../../services/api/Partner/Supplier.js';
@@ -101,6 +99,7 @@ const ReturnMaterialModal = () => {
   const handleCloseDialog = () => {
     setDocumentToDefault();
     dispatch({ type: FLOATING_MENU_CHANGE, returnMaterialDocument: false });
+    dispatch({ type: CLOSE_MODAL_MATERIAL });
     if (newWindow.current) newWindow.current.close();
   };
 
